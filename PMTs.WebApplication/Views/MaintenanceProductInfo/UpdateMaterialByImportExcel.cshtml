@@ -1,0 +1,461 @@
+﻿@model PMTs.DataAccess.ModelView.UpdateMaterialViewModel
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+
+@{
+    ViewData["Title"] = "Update Material From File";
+    //var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+    //var shortName = Model.CompanyProfiles.Where(x => x.Text == userSession.FactoryCode).First().Value.Split(" ")[1].ToUpper().ToString();
+    //var saleOrg = userSession.SaleOrg.ToString();
+    //var factoryCode = userSession.FactoryCode.ToString();
+}
+
+<style>
+    .center {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+            <div class="card-body">
+
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-rotate-3d"></i> &nbsp;@Localizer["Update Material"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div style="margin-right:5px">
+                            <a class="btn btn-primary text-white" style="min-height:35px;min-width:100px;float:right;opacity:0.9" onclick="ResetAllCheckbox()"><i class=""></i> &nbsp;@Localizer["Reset"]</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pt-2">
+                        <div class="card earning-widget" style="background-color:white">
+                            <div class="card-header" style="background-color:dimgray">
+                                <div class="card-actions">
+                                    <a class="masterdata-collapse" data-action="collapse" id="masterdata-collapse"><i id="iconmaster-collapse" class="ti-plus text-white"></i></a>
+                                </div>
+                                <h5 class="card-title text-white"> @Localizer["MasterData Template Option"]</h5>
+                            </div>
+                            <div class="card-body collapse masterdata-collapse" id="masterdata-bodycollapse">
+                                <div div style="background-color:white;" class="text-center content">
+
+                                    <div class="row mt-2">
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="PartNO">
+                                                    <label class="form-check-label" for="PartNO">@Localizer["Part No"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="PC">
+                                                    <label class="form-check-label" for="PC">@Localizer["PC"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="Description">
+                                                    <label class="form-check-label" for="Description">@Localizer["Description"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="SaleText">
+                                                    <label class="form-check-label" for="SaleText">@Localizer["Sale Text"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="Change">
+                                                    <label class="form-check-label" for="Change">@Localizer["Change (ปป.)"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="Hardship">
+                                                    <label class="form-check-label" for="Hardship">@Localizer["Hardship"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="Bun">
+                                                    <label class="form-check-label" for="Bun">@Localizer["Bun"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="BunLayer">
+                                                    <label class="form-check-label" for="BunLayer">@Localizer["BunLayer"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="LayerPalet">
+                                                    <label class="form-check-label" for="LayerPalet">@Localizer["LayerPallet"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input masterdata-ckb" id="BoxPalet">
+                                                    <label class="form-check-label" for="BoxPalet">@Localizer["BoxPallet"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pt-2">
+                        <div class="card earning-widget" style="background-color:white">
+                            <div class="card-header" style="background-color:dimgray">
+                                <div class="card-actions">
+                                    <a class="routing-collapse" data-action="collapse" id="routing-collapse"><i id="iconrouting-collapse" class="ti-plus text-white"></i></a>
+                                </div>
+                                <h5 class="card-title text-white"> @Localizer["Routing Template Option"]</h5>
+                            </div>
+                            <div class="card-body collapse routing-collapse" id="routing-bodycollapse">
+                                <div div style="background-color:white;" class="text-center content">
+
+                                    <div class="row mt-2">
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="Machine">
+                                                    <label class="form-check-label" for="Machine">@Localizer["Machine"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="Alternative1">
+                                                    <label class="form-check-label" for="Alternative1">@Localizer["Alternative1"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="RemarkInProcess">
+                                                    <label class="form-check-label" for="RemarkInProcess">@Localizer["Remark InProcess"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="Alternative2">
+                                                    <label class="form-check-label" for="Alternative2">@Localizer["Alternative2"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="PaperWidth">
+                                                    <label class="form-check-label" for="PaperWidth">@Localizer["PaperWidth"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="Alternative3">
+                                                    <label class="form-check-label" for="Alternative3">@Localizer["Alternative3"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="CutNo">
+                                                    <label class="form-check-label" for="CutNo">@Localizer["CutNo"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="Alternative4">
+                                                    <label class="form-check-label" for="Alternative4">@Localizer["Alternative4"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="Trim">
+                                                    <label class="form-check-label" for="Trim">@Localizer["Trim"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="Alternative5">
+                                                    <label class="form-check-label" for="Alternative5">@Localizer["Alternative5"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-check float-left" style="padding-left: 0;">
+                                                    <input type="checkbox" class="form-check-input routing-ckb" id="PercentTrim">
+                                                    <label class="form-check-label" for="PercentTrim">@Localizer["PercentTrim"]</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-body">
+                        <div style="background-color:white;padding:20px 0px;" class="text-center">
+                            @Localizer["explaintext"]
+                            <div style="background-color:white;" class="text-center">@Localizer["explaintext_size"] </div>
+                        </div>
+                        <div style="background-color:white;height:58vh" class="text-center">
+                            <form id="fromUpdateMaterial">
+                                <div class="form-group row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="fileDownload" id="fileDownload" style="display:none;" value="">
+                                        <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:170px;float:right" onclick="thisFileDownload()">@Localizer["Load Template"]&ensp;<i class="fa fa-download"></i></a>
+                                        <label for="fileDownload"></label>
+                                    </div>
+
+                                    <div class="mr-2"></div>
+                                    <div class="col-md-5">
+                                        <input type="file" name="fileUpload" id="fileUpload" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                        <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:170px;float:left" onclick="thisFileUpload();">@Localizer["Update Material"]&ensp;<i class="fa fa-upload"></i></a>
+                                        <label for="fileUpload"></label>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        let isMasterData = true;
+        const masterdataOptionArr = ["PartNO", "PC", "Description", "SaleText", "Hardship", "BunLayer", "BoxPalet", "LayerPalet", "Bun", "Change"];
+        const routingOptionArr = ["Machine", "RemarkInProcess", "PaperWidth", "CutNo", "Trim", "PercentTrim", "Alternative1", "Alternative2", "Alternative3", "Alternative4", "Alternative5"];
+        let optionArr = [];
+
+        $(document).ready(function () {
+            isMasterData = true;
+            $("#fileDownload").val("");
+        });
+
+        function thisFileUpload() {
+            document.getElementById("fileUpload").click();
+        };
+
+        function thisFileDownload() {
+            if (optionArr?.length == 0) {
+                swal({
+                    title: "The template couldn't be exported!",
+                    text: "Please select a data column for the update template.",
+                    icon: "warning",
+                });
+
+                $('.masterdata-collapse').collapse('show');
+                $("#iconmaster-collapse").removeClass("ti-plus").addClass("ti-minus");
+
+            } else {
+                $("#fileDownload").val("download");
+
+                swal({
+                    title: "Are you sure?",
+                    text: "Export file update material template.xlsx",
+                    icon: "warning",
+                    buttons: {
+                        confirm: "Ok",
+                        cancel: true,
+                    },
+                    dangerMode: false,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            document.location.href = '@Url.Action("ExportUpdateMaterialTemplate", "MaintenanceProductInfo")' + "?optionSelected=" + optionArr.join();
+
+                        }
+                    });
+            }
+        };
+
+        $(".masterdata-ckb").on('change', function (e) {
+            const optionSelected = e.currentTarget.id;
+            const masterdataOption = masterdataOptionArr.find(element => element == optionSelected);
+            if ((masterdataOption ?? null) !== null ) {
+                if (!isMasterData) {
+                    //reset routing option
+                    UncheckedRoutingOption();
+                    optionArr = [];
+                }
+
+                if ($(this).prop('checked')) {
+                    optionArr.push(optionSelected);
+                } else {
+                    optionArr.filter(m => { return m != optionSelected });
+                }
+            }
+            isMasterData = true;
+        });
+
+        $(".routing-ckb").on('change', function (e) {
+            const optionSelected = e.currentTarget.id;
+            const routingOption = routingOptionArr.find(element => element == optionSelected);
+
+            if ((routingOption ?? null) !== null) {
+                if (isMasterData) {
+                    //reset masterdata option
+                    UncheckedMasterDataOption();
+                    optionArr = [];
+                }
+
+                if ($(this).prop('checked')) {
+                    optionArr.push(optionSelected);
+                } else {
+                    optionArr.filter(m => { return m != optionSelected });
+                }
+            }
+
+            isMasterData = false;
+        });
+
+        $('#masterdata-bodycollapse').on('show.bs.collapse', function () {
+            $('.routing-collapse').collapse('hide');
+            $("#iconrouting-collapse").removeClass("ti-minus").addClass("ti-plus");
+        })
+
+        $('#routing-bodycollapse').on('show.bs.collapse', function () {
+            $('.masterdata-collapse').collapse('hide');
+            $("#iconmaster-collapse").removeClass("ti-minus").addClass("ti-plus");
+        })
+
+        $('#fileUpload').change(function () {
+            let form = $('#fromUpdateMaterial')[0];
+            let data = new FormData(form);
+            var input = document.getElementById('fileUpload');
+            var filesName = "";
+            var tempFile = $('#fileUpload')[0].files[0];
+            for (var i = 0; i < input.files.length; ++i) {
+                tempFile = $('#fileUpload')[0].files[i];
+                filesName = filesName + input.files[i].name + " \n";
+            }
+
+            swal({
+                title: "Are you sure?",
+                text: "Import excel data to update material",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+
+                    formDataObj = new FormData();
+                    formDataObj.append("file", tempFile);
+                    formDataObj.append("maxColunm", tempFile);
+                    $.ajax({
+                        type: 'POST',
+                        enctype: 'multipart/form-data',
+                        url: '@Url.Action("ImportUpdateMaterialFromFile", "MaintenanceProductInfo")',
+                        data: formDataObj,
+                        async: false,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        success: function (res) {
+                            if (res.IsSuccess)
+                            {
+                                swal("Update Material!", res.ExceptionMessage, { icon: "success" })
+                                    .then(() =>
+                                    {
+                                        window.location.href = "@Url.Action("UpdateMaterialByImportExcel", "MaintenanceProductInfo")";
+                                    });
+                            }
+                            else
+                            {
+                                swal("Update Material Failed!", res.ExceptionMessage , {icon:"warning"})
+                                    .then(()=> {
+                                        window.location.href = "@Url.Action("UpdateMaterialByImportExcel", "MaintenanceProductInfo")";
+                                    });
+                            }
+                        },
+                        error: function () {
+
+                        }
+                    });
+                }
+            });
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+
+        function UncheckedMasterDataOption() {
+            $(".masterdata-ckb").prop("checked", false);
+        }
+
+        function UncheckedRoutingOption() {
+            $(".routing-ckb").prop("checked", false);
+        }
+
+        function ResetAllCheckbox(){
+            $('input:checkbox').prop('checked', false);
+            optionArr = [];
+            isMasterData = true;
+        }
+    </script>
+}

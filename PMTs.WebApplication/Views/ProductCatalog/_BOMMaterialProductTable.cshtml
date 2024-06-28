@@ -1,0 +1,81 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<PMTs.DataAccess.ModelView.ProductCatalog.BOMMaterialProductModel>
+@inject IViewLocalizer Localizer
+@{
+    Layout = null;
+}
+
+<table id="BOMMaterialProductTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:80px">@Localizer["MatNo"]</th>
+            <th style="width:120px">@Localizer["PC"]</th>
+            <th style="width:120px">@Localizer["PartNo"]</th>
+            <th style="width:80px">@Localizer["CustID"]</th>
+            <th style="width:80px">@Localizer["CustCode"]</th>
+            <th style="width:150px">@Localizer["CustName"]</th>
+            <th style="width:150px">@Localizer["SaleText1"]</th>
+            <th style="width:60px">@Localizer["Flute"]</th>
+            <th style="width:180px">@Localizer["Board"]</th>
+            <th style="width:40px">@Localizer["Leg"]</th>
+            <th style="width:40px">@Localizer["Wid"]</th>
+            <th style="width:40px">@Localizer["Hig"]</th>
+            <th style="width:60px">@Localizer["Price"]</th>
+            <th style="width:40px">@Localizer["Qty"]</th>
+            <th style="width:40px">@Localizer["Total Price"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            @{
+                var isMatBOM = (string.IsNullOrEmpty(item.Flute) && string.IsNullOrEmpty(item.CusId) && string.IsNullOrEmpty(item.Board) && string.IsNullOrEmpty(item.CustCode)) || item.Pc.Contains("-CC") ;
+
+                if (isMatBOM)
+                {
+                    <td class="text-center" style="color:lightseagreen">@item.MaterialNo</td>
+                    <td class="text-center" style="color:lightseagreen">@item.Pc</td>
+                    <td class="text-center">@item.PartNo</td>
+                    <td class="text-center">@item.CusId</td>
+                    <td class="text-center">@item.CustCode</td>
+                    <td class="text-center">@item.CustName</td>
+                    <td class="text-center">@item.SaleText1</td>
+                    <td class="text-center">@item.Flute</td>
+                    <td class="text-center">@item.Board</td>
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                }
+                else
+                {
+                    <td class="text-center">@item.MaterialNo</td>
+                    <td class="text-center">@item.Pc</td>
+                    <td class="text-center">@item.PartNo</td>
+                    <td class="text-center">@item.CusId</td>
+                    <td class="text-center">@item.CustCode</td>
+                    <td class="text-center">@item.CustName</td>
+                    <td class="text-center">@item.SaleText1</td>
+                    <td class="text-center">@item.Flute</td>
+                    <td class="text-center">@item.Board</td>
+                    <td class="text-center">@item.Leg</td>
+                    <td class="text-center">@item.Wid</td>
+                    <td class="text-center">@item.Hig</td>
+                    <td class="text-center">@item.Price</td>
+                    <td class="text-center">@item.Quantity</td>
+                }
+                @if (isMatBOM)
+                {
+                    <td class="text-center" style="background-color:lightgreen;font-weight:700">@item.TotalPrice</td>
+                }
+                else
+                {
+                    <td class="text-center">@item.TotalPrice</td>
+                }
+            }
+        </tr>
+        }
+    </tbody>
+</table>

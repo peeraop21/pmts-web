@@ -1,0 +1,1808 @@
+﻿@model PMTs.DataAccess.ModelView.ManageMO.ManageMOViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PageAction"] = "ManageMO";
+    var masterdataList = new List<MasterCardMO>();
+}
+
+@using PMTs.DataAccess.ModelView
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<style>
+    .fileSelect {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        box-sizing: border-box;
+        min-width: 1.5em;
+        display: inline-block;
+        background-color: #d4edff;
+        margin-top: 0.2em;
+        margin-right: 0.2em;
+        text-align: center;
+        padding: 5px;
+        border: none;
+        border-radius: 4px;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        text-decoration: none !important;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .line-space-btn {
+        margin: 10px;
+    }
+
+    .line-space {
+        margin: 5px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+
+    input {
+        font-size: medium;
+    }
+
+    .title-label {
+        max-width: 170px;
+        padding: 0px;
+        min-width: 170px;
+    }
+
+    .vertical-sub-text {
+        vertical-align: sub;
+        padding-left: 10px;
+    }
+
+    .btn-size {
+        max-height: 30px
+    }
+</style>
+
+<br />
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["M/O Data"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info" onclick="CreateMoDataModal()">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["Create"]
+                            </button>
+                        </div>
+                        <div style="margin-right:5px">
+                            <input type="file" name="importFile" id="importFile" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onchange="javascript:ImportList()">
+                            <a href="#0" class="btn btn-primary" style="min-height:35px;min-width:100px;float:left" onclick="ImportMOManual();"><i class="fa fa-paperclip"></i>@Localizer["ChooseExcel"]</a>
+                            <label for="importFile"></label>
+                        </div>
+                        <div style="margin-right:5px">
+                            <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:100px;float:left" onclick="ExportTemplate();"><i class="fa fa-download mr-1"></i>@Localizer["Load Template"]</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-md-12">
+                        <div class="row line-space">
+                            <div class="form-group col-md-4 ml-2" style="padding: 0px;text-align: right;">
+                                @*<label class="control-label vertical-sub-text  ml-5 mt-1" style="font-weight:800">@Localizer["S/O Number"]</label>*@
+                                <select class="form-control custom-select col-md-4 text-sm-left" id="searchType" asp-items="@(new SelectList(Model.SearchTypes,"SearchValue","SearchDesc"))"></select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" id="textSearch" maxlength="15" />
+                            </div>
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" onclick="SearchMODataBySearchType()"> <i class="fas fa-search"></i> @Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divMODataTable" class="table-responsive m-t-10 col-md-12">
+                        <partial name="_MODataTable" model="Model" view-data="@ViewData" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal Create*@
+<div class="modal bs-example-modal-lg" id="modal-create-modata">
+    <div class="modal-dialog modal-xl" style="width:90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["Create MO Data"] </h3>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-between container" style="margin-bottom:10px">
+                    <div class="col-md-12 container">
+                        <div class="row line-space">
+                            <div class="form-group col-md-3" style="padding: 0px;text-align: right;">
+                                <label class="control-label vertical-sub-text  ml-5 mt-1" style="font-weight:800">@Localizer["Material No"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" id="mat-text-search" maxlength="15" />
+                            </div>
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-outline-info" style="max-height:30px;min-width:100px;font-weight:800" onclick="SearchMasterDataByMaterialNo()">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line-space col-md-12" style="border-bottom:3px double lightgray;margin-bottom:20px"></div>
+
+                    <div class="col-md-10 container">
+                        <form id="create-modata-form" method="POST" enctype="multipart/form-data">
+                            <input id="IdCreate" type="hidden" />
+                            <input id="FactoryCodeCreate" type="hidden" />
+                            <input id="MoStatusCreate" type="hidden" />
+                            <input id="MaterialNoCreate" type="hidden" />
+                            <input id="DateTimeStampCreate" type="hidden" />
+                            <input id="PrintedCreate" type="hidden" />
+                            <input id="DueTextCreate" type="hidden" />
+                            <input id="PlanStatusCreate" type="hidden" />
+                            <input id="StockQtyCreate" type="hidden" />
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1 ">@Localizer["Customer Name"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control input-field" id="CustomerNameCreate" maxlength="50" readonly />
+                                    <span class="text-danger" id="CustomerNameCreateReq" hidden>The Customer Name field is requried.</span>
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["S/O Number"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="OrderItemCreate" maxlength="15" readonly />
+                                    <span class="text-danger" id="OrderItemCreateReq" hidden>The S/O Number field is requried.</span>
+                                </div>
+
+                                <div class="form-group col-md-1 title-label" style="max-width:90px;min-width:90px;margin-right:-20px;">
+                                    <label class="control-label vertical-sub-text mt-1" style="margin-right: 10px;margin-left: 15px;">@Localizer["PC"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="PcCreate" maxlength="20" readonly />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Sale Text"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control input-field" id="SaleTextCreate" maxlength="160" readonly />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Order Qty"]</label>
+                                </div>
+                                <div class='col-sm-5'>
+                                    <div class="form-group">
+                                        <div class='input-group date'>
+                                            <input class="form-control input-field" id="OrderQuantCreate" type="number" style="max-width: 253px;" />
+                                        </div>
+                                    </div>
+
+                                    <span class="text-danger" id="OrderQuantCreateReq" hidden>The Order Quantity field is requried.</span>
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Deadline Date"]</label>
+                                </div>
+                                <div class='col-sm-5'>
+                                    <div class="form-group">
+                                        <div class='input-group date'>
+                                            <input type='text' id="input-datetimepicker-create" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" placeholder="-- Please Select DateTime --" />
+                                        </div>
+                                    </div>
+
+                                    <span class="text-danger" id="DueDateCreateReq" hidden>The Due Date field is requried.</span>
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Order Qty +/-"]</label>
+                                </div>
+
+                                <div class="form-inline col-md-2">
+                                    <i class="fa fa-plus-circle mr-1 mr-2"></i>
+                                    <input class="form-control col-md-9 input-field" id="ToleranceOverCreate" type="number" />
+                                </div>
+
+                                <div class="form-inline col-md-2">
+                                    <i class="fa fa-minus-circle ml-1 mr-2"></i>
+                                    <input class="form-control col-md-9 input-field" id="ToleranceUnderCreate" type="number" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Production Qty"]</label>
+                                </div>
+                                <div class='col-sm-5'>
+                                    <div class="form-group">
+                                        <div class='input-group date'>
+                                            <input class="form-control input-field" id="TargetQuantCreate" type="number" style="max-width: 253px;" />
+                                            <i id="targetorder-cal-create" class="btn btn-outline-info fa fa-calculator" style="font-size:small;min-width: 38px;" onclick="CalculateOrder('Create')"></i>
+                                        </div>
+                                    </div>
+
+                                    <span class="text-danger" id="TargetQuantCreateReq" hidden>The Target Quantity field is requried.</span>
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["P/O No"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="PoNoCreate" maxlength="25" />
+                                </div>
+
+                                <div class="form-group col-md-2 title-label">
+                                </div>
+                                <div class="form-group col-md-4">
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Sold To"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="SoldToCreate" maxlength="50" />
+                                </div>
+
+                                <div class="form-group col-md-1 title-label" style="max-width:90px;min-width:90px;margin-right:-20px;">
+                                    <label class="control-label vertical-sub-text mt-1" style="margin-right: 10px;margin-left: 15px;">@Localizer["Ship To"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="ShipToCreate" maxlength="50" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Item Note"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control input-field" id="ItemNoteCreate" maxlength="60" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Batch No"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="BatchCreate" maxlength="10" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Delivery location"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control input-field" id="DistrictCreate" maxlength="60" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-2 text-center" id="modate_create_option">
+                        @*<div class="col-md-12 line-space-btn">
+                        <button type="button" class="btn btn-info btn-fixsize btn-size" onclick="ClearForm()"> <i class="fa fa-sticky-note" style="padding-right:10px"></i>@Localizer["New M/O"] </button>
+                        </div>*@
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" class="btn btn-info btn-fixsize btn-size" onclick="CreateMOData()"> <i class="fa fa-save" style="padding-right:10px"></i>@Localizer["Save"] </button>
+                        </div>
+                        @*<div class="col-md-12 line-space-btn">
+                        <button type="button" class="btn btn-info btn-fixsize btn-size" onclick="PrintMOData('Create')"> <i class="fa fa-print" style="padding-right:10px"></i>@Localizer["Print"] </button>
+                        </div>*@
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" class="btn btn-danger btn-fixsize btn-size" id="create-close-modal" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"] </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal Edit*@
+<div class="modal bs-example-modal-lg" id="modal-edit-modata">
+    <div class="modal-dialog modal-xl" style="width:90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["Edit MO Data"] </h3>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-between container" style="margin-bottom:10px">
+
+                    <div class="col-md-10 container">
+                        <form id="edit-modata-form" method="POST" enctype="multipart/form-data">
+                            <input id="IdEdit" type="hidden" />
+                            <input id="FactoryCodeEdit" type="hidden" />
+                            <input id="MoStatusEdit" type="hidden" />
+                            <input id="MaterialNoEdit" type="hidden" />
+                            @*<input id="DateTimeStampEdit" asp-for="DateTimeStamp" type="hidden" />*@
+                            <input id="PrintedEdit" type="hidden" />
+                            <input id="DueTextEdit" type="hidden" />
+                            <input id="PlanStatusEdit" type="hidden" />
+                            <input id="StockQtyEdit" type="hidden" />
+                            <input id="IsCreateManualEdit" type="hidden" />
+                            <input id="SentKIWIEdit" type="hidden" />
+                            <input id="SOKiwiEdit" type="hidden" />
+                            <input id="MORNoEdit" type="hidden" />
+                            <input id="SquareINCHEdit" type="hidden" />
+                            <input id="InterfaceTIPsEdit" type="hidden" />
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["S/O Number"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control" id="OrderItemEdit" maxlength="15" readonly />
+                                    <span class="text-danger" id="OrderItemEditReq" hidden>The S/O Number field is requried.</span>
+                                </div>
+                                <div class="form-group col-md-2 title-label">
+                                </div>
+                                <div class="form-group col-md-4">
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1 ">@Localizer["Customer Name"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control" id="CustomerNameEdit" maxlength="50" readonly />
+                                    <span class="text-danger" id="CustomerNameEditReq" hidden>The Customer Name field is requried.</span>
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Order Qty"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control" id="OrderQuantEdit" type="number" />
+                                    <span class="text-danger" id="OrderQuantEditReq" hidden>The Order Quantity field is requried.</span>
+                                </div>
+
+                                <div class="form-group col-md-2 title-label">
+                                </div>
+                                <div class="form-group col-md-4">
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Deadline Date"]</label>
+                                </div>
+                                <div class='col-sm-5'>
+                                    <div class="form-group">
+                                        <div class='input-group date'>
+                                            <input type='date' id="DueDateEdit" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" placeholder="-- Please Select DateTime --" />
+                                        </div>
+                                    </div>
+
+                                    <span class="text-danger" id="DueDateEditReq" hidden>The Due Date field is requried.</span>
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text ml-5 mt-1">@Localizer["Order Qty +/-"]</label>
+                                </div>
+
+                                <div class="form-inline col-md-2">
+                                    <i class="fa fa-plus-circle mr-1 mr-2"></i>
+                                    <input class="form-control col-md-9" id="ToleranceOverEdit" type="number" />
+                                </div>
+
+                                <div class="form-inline col-md-2">
+                                    <i class="fa fa-minus-circle ml-1 mr-2"></i>
+                                    <input class="form-control col-md-9" id="ToleranceUnderEdit" type="number" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Production Qty"]</label>
+                                </div>
+                                <div class='col-sm-5'>
+                                    <div class="form-group">
+                                        <div class='input-group date'>
+                                            <input class="form-control input-field" id="TargetQuantEdit" type="number" style="max-width: 253px;" />
+                                            <i id="targetorder-cal-edit" class="btn btn-outline-info fa fa-calculator" style="font-size:small;min-width: 38px;" onclick="CalculateOrder('Edit')"></i>
+                                        </div>
+                                    </div>
+
+                                    <span class="text-danger" id="TargetQuantEditReq" hidden>The Target Quantity field is requried.</span>
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["P/O No"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control" id="PoNoEdit" maxlength="25" />
+                                </div>
+
+                                <div class="form-group col-md-2 title-label">
+                                </div>
+                                <div class="form-group col-md-4">
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Sold To"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="SoldToEdit" maxlength="50" />
+                                </div>
+
+                                <div class="form-group col-md-1 title-label" style="max-width:90px;min-width:90px;margin-right:-20px;">
+                                    <label class="control-label vertical-sub-text mt-1" style="margin-right: 10px;margin-left: 15px;">@Localizer["Ship To"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control input-field" id="ShipToEdit" maxlength="50" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Date/Time Stamp"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control" id="DateTimeStampEdit" maxlength="12" />
+                                </div>
+
+                                <div class="form-group col-md-2 title-label">
+                                </div>
+                                <div class="form-group col-md-4">
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Item Note"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control" id="ItemNoteEdit" maxlength="60" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Batch No"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control" id="BatchEdit" maxlength="10" />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["Delivery location"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control" id="DistrictEdit" maxlength="60" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-2 text-center" id="modate_edit_option">
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" id="UpdateMO_Btn" class="btn btn-info btn-fixsize btn-size" onclick="UpdateMOData()"> <i class="fa fa-save" style="padding-right:10px"></i>@Localizer["Save"] </button>
+                        </div>
+                        @* Tassanai Update 22072020 *@
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" id="UpdateMO_SpecBtn" class="btn btn-info btn-fixsize btn-size" onclick="UpdateMOSpecData()"> <i class="fas fa-pencil-alt" style="padding-right:10px"></i>@Localizer["Edit Spec"] </button>
+                        </div>
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" class="btn btn-info btn-fixsize btn-size" onclick="ViewSORouting()"> <i class="fa fa-sticky-note" style="padding-right:10px"></i>@Localizer["Edit Routing"] </button>
+                        </div>
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" class="btn btn-info btn-fixsize btn-size" onclick="PrintMOData('Edit',this)"> <i class="fa fa-print" style="padding-right:10px"></i>@Localizer["Print"] </button>
+                        </div>
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" class="btn btn-danger btn-fixsize btn-size" id="edit-close-modal" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"] </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* tassanai Update 22072020 *@
+<form id="create-Roles-form" enctype="multipart/form-data">
+    <div class="modal  bs-example-modal-lg" id="modal-edit-mospecdata">
+        <div class="modal-dialog" style="width:90%">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#6bd8fb">
+                    <h3 class="text-black"><i class="mdi mdi-lead-pencil"></i> @Localizer["Edit MO SpecData"] </h3>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <label class="mt-1 ">@Localizer["Change"]</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input class="form-control" id="Changetxt" maxlength="50" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="background-color:#6bd8fb">
+
+                    <button type="button" class="btn btn-info btn-fixsize btn-size" onclick="UpdateMOSpecChange()"> <i class="fa fa-save" style="padding-right:10px"></i>@Localizer["Save"] </button>
+
+                    @*<button type="button" class="btn btn-danger btn-fixsize btn-size" id="create-close-modal" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"] </button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@*Modal Attrach File*@
+<div class="modal bs-example-modal-lg" id="modal-attrachFile-modata">
+    <div class="modal-dialog modal-xl" style="width:90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-themecolor"><i class="mdi mdi-folder-multiple-outline"></i> @Localizer["Attrach PDF File To MO Data"] </h3>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-between container" style="margin-bottom:10px;min-height: 250px;">
+
+                    <div class="col-md-10 container">
+                        <form id="attrachFile-modata-form" method="POST" enctype="multipart/form-data">
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1">@Localizer["S/O Number"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control" id="attrachFile-orderItem" name="orderItem" maxlength="15" readonly />
+                                    <span class="text-danger" id="attrachFile-orderItem-req" hidden>The S/O Number field is requried.</span>
+                                </div>
+                                <div class="form-group col-md-2 title-label">
+                                </div>
+                                <div class="form-group col-md-4">
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1 ">@Localizer["Material NO"]</label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <input class="form-control" id="attrachFile-materialNo" maxlength="50" readonly />
+                                </div>
+                            </div>
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-2 title-label">
+                                    <label class="control-label vertical-sub-text  ml-5 mt-1 ">@Localizer["Customer Name"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input class="form-control" id="attrachFile-customerName" maxlength="50" readonly />
+                                </div>
+                            </div>
+
+                            @*<div class="row line-space">
+                            <div class="form-group col-md-2 title-label">
+                            <label class="control-label vertical-sub-text  ml-5 mt-1 ">@Localizer["MO PDF File"]</label>
+                            </div>
+                            <div class="form-group col-md-9" id="divFileSelect">
+                            <div class="control-group" style="width:100%">
+                            <a class="btn btn-small fileSelect" id="file1" style="color: white;opacity:1;" onclick="SelectDeleteFile(this)">AAAAAAAAAAAAA_AAAAAAAAAAAAA.pdf</a>
+                            </div>
+
+                            <div class="control-group" style="width:100%">
+                            <a class="btn btn-small fileSelect" id="file2" style="color: white;opacity:1;" onclick="SelectDeleteFile(this)">BBBBB.pdf</a>
+                            </div>
+
+                            <div class="control-group" style="width:100%">
+                            <a class="btn btn-small fileSelect" id="file3" style="color: white;opacity:1;" onclick="SelectDeleteFile(this)">CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC.pdf</a>
+                            </div>
+
+                            <div class="control-group" style="width:100%">
+                            <a class="btn btn-small fileSelect" id="file4" style="color: white;opacity:1;" onclick="SelectDeleteFile(this)">DDDDDDDDDDDDD.pdf</a>
+                            </div>
+                            </div>
+                            </div>*@
+
+                            <div class="row line-space">
+                                <div class="form-group col-md-3 ml-2 mt-1 " style="max-width: 160px;">
+                                    <input type="file" name="fileUpload" id="fileUpload" style="display:none;" accept="application/pdf" multiple onchange="javascript:updateList()">
+                                    <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:100px;float:left" onclick="thisFileUpload();"><i class="fa fa-paperclip"></i>&ensp;เลือกไฟล์ PDF</a>
+                                    <label for="fileUpload"></label>
+                                </div>
+                                <div class="form-group col-md-8" style="font-size: larger;font-weight:700">
+                                    <p>Selected files:</p>
+                                    <div class="ml-4" style="font-size:medium;font-weight:normal" id="fileList"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-2 text-center" id="modate_attrachFile_option">
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" class="btn btn-info btn-fixsize btn-size" onclick="AttrachPdfFileWithMOData()"> <i class="fa fa-save" style="padding-right:10px"></i>@Localizer["Save"] </button>
+                        </div>
+                        <div class="col-md-12 line-space-btn">
+                            <button type="button" class="btn btn-danger btn-fixsize btn-size" id="attrachFile-close-modal" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"] </button>
+                        </div>
+                    </div>
+
+                    <div id="divMOAttrachFileTable" class="table-responsive m-t-10 col-md-12" style="margin-left: 15px;">
+                        <partial name="_MOAttachFileTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        const moDataModel = @Html.Raw(Json.Serialize(Model));
+        var materialNo = "";
+        var saleOrderTemp = "";
+        var isDelete = false;
+        var fileNo = 1;
+        var formDataObj = new FormData();
+        var fileArr = [];
+
+        $("#input-datetimepicker-create").focus(function () {
+            $(this).attr({ type: 'date' });
+            $("#input-datetimepicker-create").attr('min', new Date().toJSON().slice(0, 10));
+        });
+
+        //function FocusDatetimePicker()
+        //{
+        //    $("#input-datetimepicker-create").attr({ type: 'datetime' });
+        //    $("#input-datetimepicker-create").attr('min', new Date().toJSON().slice(0, 10));
+        //    $("#input-datetimepicker-create").click();
+
+        //    var d = new Date();
+        //    let h = (d.getHours() < 10 ? '0' : '') + d.getHours();
+        //    let m = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+        //    let s = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
+        //    //let datetimeNow = d.toJSON().slice(0, 11) + h + ":" + m + ":" + s;
+        //    let datetimeNow = d.toJSON().slice(0, 10) ;
+
+        //    $("#input-datetimepicker-create").val(datetimeNow);
+        //}
+
+        $(document).ready(function () {
+            formDataObj = new FormData();
+            fileArr = [];
+
+            $('#MODataTable').DataTable({
+                'bFilter': false,
+                "paging": true,
+                "scrollX": true,
+                'columnDefs': [{
+                    'targets': [-1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }],
+                "order": [[1, "desc"]]
+            });
+
+            $('#AttachFileMoTable').DataTable({
+                "paging": true,
+                "order": [[2, "desc"]]
+            });
+
+        });
+
+        $('#textSearch').on('keypress', function (e) {
+            if (e.which === 13) {
+                SearchMODataBySearchType();
+            }
+        });
+
+        $('#mat-text-search').on('keypress', function (e) {
+            if (e.which === 13) {
+                SearchMasterDataByMaterialNo();
+            }
+        });
+
+        function CreateMoDataModal() {
+            $('#modal-create-modata').modal('show');
+        }
+
+        function EditMoDataModal(item) {
+            let bindingDateTimeUpdate = ChangeDateTimeFormat($(item).attr("data-DueDate"));
+            $('#CustomerNameEdit').val($(item).attr("data-Name"));
+            $('#IdEdit').val($(item).attr("data-Id"));
+            $('#FactoryCodeEdit').val($(item).attr("data-FactoryCode"));
+            $('#MoStatusEdit').val($(item).attr("data-MoStatus"));
+            $('#OrderItemEdit').val($(item).attr("data-OrderItem"));
+            $('#MaterialNoEdit').val($(item).attr("data-MaterialNo"));
+            $('#OrderQuantEdit').val($(item).attr("data-OrderQuant"));
+            $('#ToleranceOverEdit').val($(item).attr("data-ToleranceOver"));
+            $('#ToleranceUnderEdit').val($(item).attr("data-ToleranceUnder"));
+            $('#DueDateEdit').val(bindingDateTimeUpdate);
+            $('#TargetQuantEdit').val($(item).attr("data-TargetQuant"));
+            $('#ItemNoteEdit').val($(item).attr("data-ItemNote"));
+            $('#DistrictEdit').val($(item).attr("data-District"));
+            $('#PoNoEdit').val($(item).attr("data-PoNo"));
+            $('#DateTimeStampEdit').val($(item).attr("data-DateTimeStamp"));
+            $('#PrintedEdit').val($(item).attr("data-Printed"));
+            $('#BatchEdit').val($(item).attr("data-Batch"));
+            $('#DueTextEdit').val($(item).attr("data-DueText"));
+            $('#SoldToEdit').val($(item).attr("data-SoldTo"));
+            $('#ShipToEdit').val($(item).attr("data-ShipTo"));
+            $('#PlanStatusEdit').val($(item).attr("data-PlanStatus"));
+            $('#StockQtyEdit').val($(item).attr("data-StockQty"));
+            $('#IsCreateManualEdit').val($(item).attr("data-IsCreateManual"));
+            $('#SentKIWIEdit').val($(item).attr("data-SentKIWI"));
+            $('#SOKiwiEdit').val($(item).attr("data-SOKiwi"));
+            $('#MORNoEdit').val($(item).attr("data-MORNo"));
+            $('#SquareINCHEdit').val($(item).attr("data-SquareINCH"));
+            $('#InterfaceTIPsEdit').val($(item).attr("data-InterfaceTIPs"));
+
+            if (!$(item).attr("data-IsCreateManual")) {
+                $('#CustomerNameEdit').attr("readonly", true);
+                $('#IdEdit').attr("readonly", true);
+                $('#FactoryCodeEdit').attr("readonly", true);
+                $('#MoStatusEdit').attr("readonly", true);
+                $('#OrderItemEdit').attr("readonly", true);
+                $('#MaterialNoEdit').attr("readonly", true);
+                $('#OrderQuantEdit').attr("readonly", true);
+                $('#ToleranceOverEdit').attr("readonly", true);
+                $('#ToleranceUnderEdit').attr("readonly", true);
+                $('#DueDateEdit').attr("readonly", true);
+                $('#TargetQuantEdit').attr("readonly", true);
+                $('#ItemNoteEdit').attr("readonly", true);
+                $('#DistrictEdit').attr("readonly", true);
+                $('#PoNoEdit').attr("readonly", true);
+                $('#DateTimeStampEdit').attr("readonly", true);
+                $('#PrintedEdit').attr("readonly", true);
+                $('#BatchEdit').attr("readonly", true);
+                $('#DueTextEdit').attr("readonly", true);
+                $('#SoldToEdit').attr("readonly", true);
+                $('#ShipToEdit').attr("readonly", true);
+                $('#PlanStatusEdit').attr("readonly", true);
+                $('#StockQtyEdit').attr("readonly", true);
+                $('#IsCreateManualEdit').attr("readonly", true);
+                $('#SentKIWIEdit').attr("readonly", true);
+                $('#targetorder-cal-edit').attr("hidden", true);
+                $('#UpdateMO_Btn').attr("hidden", true);
+            }
+            else {
+                $('#IdEdit').attr("readonly", false);
+                $('#FactoryCodeEdit').attr("readonly", false);
+                $('#MoStatusEdit').attr("readonly", false);
+                $('#MaterialNoEdit').attr("readonly", false);
+                $('#OrderQuantEdit').attr("readonly", false);
+                $('#ToleranceOverEdit').attr("readonly", false);
+                $('#ToleranceUnderEdit').attr("readonly", false);
+                $('#DueDateEdit').attr("readonly", false);
+                $('#TargetQuantEdit').attr("readonly", false);
+                $('#ItemNoteEdit').attr("readonly", false);
+                $('#DistrictEdit').attr("readonly", false);
+                $('#PoNoEdit').attr("readonly", false);
+                $('#DateTimeStampEdit').attr("readonly", false);
+                $('#PrintedEdit').attr("readonly", false);
+                $('#BatchEdit').attr("readonly", false);
+                $('#DueTextEdit').attr("readonly", false);
+                $('#SoldToEdit').attr("readonly", false);
+                $('#ShipToEdit').attr("readonly", false);
+                $('#PlanStatusEdit').attr("readonly", false);
+                $('#StockQtyEdit').attr("readonly", false);
+                $('#IsCreateManualEdit').attr("readonly", false);
+                $('#SentKIWIEdit').attr("readonly", false);
+                $('#targetorder-cal-edit').attr("hidden", false);
+            }
+
+            if ($(item).attr("data-SoldTo").includes("9999")) {
+
+                $('#CustomerNameEdit').attr("readonly", false);
+                $('#UpdateMO_Btn').attr("hidden", false);
+            }
+            else {
+                $('#CustomerNameEdit').attr("readonly", true);
+            }
+
+            $('#modal-edit-modata').modal('show');
+        }
+
+        function SearchMODataBySearchType() {
+            let searchType = $('#searchType').val();
+            let searchText = $('#textSearch').val();
+
+            $.ajax({
+                type: "GET",
+                async: true,
+                dataType: "json",
+                url: '@Url.Action("SearchMODatasBySearchType", "ManageMO")',
+                data: { searchType: searchType, searchText: searchText },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        debugger;
+                        $('#divMODataTable').html(res.View);
+                        $('.modal-backdrop').css('display', 'none');
+                        $('#MODataTable').DataTable({
+                            'bFilter': false,
+                            "paging": true,
+                            "scrollX": true,
+                            'columnDefs': [{
+                                'targets': [-1, 0], 'orderable': false,
+
+                            }, {
+                                'targets': 7, "render": function (data, type, row) {
+
+                                    if (data)
+                                        var data = data.split(',').join('<br>');
+                                    return data;
+                                }
+                            }],
+                            "order": [[1, "desc"]]
+                        });
+
+                    }
+                    else {
+                        swal("Search Failed!", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () { }
+            });
+        }
+
+        //genarate data table from search modata with sale order
+        function SearchMODataBySaleOrder() {
+            let saleOrder = $('#textSearch').val();
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                dataType: "json",
+                url: '@Url.Action("SearchMODatas", "ManageMO")',
+                data: { saleOrderStart: saleOrder, action: "ManageMO" },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('#divMODataTable').html(res.View);
+                        $('.modal-backdrop').css('display', 'none');
+                        $('#MODataTable').DataTable({
+                            'bFilter': false,
+                            "paging": true,
+                            "scrollX": true,
+                            'columnDefs': [{
+                                'targets': [-1, 0], 'orderable': false,
+
+                            }, {
+                                'targets': 7, "render": function (data, type, row) {
+
+                                    if (data)
+                                        var data = data.split(',').join('<br>');
+                                    return data;
+                                }
+                            }],
+                            "order": [[1, "desc"]]
+                        });
+
+                    }
+                    else {
+                        swal("Search Failed!", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () { }
+            });
+        }
+
+        //Search masterdata then binding data to mo data
+        function SearchMasterDataByMaterialNo() {
+            let material = $('#mat-text-search').val();
+
+            if (material != "" && material != null) {
+                material = material.toUpperCase();
+
+                $.ajax({
+                    type: "GET",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("SearchMasterDataByMaterialNo", "ManageMO")',
+                    data: { materialNumber: material },
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            //bind data to create modal
+                            let moDataArr = $.parseJSON(res.MOData);
+
+                            ClearAlltextField();
+                            materialNo = material;
+                            $('#OrderItemCreate').val(moDataArr.OrderItem);
+                            $('#CustomerNameCreate').val(moDataArr.Name);
+                            $('#SoldToCreate').val(moDataArr.SoldTo);
+                            $('#ShipToCreate').val(moDataArr.ShipTo);
+                            $('#PcCreate').val(moDataArr.PC);
+                            $('#SaleTextCreate').val(moDataArr.SaleText);
+                            $('#DistrictCreate').val(moDataArr.District);
+
+                            $("#CustomerNameCreateReq").attr("hidden", true);
+                            $("#OrderItemCreateReq").attr("hidden", true);
+                        }
+                        else {
+                            materialNo = "";
+                            swal("Search Failed!", res.ExceptionMessage, "warning");
+                            ClearAlltextField();
+                        }
+                    },
+                    error: function () { }
+                });
+            } else {
+                $('#mat-text-search').focus();
+            }
+
+        }
+
+        function ClearAlltextField() {
+            $(".input-field").val("");
+
+            $("#input-datetimepicker-create").attr({ type: 'text' });
+            $("#input-datetimepicker-create").attr({ placeholder: '-- Please Select DateTime --' });
+            $("#input-datetimepicker-create").val("");
+        }
+
+        //manage Mo data's routing
+        function ViewSORouting() {
+            let saleOrder = $('#OrderItemEdit').val();
+            window.location.href = '@Url.Action("SaleOrderRouting", "Report")?saleOrder=' + saleOrder;
+        }
+
+        //Update MO data from edit modal
+        function UpdateMOData() {
+            let IsValidate = true;
+
+            //validate customer name
+            if ($("#CustomerNameEdit").val() == "") {
+                IsValidate = false;
+                $("#CustomerNameEditReq").removeAttr("hidden");
+            }
+            else {
+                $("#CustomerNameEditReq").attr("hidden", true)
+            }
+
+            //validate SO number
+            if ($("#OrderItemEdit").val() == "") {
+                IsValidate = false;
+                $("#OrderItemEditReq").removeAttr("hidden");
+            }
+            else {
+                $("#OrderItemEditReq").attr("hidden", true)
+            }
+
+            //validate OrderQuant
+            if ($("#OrderQuantEdit").val() == "") {
+                IsValidate = false;
+                $("#OrderQuantEditReq").removeAttr("hidden");
+            }
+            else {
+                $("#OrderQuantEditReq").attr("hidden", true)
+            }
+
+            //validate OrderQuant
+            if ($("#TargetQuantEdit").val() == "") {
+                IsValidate = false;
+                $("#TargetQuantEditReq").removeAttr("hidden");
+            }
+            else {
+                $("#TargetQuantEditReq").attr("hidden", true)
+            }
+
+            //validate DueDate
+            if ($("#input-datetimepicker-Edit").val() == "") {
+                IsValidate = false;
+                $("#DueDateEditReq").removeAttr("hidden");
+            }
+            else {
+                $("#DueDateEditReq").attr("hidden", true)
+            }
+
+            if (IsValidate) {
+                let dateTimeUpdate = ChangeDateToDatetimeCreateFormat($("#DueDateEdit").val());
+                //let dateTimeUpdate = ChangeDateToDatetimeCreateFormat($("#DueDateEdit").val());
+
+                let formData = {
+                    "Id": $("#IdEdit").val(),
+                    "FactoryCode": $("#FactoryCodeEdit").val(),
+                    "MoStatus": $("#MoStatusEdit").val(),
+                    "OrderItem": $("#OrderItemEdit").val(),
+                    "MaterialNo": $("#MaterialNoEdit").val(),
+                    "Name": $("#CustomerNameEdit").val(),
+                    "OrderQuant": $("#OrderQuantEdit").val(),
+                    "ToleranceOver": $("#ToleranceOverEdit").val(),
+                    "ToleranceUnder": $("#ToleranceUnderEdit").val(),
+                    "DueDate": dateTimeUpdate,
+                    "TargetQuant": $("#TargetQuantEdit").val(),
+                    "ItemNote": $("#ItemNoteEdit").val(),
+                    "District": $("#DistrictEdit").val(),
+                    "PoNo": $("#PoNoEdit").val(),
+                    "DateTimeStamp": $("#DateTimeStampEdit").val(),
+                    "Printed": $("#PrintedEdit").val(),
+                    "Batch": $("#BatchEdit").val(),
+                    "DueText": $("#DueTextEdit").val(),
+                    "SoldTo": $("#SoldToEdit").val(),
+                    "ShipTo": $("#ShipToEdit").val(),
+                    "PlanStatus": $("#PlanStatusEdit").val(),
+                    "StockQty": $("#StockQtyEdit").val(),
+                    "IsCreateManual": $("#IsCreateManualEdit").val(),
+                    "SentKIWI": $("#SentKIWIEdit").val(),
+                    "MORNo": $("#MORNoEdit").val(),
+                    "SOKiwi": $("#SOKiwiEdit").val(),
+                    "SquareINCH": $("#SquareINCHEdit").val(),
+                    "InterfaceTIPs": $("#InterfaceTIPsEdit").val()
+                };
+
+                var form = JSON.stringify(formData);
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("UpdateMOData", "ManageMO")',
+                    data: { req: form.toString(), action: "edit" },
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            materialNo = "";
+
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+                            $("body").attr("padding", "0");
+                            ClearAlltextField();
+
+                            swal("Update Successfully!", "", "success").then(function (e) {
+                                if (e) {
+                                    $('#divMODataTable').html(res.View);
+                                    $('#MODataTable').DataTable({
+                                        'bFilter': false,
+                                        "paging": true,
+                                        "scrollX": true,
+                                        'columnDefs': [{
+                                            'targets': [-1, 0], 'orderable': false,
+
+                                        }, {
+                                            'targets': 7, "render": function (data, type, row) {
+
+                                                if (data)
+                                                    var data = data.split(',').join('<br>');
+                                                return data;
+                                            }
+                                        }],
+                                        "order": [[1, "desc"]]
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            swal("Update Failed!", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+        }
+
+        //Create MO data,MO Spec, MO Routing from material no
+        function CreateMOData() {
+            saleOrderTemp = $("#OrderItemCreate").val();
+            let IsValidate = true;
+
+            //validate customer name
+            if ($("#CustomerNameCreate").val() == "") {
+                IsValidate = false;
+                $("#CustomerNameCreateReq").removeAttr("hidden");
+            }
+            else {
+                $("#CustomerNameCreateReq").attr("hidden", true)
+            }
+
+            //validate SO number
+            if ($("#OrderItemCreate").val() == "") {
+                IsValidate = false;
+                $("#OrderItemCreateReq").removeAttr("hidden");
+            }
+            else {
+                $("#OrderItemCreateReq").attr("hidden", true)
+            }
+
+            //validate OrderQuant
+            if ($("#OrderQuantCreate").val() == "") {
+                IsValidate = false;
+                $("#OrderQuantCreateReq").removeAttr("hidden");
+            }
+            else {
+                $("#OrderQuantCreateReq").attr("hidden", true)
+            }
+
+            //validate OrderQuant
+            if ($("#TargetQuantCreate").val() == "") {
+                IsValidate = false;
+                $("#TargetQuantCreateReq").removeAttr("hidden");
+            }
+            else {
+                $("#TargetQuantCreateReq").attr("hidden", true)
+            }
+
+            //validate DueDate
+            if ($("#input-datetimepicker-create").val() == "") {
+                IsValidate = false;
+                $("#DueDateCreateReq").removeAttr("hidden");
+            }
+            else {
+                $("#DueDateCreateReq").attr("hidden", true)
+            }
+
+            if (IsValidate) {
+
+                $("#CustomerNameCreateReq").attr("hidden", true);
+                $("#OrderItemCreateReq").attr("hidden", true);
+                $("#OrderQuantCreateReq").attr("hidden", true);
+                $("#DueDateCreateReq").attr("hidden", true)
+                $("#TargetQuantCreateReq").attr("hidden", true);
+                let datetimeCreate = ChangeDateToDatetimeCreateFormat($("#input-datetimepicker-create").val());
+                let formData = {
+                    "Id": 0,
+                    "FactoryCode": $("#FactoryCodeCreate").val(),
+                    "MoStatus": $("#MoStatusCreate").val(),
+                    "OrderItem": $("#OrderItemCreate").val(),
+                    "MaterialNo": materialNo,
+                    "Name": $("#CustomerNameCreate").val(),
+                    "OrderQuant": $("#OrderQuantCreate").val(),
+                    "ToleranceOver": $("#ToleranceOverCreate").val(),
+                    "ToleranceUnder": $("#ToleranceUnderCreate").val(),
+                    "DueDate": datetimeCreate,
+                    "TargetQuant": $("#TargetQuantCreate").val(),
+                    "ItemNote": $("#ItemNoteCreate").val(),
+                    "District": $("#DistrictCreate").val(),
+                    "PoNo": $("#PoNoCreate").val(),
+                    "DateTimeStamp": $("#DateTimeStampCreate").val(),
+                    "Printed": $("#PrintedCreate").val(),
+                    "Batch": $("#BatchCreate").val(),
+                    "DueText": $("#DueTextCreate").val(),
+                    "SoldTo": $("#SoldToCreate").val(),
+                    "ShipTo": $("#ShipToCreate").val(),
+                    "PlanStatus": $("#PlanStatusCreate").val(),
+                    "StockQty": $("#StockQtyCreate").val(),
+                };
+
+                var form = JSON.stringify(formData);
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("CreateMOData", "ManageMO")',
+                    data: { req: form.toString() },
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            materialNo = "";
+
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+                            $("body").attr("padding", "0");
+                            ClearAlltextField();
+
+                            swal("Save Successfully!", "", "success")
+                                .then((willDelete) => {
+                                    if (willDelete) {
+                                        $('#searchType').val('OrderItem');
+                                        $('#textSearch').val(saleOrderTemp);
+                                        SearchMODataBySearchType();
+                                    }
+                                });
+                            // .then(function (e) {
+                            //     debugger;
+                            //     if (e) {
+                            //         $('#searchType').val(1);
+                            //         $('#textSearch').val(saleOrderTemp);
+                            //         SearchMODataBySearchType();
+                            //     }
+                            // });
+                        }
+                        else {
+                            swal("Save Failed!", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+        }
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+            debugger;
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = parseInt(dateArr[2]);
+                let day = parseInt(dateArr[1]);
+                let month = parseInt(dateArr[0]);
+
+                var d = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+                datetimeStr = d.toJSON().slice(0, 10);
+            }
+            return datetimeStr;
+        }
+
+        function ChangeDateToDatetimeCreateFormat(oDatetime) {
+            let datetimeStr = "";
+            if (oDatetime != null && oDatetime != "") {
+                let dateArr = oDatetime.split('-');
+                let year = parseInt(dateArr[0]);
+                let month = parseInt(dateArr[1]);
+                let day = parseInt(dateArr[2]);
+
+                datetimeStr = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+            }
+
+            return datetimeStr;
+        }
+
+        function PrintMOData(action, elementId, isPreview) {
+            var saleOrders = [];
+            var printSaleOrderNumber = "";
+            if (action == "Edit") {
+                printSaleOrderNumber = $("#OrderItemEdit").val();
+            }
+            else {
+                printSaleOrderNumber = $(elementId).attr('data-OrderItem');
+            }
+
+            saleOrders.push(printSaleOrderNumber);
+
+            if (saleOrders.length > 0) {
+                var jsonObject = {
+                    "OrderItem": saleOrders,
+                    "MaterialNo": [],
+                    "SizeOfPage": 0,
+                    "IsPreview": isPreview,
+                };
+
+                $.ajax({
+                    url: '@Url.Action("SetMasterCardMO", "Report")',
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+
+                            masterdataList = res.MastercardMOs;
+
+                            window.open('@Url.Action("MasterCardMO", "Report")', '_blank');
+
+        @*if (masterdataList != null && masterdataList != "" && masterdataList.length > 0) {
+                            $.each(masterdataList, function (moKey, moObj) {
+                            let fileMos = moObj.AttchFilesBase64;
+                            if (fileMos != "" && fileMos != null) {
+                            var url = '@Url.Action("DisplayPDFAttachFile", "Report")';
+                            window.location.href = url;
+                            ////can print with attach file
+                            //var objbuilder = '';
+                            //objbuilder += ('<object width="100%" height="100%" data = "data:application/pdf;base64,');
+                            //objbuilder += (fileMos);
+                            //objbuilder += ('" type="application/pdf" class="internal">');
+                            //objbuilder += ('<embed width="100%" height="100%" src="data:application/pdf;base64,');
+                            //objbuilder += (fileMos);
+                            //objbuilder += ('" type="application/pdf"  />');
+                            //objbuilder += ('</object>');
+
+                            //var win = window.open("#", moObj.OrderItem + "_File");
+                            //win.document.write('<html><title>' + moObj.OrderItem + "_File" + '</title><body style="margin-top: 0px; margin - left: 0px; margin - right: 0px; margin - bottom: 0px; ">');
+                            //win.document.write(objbuilder);
+                            //win.document.write('</body></html>');
+                            //layer = jQuery(win.document);
+
+                            }
+                            });
+                            }*@
+                                    return false;
+                        } else {
+                            //$("#errorMsg").html(res.ErrorMessage);
+                            swal(res.ErrorMessage, "", "warning");
+                        }
+                    },
+                    error: function () {
+                    }
+                });
+
+            }
+            else {
+                swal("ไม่พบ MO Data ที่ต้องการพิมพ์", "", "warning");
+            }
+        }
+
+        function CalculateOrder(action) {
+            let materialNoInAction = "";
+            let targetQ_Str = "#TargetQuant" + action;
+            let orderQ_Str = "#OrderQuant" + action;
+            let tlrOver_Str = "#ToleranceOver" + action;
+            let tlrUnder_Str = "#ToleranceUnder" + action;
+            if (action == "Create") {
+                materialNoInAction = materialNo;
+            } else {
+                materialNoInAction = $("#MaterialNoEdit").val();
+            }
+            let orderQ_Value = parseInt($(orderQ_Str).val());
+            let tlrOver_Value = parseFloat($(tlrOver_Str).val());
+            let tlrUnder_Value = parseFloat($(tlrUnder_Str).val());
+
+            //Call ajax get model target Qty from api
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CalculateMoTargetQuantity", "ManageMO")',
+                data: { materialNO: materialNoInAction, orderQuant: orderQ_Value, toleranceOver: tlrOver_Value },
+                async: false,
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $(targetQ_Str).val(parseInt(res.TargetQuantity));
+                    } else {
+                        swal("Calculate Failed!", "", "warning");
+                    }
+                },
+                error: function () {
+                    // return false;
+                }
+            });
+        }
+
+        function AttrachPdfFile(item) {
+            let SaleOrderNumber = $(item).attr('data-OrderItem');
+            let customerName = $(item).attr('data-CustomerName');
+            let MaterialNo = $(item).attr('data-MaterialNo');
+
+            $("#attrachFile-orderItem").val(SaleOrderNumber);
+            $("#attrachFile-customerName").val(customerName);
+            $("#attrachFile-materialNo").val(MaterialNo);
+            fileArr = [];
+            formDataObj = new FormData();
+            $("#fileList").html("");
+
+            $('#modal-attrachFile-modata').modal('show');
+
+            //Call ajax get model attach file to modal
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ShowAttachFileMO", "ManageMO")',
+                data: { orderItem: SaleOrderNumber },
+                async: false,
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('#divMOAttrachFileTable').html(res.View);
+
+                        $('#AttachFileMoTable').DataTable({
+                            "paging": true,
+                            "order": [[2, "desc"]]
+                        });
+                    }
+                },
+                error: function () {
+                    // return false;
+                }
+            });
+
+        }
+
+        function AttrachPdfFileWithMOData() {
+            let saleOrderNumber = $("#attrachFile-orderItem").val();
+            //formDataObj.append("unSelectedFiles", unSelectedFiles);
+            $.each(fileArr, function (index, object) {
+                formDataObj.append('files', object.File);
+            });
+
+            formDataObj.append('orderItem', saleOrderNumber);
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("AttrachPDFFile", "ManageMO")',
+                data: formDataObj,
+                async: false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        materialNo = "";
+
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                        $("body").attr("padding", "0");
+
+                        swal("Update Successfully!", "", "success").then(function (e) {
+                            if (e) {
+                                $('#divMODataTable').html(res.View);
+                                $('#MODataTable').DataTable({
+                                    'bFilter': false,
+                                    "paging": true,
+                                    "scrollX": true,
+                                    'columnDefs': [{
+                                        'targets': [-1, 0], 'orderable': false,
+
+                                    }, {
+                                        'targets': 7, "render": function (data, type, row) {
+
+                                            if (data)
+                                                var data = data.split(',').join('<br>');
+                                            return data;
+                                        }
+                                    }],
+                                    "order": [[1, "desc"]]
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        swal("Save Failed!", res.ExceptionMessage, { icon: "warning" });
+                    }
+                },
+                error: function () {
+                    // return false;
+                }
+            });
+        }
+
+        function thisFileUpload() {
+            $("#fileUpload").click();
+        }
+
+        updateList = function () {
+            var input = document.getElementById('fileUpload');
+            var output = document.getElementById('fileList');
+
+            var children = "";
+            for (var i = 0; i < input.files.length; ++i) {
+                children += '<li>' + input.files.item(i).name + '</li>';
+                let nameOfFile = "file" + fileNo.toString();
+                $("#fileList").append("<div class=\"control-group\" style=\"width:100%;color: #1b74b3;opacity:1;font-size: 14px;padding: 5px;\" id=\"div" + nameOfFile + "\"><a class=\"btn btn-small fileSelect\" id=\"" + nameOfFile + "\">" + input.files.item(i).name + "<i class=\"fa btn\" id=\"closebtn-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\">&times;</i></a ></div >");
+                document.getElementById("closebtn-" + nameOfFile).onclick = function () { DeleteCardMoFile(nameOfFile) };
+                //formDataObj.append('files', $('input[type=file]')[0].files[i]);
+                let tempFile = $('#fileUpload')[0].files[i];
+                fileArr.push({ "Name": nameOfFile, "File": tempFile });
+
+                fileNo++;
+            }
+            //output.innerHTML = '<ul>' + children + '</ul>';
+        }
+
+        function ImportMOManual() {
+            $("#importFile").click();
+        }
+
+        ImportList = function () {
+            var input = document.getElementById('importFile');
+            var filesName = "";
+            var tempFile = $('#importFile')[0].files[0];
+            for (var i = 0; i < input.files.length; ++i) {
+                tempFile = $('#importFile')[0].files[i];
+                filesName = filesName + input.files[i].name + " \n";
+            }
+
+            swal({
+                title: "Do you want to create new MO manual from file " + filesName + "?",
+                text: "",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    formDataObj = new FormData();
+                    formDataObj.append("file", tempFile);
+                    $.ajax({
+                        type: 'POST',
+                        enctype: 'multipart/form-data',
+                        url: '@Url.Action("ImportFileMOManual", "ManageMO")',
+                        data: formDataObj,
+                        async: false,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('#divMODataTable').html(res.View);
+                                $('#MODataTable').DataTable({
+                                    'bFilter': false,
+                                    "paging": true,
+                                    "scrollX": true,
+                                    'columnDefs': [{
+                                        'targets': [-1, 0], 'orderable': false,
+
+                                    }, {
+                                        'targets': 7, "render": function (data, type, row) {
+
+                                            if (data)
+                                                var data = data.split(',').join('<br>');
+                                            return data;
+                                        }
+                                    }],
+                                    "order": [[1, "desc"]]
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function SelectDeleteFile(item) {
+            let idOfElement = "#" + $(item).attr("id");
+            if (document.querySelector(idOfElement).style.opacity == 1) {
+                isDelete = false;
+                document.querySelector(idOfElement).style.background = "#3b4146";
+                $(idOfElement).append("<i class=\"fa fa-times btn\" id=\"closebtn-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\"\"></i>");
+                document.getElementById("closebtn-" + $(item).attr("id")).onclick = function () { DeleteCardMoFile($(item).attr("id")) };
+                document.querySelector(idOfElement).style.opacity = 0.7;
+            }
+            else if (!isDelete) {
+                $("#closebtn-" + $(item).attr("id")).remove();
+                document.querySelector(idOfElement).style.background = "#3b4146";
+                document.querySelector(idOfElement).style.opacity = 1;
+            }
+        }
+
+        function DeleteCardMoFile(id) {
+            isDelete = true;
+            let elementId = "#" + id;
+            //unSelectedFiles.push(document.querySelector(elementId).innerHTML.substring(0, document.querySelector(elementId).innerHTML.indexOf('<i')));
+            document.querySelector(elementId).style.opacity = 0.7;
+            document.querySelector(elementId).style.background = "red";
+            document.querySelector(elementId).style.color = "white";
+
+            setTimeout(function () {
+                fileArr = fileArr.filter(f => { return f.Name != id });
+                $("#div" + id).remove();
+            }, 300);
+        }
+
+        function DeleteExistMOFile(item) {
+            let fileName = $(item).attr('data-FileName');
+            let orderItem = $(item).attr('data-OrderItem');
+            let seqNo = $(item).attr('data-SeqNo');
+
+            swal({
+                title: "Are you sure delete MO file " + fileName + "?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteFileMO", "ManageMO")',
+                        data: { fileName: fileName, orderItem: orderItem, seqNo: seqNo },
+                        async: false,
+                        dataType: "json",
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('#divMOAttrachFileTable').html(res.View);
+
+                                $('#AttachFileMoTable').DataTable({
+                                    "paging": true,
+                                    "order": [[2, "desc"]]
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function ExportTemplate() {
+            swal({
+                title: "Are you sure?",
+                text: "Export template with PMTs_MOManualTemplate.xlsx",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        document.location.href = '@Url.Action("ExportMOManualTemplate", "ManageMO")';
+
+                    }
+                });
+        };
+
+        //Tassanai update
+        function UpdateMOSpecData() {
+            let saleOrder = $('#OrderItemEdit').val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetMOSpecByOrder", "ManageMO")',
+                data: { orderItem: saleOrder },
+                async: false,
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        debugger;
+                        let moDataArr = $.parseJSON(res.MOData);
+                        $('#Changetxt').val(moDataArr.ChangeInfo);
+
+                    }
+                },
+                error: function () {
+                    // return false;
+                }
+            });
+            $('#modal-edit-mospecdata').modal('show');
+
+        }
+
+        function UpdateMOSpecChange() {
+            let saleOrder = $('#OrderItemEdit').val();
+            let Changetxt = $('#Changetxt').val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdateMOSpecByOrder", "ManageMO")',
+                data: { orderItem: saleOrder, changeInfo: Changetxt },
+                async: false,
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        debugger;
+                        swal("Update Successfully!", "", "success");
+                        $('#modal-edit-mospecdata').modal('hide');
+                    }
+                },
+                error: function () {
+                    // return false;
+                }
+            });
+        }
+
+        //Update MO data from edit modal
+        function DeleteMoData(item) {
+            let saleOrder = $(item).attr("data-OrderItem");
+
+            swal({
+                title: "Are you sure Delete SaleOrder " + saleOrder + "?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let formData = {
+                            "Id": $(item).attr("data-Id"),
+                            "FactoryCode": $(item).attr("data-FactoryCode"),
+                            "MoStatus": "X",
+                            "OrderItem": $(item).attr("data-OrderItem"),
+                            "MaterialNo": $(item).attr("data-MaterialNo"),
+                            "Name": $(item).attr("data-Name"),
+                            "OrderQuant": $(item).attr("data-OrderQuant"),
+                            "ToleranceOver": $(item).attr("data-ToleranceOver"),
+                            "ToleranceUnder": $(item).attr("data-ToleranceUnder"),
+                            "DueDate": $(item).attr("data-DueDate"),
+                            "TargetQuant": $(item).attr("data-TargetQuant"),
+                            "ItemNote": $(item).attr("data-ItemNote"),
+                            "District": $(item).attr("data-District"),
+                            "PoNo": $(item).attr("data-PoNo"),
+                            "DateTimeStamp": $(item).attr("data-DateTimeStamp"),
+                            "Printed": $(item).attr("data-Printed"),
+                            "Batch": $(item).attr("data-Batch"),
+                            "DueText": $(item).attr("data-DueText"),
+                            "SoldTo": $(item).attr("data-SoldTo"),
+                            "ShipTo": $(item).attr("data-ShipTo"),
+                            "PlanStatus": $(item).attr("data-PlanStatus"),
+                            "StockQty": $(item).attr("data-StockQty"),
+                            "IsCreateManual": $(item).attr("data-IsCreateManual"),
+                            "SentKIWI": false,
+                            "MORNo": $(item).attr("data-MORNo"),
+                            "SOKiwi": $(item).attr("data-SOKiwi"),
+                            "SquareINCH": $(item).attr("data-SquareINCH"),
+                            "InterfaceTIPs": $(item).attr("data-InterfaceTIPs"),
+                        };
+
+                        var form = JSON.stringify(formData);
+
+                        $.ajax({
+                            type: "POST",
+                            async: false,
+                            dataType: "json",
+                            url: '@Url.Action("UpdateMOData", "ManageMO")',
+                            data: { req: form.toString(), action: "delete" },
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    materialNo = "";
+
+                                    $('.modal').modal('hide');
+                                    $('.modal-backdrop').hide();
+                                    $("body").removeClass("modal-open");
+                                    $("body").attr("padding", "0");
+
+                                    swal("Delete Successfully!", "", "success").then(function (e) {
+                                        if (e) {
+                                            $('#divMODataTable').html(res.View);
+                                            $('#MODataTable').DataTable({
+                                                'bFilter': false,
+                                                "paging": true,
+                                                "scrollX": true,
+                                                'columnDefs': [{
+                                                    'targets': [-1, 0], 'orderable': false,
+
+                                                }, {
+                                                    'targets': 7, "render": function (data, type, row) {
+
+                                                        if (data)
+                                                            var data = data.split(',').join('<br>');
+                                                        return data;
+                                                    }
+                                                }],
+                                                "order": [[1, "desc"]]
+                                            });
+                                        }
+                                    });
+                                }
+                                else {
+                                    swal("Delete Failed!", res.ExceptionMessage, "warning");
+                                }
+                            },
+                            error: function () { }
+                        });
+
+                    }
+                });
+        }
+    </script>
+}

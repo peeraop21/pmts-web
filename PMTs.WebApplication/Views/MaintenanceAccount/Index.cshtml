@@ -1,0 +1,425 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceAccount.MaintenanceAccountViewModel
+@{
+    ViewData["Title"] = "View";
+}
+
+@{
+    ///  Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<link rel="stylesheet" href="~/lib/material-pro/assets/plugins/dropify/dist/css/dropify.min.css">
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 100px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: darkred;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(50px);
+        -ms-transform: translateX(50px);
+        transform: translateX(50px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+        width: 80px;
+        height: 30px
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .setLeft {
+        text-align: left;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+
+            <div class="card-body">
+
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="fa fa-users"></i>&nbsp; @Localizer["Maintenance Account"]</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right">
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModal">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span>  @Localizer["Create"]
+                            </button>
+                            @*create*@
+                            <partial name="_CreateModal" model="Model" />
+                        </div>
+                    </div>
+                    <div class="box mt-3" id="account-table">
+                        <partial name="_AccountTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            $(".changePwd").attr("hidden", "");
+            $("#NewPassword").val(null);
+
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#Account-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModal').click(function () {
+           // $(".field-validation-error span").hide();
+            $('#modal-create').modal('show');
+        });
+
+        $("#AccountViewModel_UserDomain").change(function () {
+            //alert('aaa');
+            if ($(this).find('option:selected').text() != '') {
+                $('#AccountViewModel_Password').val('');
+                $('#AccountViewModel_Password').prop('disabled', true);
+                //$('#AccountViewModel_Password').hide();
+            } else {
+                $('#AccountViewModel_Password').prop('disabled', false)
+                //$('#AccountViewModel_Password').show();
+            }
+
+        });
+
+        function OpenModalView(id) {
+            $('#' + id).modal('show');
+        }
+
+        $('#btnSubmit').click(function () {
+            $('.add-row').remove();
+        });
+
+        function ShowCasePassword()
+        {
+            swal("Password policy", "Passwords must contain: \n - Passwords must be between 8-32 characters.\n- a minimum of 1 lower case letter [a-z]\n- a minimum of 1 upper case letter [A-Z]\n- a minimum of 1 numeric character [0-9]\n- a minimum of 1 special character: ( ~`!#$%^&*()-_+={}[]|\;:\"<>,./? ) \n Example : ( !30iLc789 , R0m!!o123 )", "info");
+        }
+
+        function ChangePassword(id)
+        {
+            //alert(id);
+            if ($("#" + id).prop("checked") == true) {
+                //alert("Checkbox is checked.");
+
+                $("#div-" + id).removeAttr("hidden");
+                $("#Is" + id).val(true);
+            }
+            else if ($("#" + id).prop("checked") == false) {
+                //alert("Checkbox is unchecked.");
+
+                $("#div-" + id).attr("hidden", "");
+                $("#Is" + id).val(false);
+            }
+        }
+
+        function CheckActiveStatus(id) {
+            if ($("#" + id).prop("checked") == true) {
+                //alert("Checkbox is checked.");
+                $("#in" + id).val(false);
+            }
+            else if ($("#" + id).prop("checked") == false) {
+                //alert("Checkbox is unchecked.");
+                $("#in" + id).val(true);
+            }
+        }
+
+        function CheckLockUser(id) {
+            if ($("#" + id).prop("checked") == true) {
+                //alert("Checkbox is checked.");
+                $("#in" + id).val(true);
+            }
+            else if ($("#" + id).prop("checked") == false) {
+                //alert("Checkbox is unchecked.");
+                $("#in" + id).val(false);
+            }
+        }
+
+        function UpdateAccountTable() {
+            $.ajax({
+                url: '@Url.Action("UpdateAccountTable", "MaintenanceAccount")',
+                success: function (res) {
+                    $('#account-table').html(res);
+                    $('#Account-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+
+                    $('.modal').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $("body").removeClass("modal-open");
+                },
+                error: function () { }
+            });
+        }
+
+        function SaveNewUser()
+        {
+            //if (CheckPassword($('#AccountViewModel_Password').val())) {
+            if ($('#AccountViewModel_UserName').val() === "" || $('#AccountViewModel_FirstNameTh').val() === "" || $('#AccountViewModel_Telephone').val() === "") {
+                    swal("Please Check Data !", "", "warning");
+                } else
+                {
+                     var form = $('#create-customer-form')[0];
+                    var data = new FormData(form);
+                    debugger;
+                    console.log(form);
+                    $.ajax({
+                        type: 'post',
+                        dataType: 'json',
+                        data: data,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        url: '@Url.Action("SaveAccount", "MaintenanceAccount")',
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                swal("Save Success", "", "success");
+
+                                UpdateAccountTable();
+                            }
+                            else {
+                                swal("Save Failed", res.ExceptionMessage, "warning");
+                                //modalDialog(error, SaveFailed);
+                            }
+                        },
+                        error: function () { }
+                    });
+                }
+
+           //}
+
+        }
+
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                swal("Save Success", "", "success");
+
+                UpdateAccountTable();
+            }
+            else {
+                swal("Save Failed", res.ExceptionMessage, "warning");
+                //modalDialog(error, SaveFailed);
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                swal("Update Success", "", "success");
+               // alert('aaa');
+                UpdateAccountTable();
+            }
+            else {
+                swal("Update Failed", res.ExceptionMessage, "warning");
+                //modalDialog(error, UpdateFailed);
+            }
+        };
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+
+                swal("Update Success", "", "success");
+
+                UpdateAccountTable();
+            }
+            else {
+                swal("Update Failed", res.ExceptionMessage, "warning");
+                //modalDialog(error, UpdateFailed);
+            }
+        };
+
+        function show_User(input) {
+            debugger;
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    $('#PicUser').attr('src', e.target.result);
+                    $('#PicUser').show();
+                    $('#RM_User').show();
+                    var temp = e.target.result;
+                    $('#iUserPath').val(temp);
+                };
+
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function RMUser() {
+            $('#iUserPath').val(null);
+            $('#PicUser').hide();
+            $('#RM_User').hide();
+            const file = document.getElementById('Pic_User');
+            file.value = '';
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Basic
+            $('.dropify').dropify();
+
+            // Translated
+            $('.dropify-fr').dropify({
+                messages: {
+                    default: 'Glissez-déposez un fichier ici ou cliquez',
+                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                    remove: 'Supprimer',
+                    error: 'Désolé, le fichier trop volumineux'
+                }
+            });
+
+            // Used events
+            var drEvent = $('#input-file-events').dropify();
+
+            drEvent.on('dropify.beforeClear', function (event, element) {
+                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+            });
+
+            drEvent.on('dropify.afterClear', function (event, element) {
+                alert('File deleted');
+            });
+
+            drEvent.on('dropify.errors', function (event, element) {
+                console.log('Has Errors');
+            });
+
+            var drDestroy = $('#input-file-to-destroy').dropify();
+            drDestroy = drDestroy.data('dropify')
+            $('#toggleDropify').on('click', function (e) {
+                e.preventDefault();
+                if (drDestroy.isDropified()) {
+                    drDestroy.destroy();
+                } else {
+                    drDestroy.init();
+                }
+            })
+        });
+
+        $("#addfgclick").click(function () {
+            $("#Pic_FG").trigger('click');
+        });
+
+        function show_FG(input, id) {
+            //alert('444');
+            debugger;
+            console.log(input);
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    $('#PicFG-' + id).attr('src', e.target.result);
+                    $('#PicFG-' + id).show();
+                    $('#RM_FG-' + id).show();
+                    var temp = e.target.result;
+                    $('#iFGPath').val(temp);
+                };
+
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function RMFG(id) {
+
+            $('#iFGPath').val(null);
+            //$('#PicFG-2').removeAttr('src');
+            $('#PicFG-' + id).hide();
+            $('#RM_FG-' + id).hide();
+            //$('#PicFG-2').hide();
+            const file = document.getElementById('Pic_FG');
+            file.value = '';
+        }
+
+        function show_FG2(input, id) {
+           // alert('2');
+            debugger;
+            console.log(input);
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    $('#PicFGN-' + id).attr('src', e.target.result);
+                    $('#PicFGN-' + id).show();
+                    $('#RM_FG-' + id).show();
+                    $('#PicFGo-' + id).hide();
+                    var temp = e.target.result;
+                    $('#iFGPath').val(temp);
+                };
+
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function RMFGO(id) {
+
+            $('#iFGPath').val(null);
+            $('#iUserPath-' + id).val('Remove');
+            //$('#PicFG-2').removeAttr('src');
+            $('#PicFGN-' + id).hide();
+            $('#PicFGo-' + id).hide();
+            $('#RM_FGO-' + id).hide();
+            //$('#PicFG-2').hide();
+            const file = document.getElementById('Pic_FG');
+            file.value = '';
+        }
+    </script>
+}

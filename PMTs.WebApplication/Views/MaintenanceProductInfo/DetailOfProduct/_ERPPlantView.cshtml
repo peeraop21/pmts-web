@@ -1,0 +1,189 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+<!-- /.box-header -->
+
+@{ int No = 1; }
+
+<div>
+    <table class="table table-bordered color-table  info-table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>MaterialNo</th>
+                <th>Plant</th>
+                <th>PurchCode</th>
+                <th>ShipBlk</th>
+
+                <th>StdTotalCost</th>
+
+                <th>StdMovingCost</th>
+
+                <th scope="col"> </th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        <thead>
+        <tbody>
+
+            @foreach (var item in Model.modelProductERP.ModelList)
+            {
+                <tr>
+                    <td scope="row">@No</td>
+                    <td>@item.MaterialNo</td>
+                    <td>@item.Plant</td>
+                    <td>@item.PurchCode</td>
+                    <td>@item.ShipBlk</td>
+
+                    <td>@item.StdTotalCost</td>
+
+                    <td>@item.StdMovingCost</td>
+
+                    <td>
+
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-edit-@No"> <i class="fas fa-pencil-alt text-warning" data-toggle="tooltip" data-original-title="Edit"></i></button>
+
+                        <!-- Start Edit Modal -->
+
+                        <div class="modal fade" id="modal-edit-@No">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form asp-controller="NewProduct" asp-action="UpdateERP" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Edit PlantView</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <div class="form-group row">
+                                                <label for="inputPlant" class="col-sm-4 control-label">Plant :</label>
+                                                <div class="col-sm-8">
+                                                    <input id="selectPlantEdit" type="text" class="form-control" asp-for="modelProductERP.Plant" value="@item.Plant" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="inputPlant" class="col-sm-4 control-label">รหัส จัดซื้อ :<i style="color:red"> *</i></label>
+                                                <div class="col-sm-8">
+                                                    @*<input type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode">*@
+                                                    <input id="PurchCodeEdit" type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode" maxlength="5">
+                                                    <span asp-validation-for="modelProductERP.PurchCode" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputcost" class="col-sm-4 control-label">ต้นทุน(บาท/Ton) :</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="StdtotalCost" class="form-control" asp-for="modelProductERP.StdtotalCost" value="@item.StdTotalCost" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light" onclick="return closeEditModal()">Save changes</button>
+                                            <button type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- /.modal-dialog -->
+                        </div>
+
+                        <!-- /.modal -->
+                        <!-- End Edit Modal -->
+                        @*</td>
+                            <td>*@
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-delete-@No"> <i class="fas fa-trash text-danger" data-toggle="tooltip" data-original-title="Delete"></i></button>
+                        <div class="modal fade" id="modal-delete-@No">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form asp-controller="NewProduct" asp-action="DeleteERP" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Confirmation : Are you sure you want delete data?</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <div class="form-group row">
+                                                <label for="inputPlant" class="col-sm-4 control-label">Plant :</label>
+                                                <div class="col-sm-8">
+                                                    <input id="selectPlantEdit" type="text" class="form-control" asp-for="modelProductERP.Plant" value="@item.Plant" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputPlant" class="col-sm-4 control-label">รหัส จัดซื้อ :</label>
+                                                <div class="col-sm-8">
+                                                    @*<input type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode">*@
+                                                    <input id="PurchCodeEdit" type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode" maxlength="5" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputcost" class="col-sm-4 control-label">ต้นทุน(บาท/Ton) :</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" asp-for="modelProductERP.StdtotalCost" value="@item.StdTotalCost" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                            <button type="submit" class="btn btn-danger" id="btnDeleteERP" name="btnDeleteERP" onclick="return closeEditModal()" value="DeletePlant">Yes</button>
+                                        </div>
+                                    </form>
+                                    <!-- /.modal-content -->
+                                </div>
+                            </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                    </td>
+                </tr>
+                No++;
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- /.box-body -->
+
+    <script>
+
+        function closeEditModal() {
+            // alert(res);
+            var Purch = $("#PurchCodeEdit").val();
+
+           // alert(bunlayer);
+            if (Purch != "") {
+             //   alert("OK");
+                $('.close').click();
+                return true;
+            }
+
+        }
+
+        var onUpdateSuccess = function (res) {
+
+            $('#PlantList-data-table').html(res);
+
+        };
+    </script>
+    <script type="text/javascript">
+     $(document).ready(function () {
+
+        var error = '@ViewBag.errorMassege'
+        if (error !== null && error !== "") {
+            modalDialog("error", error);
+        }
+    });
+    var selected_tab = 0;
+    $(function () {
+        var tabs = $("#tabs").tabs({
+            select: function (e, i) {
+                selected_tab = i.index;
+            }
+        });
+        selected_tab = $("#selectedTab").val() != "" ? parseInt($("#selectedTab").val()) : 0;
+        tabs.tabs('select', selected_tab);
+        $("form").submit(function () {
+            $("#selectedTab").val(selected_tab);
+        });
+    });
+    </script>

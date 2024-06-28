@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="2 ชิ้นต่อ" xml:space="preserve">
+    <value>2 ชิ้นต่อ</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="DieCut" xml:space="preserve">
+    <value>DieCut</value>
+  </data>
+  <data name="Don't move the machine" xml:space="preserve">
+    <value>(ห้ามย้ายเครื่อง)</value>
+  </data>
+  <data name="Honey Core Size" xml:space="preserve">
+    <value>Honey Core Size</value>
+  </data>
+  <data name="HVA" xml:space="preserve">
+    <value>HVA</value>
+  </data>
+  <data name="Master Card" xml:space="preserve">
+    <value>Master Card</value>
+  </data>
+  <data name="Master Card M/O" xml:space="preserve">
+    <value>Master Card M/O</value>
+  </data>
+  <data name="Material No." xml:space="preserve">
+    <value>Material No.</value>
+  </data>
+  <data name="Page 1" xml:space="preserve">
+    <value>Page 1</value>
+  </data>
+  <data name="Page 2" xml:space="preserve">
+    <value>Page 2</value>
+  </data>
+  <data name="Pallet" xml:space="preserve">
+    <value>Pallet</value>
+  </data>
+  <data name="Part No" xml:space="preserve">
+    <value>Part No</value>
+  </data>
+  <data name="PMTS Version 1.0" xml:space="preserve">
+    <value>PMTS Version 1.0</value>
+  </data>
+  <data name="PREVIEW MODE" xml:space="preserve">
+    <value>สำเนา</value>
+  </data>
+  <data name="Printed by" xml:space="preserve">
+    <value>Printed by</value>
+  </data>
+  <data name="Product Code" xml:space="preserve">
+    <value>Product Code</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="กล่อง/กระบะ" xml:space="preserve">
+    <value>กล่อง/กระบะ</value>
+  </data>
+  <data name="กล่อง/มัด" xml:space="preserve">
+    <value>กล่อง/มัด</value>
+  </data>
+  <data name="กว้าง" xml:space="preserve">
+    <value>กว้าง</value>
+  </data>
+  <data name="กว้าง x ยาว (นิ้ว)" xml:space="preserve">
+    <value>กว้าง x ยาว (นิ้ว)</value>
+  </data>
+  <data name="การผลิต" xml:space="preserve">
+    <value>การผลิต</value>
+  </data>
+  <data name="การพิมพ์" xml:space="preserve">
+    <value>การพิมพ์</value>
+  </data>
+  <data name="กำหนดส่ง" xml:space="preserve">
+    <value>กำหนดส่ง</value>
+  </data>
+  <data name="ขนาดกระบะ" xml:space="preserve">
+    <value>ขนาดกระบะ</value>
+  </data>
+  <data name="ขนาดตัด" xml:space="preserve">
+    <value>ขนาดตัด</value>
+  </data>
+  <data name="ขนาดตัด (ก x ย)" xml:space="preserve">
+    <value>ขนาดตัด (ก x ย)</value>
+  </data>
+  <data name="คลัง" xml:space="preserve">
+    <value>คลัง</value>
+  </data>
+  <data name="จน.ตัด" xml:space="preserve">
+    <value>จน.ตัด</value>
+  </data>
+  <data name="จน.ผลิต(แผ่น)" xml:space="preserve">
+    <value>จน.ผลิต(แผ่น)</value>
+  </data>
+  <data name="จำนวน" xml:space="preserve">
+    <value>จำนวน</value>
+  </data>
+  <data name="จำนวนสั่ง" xml:space="preserve">
+    <value>จำนวนสั่ง</value>
+  </data>
+  <data name="ชิ้น/ชุด" xml:space="preserve">
+    <value>ชิ้น/ชุด</value>
+  </data>
+  <data name="ชิ้น/แพ็ค" xml:space="preserve">
+    <value>ชิ้น/แพ็ค</value>
+  </data>
+  <data name="ชื่อผู้ส่ง" xml:space="preserve">
+    <value>ชื่อผู้ส่ง</value>
+  </data>
+  <data name="ตัด" xml:space="preserve">
+    <value>ตัด</value>
+  </data>
+  <data name="ตัวลวด/กล่อง" xml:space="preserve">
+    <value>ตัวลวด/กล่อง</value>
+  </data>
+  <data name="ทับรอยด้านกว้าง" xml:space="preserve">
+    <value>ทับรอยด้านกว้าง</value>
+  </data>
+  <data name="ประเภทสินค้า" xml:space="preserve">
+    <value>ประเภทสินค้า</value>
+  </data>
+  <data name="ผลิตขาด" xml:space="preserve">
+    <value>ผลิตขาด</value>
+  </data>
+  <data name="ผลิตเกิน" xml:space="preserve">
+    <value>ผลิตเกิน</value>
+  </data>
+  <data name="พิมพ์" xml:space="preserve">
+    <value>พิมพ์</value>
+  </data>
+  <data name="พิมพ์ครั้งที่" xml:space="preserve">
+    <value>พิมพ์ครั้งที่</value>
+  </data>
+  <data name="มิติภายใน (ย x ก x ส)" xml:space="preserve">
+    <value>มิติภายใน (ย x ก x ส)</value>
+  </data>
+  <data name="ยาวเมตร" xml:space="preserve">
+    <value>ยาวเมตร</value>
+  </data>
+  <data name="รอยต่อ" xml:space="preserve">
+    <value>รอยต่อ</value>
+  </data>
+  <data name="รูปแบบ" xml:space="preserve">
+    <value>รูปแบบ</value>
+  </data>
+  <data name="ลอน" xml:space="preserve">
+    <value>ลอน</value>
+  </data>
+  <data name="ลิ้นกาวด้านกว้าง" xml:space="preserve">
+    <value>ลิ้นกาวด้านกว้าง</value>
+  </data>
+  <data name="ลูกฟูก" xml:space="preserve">
+    <value>ลูกฟูก</value>
+  </data>
+  <data name="สต๊อก" xml:space="preserve">
+    <value>สต๊อก</value>
+  </data>
+  <data name="สำเร็จรูป" xml:space="preserve">
+    <value>สำเร็จรูป</value>
+  </data>
+  <data name="สูง(ชั้น/กระบะ)" xml:space="preserve">
+    <value>สูง(ชั้น/กระบะ)</value>
+  </data>
+  <data name="หน่วยงาน" xml:space="preserve">
+    <value>หน่วยงาน</value>
+  </data>
+  <data name="เรียง(มัด/ชั้น)" xml:space="preserve">
+    <value>เรียง(มัด/ชั้น)</value>
+  </data>
+  <data name="เลขที่ S/O" xml:space="preserve">
+    <value>เลขที่ S/O</value>
+  </data>
+  <data name="เวลา" xml:space="preserve">
+    <value>เวลา</value>
+  </data>
+  <data name="เศษ" xml:space="preserve">
+    <value>เศษ</value>
+  </data>
+</root>

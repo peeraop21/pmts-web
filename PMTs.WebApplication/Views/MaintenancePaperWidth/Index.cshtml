@@ -1,0 +1,273 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenancePaperWidth.MaintenancePaperWidthViewModel
+
+@{
+    ViewData["Title"] = "PaperWidth";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-file-document-box"></i> @Localizer["PaperWidth"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalPaperWidth">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["Create"]
+                    </button>
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="PaperWidth-table">
+                <partial name="_PaperWidthTable" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        function getData() {
+            let req = {
+                "Id": $("#EId").val(),
+                "Group1": $("#EGroup1").val(),
+                "Group2": $("#EGroup2").val(),
+                "Group3": $("#EGroup3").val(),
+                "Group4": $("#EGroup4").val(),
+                "Width": $("#EWidth").val(),
+                "CreatedDate": $("#ECreatedDate").val(),
+                "CreatedBy": $("#ECreatedBy").val(),
+            };
+            return req;
+        }
+
+        function viewShow(Id, Group1, Group2, Group3, Group4, Width) {
+            $('#Id').val(Id);
+            $('#Group1').val(Group1);
+            $('#Group2').val(Group2);
+            $('#Group3').val(Group3);
+            $('#Group4').val(Group4);
+            $('#Width').val(Width);
+            $('#modal-view').modal('show');
+        }
+
+        function viewEdit(Id, Group1, Group2, Group3, Group4, Width,createdDate, createdBy) {
+            $('#EId').val(Id);
+            $('#EGroup1').val(Group1);
+            $('#EGroup2').val(Group2);
+            $('#EGroup3').val(Group3);
+            $('#EGroup4').val(Group4);
+            $('#EWidth').val(Width);
+            $('#ECreatedDate').val(ChangeDateTimeFormat(createdDate));
+            $('#ECreatedBy').val(createdBy);
+
+            $('#modal-edit').modal('show');
+        }
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        $('#btnSubmitPaperWidth').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#PaperWidthViewModel_Group1').val() === "" || $('#PaperWidthViewModel_Group2').val() === "" || $('#PaperWidthViewModel_Group3').val() === "" || $('#PaperWidthViewModel_Group4').val() === "" || $('#PaperWidthViewModel_Width').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                var form = $('#create-PaperWidth-form').serialize();
+                $.ajax({
+                    url: '@Url.Action("SavePaperWidth", "MaintenancePaperWidth")',
+                    type: "POST",
+                    async: false,
+                    data: form,
+                    dataType: "json",
+                    success: function (data) {
+                        UpdatePaperWidthTableNew(data);
+                        swal("Save Success!", { icon: "success", });
+                        $('#modal-create').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+       });
+
+        $('.btneditmaintainpaperwidth').click(function () {
+            DisabledSubmitButton(this);
+          // var form = $('#edit-maintain-paperwidth').serialize();
+            if ($('#EGroup1').val() === "" || $('#EGroup2').val() === "" || $('#EGroup3').val() === "" || $('#EGroup4').val() === "" || $('#EWidth').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                var form = JSON.stringify(getData());
+                $.ajax({
+                    url: '@Url.Action("UpdatePaperWidth", "MaintenancePaperWidth")',
+                    type: "POST",
+                    async: false,
+                    data: {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdatePaperWidthTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        function UpdatePaperWidthTableNew(res) {
+            $('#PaperWidth-table').html(res.View);
+            $('#PaperWidth-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('body').css('padding', '0px');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#PaperWidth-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModalPaperWidth').click(function () {
+           // $(".field-validation-error span").hide();
+            $('#modal-create').modal('show');
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+        @*function UpdatePaperWidthTable() {
+            $.ajax({
+                url: '@Url.Action("UpdatePaperWidthTable", "MaintenancePaperWidth")',
+                success: function (res) {
+                    $('#PaperWidth-table').html(res);
+                    $('#PaperWidth-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+                },
+                error: function () {  }
+            });
+        }*@
+
+        @*function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeletePaperWidth", "MaintenancePaperWidth")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                swal("Deleted!", {
+                                    icon: "success",
+                                });
+                                UpdatePaperWidthTable();
+                                window.location.reload(true);
+                            }
+                        }
+                    });
+                    } else {
+                    }
+                });
+        }
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                //modalDialog(success, SaveSuccess);
+                swal("Success!", { icon: "success", });
+                //UpdatePaperWidthTable();
+                UpdatePaperWidthTableNew(res);
+            }
+            else {
+                swal("Failed!", { icon: "warning", });
+               // modalDialog(error, SaveFailed);
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+               // $('.modal').modal('hide');
+                //modalDialog(success, UpdateSuccess);
+                swal("Success!", { icon: "success", });
+                //UpdatePaperWidthTable();
+                UpdatePaperWidthTableNew(res);
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+            }
+            else {
+                swal("Failed!", { icon: "warning", });
+               // modalDialog(error, UpdateFailed);
+            }
+        };
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                //modalDialog(success, UpdateSuccess);
+                swal("Success!", { icon: "success", });
+              //  UpdatePaperWidthTable();
+                UpdatePaperWidthTableNew(res);
+            }
+            else {
+                swal("Failed!", { icon: "warning", });
+               // modalDialog(error, UpdateFailed);
+            }
+        };*@
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

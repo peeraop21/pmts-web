@@ -1,0 +1,65 @@
+﻿@model PMTs.DataAccess.ModelView.UpdateLotsOfMaterial.UpdateLotsOfMaterialViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    Layout = null;
+}
+<style>
+    table {
+        table-layout: fixed;
+        width: 100%;
+        border: 1px solid red;
+    }
+
+    td {
+        border: 1px solid blue;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<table id="MasterDataTable" class="table table-bordered color-table">
+    <thead>
+        <tr class="color-table text-center">
+            <th class="text-center" width="80px" scope="col">@Localizer["FactoryCode"]</th>
+            <th class="text-center" width="80px">@Localizer["Sale Org"]</th>
+            <th class="text-center" width="100px">@Localizer["Material Number"]</th>
+            <th class="text-left" width="200px">@Localizer["Customer Name"]</th>
+            <th class="text-center" width="100px">@Localizer["PC"]</th>
+            <th class="text-left" width="200px">@Localizer["Description"]</th>
+            <th class="text-center" width="80px">@Localizer["PDIS Status"]</th>
+            @*<th class="text-center" width="100px">Tran Status</th>
+            <th class="text-center" width="100px">SAP Status</th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MasterDatas)
+        {
+        <tr>
+            <td align="center">@Html.DisplayFor(modelItem => item.FactoryCode)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.SaleOrg)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+            <td>@Html.DisplayFor(modelItem => item.CustName)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.Pc)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.PdisStatus)</td>
+            @*<td>@Html.DisplayFor(modelItem => item.TranStatus)</td>
+            <td>@Html.DisplayFor(modelItem => item.SapStatus)</td>*@
+        </tr>
+
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7">
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+@section Scripts{
+    <script>
+    </script>
+}

@@ -1,0 +1,185 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="progressTrans">
+
+    <div class="progressCircle2" style="width:50px">
+        <a asp-action="ViewListProduct" asp-controller="MaintenanceProductInfo">
+            <span class="progressLabel"><i class="fa fa-home text-white"></i></span>
+            <span class="progressTitle2">@Localizer["Home"]</span>
+        </a>
+    </div>
+
+    <span class="bar3"></span>
+
+    @*Categories*@
+    @if (Model.TransactionStatus.Categories == "done" || Model.MaterialNo != null)
+    {
+        <a asp-controller="NewProduct" asp-action="Categories" asp-route-ActionTran="Backward" asp-route-CurrentPage="Categories">
+            <div class="progressCircle @Model.TransactionStatus.Categories">
+                <span class="progressLabel">1</span>
+                <span class="progressTitle">@Localizer["Categories"]</span>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.Categories">
+            <span class="progressLabel">1</span>
+            <span class="progressTitle">@Localizer["Categories"]</span>
+        </div>
+    }
+
+    <span class="bar @Model.TransactionStatus.Categories"></span>
+
+    @*Customer*@
+    @if ((Model.TransactionStatus.Customer == "done" || Model.MaterialNo != null) && (Model.TransactionDetail != null && (!Model.TransactionDetail.IsOldMaterial || Model.TransactionDetail.MaxStep >= 3)))
+    {
+        <a asp-controller="NewProduct" asp-action="Customer" asp-route-ActionTran="Backward" asp-route-CurrentPage="Customer">
+            <div class="progressCircle @Model.TransactionStatus.Customer">
+                <span class="progressLabel">2</span>
+                <span class="progressTitle">@Localizer["Customer"]</span>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.Customer">
+            <span class="progressLabel">2</span>
+            <span class="progressTitle">@Localizer["Customer"]</span>
+        </div>
+    }
+
+    <span class="bar @Model.TransactionStatus.Customer"></span>
+
+    @*ProductInformation*@
+    @if ((Model.TransactionStatus.ProductInformation == "done" || Model.MaterialNo != null) && (Model.TransactionDetail != null && (!Model.TransactionDetail.IsOldMaterial || Model.TransactionDetail.MaxStep >= 3)))
+    {
+        <a asp-controller="NewProduct" asp-action="ProductInfo" asp-route-ActionTran="Backward">
+            <div class="progressCircle @Model.TransactionStatus.ProductInformation">
+                <span class="progressLabel">3</span>
+                <span class="progressTitle">ProductInfo</span>
+            </div>
+        </a>
+        @*<div class="progressCircle @Model.TransactionStatus.ProductInformation">
+                <span class="progressLabel">3</span>
+                <span class="progressTitle">@Localizer["ProductInfo"]</span>
+            </div>*@
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.ProductInformation">
+            <span class="progressLabel">3</span>
+            <span class="progressTitle">@Localizer["ProductInfo"]</span>
+        </div>
+    }
+
+    <span class="bar @Model.TransactionStatus.ProductInformation"></span>
+
+    @*ProductSpec*@
+    @if ((Model.TransactionStatus.ProductSpec == "done" || (Model.TransactionDetail != null && Model.TransactionDetail.MaxStep >= 4)) && !Model.TransactionDetail.IsCreateBOM)
+    {
+        <a asp-controller="NewProduct" asp-action="ProductSpec" asp-route-ActionTran="Backward" asp-route-CurrentPage="ProductSpec">
+            <div class="progressCircle @Model.TransactionStatus.ProductSpec">
+                <span class="progressLabel">4</span>
+                <span class="progressTitle">@Localizer["ProductSpec"]</span>
+            </div>
+        </a>
+    }
+    else if (Model.TransactionDetail.IsCreateBOM)
+    {
+        <div class="progressCircle @Model.TransactionStatus.ProductSpec" style="border-color: white;opacity: 0.4;background-color: lightgray;">
+            <span class="progressLabel">4</span>
+            <span class="progressTitle">@Localizer["ProductSpec"]</span>
+        </div>
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.ProductSpec">
+            <span class="progressLabel">4</span>
+            <span class="progressTitle">@Localizer["ProductSpec"]</span>
+        </div>
+
+    }
+
+    <span class="bar @Model.TransactionStatus.ProductSpec"></span>
+
+    @*ProductProperties*@
+    @if (Model.TransactionStatus.ProductProperties == "done" || (Model.TransactionDetail != null && Model.TransactionDetail.MaxStep >= 5))
+    {
+        <a asp-controller="NewProduct" asp-action="ProductProp" asp-route-ActionTran="Backward" asp-route-CurrentPage="ProductProp">
+            <div class="progressCircle @Model.TransactionStatus.ProductProperties">
+                <span class="progressLabel">5</span>
+                <span class="progressTitle">@Localizer["ProductProp"]</span>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.ProductProperties">
+            <span class="progressLabel">5</span>
+            <span class="progressTitle">@Localizer["ProductProp"]</span>
+        </div>
+    }
+
+    <span class="bar @Model.TransactionStatus.ProductProperties"></span>
+
+    @*ProductRouting*@
+    @if (Model.TransactionStatus.ProductRouting == "done" || (Model.TransactionDetail != null && Model.TransactionDetail.MaxStep >= 6))
+    {
+        <a asp-controller="NewProduct" asp-action="Routing" asp-route-ActionTran="Backward" asp-route-CurrentPage="Routing">
+            <div class="progressCircle @Model.TransactionStatus.ProductRouting">
+                <span class="progressLabel">6</span>
+                <span class="progressTitle">@Localizer["Routing"]</span>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.ProductRouting">
+            <span class="progressLabel">6</span>
+            <span class="progressTitle">@Localizer["Routing"]</span>
+        </div>
+    }
+
+    <span class="bar @Model.TransactionStatus.ProductRouting"></span>
+
+    @*ProductERPInterface*@
+    @if (Model.TransactionStatus.ProductERPInterface == "done" || (Model.TransactionDetail != null && Model.TransactionDetail.MaxStep >= 7))
+    {
+        <a asp-controller="NewProduct" asp-action="ProductERPmain" asp-route-ActionTran="Backward" asp-route-CurrentPage="ProductERPmain">
+            <div class="progressCircle @Model.TransactionStatus.ProductERPInterface">
+                <span class="progressLabel">7</span>
+                <span class="progressTitle">@Localizer["ProductERP"]</span>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.ProductERPInterface">
+            <span class="progressLabel">7</span>
+            <span class="progressTitle">@Localizer["ProductERP"]</span>
+        </div>
+    }
+
+    <span class="bar @Model.TransactionStatus.ProductERPInterface"></span>
+
+    @*ProductPicture*@
+    @if (Model.TransactionStatus.ProductPicture == "done" || (Model.TransactionDetail != null && Model.TransactionDetail.MaxStep >= 8))
+    {
+        <a asp-controller="NewProduct" asp-action="ProductPic" asp-route-ActionTran="Backward" asp-route-CurrentPage="ProductPic">
+            <div class="progressCircle @Model.TransactionStatus.ProductPicture">
+                <span class="progressLabel">8</span>
+                <span class="progressTitle">@Localizer["ProductPic"]</span>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="progressCircle @Model.TransactionStatus.ProductPicture">
+            <span class="progressLabel">8</span>
+            <span class="progressTitle">@Localizer["ProductPic"]</span>
+        </div>
+    }
+</div>

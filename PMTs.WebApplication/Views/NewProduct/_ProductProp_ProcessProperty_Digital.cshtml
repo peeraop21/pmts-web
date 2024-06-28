@@ -1,0 +1,113 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="card card-outline">
+    <h4 class="card-header">@Localizer["Process Properties"] </h4>
+    <div class="card-body">
+        @if (ViewData["TypeOfProperty"].ToString() != "0")
+        {
+            <div class="form-group">
+
+                <div class="row">
+                    @*<label asp-for="modelProductSpec.CutSheetWid" class="col-sm-6 control-label"></label>*@
+                    <label class="col-md-6 control-label ">@Localizer["CutSheetWid"]<i style="color:red"> *</i> </label>
+                    <div class="col-md-5">
+                        <div class="controls">
+                            <input asp-for="modelProductProp.CutSheetWid" class="form-control mytextboxNumber noscroll" />
+                            <span asp-validation-for="modelProductProp.CutSheetWid" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    @*<label asp-for="modelProductSpec.CutSheetLeng" class="col-sm-6 control-label"></label>*@
+                    <label class="col-md-6 control-label">@Localizer["CutSheetLeng"]<i style="color:red"> *</i> </label>
+                    <div class="col-md-5">
+                        <div class="controls">
+                            <input asp-for="modelProductProp.CutSheetLeng" class="form-control mytextboxNumber noscroll"
+                                   autocomplete="off" />
+                            <span asp-validation-for="modelProductProp.CutSheetLeng" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="form-group row">
+
+            <label class="col-sm-6 control-label">@Localizer["JoinType"] <i style="color:red"> *</i></label>
+            <div class="col-md-5">
+                <div class="controls">
+                    <select class="form-control" id="modelProductProp_JoinType" required="" asp-for="modelProductProp.JoinType"
+                            asp-items="@(new SelectList(Model.modelProductProp.JoinList,"JointName","JointName"))">
+                        <option value=""> @Localizer["Please Select Item"] </option>
+                    </select>
+                    <span asp-validation-for="modelProductProp.JoinType" class="text-danger"></span>
+                    <input id="modelProductProp_JoinId" asp-for="modelProductProp.JoinId" type="hidden" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row" id="JoinCharactirdiv" style="display:none;">
+            @*<label asp-for="modelProductProp." class="col-sm-6 control-label"></label>*@
+            <label class="col-sm-6 control-label">
+                @Localizer["JoinCharacter"] <i style="color:red"> *</i>
+            </label>
+            <div class="col-md-5">
+                <div class="controls">
+                    <select class="form-control" id="modelProductProp_NameJoinCharacter" required="" asp-for="modelProductProp.NameJoinCharacter"
+                            asp-items="@(new SelectList(Model.modelProductProp.JoinCharacterList,"NameJoinCharacter","NameJoinCharacter"))">
+                        <option value=""> @Localizer["Please Select Item"] </option>
+                    </select>
+                    <span asp-validation-for="modelProductProp.NameJoinCharacter" class="text-danger"></span>
+                    <input id="modelProductProp_NameJoinCharacter" asp-for="modelProductProp.NameJoinCharacter" type="hidden" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.Wire" class="col-sm-6 control-label">
+            </label>*@
+
+            <label class="col-sm-6 control-label">
+                @Localizer["Wire"]
+            </label>
+            <div class="col-md-5">
+                <input type="text" id="wire" asp-for="modelProductProp.Wire" class="form-control mytextboxNumber noscroll" />
+                <input type="hidden" id="wiredata" asp-for="modelProductProp.Wire" />
+
+                <input type="hidden" id="scoreW2" asp-for="modelProductSpec.Scorew2" />
+                <span asp-validation-for="modelProductProp.Wire" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-6 control-label">@Localizer["PrintMethod"]<i style="color:red"> *</i></label>
+            <div class="col-md-5">
+                <div class="controls">
+                    <select id="modelProductProp_PrintMethod" class="form-control" required="" asp-for="modelProductProp.PrintMethod" asp-items="@(new SelectList(Model.modelProductProp.PrintMethodList,"Method","Method"))">
+                        <option value=""> @Localizer["Please Select Item"] </option>
+                    </select>
+                    <input type="hidden" id="modelProductProp_AmountColor" asp-for="modelProductProp.AmountColor" />
+                    <span asp-validation-for="modelProductProp.PrintMethod" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp." class="col-sm-6 control-label"></label>*@
+            <label class="col-sm-6 control-label">
+                @Localizer["OuterJoin"]
+            </label>
+
+            <div class="col-md-5">
+                <input data-toggle="toggle" asp-for="modelProductProp.OuterJoin" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" id="OuterJoin">
+                <label class="form-check-label" for="OuterJoin"></label>
+            </div>
+        </div>
+    </div>
+        </div>

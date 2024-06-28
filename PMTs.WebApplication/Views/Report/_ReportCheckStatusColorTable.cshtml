@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ModelView.Report.CheckStatusColor>
+
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckStatusColorTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:120px">@Localizer["Material No"]</th>
+            <th style="width:120px">@Localizer["PC"]</th>
+            <th style="width:160px">@Localizer["Customer"]</th>
+            <th style="width:60px">@Localizer["Color1"]</th>
+            <th style="width:60px">@Localizer["Shade1"]</th>
+            <th style="width:60px">@Localizer["Color2"]</th>
+            <th style="width:60px">@Localizer["Shade2"]</th>
+            <th style="width:60px">@Localizer["Color3"]</th>
+            <th style="width:60px">@Localizer["Shade3"]</th>
+            <th style="width:60px">@Localizer["Color4"]</th>
+            <th style="width:60px">@Localizer["Shade4"]</th>
+            <th style="width:60px">@Localizer["Color5"]</th>
+            <th style="width:60px">@Localizer["Shade5"]</th>
+            <th style="width:60px">@Localizer["Color6"]</th>
+            <th style="width:60px">@Localizer["Shade6"]</th>
+            <th style="width:60px">@Localizer["Color7"]</th>
+            <th style="width:60px">@Localizer["Shade7"]</th>
+            <th style="width:60px">@Localizer["Color8"]</th>
+            <th style="width:60px">@Localizer["Shade8"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">@item.MaterialNo</td>
+                <td class="text-center">@item.PC</td>
+                <td class="text-center">@item.Customer</td>
+                <td class="text-left">@item.Color1</td>
+                <td class="text-left">@item.Shade1</td>
+                <td class="text-left">@item.Color2</td>
+                <td class="text-left">@item.Shade2</td>
+                <td class="text-left">@item.Color3</td>
+                <td class="text-left">@item.Shade3</td>
+                <td class="text-left">@item.Color4</td>
+                <td class="text-left">@item.Shade4</td>
+                <td class="text-left">@item.Color5</td>
+                <td class="text-left">@item.Shade5</td>
+                <td class="text-left">@item.Color6</td>
+                <td class="text-left">@item.Shade6</td>
+                <td class="text-left">@item.Color7</td>
+                <td class="text-left">@item.Shade7</td>
+                <td class="text-left">@item.Color8</td>
+                <td class="text-left">@item.Shade8</td>
+            </tr>
+        }
+    </tbody>
+</table>

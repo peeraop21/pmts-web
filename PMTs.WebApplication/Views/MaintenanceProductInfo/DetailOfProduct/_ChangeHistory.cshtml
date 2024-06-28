@@ -1,0 +1,110 @@
+﻿@*@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@{ int No = 1; }
+<div class="box-body table-responsive no-padding">
+    <table class="table color-table info-table">
+        <thead>
+            <tr>
+                <th>No</th>
+
+                <th>History Text</th>
+
+                <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.modelProductPropChangeHis.ModelChangeList)
+            {
+                <tr>
+                    <th scope="row">@No</th>
+                    <td>@item.ChangeHistory</td>
+
+                    <td>
+
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-edit-@No"><span class="fa fa-edit" aria-hidden="true"></span></button>
+
+                            <div class="modal fade" id="modal-edit-@No">
+                                <div class="modal-dialog" style="width: 50%">
+                                    <form asp-controller="NewProduct" asp-action="UpdateHistory" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title">Edit History</h4>
+                                                <div class="box-body">
+
+                                                    <div class="form-group">
+                                                        <label for="inputHistory" class="col-sm-4 control-label">History Text:</label>
+                                                        <div class="col-sm-8">
+
+                                                            <input type="text" class="form-control" asp-for="modelProductPropChangeHis.ChangeHistory" value="@item.ChangeHistory">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary" value="UpdatePlant" onclick="return closeEditModal()">Update changes</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
+                            <!-- End Edit Modal -->
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-delete-@No"><span class="fa fa-trash" aria-hidden="true"></span></button>
+                            <div class="modal fade" id="modal-delete-@No">
+                                <div class="modal-dialog" style="width: 40%">
+                                    <form asp-controller="NewProduct" asp-action="DeleteHistory" data-ajax="true" data-ajax-success="onUpdateStatusSuccess" data-ajax-method="POST">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title">Confirmation</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="container">
+
+                                                    <div class="form-group row">
+                                                        Are you sure you want delete data?
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                <button type="submit" class="btn btn-primary" id="btnDeleteChangeHis" name="btnDeleteERP" value="Delete Text">Yes</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                        </td>
+                </tr>
+                No++;
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- /.box-body -->
+
+<script>
+
+    function closeEditModal() {
+        $('.close').click();
+        return true;
+    }
+
+    var onUpdateSuccess = function (res) {
+        $('#ChangeHistory-data-table').html(res);
+    };
+</script>*@

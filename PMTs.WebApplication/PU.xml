@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<productionUnit>
+  <production unit = "1">
+    <name display="PC"  value="PC"></name>
+  </production>
+  <production unit = "2">
+    <name display="KG."  value="KG"></name>
+  </production>
+  <production unit = "3">
+    <name display="Ton"  value="TON"></name>
+  </production>
+</productionUnit>

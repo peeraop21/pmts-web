@@ -1,0 +1,325 @@
+﻿@model IEnumerable<PMTs.DataAccess.ComplexModel.MasterDataRoutingModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Reuse Material Number";
+    //Layout = null;
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    tr {
+        padding: 10px;
+    }
+
+    table {
+        border: 1px solid #aaa;
+    }
+
+    .not-clickable {
+        pointer-events: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-7">
+                        <h3 class="text-themecolor"><i class="mdi mdi-recycle"></i> @Localizer["Reuse Material No"] </h3>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-md-12">
+                        <div class="row line-space">
+                            <div class="form-group col-md-4" style="padding: 0px;text-align: right;">
+                                <label class="control-label vertical-sub-text  ml-5 mt-1" style="font-weight:800">@Localizer["Material No"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" id="material-no-searchs" maxlength="15" placeholder="Ex. Z031228742" />
+                            </div>
+                            <div class="form-group col-md-1" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" onclick="SearchMaterialNoX()"><i class="fa fa-search"></i> @Localizer["Search"]</button>
+                            </div>
+                            <div class="col-md-4 form-inline" style="flex-flow:row-reverse;display:inline">
+                                <div style="margin-right:5px;float:left">
+                                    <input type="file" name="file-upload" id="file-upload" style="display:none;" accept=".txt">
+                                    <a href="#0" class="btn btn-primary"  onclick="SearchFromFile();"><i class="fa fa-download"></i> @Localizer["Import From File"]</a>
+                                    <label for="file-upload"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="divReuseMaterialNoTable" class="table-responsive m-t-10">
+                    <partial name="_ReuseMaterialNoTable" model="Model" />
+                </div>
+
+                <div class="col-md-12 float-right mt-3">
+                    <div class="float-md-right">
+                        <button type="button" id="reuse-mat-btn" class="btn waves-effect waves-light btn-info" onclick="ReuseSelectedMaterialNo()">
+                            <span class="btn-label"><i class="fa fa-caret-right text-left"></i> </span> @Localizer["Reuse Selected"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        var materials = [];
+        var isClickAble = true;
+
+        $(document).ready(function () {
+            materials = [];
+
+            $("#reuse-mat-btn").attr("disabled", true);
+
+            $('#reuseMaterialNoTable').DataTable({
+                'bFilter': true,
+                "paging": true,
+                "scrollX": true,
+                "dom": '<"float-left"l><"float-right"f>rt<"float-left"i><"float-right"p>',
+                'columnDefs': [{
+                    'targets': [1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 2, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }]
+            });
+        });
+
+        function SelectReuseTable(item)
+        {
+
+            let $row = $(item).closest("tr");
+            let id = $row.find("input:eq(0)").attr('id');
+            let elementById = "#" + id;
+            if (id != "") {
+                if (isClickAble) {
+                    if ($row.find("input:eq(0)").is(':checked')) {
+                        //uncheck
+                        var defaultSelected = materials.filter(p => p == id);
+                        if (defaultSelected.length > 0) {
+                            materials = materials.filter(p => { return p != id });
+                        }
+
+                        $(elementById).prop('checked', false);
+                    }
+                    else //check
+                    {
+                        materials.push(id);
+                        $(elementById).prop('checked', true);
+                    }
+                }
+                else
+                {
+                    if ($row.find("input:eq(0)").is(':checked')) {
+                        //uncheck
+                        $(elementById).prop('checked', false);
+                    }
+                    else //check
+                    {
+                        $(elementById).prop('checked', true);
+                    }
+                }
+            }
+
+            isClickAble = true;
+
+            if (materials.length > 0) {
+                $("#reuse-mat-btn").attr("disabled", false);
+            }
+            else {
+                $("#reuse-mat-btn").attr("disabled", true);
+            }
+
+            return false;
+        }
+
+        function SetSelectReuseTable(item) {
+            isClickAble = false;
+        }
+
+        function ReuseSelectedMaterialNo() {
+            if (materials.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateReuseMaterialNO", "MaintenanceProductInfo")',
+                    data: JSON.stringify(materials),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            swal({
+                                title: "Reuse Material Succesfully!?",
+                                text: "Do you want to go to material view list?",
+                                icon: "success",
+                                buttons: {
+                                    confirm: "Ok",
+                                    cancel: true,
+                                },
+                                dangerMode: false,
+                            })
+                                .then((willRedirect) => {
+
+                                    if (willRedirect) {
+                                        window.location.href = '@Url.Action("ViewListProduct", "MaintenanceProductInfo")';
+                                    }
+                                    else
+                                    {
+                                        window.location.reload();
+                                    }
+                                });
+                        }
+                        else
+                        {
+                            swal("Reuse Material Failed!", res.ExceptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    window.location.reload();
+                                });
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+            else
+            {
+                swal("Please Select Item!", "", "warning");
+            }
+        }
+
+        function SearchMaterialNoX()
+        {
+            let searchKey = $("#material-no-searchs").val();
+            if (searchKey != "" && searchKey != null) {
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("SearchReuseMaterialNo", "MaintenanceProductInfo")',
+                    data: { materialNo: searchKey},
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            $('#divReuseMaterialNoTable').html(res.View);
+                            $('.modal-backdrop').css('display', 'none');
+                            $('#reuseMaterialNoTable').DataTable({
+                                'bFilter': true,
+                                "paging": true,
+                                "scrollX": true,
+                                "dom": '<"float-left"l><"float-right"f>rt<"float-left"i><"float-right"p>',
+                                'columnDefs': [{
+                                    'targets': [1, 0], 'orderable': false,
+
+                                }, {
+                                    'targets': 2, "render": function (data, type, row) {
+
+                                        if (data)
+                                            var data = data.split(',').join('<br>');
+                                        return data;
+                                    }
+                                }]
+                            });
+
+                            $("#file-upload").val("");
+
+                            $("#reuse-mat-btn").attr("disabled", true);
+
+                            materials = [];
+                        }
+                        else {
+                            swal("Search Failed!", res.ExceptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    window.location.reload();
+                                });
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+            else
+            {
+                $("#material-no-searchs").focus();
+            }
+        }
+
+        $('#material-no-searchs').on('keypress', function (e) {
+            if (e.which === 13) {
+                SearchMaterialNoX();
+            }
+        });
+
+        function SearchFromFile()
+        {
+            $("#file-upload").click();
+        }
+
+        $("#file-upload").change(function () {
+            let fileInput = $('#file-upload')[0];
+            let file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append("fileUpload", file);
+
+            $.ajax({
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                type: "POST",
+                url: '@Url.Action("SearchReuseMaterialNoFromFile", "MaintenanceProductInfo")',
+                data: formData,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('#divReuseMaterialNoTable').html(res.View);
+                        $('.modal-backdrop').css('display', 'none');
+                        $('#reuseMaterialNoTable').DataTable({
+                            'bFilter': true,
+                            "paging": true,
+                            "scrollX": true,
+                            "dom": '<"float-left"l><"float-right"f>rt<"float-left"i><"float-right"p>',
+                            'columnDefs': [{
+                                'targets': [1, 0], 'orderable': false,
+
+                            }, {
+                                'targets': 2, "render": function (data, type, row) {
+
+                                    if (data)
+                                        var data = data.split(',').join('<br>');
+                                    return data;
+                                }
+                            }]
+                        });
+
+                        $("#file-upload").val("");
+
+                        $("#reuse-mat-btn").attr("disabled", true);
+
+                        materials = [];
+                    }
+                    else {
+                        swal("Search Failed!", res.ExceptionMessage, { icon: "warning" })
+                            .then(() => {
+                                window.location.reload();
+                            });
+                    }
+                },
+                error: function () { }
+            });
+        });
+    </script>
+}

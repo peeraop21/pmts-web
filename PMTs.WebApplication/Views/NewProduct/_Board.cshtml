@@ -1,0 +1,277 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="form-group row" id="divCG">
+    <label class="control-label text-right col-md-3">@Localizer["Thickness"] : <i id="redReq" style="color:red"> *</i></label>
+    <div class="col-md-6">
+        <select class="form-control" asp-for="modelProductSpec.SideD" style="width: 120px" asp-items="@(new SelectList(Model.modelProductSpec.DLists, "value"))">
+            <option value="0">@Localizer["Choose"]..</option>
+        </select>
+        <select class="form-control" asp-for="modelProductSpec.IsWrap" style="width: 120px">
+            <option value="">Choose..</option>
+            <option value="Wrap"> @Localizer["Wrap"]</option>
+            <option value="PatchTwo"> @Localizer["PatchTwo"]</option>
+            <option value="PatchOut"> @Localizer["PatchOut"]</option>
+            <option value="PatchIn"> @Localizer["PatchIn"]</option>
+            <option value="NoWrap"> @Localizer["NoWrap"]</option>
+        </select>
+    </div>
+    <div class="col-sm-3">
+        <input type="hidden" id="chkWrap1" />
+        <input type="hidden" id="chkWrap2" />
+    </div>
+</div>
+<div class="form-group row" id="divHoney">
+    <label class="control-label text-right col-md-3">@Localizer["Height"] (mm.) : <i id="redReq" style="color:red"> *</i></label>
+    <div class="col-md-2">
+        <select class="form-control" asp-for="modelProductSpec.Height" style="width: 120px" asp-items="@(new SelectList(Model.modelProductSpec.HLists, "value"))">
+            <option value="0">@Localizer["Choose"]..</option>
+        </select>
+    </div>
+    <label class="control-label text-right col-md-2">@Localizer["Cell Size"] (mm.) : <i id="redReq" style="color:red"> *</i></label>
+    <div class="col-md-2">
+        <select class="form-control" asp-for="modelProductSpec.JoinSize" style="width: 120px" asp-items="@(new SelectList(Model.modelProductSpec.CellSizeLists, "value"))">
+            <option value="0">@Localizer["Cell Size"]</option>
+        </select>
+    </div>
+    <div class="col-sm-3">
+    </div>
+</div>
+<div class="form-group row">
+    <label class="control-label text-right col-md-3">@Localizer["Search"] : <i id="redReq" style="color:red"> *</i></label>
+    <div class="col-md-9">
+        @*<select id="ddlSearch" class="select2" style="width: 100%" tabindex="1" asp-items="@(new SelectList(Model.modelProductSpec.BoardLists, "Code", "SearchBoard"))">
+            <option value="0">@Localizer["Choose Board"]</option>
+        </select>*@
+        <input type="text" class="form-control" id="bSearch" placeholder='@Localizer["Choose Board"]'>
+        <input id="FlagCode" type="hidden">
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-sm-3" style="text-align: right;">
+        <label> @Localizer["Board Code"] :</label>
+    </div>
+    <div class="col-sm-4">
+        <input type="text" asp-for="modelProductSpec.Code" class="form-control" tabindex="-1" readonly />
+    </div>
+    <div class="col-sm-2" style="text-align: right;">
+        <label> @Localizer["Flute"] :</label>
+    </div>
+    <div class="col-sm-3">
+        <input type="text" asp-for="modelProductSpec.Flute" class="form-control" tabindex="-1" readonly />
+        <input type="hidden" asp-for="modelProductSpec.A" />
+        <input type="hidden" asp-for="modelProductSpec.B" />
+        <input type="hidden" asp-for="modelProductSpec.C" />
+        <input type="hidden" asp-for="modelProductSpec.D1" />
+        <input type="hidden" asp-for="modelProductSpec.D2" />
+        @*<input type="hidden" asp-for="modelProductSpec.JoinSize" />*@
+        <input type="hidden" asp-for="modelProductSpec.PrintMasterPath" />
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-sm-3" style="text-align: right;">
+        <label> @Localizer["Board Description"] :</label>
+    </div>
+    <div class="col-sm-4">
+        <input type="text" asp-for="modelProductSpec.Board" class="form-control" tabindex="-1" readonly />
+    </div>
+    <div class="col-sm-2" style="text-align: right;">
+        <label>@Localizer["Basic Weight"] :</label>
+    </div>
+    <div class="col-sm-3">
+        <div class="input-group">
+            <input type="text" asp-for="modelProductSpec.Weight" class="form-control" tabindex="-1" readonly />
+            <div class="input-group-prepend" style="height: 30px;">
+                <span class="input-group-text" id="basic-addon1">g.</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-sm-3" style="text-align: right;">
+        <label> @Localizer["KIWIPlan Board"] :</label>
+    </div>
+    <div class="col-sm-4">
+        <input type="text" asp-for="modelProductSpec.BoardKIWI" class="form-control" tabindex="-1" readonly />
+    </div>
+    <div class="col-sm-2" style="text-align: right;">
+        <label> @Localizer["Cost per Ton"] : <i style="color:red"> *</i></label>
+    </div>
+    <div class="col-sm-3">
+        <input type="text" asp-for="modelProductSpec.CostPerTon" tabindex="2" class="mytextboxNumber form-control" autocomplete="off" required>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-sm-3" style="text-align: right;">
+        <label> @Localizer["Hierarchy"] :</label>
+    </div>
+    <div class="col-sm-4">
+        <input type="text" asp-for="modelProductSpec.Hierarchy" class="form-control" tabindex="-1" readonly>
+    </div>
+    <div class="col-sm-2" style="text-align: right;">
+        <label>
+            @Localizer["Don't Upgrade"] :
+        </label>
+    </div>
+    <div class="col-sm-1">
+        <input class="filled-in" type="checkbox" value="" id="chkUpg" tabindex="-1">
+        <label class="form-check-label" for="chkUpg">
+        </label>
+        <input type="hidden" asp-for="modelProductSpec.UnUpgradBoard" />
+    </div>
+    <div class="col-sm-2">
+        <span id="modelProductSpec_CostPerTon-error" class="text-danger" style="display: none;">@Localizer["Cost required"]</span>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-sm-7">
+        <button id="btBoardAlt" type="button" class="btn btn-info waves-effect waves-light" tabindex="-1" disabled> <span class="btn-label"><i class="mdi mdi-vector-intersection"></i></span>@Localizer["Alternative Board"] </button>
+        <button id="btCoating" type="button" data-target="#modal-coating" class="btn btn-info waves-effect waves-light" tabindex="-1" disabled>@Localizer["Special Coating"] </button>
+        @*<button id="btcoatingTest" type="button" data-target="#modal-coating" class="btn btn-info waves-effect waves-light" onclick="bindCoating()">@Localizer["Special Coating Test"] </button>*@
+        @Html.Partial("_CoatingModal", Model)
+    </div>
+    <div class="col-sm-2" style="text-align: right;">
+        @if (Model.modelProductInfo.PLANTCODE != null)
+        {
+            <label> @Localizer["Cost OEM"] : </label>
+        }
+     </div>
+     <div class="col-sm-3">
+        <input type = "text" asp-for="modelProductSpec.CostOEM" tabindex="3" class="mytextboxNumber form-control" autocomplete="off" required>
+    </div>
+</div>
+<div class="row">
+<div class="card-body" id="alt" style="display:none">
+
+    <div class="card card-outline-inverse">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4 class="m-b-0 text-white"> @Localizer["Alternative board combination"]</h4>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <button class="btn btn-danger waves-effect waves-light" type="button" onclick=" closeALT()"><i class="mdi mdi-color-helper" style="width:100%"></i></button>
+    @*<button type="button" class="btn btn-dark" onclick=" closeALT()"> Close </button>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row" style="line-height: 40px;">
+                        <label class="control-label col-md-2">@Localizer["Search"] :</label>
+                        <div class="col-md-5">
+    @*<input type="text" id="BoardCodeAlt" placeholder="" class="form-control">*@
+                            <select id = "BoardCodeAlt" class="select2" style="width: 100%" asp-items="@(new SelectList(Model.modelProductSpec.SearchBoardAltLists,"Code","SearchBoard"))">
+                                <option>@Localizer["Choose Board"]</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-5">
+    @*<button id="btOK" type="button" class="btn btn-success waves-effect waves-light"><i class="fa fa-check" style="width:100%"></i> </button>*@
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-2">@Localizer["Flute"] :</label>
+                        <div class="col-md-2"><input type = "text" id="FluteAlt" name="Flute" class="form-control" style="width: 50px; border: 0px;" readonly></div>
+                        <label class="control-label col-md-1">@Localizer["Name"] :</label>
+                        <label class="control-label col-md-5" id="BoardNameAlt"></label>
+
+                        <div class="col-sm-2 text-right">
+                            <div id = "updown">
+                                 <button type = "button" class="btn btn-danger waves-effect waves-light" id="btnMoveUp" value="Up"><i class="fa fa-arrow-up"></i></button>&nbsp;&nbsp;
+                                 <button type = "button" class="btn btn-danger waves-effect waves-light" id="btnMoveDown" value="Down"><i class="fa fa-arrow-down"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group row">
+                                <div class="col-sm-4">
+                                    <input type = "text" asp-for="modelProductSpec.stt1" class="form-control font-weight-bold" style="border: 0px;">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type = "text" id="GL" asp-for="modelProductSpec.GL" placeholder="" class="form-control">@*style="width: 80px; height: 25px; border: 1px solid #ccc; padding: 6px 10px;"*@
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-sm-4">
+                                                                    <input type = "text" asp-for="modelProductSpec.stt2" class="form-control font-weight-bold" style="border: 0px;">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <input type = "text" id="BM" asp-for="modelProductSpec.BM" placeholder="" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-sm-4">
+                                                                    <input type = "text" asp-for="modelProductSpec.stt3" class="form-control font-weight-bold" style="border: 0px;">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <input type = "text" id="BL" asp-for="modelProductSpec.BL" placeholder="" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-sm-4">
+                                                                    <input type = "text" asp-for="modelProductSpec.stt4" class="form-control font-weight-bold" style="border: 0px;">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <input type = "text" id="CM" asp-for="modelProductSpec.CM" placeholder="" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-sm-4">
+                                                                    <input type = "text" asp-for="modelProductSpec.stt5" class="form-control font-weight-bold" style="border: 0px;">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <input type = "text" id="CL" asp-for="modelProductSpec.CL" placeholder="" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-sm-4">
+                                                                    <input type = "text" asp-for="modelProductSpec.stt6" class="form-control font-weight-bold" style="border: 0px;">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <input type = "text" id="DM" asp-for="modelProductSpec.DM" placeholder="" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-sm-4">
+                                                                    <input type = "text" asp-for="modelProductSpec.stt7" class="form-control font-weight-bold" style="border: 0px;">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <input type = "text" id="DL" asp-for="modelProductSpec.DL" placeholder="" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-1">
+                                                            <div class="row">
+                                                                <label>@Localizer["Priority"]</label>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <input type = "text" asp-for="modelProductSpec.Priority" class="form-control text-center">
+                                                            </div>
+                                                            <br />
+                                                            <div class="form-group row">
+                                                                <button id = "btAdd" type="button" class="btn btn-success waves-effect waves-light"><i class="fa fa-plus"></i>  </button>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <button id = "btRemove" type="button" class="btn btn-danger waves-effect waves-light" disabled><i class="fa fa-trash"></i>  </button>
+                                                            </div>
+                                                            <br />
+                                                            <div class="row">
+                                    @*<input type="checkbox" id="chkAct">*@
+        <input class="filled-in" type="checkbox" value="" id="chkAct" checked>
+        <label class="form-check-label" for="chkAct">
+        </label>
+        <input type="hidden" asp-for="modelProductSpec.Active" value="true">
+        @Localizer["Active"]
+    </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div id="tbBoardAlt" style="height: 150px; overflow-x:scroll; overflow-y:scroll;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

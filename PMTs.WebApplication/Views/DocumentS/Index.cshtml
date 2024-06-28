@@ -1,0 +1,1214 @@
+﻿@model PMTs.DataAccess.ComplexModel.CreateDocumentSModel
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["PageAction"] = "ManageMO";
+    var masterdataList = new List<MasterCardMO>();
+}
+
+@using PMTs.DataAccess.ModelView
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<style>
+    .fileSelect {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        box-sizing: border-box;
+        min-width: 1.5em;
+        display: inline-block;
+        background-color: #d4edff;
+        margin-top: 0.2em;
+        margin-right: 0.2em;
+        text-align: center;
+        padding: 5px;
+        border: none;
+        border-radius: 4px;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        text-decoration: none !important;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .line-space {
+        margin: 5px;
+    }
+
+    .li-space {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+
+    input {
+        font-size: medium;
+    }
+
+    .title-label {
+        max-width: 170px;
+        padding: 0px;
+        min-width: 170px;
+    }
+
+    .vertical-sub-text {
+        vertical-align: sub;
+        padding-left: 10px;
+    }
+
+    .btn-size {
+        max-height: 30px
+    }
+</style>
+
+<div id="mainPage">
+    <partial name="_SoMain" model="Model" />
+</div>
+
+@*Modal DocumentS MOData Selection*@
+<div class="modal bs-example-modal-xl" id="modal-modata-list">
+    <div class="modal-dialog modal-xl" style="max-width: 1300px; min-width: 1300px; width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-themecolor"><i class="mdi mdi-file-outline"></i> @Localizer["MO Data List"] </h3>
+                <button type="button" class="close" id="btn-close-modal" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-between container" style="margin-bottom:10px;min-height: 250px;">
+
+                    <div class="col-md-12" style="position:relative;">
+                        <button type="button" class="btn btn-info btn-fixsize btn-size" style="position: absolute;left:60px;top: 30px;z-index: 1; " onclick="SelectMOdatasToDocuments()"> <i style="padding-right:10px"></i>@Localizer["Save"] </button>
+                        <button type="button" class="btn btn-danger btn-fixsize btn-size" id="modatas-close-modal" data-dismiss="modal" data-backdrop="false" style="position: absolute;left:215px;top: 30px;z-index: 1; "> <i style="padding-right:10px"></i>@Localizer["Cancel"] </button>
+                        <button type="button" class="btn btn-info btn-fixsize btn-size" style="position: absolute;left:370px;top: 30px;z-index: 1; " onclick="ClearMODataSelectList()"> <i style="padding-right:10px"></i>@Localizer["Clear"] </button>
+
+                        <div id="divMODatasTableSelector" class="table-responsive m-t-10 col-md-12" style="margin-left: 15px; min-width: 1200px;">
+                            <partial name="_MODatasTableSelectorTable" model="Model" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <link rel="stylesheet" type="text/css" href="~/lib/FixedColumns-4.1.0/css/fixedColumns.bootstrap.min.css" />
+    <script type="text/javascript" src="~/lib/FixedColumns-4.1.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <script>
+        let modatasArr = [];
+        let moDatasObjArr = [];
+        let isSelector = false;
+        var timeout;
+
+        $(document).ready(function () {
+            modatasArr = [];
+            moDatasObjArr = [];
+            isSelector = false;
+
+        });
+
+        $('#snumber').keyup(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode === 13) {
+                $('#btnsearchdocs').trigger('click');
+            }
+        });
+
+        function KeyupSearchMoData() {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if ($('#txtorderitem').val().length >= 8) {
+                $('#requireOrderItemLength').attr('hidden', true);
+                if (keycode === 13) {
+                    $('#btnsearchorder').trigger('click');
+                }
+            } else {
+                $('#requireOrderItemLength').attr('hidden',false);
+            }
+        }
+
+        function RenderChangeProcess()
+        {
+            $.ajax({
+                url: '@Url.Action("CreateDocumentS", "DocumentS")',
+                async: false,
+                dataType: "json",
+                success: function (res) {
+                        $('#mainPage').html(res);
+                    $('#btnAddUpdateDocsList').text('Add/Edit')
+                    $('#divChangeDocS').hide()
+
+                        //$('#AttachFileMoTable').DataTable({
+                        //    "paging": true,
+                        //    "order": [[2, "desc"]]
+                        //});
+                }
+            });
+        }
+
+        $("#modatas-close-modal").click(function () {
+            ClearTempAfterCloseSelect();
+        });
+
+        $("#btn-close-modal").click(function () {
+            ClearTempAfterCloseSelect();
+        });
+
+        function ClearTempAfterCloseSelect() {
+            modatasArr = [];
+            moDatasObjArr = [];
+            $("#modal-modata-list").modal("hide");
+        }
+
+        $("#btnsearchdocs").click(function () {
+        let snumber = $('#snumber').val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SearchDocumentS", "DocumentS")',
+                data: { SNumber: snumber   },
+                async: false,
+                success: function (res) {
+                    console.log(res)
+                    $("#SnumberTbl").html(res);
+                    $('#SnumberReportTbl').DataTable();
+                },
+                error: function () { }
+            });
+        });
+
+        function SearchOrderData()
+        {
+            modatasArr = [];
+            moDatasObjArr = [];
+            isSelector = false;
+            let snumber = $('#_docsnumber').text();
+            let orderitem = $('#txtorderitem').val();
+
+            if ($('#txtorderitem').val().length < 8) {
+                $('#requireOrderItemLength').attr('hidden', false);
+            } else {
+
+                $('#requireOrderItemLength').attr('hidden', true);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SearchDocumentsAndMODataByOrderItem", "DocumentS")',
+                    data: {
+                        orderItem: orderitem,
+                        sNumber: snumber
+                    },
+                    async: false,
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            var moDataObj = JSON.parse(res.ModelDocument);
+                            moDatasObjArr = JSON.parse(res.MODatas);
+
+                            let moCount = parseInt(res.MOCount);
+                            if (moCount > 1) {
+                                $('#divChangeDocS').hide()
+                                $("#modal-modata-list").modal({ backdrop: "static" });
+                                $("#modal-modata-list").modal("show");
+                                $('#divMODatasTableSelector').html(res.ViewTable);
+                                $('.modal-backdrop').css('display', 'none');
+                                let motable = $('#MODatasTableSelector').DataTable({
+                                    "scrollX": true,
+                                    "dom": 'Bfrt<"float-left"i>',
+                                    "paging": false,
+                                    "pageLength": 100,
+                                    "scrollY": "450px",
+                                    "scrollX": true,
+                                    "scrollCollapse": true,
+                                    "lengthChange": false,
+                                    "Width": "1200px",
+                                    "fixedColumns": {
+                                        left: 3
+                                    },
+                                    "oLanguage": {
+                                        "sSearch": "ค้นหา:"
+                                    }
+                                });
+                                // check all
+                                motable.$(".chk-mo:input[type=checkbox]").prop("checked", true);
+                                $.each(moDatasObjArr, function (key, moDataObject) {
+                                    modatasArr.push(moDataObject.OrderItem);
+                                });
+                            }
+                            else if(moCount == 1)
+                            {
+                                if (moDataObj != "" && moDataObj != null) {
+                                    ByBoxTypeStatus(moDataObj.MaterialType)
+                                    $("#order_OrderItem").text(moDataObj.OrderItem);
+                                    $("#order_CustomerName").text(moDataObj.CustomerName);
+                                    $("#order_PO").text(moDataObj.PoNo);
+                                    $("#order_MateriailNo").text(moDataObj.MaterialNo);
+                                    $("#order_PC").text(moDataObj.Pc);
+                                    $("#order_SaleText1").text(moDataObj.SaleText1);
+                                    $("#order_Flute").text(moDataObj.Flute);
+                                    $("#order_OrderQty").text(moDataObj.OrderQuantity);
+                                    let dueDateDocs = moDataObj.DueDate.split('T')[0];
+                                    let shortDate = dueDateDocs.replaceAll('-', '/');
+                                    $("#order_DueDate").text(shortDate.split('/')[2] + "/" + shortDate.split('/')[1] + "/" + shortDate.split('/')[0]);
+                                    $("#order_BoxType").text(moDataObj.BlockType);
+                                    $("#order_Process").text(moDataObj.Process);
+                                    $("#changeRemark").val(moDataObj.Remark);
+
+                                    $("#ckHold").prop("checked", false);
+                                    $("#ckCancel").prop("checked", false);
+
+                                    if (moDataObj.Snumber != "" && moDataObj.Snumber != null) {
+                                        $('#btnAddUpdateDocsList').text("Edit");
+                                    } else {
+
+                                        $('#btnAddUpdateDocsList').text('Add');
+                                    }
+
+                                    $('#divChangeDocS').show()
+                                    if (moDataObj.OrderQtyNew != null & moDataObj.OrderQtyNew != "") {
+                                        $("#changeOrder").val(moDataObj.OrderQtyNew);
+                                    }
+                                    else
+                                    {
+                                        $("#changeOrder").val(moDataObj.OrderQuantity);
+                                    }
+                                    document.getElementById("datepickerDueDate").valueAsDate = new Date(dueDateDocs);
+                                }
+                                else
+                                {
+                                    $('#divChangeDocS').hide()
+                                    swal("Search Documents and MOData", "No results found", "warning");
+                                }
+
+                            }
+                            else if (moCount == 0) {
+                                $('#divChangeDocS').hide()
+                                swal("Search Documents and MOData","No results found","warning");
+                            }
+                        }
+                        else {
+                            swal("Search MOData Failed", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+        }
+
+        function ByModata(res)
+        {
+            ByBoxTypeStatus(res.MatType)
+            $("#order_OrderItem").text(res.OrderItem);
+            $("#order_CustomerName").text(res.CustomerName);
+            $("#order_PO").text(res.PO);
+            $("#order_MateriailNo").text(res.MateriailNo);
+            $("#order_PC").text(res.PC);
+            $("#order_SaleText1").text(res.SaleText1);
+            $("#order_Flute").text(res.Flute);
+            $("#order_OrderQty").text(res.OrderQty);
+            $("#order_DueDate").text(res.DueDate);
+            $("#order_BoxType").text(res.BoxType);
+            $("#order_Process").text(res.Process);
+
+        }
+
+        function ByBoxTypeStatus(mattype)
+        {
+            if (mattype === "81") {
+                $('#changeStatus').empty();
+                $('#changeStatus').append($("<option></option>").attr("value", "").text(""));
+                $('#changeStatus').append($("<option></option>").attr("value", "ยังไม่ plan").text("ยังไม่ plan"));
+                $('#changeStatus').append($("<option></option>").attr("value", "ยังไม่ออกแผ่น").text("ยังไม่ออกแผ่น"));
+                $('#changeStatus').append($("<option></option>").attr("value", "ออกแผ่นเเล้ว").text("ออกแผ่นเเล้ว"));
+                $('#changeStatus').append($("<option></option>").attr("value", "ผลิตเสร็จแล้ว").text("ผลิตเสร็จแล้ว"));
+            } else if (mattype === "82") {
+                $('#changeStatus').empty();
+                $('#changeStatus').append($("<option></option>").attr("value", "").text(""));
+                $('#changeStatus').append($("<option></option>").attr("value", "Supplier").text("Supplier"));
+                $('#changeStatus').append($("<option></option>").attr("value", "ยังไม่ plan").text("ยังไม่ plan"));
+                $('#changeStatus').append($("<option></option>").attr("value", "ผลิตเสร็จแล้ว").text("ผลิตเสร็จแล้ว"));
+            } else {
+                $('#changeStatus').empty();
+                $('#changeStatus').append($("<option></option>").attr("value", "").text(""));
+                $('#changeStatus').append($("<option></option>").attr("value", "กล่อง").text("กล่อง"));
+            }
+
+        }
+
+        function AddDocListOrder()
+        {
+            if (isSelector) {
+                SaveChangeDocuments(false);
+            } else {
+
+                if ($('#btnAddUpdateDocsList').text() === "Add") {
+                    AddSnumberls()
+                    $('#btnAddUpdateDocsList').text('Edit')
+                }
+                else if ($('#btnAddUpdateDocsList').text() === "Edit") {
+                    EditSnumberls()
+                }
+            }
+        }
+
+        function SaveChangeDocuments(IsUpdateOrderItems)
+        {
+            //let table = $('#MODatasTableSelector').DataTable();
+            //let formArr = $("#frm").serializeArray();
+            let manageDocuments = [];
+            if (IsUpdateOrderItems) {
+                manageDocuments = GetDataFromDocTableForm();
+            } else {
+                let model = getData();
+                manageDocuments.push(model);
+            }
+
+            if (manageDocuments.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SaveChangeDocuments", "DocumentS")',
+                    data: {
+                        model: manageDocuments,
+                        orderItem: ""
+                    },
+                    async: false,
+                    success: function (res) {
+                        if (res.IsSuccess) {
+
+                            swal("Save Successfully", "", "success");
+                            EditSnumber($("#_docsnumber").text());
+                            $("#modal-modata-list").modal("hide");
+                        }
+                        else
+                        {
+                            $('#divChangeDocS').hide();
+                            swal("Save Failed", res.ExceptionMessage, "warning");
+                            $("#modal-modata-list").modal("hide");
+                        }
+                        modatasArr = [];
+                    },
+                    error: function () { }
+                });
+            }
+        }
+
+        function getData() {
+            let hold = false;
+            let cancel = false;
+
+            if ($('#ckHold').prop('checked')) {
+                hold = true;
+            }
+            //else
+            if ($('#ckCancel').prop('checked')) {
+                cancel = true;
+            }
+
+            let req = {
+                "Snumber": $("#_docsnumber").text(),
+                "OrderItem": $("#order_OrderItem").text(),
+                "Pc": $("#order_PC").text(),
+                "MaterialNo": $("#order_MateriailNo").text(),
+                "Flute": $("#order_Flute").text(),
+                "DuedateOld": $("#order_DueDate").text(),
+                "DuedateNew": $("#datepickerDueDate").val().toString(),
+                "BoxStatus": $("#order_BoxType").text(),
+                "PartStatus": $("#changeStatus :selected").val(),//$("#changeStatus").val(),
+                "saleText": $("#order_SaleText1").text(),
+                "Process": $("#order_Process").text(),
+                "Remark": $("#changeRemark").val(),
+                "OrderQtyOld": $("#order_OrderQty").text(),
+                "OrderQtyNew": $("#changeOrder").val(),
+                "Customer": $("#order_CustomerName").text(),
+                "Hold": hold,
+                "Cancel": cancel
+            };
+            return req;
+        }
+
+        function GetDataFromDocTableForm() {
+            let manageDocuments = [];
+
+            $.each(modatasArr, function (orderItemKey, OrderItemValue) {
+                let hold = false;
+                let cancel = false;
+                let changeQuantity = $("#change-" + OrderItemValue.toString()).val();
+                let dueDate = $("#DueDate-" + OrderItemValue.toString()).val();
+                if ($('#hold-' + OrderItemValue).prop('checked')) {
+                    hold = true;
+                } else if ($('#cancel-' + OrderItemValue).prop('checked')) {
+                    cancel = true;
+                }
+                let remark = $("#remark-" + OrderItemValue.toString()).val();
+                let partStatus = $("#boxTypeStatus-" + OrderItemValue.toString()).val();
+
+                let model = {
+                    "Snumber": $("#_docsnumber").text(),
+                    "OrderItem": OrderItemValue,
+                    "DuedateNew": dueDate,
+                    "PartStatus": partStatus,
+                    "OrderQtyNew": changeQuantity,
+                    "Remark": remark,
+                    "Hold": hold,
+                    "Cancel": cancel
+                };
+
+                let modelhasChange = moDatasObjArr.filter(m => { return m.OrderItem == OrderItemValue });
+                if (modelhasChange != null && modelhasChange != "" &&
+                    ((modelhasChange[0].OrderQuantity != changeQuantity && changeQuantity != "")
+                    || (modelhasChange[0].Hold != hold && (modelhasChange[0].Hold != null || hold))
+                    || (modelhasChange[0].Cancel != cancel && (modelhasChange[0].Cancel != null || cancel))
+                    || !(IsSameDate(new Date(modelhasChange[0].DueDate), new Date(dueDate)))
+                    || (modelhasChange[0].Remark != remark && remark != ""))
+                ) {
+                    manageDocuments.push(model);
+                }
+
+            });
+            return manageDocuments;
+        }
+
+        function clearMO()
+        {
+            $("#order_OrderItem").text('');
+            $("#order_CustomerName").text('');
+            $("#order_PO").text('');
+            $("#order_MateriailNo").text('');
+            $("#order_PC").text('');
+            $("#order_SaleText1").text('');
+            $("#order_Flute").text('');
+            $("#order_OrderQty").text('');
+            $("#order_DueDate").text('');
+            $("#order_BoxType").text('');
+            $("#order_Process").text('');
+        }
+
+        function clearDocs()
+        {
+            document.getElementById("datepickerDueDate").valueAsDate = new Date()
+            $('#changeOrder').val('')
+            $('#changeStatus').val('')
+            $('#changeRemark').val('')
+            // $('input[name="inlineMaterialRadiosExample"]:checked').val(0)
+            $("#ckHold").prop("checked", false);
+            $("#ckCancel").prop("checked", false);
+        }
+
+        function AddSnumberls()
+        {
+            modatasArr = [];
+            isSelector = false;
+            let tmp = getData()
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddChangeS", "DocumentS")',
+                data: tmp,
+                async: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $("#changeSoDiv").html(res.View);
+                        $('#changeSoTbl').DataTable();
+                        swal("Save Documents Successfully", "", "success");
+                    }
+                    else {
+                        swal("Save Documents Failed", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () { }
+            });
+
+        }
+
+        function EditSnumberls()
+        {
+            modatasArr = [];
+            isSelector = false;
+            let tmp = getData()
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditChangeS", "DocumentS")',
+                data: tmp,
+                async: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $("#changeSoDiv").html(res.View);
+                        $('#changeSoTbl').DataTable();
+                        swal("Update Documents Successfully", "", "success");
+                    }
+                    else {
+                        swal("Update Documents Failed", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () { }
+            });
+
+        }
+
+        function backToMainPage()
+        {
+            window.location.reload()
+           @*$.ajax({
+                type: 'POST',
+                url: '@Url.Action("Index", "DocumentS")',
+            async: false,
+            success: function (res) {
+                //$('#mainPage').html(res);
+            },
+            error: function () { }
+            });*@
+
+        }
+
+        function EditSnumber(data)
+        {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditDocumentS", "DocumentS")',
+                data: { snumber: data },
+                async: false,
+                success: function (res) {
+                    console.log(res)
+                    $('#mainPage').html(res);
+                    $('#changeSoTbl').DataTable();
+                    $('#btnAddUpdateDocsList').text('Add/Edit')
+                    $('#divChangeDocS').hide()
+                },
+                error: function () { }
+            });
+           // alert('edits',data)
+        }
+
+        function PrintInChangePage()
+        {
+            PrintSnumber($("#_docsnumber").text())
+        }
+
+        function PrintInChangePagePDF() {
+            PrintSnumberPDF($("#_docsnumber").text())
+        }
+
+        function PrintSnumber(data)
+        {
+           document.location.href = '@Url.Action("DocumentSExportExcel", "DocumentS")' + "?req=" + data;
+
+          // document.location.href = '@Url.Action("ExportDocumentsPDF", "DocumentS")' + "?req=" + data
+
+        }
+
+        function PrintSnumberPDF(data)
+        {
+           //document.location.href = '@Url.Action("DocumentSExportExcel", "DocumentS")' + "?req=" + data;
+
+           document.location.href = '@Url.Action("ExportDocumentsPDF", "DocumentS")' + "?req=" + data
+
+        }
+
+        function validateCheckHoldx() {
+            if (document.getElementById('ckHold').checked) {
+
+                $("#ckCancel").prop("checked", false);
+            } else {
+              //  alert("You didn't check it! Let me check it for you. xxxx");
+            }
+        }
+
+        function validateCheckHoldCancel() {
+            if (document.getElementById('ckCancel').checked) {
+
+                $("#ckHold").prop("checked", false);
+            } else {
+               // alert("You didn't check it! Let me check it for you.");
+            }
+        }
+
+        function ChangeBoxStatus(item)
+        {
+            let isBox = $(item).attr("data-isBox");
+            if (isBox == "True") {
+                $.each(moDatasObjArr, function (modataKey, modataObj) {
+
+                    $("#boxTypeStatus-" + modataObj.OrderItem).val(item.value);
+                });
+            }
+        }
+
+        function CheckHoldCancel(item) {
+            let orderItem = $(item).attr("data-orderItem");
+            let isBox = $(item).attr("data-isBox");
+            let holdCancelId = $(item).attr("id");
+            if (holdCancelId.includes("hold")) {
+                //case hold change
+                let elementId = "hold-" + orderItem;
+                if (document.getElementById(elementId).checked) {
+                    $("#cancel-" + orderItem).prop("checked", false);
+                    if (isBox == "True") {
+                        $.each(moDatasObjArr, function (modataKey, modataObj) {
+
+                            $("#hold-" + modataObj.OrderItem).prop("checked", true);
+                            $("#cancel-" + modataObj.OrderItem).prop("checked", false);
+                        });
+                    }
+                }
+
+            } else {
+                //case cancel change
+                let elementId = "cancel-" + orderItem;
+                if (document.getElementById(elementId).checked) {
+                    $("#hold-" + orderItem).prop("checked", false);
+                    if (isBox == "True") {
+                        $.each(moDatasObjArr, function (modataKey, modataObj) {
+
+                            $("#cancel-" + modataObj.OrderItem).prop("checked", true);
+                            $("#hold-" + modataObj.OrderItem).prop("checked", false);
+                        });
+                    }
+                }
+            }
+        }
+
+        function EditDocumentSlst(id,snumber)
+        {
+            modatasArr = [];
+            isSelector = false;
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ByDataEditDocumentList", "DocumentS")',
+                data: { id: id, snumber: snumber },
+                async: false,
+                success: function (res) {
+                    ByModata(res.documentSData);
+
+                    if (res.documentSlist.DuedateNew == null || res.documentSlist.DuedateNew == "") {
+                        let duedateOld = res.documentSlist.DuedateOld.toString().split('T')[0]
+                        document.getElementById("datepickerDueDate").valueAsDate = new Date(duedateOld);
+                    } else {
+                        let duedateNew = res.documentSlist.DuedateNew.toString().split('T')[0]
+                        document.getElementById("datepickerDueDate").valueAsDate = new Date(duedateNew);
+                    }
+                    ByBoxTypeStatus(res.documentSData.MatType);
+                    $('#changeOrder').val(res.documentSlist.OrderQtyNew)
+                    if (res.documentSData.MatType === "82") {
+                        $('#changeStatus').val(res.documentSlist.PartStatus)
+                    } else {
+                        $('#changeStatus').val(res.documentSlist.BoxStatus)
+                    }
+
+                    $('#changeRemark').val(res.documentSlist.Remark)
+
+                    if (res.documentSlist.Hold === true) {
+                        $("#ckHold").prop("checked", true);
+                        $("#ckCancel").prop("checked", false);
+                    } else if (res.documentSlist.Cancel === true) {
+                        $("#ckHold").prop("checked", false);
+                        $("#ckCancel").prop("checked", true);
+                    } else {
+                        $("#ckHold").prop("checked", false);
+                        $("#ckCancel").prop("checked", false);
+                    }
+                    $('#btnAddUpdateDocsList').text('Edit')
+                    $('#divChangeDocS').show()
+
+                },
+                error: function () {
+
+                }
+            });
+        }
+
+        function DeleteDocumenSlst(id, snumber)
+        {
+            swal({
+                title: "Are you sure delete documents?",
+                text: "This can't recover the data if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("DeletChangeS", "DocumentS")',
+                        data: { id: id, snumber: snumber },
+                        async: false,
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $("#changeSoDiv").html(res.View);
+                                $('#changeSoTbl').DataTable();
+                                clearDocs();
+                                clearMO();
+                                $('#btnAddUpdateDocsList').text('Add/Edit')
+                                $('#divChangeDocS').hide()
+                                swal("Successfully deleted", "", "success");
+                            }
+                            else {
+                                swal("Delete Documents Failed", res.ExceptionMessage, "warning");
+                            }
+                        },
+                        error: function () { }
+                    });
+                }
+            });
+
+        }
+
+        function chageCaptionRemarkByDueDate() {
+            var convertDate = spliteTextToValueDate($('#order_DueDate').text())
+            if ($('#changeOrder').val() === $('#order_OrderQty').text()) {
+                if ($('#datepickerDueDate').val() === convertDate) {
+
+                } else {
+                    $('#changeRemark').val("กำหนดส่ง")
+                }
+
+            } else
+            {
+                if ($('#datepickerDueDate').val() === convertDate) {
+                    $('#changeRemark').val("จำนวนสั่ง")
+                } else {
+                    $('#changeRemark').val("จำนวนสั่ง,กำหนดส่ง")
+                }
+            }
+        }
+
+        function chageCaptionRemarkByQty() {
+            var convertDate = spliteTextToValueDate($('#order_DueDate').text())
+            if ($('#datepickerDueDate').val() === convertDate) {
+                if ($('#changeOrder').val() === $('#order_OrderQty').text()) {
+
+                } else {
+                    $('#changeRemark').val("จำนวนสั่ง")
+                }
+
+            } else {
+                if ($('#changeOrder').val() === $('#order_OrderQty').text()) {
+                    $('#changeRemark').val("กำหนดส่ง")
+                } else {
+                    $('#changeRemark').val("จำนวนสั่ง,กำหนดส่ง")
+                }
+            }
+        }
+
+        function spliteTextToValueDate(textDate)
+        {
+            var arrays = textDate.split('/')
+            var result = arrays[2] + '-' + arrays[1] + '-' + arrays[0]
+            return result
+        }
+
+        function GetOrderItem(item) {
+            let snumber = $('#_docsnumber').text();
+            let $row = $(item).closest("td");
+            let id = $row.find("input:eq(0)").attr('id');
+            var elementById = "#" + id;
+            let orderQuantity = $(elementById).attr("data-orderQuant");
+            if (id != "") {
+                if ($row.find("input:eq(0)").is(':checked')) {
+                    //uncheck
+                    var defaultSelected = modatasArr.filter(p => p === id);
+                    if (defaultSelected.length > 0) {
+                        modatasArr = modatasArr.filter(p => { return p !== id });
+                    }
+                    $(elementById).prop('checked', false);
+                    return false;
+                }
+                else //check
+                {
+                    var defaultSelected = modatasArr.filter(p => p == id);
+                    if (defaultSelected.length == 0) {
+                        modatasArr.push(id);
+                    }
+                    $(elementById).prop('checked', true);
+                    return false;
+                }
+            }
+        }
+
+        function DisabledChangeQuantity(moDataArr) {
+            $.each(moDataArr, function (modataKey, modataObj) {
+                let idChangeQuantity = "#change-" + modataObj.OrderItem;
+                $(idChangeQuantity).attr("disabled", false);
+            });
+        }
+
+        function SetRemarkForBoms(IsOrderQty, IsSetReverse, orderItem) {
+            let idRemark = "#remark-" + orderItem;
+            let remarkValue = $(idRemark).val();
+            if (IsOrderQty) //change remark from order quantity
+            {
+                let newRemark = remarkValue.replace(/จำนวนสั่ง,/g, '');
+                newRemark = newRemark.replace(/,จำนวนสั่ง/g, '');
+                newRemark = newRemark.replace(/จำนวนสั่ง/g, '');
+                if (!IsSetReverse) {
+                    if (newRemark == "") {
+                        $(idRemark).val("จำนวนสั่ง");
+                    } else {
+                        $(idRemark).val(newRemark + ",จำนวนสั่ง");
+                    }
+                } else {
+                    $(idRemark).val(newRemark);
+                }
+            } else //change remark from duedate
+            {
+                let newRemark = remarkValue.replace(/กำหนดส่ง,/g, '');
+                newRemark = newRemark.replace(/,กำหนดส่ง/g, '');
+                newRemark = newRemark.replace(/กำหนดส่ง/g, '');
+                if (!IsSetReverse) {
+                    if (newRemark == "") {
+                        $(idRemark).val("กำหนดส่ง");
+                    } else {
+                        $(idRemark).val(newRemark + ",กำหนดส่ง");
+                    }
+                } else {
+                    $(idRemark).val(newRemark);
+                }
+            }
+        }
+
+        function IsSameDate(originalDate, compareDate) {
+            return originalDate.getFullYear() === compareDate.getFullYear() &&
+                originalDate.getMonth() === compareDate.getMonth() &&
+                originalDate.getDate() === compareDate.getDate();
+        }
+
+        function ChangeDueDate(item) {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(function () {
+                let changeDueDate = $(item).val();
+                let convertChangeDueDate = new Date(changeDueDate);
+                let orderItem = $(item).attr("data-orderItem");
+                let oldDueDate = $(item).attr("data-dueDate");
+                let isBox = false;
+                if ($(item).attr("data-isBox") == "True") {
+                    isBox = true;
+                }
+
+                //#region change duedate
+                if (changeDueDate != "" && isBox) {
+                    $.each(moDatasObjArr, function (modataKey, modataObj) {
+                        let idChangeDueDate = "#DueDate-" + modataObj.OrderItem.toString();
+
+                        //set duedate boms
+                        $(idChangeDueDate).val(changeDueDate);
+
+                        //set remark
+                        let IsCheckReverse = false;
+                        let IsOrderQty = false;
+
+                        let convertOldDueDate = new Date(modataObj.DueDate);
+                        if (!IsSameDate(convertChangeDueDate, convertOldDueDate)) {
+                            SetRemarkForBoms(IsOrderQty, IsCheckReverse, modataObj.OrderItem.toString());
+                        } else {
+                            IsCheckReverse = true
+                            SetRemarkForBoms(IsOrderQty, IsCheckReverse, modataObj.OrderItem);
+                        }
+                    });
+                } else if (changeDueDate != ""){
+                    //set remark
+                    let IsCheckReverse = false;
+                    let IsOrderQty = false;
+                    let convertOldDueDate = new Date(oldDueDate);
+
+                    if (!IsSameDate(convertChangeDueDate, convertOldDueDate)) {
+                        SetRemarkForBoms(IsOrderQty, IsCheckReverse, orderItem);
+                    } else {
+                        IsCheckReverse = true
+                        SetRemarkForBoms(IsOrderQty, IsCheckReverse, orderItem);
+                    }
+                }
+                //#endregion
+
+            }, 300);
+        }
+
+        function ChangeQuantity(item) {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(function () {
+                let changeOrderQuantity = $(item).val();
+                let orderItem = $(item).attr("data-orderItem");
+                let oldOrderQuantity = $(item).attr("data-orderQuantity");
+                let isBox = false;
+                if ($(item).attr("data-isBox") == "True") {
+                    isBox = true;
+                }
+
+                DisabledChangeQuantity(moDatasObjArr);
+
+                //#region change quantity
+
+                if (changeOrderQuantity != "" && isBox) {
+                    $.each(moDatasObjArr, function (modataKey, modataObj) {
+                        let idChangeQuantity = "#change-" + modataObj.OrderItem.toString();
+                        let idRemark = "#remark-" + modataObj.OrderItem.toString();
+                        let remarkValue = $(idRemark).val();
+
+                        //calculate and set order quantity
+                        let changeOrderQtyValue = isNaN(parseInt(modataObj.PieceSet) * parseInt(changeOrderQuantity))
+                            ? isNaN(parseInt(changeOrderQuantity)) ? 0 : parseInt(changeOrderQuantity)
+                            : parseInt(modataObj.PieceSet) * parseInt(changeOrderQuantity);
+                        $(idChangeQuantity).val(changeOrderQtyValue);
+
+                        //disabled order quantity field
+                        if (!modataObj.isBox || modataObj.OrderItem == orderItem) {
+                            $(idChangeQuantity).attr("disabled", false);
+                        } else {
+                            $(idChangeQuantity).attr("disabled", true);
+                        }
+
+                        //set remark
+                        let IsCheckReverse = false;
+                        let IsOrderQty = true;
+                        if (modataObj.OrderQuantity != changeOrderQuantity) {
+                            SetRemarkForBoms(IsOrderQty, IsCheckReverse, modataObj.OrderItem);
+                        } else {
+                            IsCheckReverse = true
+                            SetRemarkForBoms(IsOrderQty, IsCheckReverse, modataObj.OrderItem);
+                        }
+
+                    });
+                } else if (changeOrderQuantity != "") {
+                    //set remark
+                    let IsCheckReverse = false;
+                    let IsOrderQty = true;
+                    if (oldOrderQuantity != changeOrderQuantity) {
+                        SetRemarkForBoms(IsOrderQty, IsCheckReverse, orderItem);
+                    } else {
+                        IsCheckReverse = true
+                        SetRemarkForBoms(IsOrderQty, IsCheckReverse, orderItem);
+                    }
+                }
+                //#endregion
+
+                //#region focus last change quantity
+                var inp = document.getElementById("change-" + orderItem);
+                $("#change-" + orderItem).focus();
+                var len = inp.value.length;
+                if (inp.setSelectionRange) {
+                    inp.focus();
+                    inp.setSelectionRange(len, len);
+                } else if (inp.createTextRange) {
+                    var t = inp.createTextRange();
+                    t.collapse(true);
+                    t.inp('character', len);
+                    t.moveStart('character', len);
+                    t.select();
+                }
+                //#endregion
+
+            }, 800);
+        }
+
+        $('#MODatasTableSelector').on('click', 'tbody tr', function () {
+            let moTable = $('#MODatasTableSelector').DataTable();
+            moTable.row(this).edit({
+
+                buttons: [
+                    { label: 'Cancel', fn: function () { this.close(); } },
+                    'Edit'
+                ]
+
+            });
+        });
+
+        function SelectMOdatasToDocuments()
+        {
+            isSelector = true;
+            if (modatasArr.length > 0) {
+                if (modatasArr.length == 1) {
+                    let moDataObj = moDatasObjArr.filter(m => { return m.OrderItem == modatasArr[0] })[0];
+                    let orderItem = moDataObj.OrderItem;
+                    let changeQuantity = $("#change-" + orderItem.toString()).val();
+                    let dueDate = $("#DueDate-" + orderItem.toString()).val();
+
+                    let shortDate = dueDate.replaceAll('-', '/');
+                    $('#divChangeDocS').hide()
+                    $("#modal-modata-list").modal("hide");
+                    clearDocs();
+
+                    $("#order_OrderItem").text(orderItem);
+                    ByBoxTypeStatus(moDataObj.MaterialType)
+                    $("#order_CustomerName").text(moDataObj.CustomerName);
+                    $("#order_PO").text(moDataObj.PoNo);
+                    $("#order_MateriailNo").text(moDataObj.MaterialNo);
+                    $("#order_PC").text(moDataObj.Pc);
+                    $("#order_SaleText1").text(moDataObj.SaleText1);
+                    $("#order_Flute").text(moDataObj.Flute);
+                    $("#order_Process").text(moDataObj.Process);
+                    $('#changeRemark').val("จำนวนสั่ง");
+                    $("#order_OrderQty").text(moDataObj.OrderQuantity);
+                    $("#changeStatus").val($("#boxTypeStatus-" + orderItem.toString()).val());
+                    $("#order_BoxType").text(moDataObj.BlockType);
+                    $("#order_DueDate").text(shortDate.split('/')[2] + "/" + shortDate.split('/')[1] + "/" + shortDate.split('/')[0]);
+
+                    if (document.getElementById("hold-" + orderItem).checked) {
+                        $("#ckHold").prop("checked", true);
+                    }else if (document.getElementById("cancel-" + orderItem).checked) {
+                        $("#ckCancel").prop("checked", true);
+                    }
+
+                    if (moDataObj.Snumber != "") {
+                        $('#btnAddUpdateDocsList').text("Edit");
+                    } else {
+
+                        $('#btnAddUpdateDocsList').text('Add');
+                    }
+
+                    $('#divChangeDocS').show();
+                    if ((moDataObj.isBox && changeQuantity != "" && changeQuantity != null) || !moDataObj.isBox) {
+                        $("#changeOrder").val(changeQuantity);
+                    } else {
+                        $("#changeOrder").val(moDataObj.OrderQuantity);
+                    }
+
+                    document.getElementById("datepickerDueDate").valueAsDate = new Date(dueDate);
+
+                    SaveChangeDocuments(false);
+
+                } else {
+                    DialogSaveSelectMODatas();
+                }
+
+                //#region old SelectMOdatasToDocuments
+                @* $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SelectMOdatasToDocuments", "DocumentS")',
+                    data: {
+                        orderItems: modatasArr
+                    },
+                    async: false,
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            var moDataObj = JSON.parse(res.BoxModel);
+
+                            if (res.OrderItemsForSave) {
+                                DialogSaveSelectMODatas();
+                            }
+                            else {
+                                SaveChangeDocuments(true);
+
+                                $('#divChangeDocS').hide()
+                                $("#modal-modata-list").modal("hide");
+                                $("#order_OrderItem").text(moDataObj.OrderItem);
+                                ByBoxTypeStatus(moDataObj.MaterialType)
+                                $("#order_CustomerName").text(moDataObj.CustomerName);
+                                $("#order_PO").text(moDataObj.PoNo);
+                                $("#order_MateriailNo").text(moDataObj.MaterialNo);
+                                $("#order_PC").text(moDataObj.Pc);
+                                $("#order_SaleText1").text(moDataObj.SaleText1);
+                                $("#order_Flute").text(moDataObj.Flute);
+                                $("#order_OrderQty").text(moDataObj.OrderQuantity);
+                                let dueDateDocs = moDataObj.DueDate.split('T')[0];
+                                let shortDate = dueDateDocs.replaceAll('-', '/');
+                                $("#order_DueDate").text(shortDate.split('/')[2] + "/" + shortDate.split('/')[1] + "/" + shortDate.split('/')[0]);
+                                $("#order_BoxType").text(moDataObj.BlockType);
+                                $("#order_Process").text(moDataObj.Process);
+                                $('#changeRemark').val("จำนวนสั่ง");
+                                if (moDataObj.Snumber != "") {
+                                    $('#btnAddUpdateDocsList').text("Edit");
+                                } else {
+
+                                    $('#btnAddUpdateDocsList').text('Add');
+                                }
+
+                                $('#divChangeDocS').show();
+                                clearDocs();
+                                if ((moDataObj.isBox && moDataObj.ChangeQuantity != null) || !moDataObj.isBox) {
+                                    $("#changeOrder").val(moDataObj.ChangeQuantity);
+                                } else {
+                                    $("#changeOrder").val(moDataObj.OrderQuantity);
+                                }
+
+                                document.getElementById("datepickerDueDate").valueAsDate = new Date(dueDateDocs);
+                            }
+                        }
+                        else {
+                            swal("Documents Data Binding Fails", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () { }
+                });*@
+                //#endregion
+
+            }
+            else
+            {
+                swal("Documents Data Selection", "please select at least one record.", "warning");
+            }
+
+        }
+
+        function DialogSaveSelectMODatas() {
+            swal({
+                title: "Do you want to save Documents",
+                //text: "Type Box can't be found or select more than one row.",
+                text: "",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    SaveChangeDocuments(true);
+                }
+            });
+        }
+
+        function ClearMODataSelectList() {
+            SearchOrderData();
+            @*moDatasObjArr = [];
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetModatasFromSession", "DocumentS")',
+                async: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+
+                        moDatasObjArr = JSON.parse(res.MODatas);
+
+                        $('#divChangeDocS').hide()
+                        $("#modal-modata-list").modal({ backdrop: "static" });
+                        $("#modal-modata-list").modal("show");
+                        $('#divMODatasTableSelector').html(res.ViewTable);
+                        $('.modal-backdrop').css('display', 'none');
+                        let motable = $('#MODatasTableSelector').DataTable({
+                            "scrollX": true,
+                            "dom": 'Bfrt<"float-left"i>',
+                            "paging": false,
+                            "lengthChange": false,
+                            "autoWidth": true,
+                            "pageLength": 100,
+                            "width": "200%",
+                            "fixedColumns": {
+                                left: 1,
+                                right: 1
+                            },
+                            "scrollY": "200px",
+                            "scrollCollapse": true,
+                            "oLanguage": {
+                                "sSearch": "ค้นหา:"
+                            }
+                        });
+
+                        motable.$("input[type=checkbox] .chk-mo").prop("checked", true);
+                    }
+                    else {
+                        swal("Set MOData Failed", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () { }
+            });*@
+        }
+    </script>
+}

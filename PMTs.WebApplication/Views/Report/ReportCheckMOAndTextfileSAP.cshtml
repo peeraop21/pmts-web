@@ -1,0 +1,1147 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.Report.ReportCheckMOAndTextfileSAPViewModel
+@using System.Linq
+@{
+    ViewData["Title"] = "Report Check MO And Text File SAP";
+}
+
+<style>
+    .bootstrap-tagsinput {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        display: inline-block;
+        padding: 4px 6px;
+        color: #555;
+        vertical-align: middle;
+        border-radius: 4px;
+        max-width: 100%;
+        width: 100%;
+        line-height: 36px;
+        cursor: text;
+    }
+
+        .bootstrap-tagsinput input {
+            border: none;
+            box-shadow: none;
+            outline: none;
+            background-color: transparent;
+            padding: 0 6px;
+            margin: 0;
+            width: auto;
+            max-width: inherit;
+        }
+
+        .bootstrap-tagsinput.form-control input::-moz-placeholder {
+            color: #777;
+            opacity: 1;
+        }
+
+        .bootstrap-tagsinput.form-control input:-ms-input-placeholder {
+            color: #777;
+        }
+
+        .bootstrap-tagsinput.form-control input::-webkit-input-placeholder {
+            color: #777;
+        }
+
+        .bootstrap-tagsinput input:focus {
+            border: none;
+            box-shadow: none;
+        }
+
+        .bootstrap-tagsinput .tag {
+            margin-right: 2px;
+            color: white;
+            font-size: 18px
+        }
+
+            .bootstrap-tagsinput .tag [data-role="remove"] {
+                margin-left: 8px;
+                cursor: pointer;
+            }
+
+                .bootstrap-tagsinput .tag [data-role="remove"]:after {
+                    content: "x";
+                    padding: 0px 2px;
+                }
+
+                .bootstrap-tagsinput .tag [data-role="remove"]:hover {
+                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+                }
+
+                    .bootstrap-tagsinput .tag [data-role="remove"]:hover:active {
+                        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+                    }
+
+    .LockScreen {
+        display: block;
+        visibility: visible;
+        position: absolute;
+        z-index: 999;
+        top: 0px;
+        left: 0px;
+        width: 105%;
+        height: 105%;
+        background-color: transparent;
+        vertical-align: bottom;
+        padding-top: 20%;
+        filter: alpha(opacity=75);
+        opacity: 0.70;
+        font-size: large;
+        color: blue;
+        font-style: italic;
+        font-weight: 400;
+        background-image: url("/images/report-preloading.gif");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+</style>
+
+<div id="preLoadingScreen" class="LockScreen"></div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-top-bar">
+            <div class="card-header">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-checkbox-multiple-marked-circle-outline"></i> @Localizer["Headerreport"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn btn-light" style="float: left;" id="btnShowConfigWording"><i class="fa fa-cog"></i>&nbsp;@Localizer["Config"]</button>
+
+                            @*Config wording report *@
+                            <div class="modal" id="modal-config-wording">
+                                <div class="modal-dialog modal-lg" style="width: 90%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myLargeModalLabel">@Localizer["Config Wording Report"]</h4>
+                                            <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                @*<input type="text" id="tagInput" data-role="tagsinput" value="jQuery,Script,Net">*@
+
+                                                <input type="text" id="tagsinput" data-role="tagsinput" placeholder="@Localizer["Add Wording Config"]" />
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" id="btnConfigWording" class="btn btn-info">@Localizer["Save"]</button>
+                                            <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body tab-criteria">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row line-space">
+                            <div class="form-group col-md-5" style="padding: 0px;text-align: right;">
+                                <div class="row line-space">
+                                    <div class="form-group col-md-4 title-label">
+                                        <label class=" vertical-sub-text mt-1" style="float: right;">@Localizer["duedatestart"]</label>
+                                    </div>
+                                    <div class='col-sm-8'>
+                                        <div class="form-group">
+                                            <div class='input-group date'>
+                                                <input type='date' id="input-datetimepicker-start" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" onchange="ChangeDate(this,'StartDueDateReq')" placeholder="-- Please Select Strat Date --" />
+                                            </div>
+                                        </div>
+
+                                        <span class="text-danger" id="StartDueDateReq" hidden>@Localizer["The Start Due Date field is requried."]</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-5" style="padding: 0px;">
+                                <div class="row line-space">
+                                    <div class="form-group col-md-4 title-label">
+                                        <label class=" vertical-sub-text mt-1" style="float: right;">@Localizer["duedateend"]</label>
+                                    </div>
+                                    <div class='col-sm-8'>
+                                        <div class="form-group">
+                                            <div class='input-group date'>
+                                                <input type='date' id="input-datetimepicker-end" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" onchange="ChangeDate(this,'EndDueDateReq')" placeholder="-- Please Select End Date --" />
+                                            </div>
+                                        </div>
+
+                                        <span class="text-danger" id="EndDueDateReq" hidden>@Localizer["The End Due Date field is requried."]</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" onclick="SearchCheckOrder()"><i class="fa fa-search"></i>&nbsp;@Localizer["Search"]</button>
+                            </div>
+                        </div>
+
+                        <hr />
+                    </div>
+
+                    <div id="divReportCheckMOAndSAPTable" class="card-body col-md-12" style="padding:2px 2px 10px 2px;">
+                        <partial name="_ReportCheckMOAndTextfileSAPTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/buttons.dataTables.min.css" />
+
+    <script type="text/javascript" src="~/DataTable/js/datatables.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/buttons.colVis.min.js"></script>
+    <script src="~/lib/DataTables/pdfmake.min.js"></script>
+    <script src="~/lib/DataTables/vfs_fonts.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/jszip.min.js"></script>
+
+    <script>
+        let viewAll = "";
+        let configStr = "";
+        let wording = @Html.Raw(Json.Serialize(Model.ConfigWordingReport) );
+        let configStrInuse = "";
+        window.pdfMake.fonts = {
+            THSarabunNew: {
+                normal: 'THSarabunNew.ttf',
+                bold: 'THSarabunNew.ttf',
+                italics: 'THSarabunNew.ttf"',
+                bolditalics: 'THSarabunNew.ttf',
+            }
+        };
+
+        $(document).ready(function () {
+            if (wording.Wording != "") {
+
+                configStr = wording.Wording;
+            }
+            $('#ReportCheckMOAndSAPTable').DataTable({
+                            "scrollX": true,
+                "order": [[0, "asc"]],
+                "dom": 'Bfrt<"float-left"i>p',
+                "paging": true,
+                "lengthChange": false,
+                "autoWidth": true,
+                "buttons": [
+                    {
+                        extend: 'pdf',
+                        text: 'พิมพ์รายงาน',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        filename: 'ReportCheckMOAndSAP_' + new Date().toJSON().slice(0, 10).toString().replace('-', '_'),
+
+                    }, {
+                        extend: 'excelHtml5',
+                        text: 'ดาวน์โหลด Excel', "createEmptyCells": true,
+                        messageTop: "รายงาน S/O ที่มีใน ERP แต่ไม่มีใน PMTs",
+                    },
+                ],
+                "oLanguage": {
+                    "sSearch": "ค้นหา:"
+                }
+            });
+
+            $("#preLoadingScreen").hide();
+            document.getElementById('input-datetimepicker-start').value = new Date().toJSON().slice(0, 10);
+            document.getElementById('input-datetimepicker-end').value = new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()).toJSON().slice(0, 10);
+        });
+
+        $("#input-datetimepicker-start").focus(function () {
+            $(this).attr({ type: 'date' });
+            $("#input-datetimepicker-start").attr('min', new Date().toJSON().slice(0, 10));
+            $("#input-datetimepicker-start").attr('max', new Date(new Date().getFullYear(), new Date().getMonth() + 12, new Date().getDate()).toJSON().slice(0, 10));
+        });
+
+        $("#input-datetimepicker-end").focus(function () {
+            $(this).attr({ type: 'date' });
+            $("#input-datetimepicker-end").attr('min', new Date().toJSON().slice(0, 10));
+            $("#input-datetimepicker-end").attr('max', new Date(new Date().getFullYear(), new Date().getMonth() + 12, new Date().getDate()).toJSON().slice(0, 10));
+        });
+
+        function SearchCheckOrder() {
+            if ($("#input-datetimepicker-start").val() == "") {
+                $("#input-datetimepicker-start").focus();
+
+                $("#StartDueDateReq").attr("hidden", false);
+            }
+            else if ($("#input-datetimepicker-end").val() == "") {
+                $("#input-datetimepicker-end").focus();
+                $("#EndDueDateReq").attr("hidden", false);
+
+                $("#StartDueDateReq").attr("hidden",true);
+            }
+            else
+            {
+                $("#StartDueDateReq").attr("hidden", true);
+                $("#EndDueDateReq").attr("hidden", true);
+                var startDueDate = $("#input-datetimepicker-start").val();
+                var endDueDate = $("#input-datetimepicker-end").val();
+                configStrInuse = configStr != null && configStr.length > 0 && configStr[0] == "," ? configStr.substr(1, configStr.length - 1) : configStr;
+
+                $("#preLoadingScreen").show();
+
+                //Search
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("SearchReportCheckMOAndSAP", "Report")',
+                    data: { startDueDate: startDueDate, endDueDate: endDueDate, configWordingString: configStrInuse},
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            setTimeout(function () {
+                                //hide loading
+                                $("#preLoadingScreen").hide();
+                            }, 1000);
+
+                            $('#divReportCheckMOAndSAPTable').html(res.View);
+                            $('.modal-backdrop').css('display', 'none');
+                            $('#ReportCheckMOAndSAPTable').DataTable({
+                                "scrollX": true,
+                                "order": [[0, "asc"]],
+                                "dom": 'Bfrt<"float-left"i>p',
+                                "paging": true,
+                                "autoWidth": true,
+                                "buttons": [
+                                    {
+                                        extend: 'pdf',
+                                        text: 'พิมพ์รายงาน',
+                                        orientation: 'landscape',
+                                        pageSize: 'A4',
+                                        filename: 'ReportCheckMOAndSAP_' + new Date().toJSON().slice(0, 10).toString().replace('-', '_'),
+                                        exportOptions: {
+                                            columns: ':visible',
+                                            search: 'applied',
+                                            order: 'applied'
+                                        },
+                                        customize: function (doc) {
+                                            doc.content[0].text = "รายงาน S/O ที่มีใน ERP แต่ไม่มีใน PMTs";
+
+                                            doc.styles.title = {
+                                                color: 'black',
+                                                fontSize: '18',
+                                                bold: true,
+                                                alignment: 'center'
+                                            }
+
+                                            doc.styles.tableHeader = {
+                                                alignment: "center",
+                                                bold: true,
+                                                color: "white",
+                                                fillColor: "#2d4154",
+                                                fontSize: '12',
+                                            }
+
+                                            doc.defaultStyle = {
+                                                font: 'THSarabunNew'
+                                            };
+                                            var rowCount = doc.content[1].table.body.length;
+                                            doc.content[1].table.widths = [
+                                                "15%",
+                                                "20%",
+                                                "12%",
+                                                "15%",
+                                                "15%",
+                                                "13%",
+                                                "15%"
+                                            ];
+
+                                            for (i = 1; i < rowCount; i++) {
+                                                doc.content[1].table.body[i][0].alignment = 'center';
+                                                doc.content[1].table.body[i][1].alignment = 'left';
+                                                doc.content[1].table.body[i][2].alignment = 'center';
+                                                doc.content[1].table.body[i][3].alignment = 'center';
+                                                doc.content[1].table.body[i][4].alignment = 'center';
+                                            }
+
+                                        }
+                                    },
+                                    {
+                                        extend: 'excelHtml5',
+                                        messageTop: "รายงาน S/O ที่มีใน ERP แต่ไม่มีใน PMTs",
+                                        text: 'ดาวน์โหลด Excel',
+                                        createEmptyCells: true,
+                                        exportOptions: {
+                                            title: null,
+                                            orthogonal: 'export'
+                                        },
+                                        customize: function (xlsx) {
+                                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                            // Loop over the cells
+                                            $('row c', sheet).each(function () {
+                                                //select the index of the row
+                                                var numero = $(this).parent().index();
+                                                var residuo = numero % 2;
+                                                if (numero == 1) {
+                                                    $(this).attr('s', '51');
+                                                } else if (numero == 2) {
+                                                    $(this).attr('s', '47');
+                                                } else if (numero > 1) {
+                                                    if (residuo == 0) {//'is t',
+                                                        $(this).attr('s', '25');
+                                                    } else {
+                                                        $(this).attr('s', '30');
+                                                    }
+                                                }
+                                            });
+                                        },
+                                    }
+                                ],
+                                "oLanguage": {
+                                    "sSearch": "ค้นหา:"
+                                }
+                            });
+                        }
+                        else {
+                            $("#preLoadingScreen").hide();
+                            swal("Search Failed!", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () {
+
+                        $("#preLoadingScreen").hide();
+                    }
+                });
+            }
+        }
+
+        function ChangeDate(item , attribute)
+        {
+            if ( $(item).val() != "")
+            {
+                $("#" + attribute).attr("hidden", true);
+            }
+            let dateStart = $("#input-datetimepicker-start").val();
+            let dateEnd = $("#input-datetimepicker-end").val();
+            if (dateStart != "" && dateEnd != "")
+            {
+                if (new Date(dateStart) > new Date(dateEnd)) {
+                    $("#input-datetimepicker-end").val("");
+                    $("#input-datetimepicker-end").focus();
+                }
+            }
+        }
+
+        $("#btnConfigWording").click(function () {
+            let configStrInuse = configStr.length > 0 && configStr[0] == "," ? configStr.substr(1, configStr.length - 1) : configStr;
+            $.ajax({
+                type: "POST",
+                async: false,
+                dataType: "json",
+                url: '@Url.Action("CreateConfigWordingReport", "Report")',
+                data: { configWordingString: configStrInuse},
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('#tagsinput').tagsinput('removeAll');
+                        $('#tagsinput').tagsinput('add', configStrInuse);
+                        configStr = configStrInuse;
+                        swal("Save Successfully!", "", "success").then(function (e) {
+                            if (e)
+                            {
+                                $("#modal-config-wording").modal("hide");
+                                SearchCheckOrder();
+                            }
+                        });
+                    }
+                    else {
+                        swal("Save Failed!", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () {
+
+                    $("#preLoadingScreen").hide();
+                }
+            });
+        });
+
+        $("#btnShowConfigWording").click(function () {
+            $('#tagsinput').tagsinput('add', configStr);
+            $("#modal-config-wording").modal("show");
+        });
+
+        $('input').on('itemAdded', function (event) {
+            if (!configStr.includes(event.item))
+            {
+                configStr = configStr + "," + event.item;
+            }
+        });
+
+        $('input').on('itemRemoved', function (event) {
+            configStr = configStr.replace(","+event.item, "");
+            configStr = configStr.replace(event.item, "");
+        });
+
+        //#region TagsInput
+        (function ($) {
+            "use strict";
+
+            var defaultOptions = {
+                tagClass: function (item) {
+                return 'label label-info';
+            },
+                itemValue: function(item) {
+                return item ? item.toString() : item;
+            },
+                itemText: function(item) {
+                return this.itemValue(item);
+            },
+                itemTitle: function(item) {
+                return null;
+            },
+            freeInput: true,
+            addOnBlur: true,
+            maxTags: undefined,
+            maxChars: undefined,
+            confirmKeys: [13, 44],
+            delimiter: ',',
+            delimiterRegex: null,
+            cancelConfirmKeysOnEmpty: true,
+            onTagExists: function(item, $tag) {
+              $tag.hide().fadeIn();
+            },
+            trimValue: false,
+            allowDuplicates: false
+          };
+
+          /**
+           * Constructor function
+           */
+          function TagsInput(element, options) {
+            this.itemsArray = [];
+
+            this.$element = $(element);
+            this.$element.hide();
+
+            this.isSelect = (element.tagName === 'SELECT');
+            this.multiple = (this.isSelect && element.hasAttribute('multiple'));
+            this.objectItems = options && options.itemValue;
+            this.placeholderText = element.hasAttribute('placeholder') ? this.$element.attr('placeholder') : '';
+            this.inputSize = Math.max(1, this.placeholderText.length);
+
+            this.$container = $('<div class="bootstrap-tagsinput"></div>');
+            this.$input = $('<input type="text" placeholder="' + this.placeholderText + '" />').appendTo(this.$container);
+
+            this.$element.before(this.$container);
+
+            this.build(options);
+          }
+
+          TagsInput.prototype = {
+            constructor: TagsInput,
+
+            /**
+             * Adds the given item as a new tag. Pass true to dontPushVal to prevent
+             * updating the elements val()
+             */
+            add: function(item, dontPushVal, options) {
+              var self = this;
+
+              if (self.options.maxTags && self.itemsArray.length >= self.options.maxTags)
+                return;
+
+              // Ignore falsey values, except false
+              if (item !== false && !item)
+                return;
+
+              // Trim value
+              if (typeof item === "string" && self.options.trimValue) {
+                item = $.trim(item);
+              }
+
+              // Throw an error when trying to add an object while the itemValue option was not set
+              if (typeof item === "object" && !self.objectItems)
+                throw("Can't add objects when itemValue option is not set");
+
+              // Ignore strings only containg whitespace
+              if (item.toString().match(/^\s*$/))
+                return;
+
+              // If SELECT but not multiple, remove current tag
+              if (self.isSelect && !self.multiple && self.itemsArray.length > 0)
+                self.remove(self.itemsArray[0]);
+
+              if (typeof item === "string" && this.$element[0].tagName === 'INPUT') {
+                var delimiter = (self.options.delimiterRegex) ? self.options.delimiterRegex : self.options.delimiter;
+                var items = item.split(delimiter);
+                if (items.length > 1) {
+                  for (var i = 0; i < items.length; i++) {
+                    this.add(items[i], true);
+                  }
+
+                  if (!dontPushVal)
+                    self.pushVal();
+                  return;
+                }
+              }
+
+              var itemValue = self.options.itemValue(item),
+                  itemText = self.options.itemText(item),
+                  tagClass = self.options.tagClass(item),
+                  itemTitle = self.options.itemTitle(item);
+
+              // Ignore items allready added
+              var existing = $.grep(self.itemsArray, function(item) { return self.options.itemValue(item) === itemValue; } )[0];
+              if (existing && !self.options.allowDuplicates) {
+                // Invoke onTagExists
+                if (self.options.onTagExists) {
+                  var $existingTag = $(".tag", self.$container).filter(function() { return $(this).data("item") === existing; });
+                  self.options.onTagExists(item, $existingTag);
+                }
+                return;
+              }
+
+              // if length greater than limit
+              if (self.items().toString().length + item.length + 1 > self.options.maxInputLength)
+                return;
+
+              // raise beforeItemAdd arg
+              var beforeItemAddEvent = $.Event('beforeItemAdd', { item: item, cancel: false, options: options});
+              self.$element.trigger(beforeItemAddEvent);
+              if (beforeItemAddEvent.cancel)
+                return;
+
+              // register item in internal array and map
+              self.itemsArray.push(item);
+
+              // add a tag element
+
+              var $tag = $('<span class="tag ' + htmlEncode(tagClass) + (itemTitle !== null ? ('" title="' + itemTitle) : '') + '">' + htmlEncode(itemText) + '<span data-role="remove"></span></span>');
+              $tag.data('item', item);
+              self.findInputWrapper().before($tag);
+              $tag.after(' ');
+
+              // add <option /> if item represents a value not present in one of the <select />'s options
+              if (self.isSelect && !$('option[value="' + encodeURIComponent(itemValue) + '"]',self.$element)[0]) {
+                var $option = $('<option selected>' + htmlEncode(itemText) + '</option>');
+                $option.data('item', item);
+                $option.attr('value', itemValue);
+                self.$element.append($option);
+              }
+
+              if (!dontPushVal)
+                self.pushVal();
+
+              // Add class when reached maxTags
+              if (self.options.maxTags === self.itemsArray.length || self.items().toString().length === self.options.maxInputLength)
+                self.$container.addClass('bootstrap-tagsinput-max');
+
+              self.$element.trigger($.Event('itemAdded', { item: item, options: options }));
+            },
+
+            /**
+             * Removes the given item. Pass true to dontPushVal to prevent updating the
+             * elements val()
+             */
+            remove: function(item, dontPushVal, options) {
+              var self = this;
+
+              if (self.objectItems) {
+                if (typeof item === "object")
+                  item = $.grep(self.itemsArray, function(other) { return self.options.itemValue(other) ==  self.options.itemValue(item); } );
+                else
+                  item = $.grep(self.itemsArray, function(other) { return self.options.itemValue(other) ==  item; } );
+
+                item = item[item.length-1];
+              }
+
+              if (item) {
+                var beforeItemRemoveEvent = $.Event('beforeItemRemove', { item: item, cancel: false, options: options });
+                self.$element.trigger(beforeItemRemoveEvent);
+                if (beforeItemRemoveEvent.cancel)
+                  return;
+
+                $('.tag', self.$container).filter(function() { return $(this).data('item') === item; }).remove();
+                $('option', self.$element).filter(function() { return $(this).data('item') === item; }).remove();
+                if($.inArray(item, self.itemsArray) !== -1)
+                  self.itemsArray.splice($.inArray(item, self.itemsArray), 1);
+              }
+
+              if (!dontPushVal)
+                self.pushVal();
+
+              // Remove class when reached maxTags
+              if (self.options.maxTags > self.itemsArray.length)
+                self.$container.removeClass('bootstrap-tagsinput-max');
+
+              self.$element.trigger($.Event('itemRemoved',  { item: item, options: options }));
+            },
+
+            /**
+             * Removes all items
+             */
+            removeAll: function() {
+              var self = this;
+
+              $('.tag', self.$container).remove();
+              $('option', self.$element).remove();
+
+              while(self.itemsArray.length > 0)
+                self.itemsArray.pop();
+
+              self.pushVal();
+            },
+
+            /**
+             * Refreshes the tags so they match the text/value of their corresponding
+             * item.
+             */
+            refresh: function() {
+              var self = this;
+              $('.tag', self.$container).each(function() {
+                var $tag = $(this),
+                    item = $tag.data('item'),
+                    itemValue = self.options.itemValue(item),
+                    itemText = self.options.itemText(item),
+                    tagClass = self.options.tagClass(item);
+
+                  // Update tag's class and inner text
+                  $tag.attr('class', null);
+                  $tag.addClass('tag ' + htmlEncode(tagClass));
+                  $tag.contents().filter(function() {
+                    return this.nodeType == 3;
+                  })[0].nodeValue = htmlEncode(itemText);
+
+                  if (self.isSelect) {
+                    var option = $('option', self.$element).filter(function() { return $(this).data('item') === item; });
+                    option.attr('value', itemValue);
+                  }
+              });
+            },
+
+            /**
+             * Returns the items added as tags
+             */
+            items: function() {
+              return this.itemsArray;
+            },
+
+            /**
+             * Assembly value by retrieving the value of each item, and set it on the
+             * element.
+             */
+            pushVal: function() {
+              var self = this,
+                  val = $.map(self.items(), function(item) {
+                    return self.options.itemValue(item).toString();
+                  });
+
+              self.$element.val(val, true).trigger('change');
+            },
+
+            /**
+             * Initializes the tags input behaviour on the element
+             */
+            build: function(options) {
+              var self = this;
+
+              self.options = $.extend({}, defaultOptions, options);
+              // When itemValue is set, freeInput should always be false
+              if (self.objectItems)
+                self.options.freeInput = false;
+
+              makeOptionItemFunction(self.options, 'itemValue');
+              makeOptionItemFunction(self.options, 'itemText');
+              makeOptionFunction(self.options, 'tagClass');
+
+              // Typeahead Bootstrap version 2.3.2
+              if (self.options.typeahead) {
+                var typeahead = self.options.typeahead || {};
+
+                makeOptionFunction(typeahead, 'source');
+
+                self.$input.typeahead($.extend({}, typeahead, {
+                  source: function (query, process) {
+                    function processItems(items) {
+                      var texts = [];
+
+                      for (var i = 0; i < items.length; i++) {
+                        var text = self.options.itemText(items[i]);
+                        map[text] = items[i];
+                        texts.push(text);
+                      }
+                      process(texts);
+                    }
+
+                    this.map = {};
+                    var map = this.map,
+                        data = typeahead.source(query);
+
+                    if ($.isFunction(data.success)) {
+                      // support for Angular callbacks
+                      data.success(processItems);
+                    } else if ($.isFunction(data.then)) {
+                      // support for Angular promises
+                      data.then(processItems);
+                    } else {
+                      // support for functions and jquery promises
+                      $.when(data)
+                       .then(processItems);
+                    }
+                  },
+                  updater: function (text) {
+                    self.add(this.map[text]);
+                    return this.map[text];
+                  },
+                  matcher: function (text) {
+                    return (text.toLowerCase().indexOf(this.query.trim().toLowerCase()) !== -1);
+                  },
+                  sorter: function (texts) {
+                    return texts.sort();
+                  },
+                  highlighter: function (text) {
+                    var regex = new RegExp( '(' + this.query + ')', 'gi' );
+                    return text.replace( regex, "<strong>$1</strong>" );
+                  }
+                }));
+              }
+
+              // typeahead.js
+              if (self.options.typeaheadjs) {
+                  var typeaheadConfig = null;
+                  var typeaheadDatasets = {};
+
+                  // Determine if main configurations were passed or simply a dataset
+                  var typeaheadjs = self.options.typeaheadjs;
+                  if ($.isArray(typeaheadjs)) {
+                    typeaheadConfig = typeaheadjs[0];
+                    typeaheadDatasets = typeaheadjs[1];
+                  } else {
+                    typeaheadDatasets = typeaheadjs;
+                  }
+
+                  self.$input.typeahead(typeaheadConfig, typeaheadDatasets).on('typeahead:selected', $.proxy(function (obj, datum) {
+                    if (typeaheadDatasets.valueKey)
+                      self.add(datum[typeaheadDatasets.valueKey]);
+                    else
+                      self.add(datum);
+                    self.$input.typeahead('val', '');
+                  }, self));
+              }
+
+              self.$container.on('click', $.proxy(function(event) {
+                if (! self.$element.attr('disabled')) {
+                  self.$input.removeAttr('disabled');
+                }
+                self.$input.focus();
+              }, self));
+
+                if (self.options.addOnBlur && self.options.freeInput) {
+                  self.$input.on('focusout', $.proxy(function(event) {
+                      // HACK: only process on focusout when no typeahead opened, to
+                      //       avoid adding the typeahead text as tag
+                      if ($('.typeahead, .twitter-typeahead', self.$container).length === 0) {
+                        self.add(self.$input.val());
+                        self.$input.val('');
+                      }
+                  }, self));
+                }
+
+              self.$container.on('keydown', 'input', $.proxy(function(event) {
+                var $input = $(event.target),
+                    $inputWrapper = self.findInputWrapper();
+
+                if (self.$element.attr('disabled')) {
+                  self.$input.attr('disabled', 'disabled');
+                  return;
+                }
+
+                switch (event.which) {
+                  // BACKSPACE
+                  case 8:
+                    if (doGetCaretPosition($input[0]) === 0) {
+                      var prev = $inputWrapper.prev();
+                      if (prev.length) {
+                        self.remove(prev.data('item'));
+                      }
+                    }
+                    break;
+
+                  // DELETE
+                  case 46:
+                    if (doGetCaretPosition($input[0]) === 0) {
+                      var next = $inputWrapper.next();
+                      if (next.length) {
+                        self.remove(next.data('item'));
+                      }
+                    }
+                    break;
+
+                  // LEFT ARROW
+                  case 37:
+                    // Try to move the input before the previous tag
+                    var $prevTag = $inputWrapper.prev();
+                    if ($input.val().length === 0 && $prevTag[0]) {
+                      $prevTag.before($inputWrapper);
+                      $input.focus();
+                    }
+                    break;
+                  // RIGHT ARROW
+                  case 39:
+                    // Try to move the input after the next tag
+                    var $nextTag = $inputWrapper.next();
+                    if ($input.val().length === 0 && $nextTag[0]) {
+                      $nextTag.after($inputWrapper);
+                      $input.focus();
+                    }
+                    break;
+                 default:
+                     // ignore
+                 }
+
+                // Reset internal input's size
+                var textLength = $input.val().length,
+                    wordSpace = Math.ceil(textLength / 5),
+                    size = textLength + wordSpace + 1;
+                $input.attr('size', Math.max(this.inputSize, $input.val().length));
+              }, self));
+
+              self.$container.on('keypress', 'input', $.proxy(function(event) {
+                 var $input = $(event.target);
+
+                 if (self.$element.attr('disabled')) {
+                    self.$input.attr('disabled', 'disabled');
+                    return;
+                 }
+
+                 var text = $input.val(),
+                 maxLengthReached = self.options.maxChars && text.length >= self.options.maxChars;
+                 if (self.options.freeInput && (keyCombinationInList(event, self.options.confirmKeys) || maxLengthReached)) {
+                    // Only attempt to add a tag if there is data in the field
+                    if (text.length !== 0) {
+                       self.add(maxLengthReached ? text.substr(0, self.options.maxChars) : text);
+                       $input.val('');
+                    }
+
+                    // If the field is empty, let the event triggered fire as usual
+                    if (self.options.cancelConfirmKeysOnEmpty === false) {
+                       event.preventDefault();
+                    }
+                 }
+
+                 // Reset internal input's size
+                 var textLength = $input.val().length,
+                    wordSpace = Math.ceil(textLength / 5),
+                    size = textLength + wordSpace + 1;
+                 $input.attr('size', Math.max(this.inputSize, $input.val().length));
+              }, self));
+
+              // Remove icon clicked
+              self.$container.on('click', '[data-role=remove]', $.proxy(function(event) {
+                if (self.$element.attr('disabled')) {
+                  return;
+                }
+                self.remove($(event.target).closest('.tag').data('item'));
+              }, self));
+
+              // Only add existing value as tags when using strings as tags
+              if (self.options.itemValue === defaultOptions.itemValue) {
+                if (self.$element[0].tagName === 'INPUT') {
+                    self.add(self.$element.val());
+                } else {
+                  $('option', self.$element).each(function() {
+                    self.add($(this).attr('value'), true);
+                  });
+                }
+              }
+            },
+
+            /**
+             * Removes all tagsinput behaviour and unregsiter all event handlers
+             */
+            destroy: function() {
+              var self = this;
+
+              // Unbind events
+              self.$container.off('keypress', 'input');
+              self.$container.off('click', '[role=remove]');
+
+              self.$container.remove();
+              self.$element.removeData('tagsinput');
+              self.$element.show();
+            },
+
+            /**
+             * Sets focus on the tagsinput
+             */
+            focus: function() {
+              this.$input.focus();
+            },
+
+            /**
+             * Returns the internal input element
+             */
+            input: function() {
+              return this.$input;
+            },
+
+            /**
+             * Returns the element which is wrapped around the internal input. This
+             * is normally the $container, but typeahead.js moves the $input element.
+             */
+            findInputWrapper: function() {
+              var elt = this.$input[0],
+                  container = this.$container[0];
+              while(elt && elt.parentNode !== container)
+                elt = elt.parentNode;
+
+              return $(elt);
+            }
+          };
+
+          /**
+           * Register JQuery plugin
+           */
+          $.fn.tagsinput = function(arg1, arg2, arg3) {
+            var results = [];
+
+            this.each(function() {
+              var tagsinput = $(this).data('tagsinput');
+              // Initialize a new tags input
+              if (!tagsinput) {
+                  tagsinput = new TagsInput(this, arg1);
+                  $(this).data('tagsinput', tagsinput);
+                  results.push(tagsinput);
+
+                  if (this.tagName === 'SELECT') {
+                      $('option', $(this)).attr('selected', 'selected');
+                  }
+
+                  // Init tags from $(this).val()
+                  $(this).val($(this).val());
+              } else if (!arg1 && !arg2) {
+                  // tagsinput already exists
+                  // no function, trying to init
+                  results.push(tagsinput);
+              } else if(tagsinput[arg1] !== undefined) {
+                  // Invoke function on existing tags input
+                    if(tagsinput[arg1].length === 3 && arg3 !== undefined){
+                       var retVal = tagsinput[arg1](arg2, null, arg3);
+                    }else{
+                       var retVal = tagsinput[arg1](arg2);
+                    }
+                  if (retVal !== undefined)
+                      results.push(retVal);
+              }
+            });
+
+            if ( typeof arg1 == 'string') {
+              // Return the results from the invoked function calls
+              return results.length > 1 ? results : results[0];
+            } else {
+              return results;
+            }
+          };
+
+          $.fn.tagsinput.Constructor = TagsInput;
+
+          /**
+           * Most options support both a string or number as well as a function as
+           * option value. This function makes sure that the option with the given
+           * key in the given options is wrapped in a function
+           */
+          function makeOptionItemFunction(options, key) {
+            if (typeof options[key] !== 'function') {
+              var propertyName = options[key];
+              options[key] = function(item) { return item[propertyName]; };
+            }
+          }
+          function makeOptionFunction(options, key) {
+            if (typeof options[key] !== 'function') {
+              var value = options[key];
+              options[key] = function() { return value; };
+            }
+          }
+          /**
+           * HtmlEncodes the given value
+           */
+          var htmlEncodeContainer = $('<div />');
+          function htmlEncode(value) {
+            if (value) {
+              return htmlEncodeContainer.text(value).html();
+            } else {
+              return '';
+            }
+                    }
+
+          function doGetCaretPosition(oField) {
+            var iCaretPos = 0;
+            if (document.selection) {
+              oField.focus ();
+              var oSel = document.selection.createRange();
+              oSel.moveStart ('character', -oField.value.length);
+              iCaretPos = oSel.text.length;
+            } else if (oField.selectionStart || oField.selectionStart == '0') {
+              iCaretPos = oField.selectionStart;
+            }
+            return (iCaretPos);
+                    }
+
+                    function keyCombinationInList(keyPressEvent, lookupList) {
+              var found = false;
+              $.each(lookupList, function (index, keyCombination) {
+                  if (typeof (keyCombination) === 'number' && keyPressEvent.which === keyCombination) {
+                      found = true;
+                      return false;
+                  }
+
+                  if (keyPressEvent.which === keyCombination.which) {
+                      var alt = !keyCombination.hasOwnProperty('altKey') || keyPressEvent.altKey === keyCombination.altKey,
+                          shift = !keyCombination.hasOwnProperty('shiftKey') || keyPressEvent.shiftKey === keyCombination.shiftKey,
+                          ctrl = !keyCombination.hasOwnProperty('ctrlKey') || keyPressEvent.ctrlKey === keyCombination.ctrlKey;
+                      if (alt && shift && ctrl) {
+                          found = true;
+                          return false;
+                      }
+                  }
+              });
+
+              return found;
+          }
+
+          /**
+           * Initialize tagsinput behaviour on inputs and selects which have
+           * data-role=tagsinput
+           */
+          $(function() {
+            $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
+          });
+        })(window.jQuery);
+
+        //#endregion
+    </script>
+}

@@ -1,0 +1,21 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceFluteTrim.MaintenanceFluteTrimModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.MachineFluteTrims)
+{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Machine</td>
+        <td>@item.Flute</td>
+        <td>@item.Trim</td>
+
+        <td align="center">
+            <a style="cursor:pointer"><i class="fas fa-file text-info" data-id1="@item.Id" onclick="viewEditDataView(this.getAttribute('data-id1'))"></i></a>
+        </td>
+        <td align="center">
+            <a style="cursor:pointer"> <i class="fas fa-pencil-alt text-warning" data-id1="@item.Id" onclick="viewEditData(this.getAttribute('data-id1'))"></i></a>
+        </td>
+    </tr>
+    No++;
+ }

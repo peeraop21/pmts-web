@@ -1,0 +1,280 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceJoint.MaintenanceJointViewModel
+@{ var No = 1;}
+@foreach (var item in Model.JointViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.JointId</td>
+        <td>@item.JointName</td>
+        <td>@item.JointDescription</td>
+        <td>
+            <button type="button" class="btn btn-default"
+                    data-JointId="@item.JointId"
+                    data-JointName="@item.JointName"
+                    data-KiwiJoinCodeInner="@item.KiwiJoinCodeInner"
+                    data-KiwiJoinCodeOuter="@item.KiwiJoinCodeOuter"
+                    onclick="BindDatatoView(this)"><span class="fas fa-file-alt text-info btn" aria-hidden="true" style="cursor:pointer" title="View"></span></button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-default"
+                    data-Id="@item.Id"
+                    data-JointId="@item.JointId"
+                    data-JointName="@item.JointName"
+                    data-KiwiJoinCodeInner="@item.KiwiJoinCodeInner"
+                    data-KiwiJoinCodeOuter="@item.KiwiJoinCodeOuter"
+                    data-CreatedDate="@item.CreatedDate"
+                    data-CreatedBy="@item.CreatedBy"
+                    onclick="BindDatatoEdit(this)"><span class="fas fa-pencil-alt text-warning" aria-hidden="true" style="cursor:pointer" title="Edit"></span></button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+    No++;
+}
+
+<!-- Start View Modal -->
+<div class="modal fade bs-example-modal-lg" id="modal-joint-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View Joint"]</h4>
+                <button type="button" class="close" data-dismiss="modal"  data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["JointId"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" id="JointIdView" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["JointName"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" id="JointNameView" name="JointName" asp-for="JointViewModel.JointName" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["KiwiJoinCodeInner"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" maxlength="2" id="KiwiJoinCodeInnerView" name="KiwiJoinCodeInner" asp-for="JointViewModel.KiwiJoinCodeInner" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label" for="JointName">@Localizer["KiwiJoinCodeOuter"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" maxlength="2" id="KiwiJoinCodeOuterView" name="KiwiJoinCodeOuter" asp-for="JointViewModel.KiwiJoinCodeOuter" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["JointDescription"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" id="JointDescriptionView" name="JointDescription" asp-for="JointViewModel.JointDescription" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-joint-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-Joint-form">
+            <input type="hidden" id="idEdit" name="Id" asp-for="JointViewModel.Id" />
+            <input type="hidden" id="ECreatedDate" asp-for="JointViewModel.CreatedDate" />
+            <input type="hidden" id="ECreatedBy" asp-for="JointViewModel.CreatedBy" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit Joint"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["JointId"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" maxlength="3" id="jointIdEdit" name="JointId" asp-for="JointViewModel.JointId" readonly />
+                            <span class="text-danger" id="jointIdEditReq" hidden>@Localizer["The JointId field is requried."]</span>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["JointName"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" maxlength="50" id="jointNameEdit" name="JointName" asp-for="JointViewModel.JointName" />
+                            <span class="text-danger" id="jointNameEditReq" hidden>@Localizer["The JointName field is requried."]</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["KiwiJoinCodeInner"]</label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" maxlength="2" id="KiwiJoinCodeInnerEdit" name="KiwiJoinCodeInner" asp-for="JointViewModel.KiwiJoinCodeInner" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="JointName">@Localizer["KiwiJoinCodeOuter"]</label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" maxlength="2" id="KiwiJoinCodeOuterEdit" name="KiwiJoinCodeOuter" asp-for="JointViewModel.KiwiJoinCodeOuter" />
+                        </div>
+                    </div>
+
+                    @*<div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["JointDescription"]</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" maxlength="50" id="JointDescription" name="JointDescription" asp-for="@item.JointDescription" />
+                    </div>
+                </div>*@
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="edit-joint-btn" class="btn btn-info">@Localizer["Update"]</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+<script>
+     $(document).ready(function () {
+         $('#edit-joint-btn').click(function () {
+            let isSubmit = true;
+            let jointId = $("#jointIdEdit").val();
+            let jointName = $("#jointNameEdit").val();
+
+            if(jointId == "")
+            {
+                $("#jointIdEditReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#jointIdEditReq").attr("hidden",true);
+            }
+
+            if(jointName == "")
+            {
+                $("#jointNameEditReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#jointNameEditReq").attr("hidden",true);
+            }
+
+            if(isSubmit)
+            {
+                let formData = {
+                    "Id": $("#idEdit").val(),
+                    "JointId": $("#jointIdEdit").val(),
+                    "JointName": $("#jointNameEdit").val(),
+                    "JointDescription ": $("#jointNameEdit").val(),
+                    "KiwiJoinCodeInner": $("#KiwiJoinCodeInnerEdit").val(),
+                    "KiwiJoinCodeOuter": $("#KiwiJoinCodeOuterEdit").val(),
+                    "CreatedDate": $("#ECreatedDate").val(),
+                    "CreatedBy": $("#ECreatedBy").val(),
+                };
+
+                var form = JSON.stringify(formData);
+
+                $.ajax({
+                    url: '@Url.Action("UpdateJoint", "MaintenanceJoint")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+
+                            swal("Update Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                            UpdateJointTable();
+                        }
+                        else {
+                            swal("Uppdate Failed", "", "warning");//modalDialog(error, SaveFailed);
+                        }
+                    },
+                    error: function () {
+                        // return false;
+                    }
+                });
+            }
+         });
+     });
+
+    function BindDatatoView(item) {
+        $("#JointIdView").val($(item).attr("data-JointId"));
+        $("#JointNameView").val($(item).attr("data-JointName"));
+        $("#KiwiJoinCodeInnerView").val($(item).attr("data-KiwiJoinCodeInner"));
+        $("#KiwiJoinCodeOuterView").val($(item).attr("data-KiwiJoinCodeOuter"));
+        $("#JointDescriptionView").val($(item).attr("data-JointName"));
+        $('#modal-joint-view').modal('show');
+    }
+
+    function BindDatatoEdit(item) {
+        $("#jointIdEdit").val($(item).attr("data-JointId"));
+        $("#idEdit").val($(item).attr("data-Id"));
+        $("#jointNameEdit").val($(item).attr("data-JointName"));
+        $("#KiwiJoinCodeInnerEdit").val($(item).attr("data-KiwiJoinCodeInner"));
+        $("#KiwiJoinCodeOuterEdit").val($(item).attr("data-KiwiJoinCodeOuter"));
+        $("#ECreatedDate").val(ChangeDateTimeFormat($(item).attr("data-CreatedDate")));
+        $("#ECreatedBy").val($(item).attr("data-CreatedBy"));
+        $('#modal-joint-edit').modal('show');
+    }
+
+    function ChangeDateTimeFormat(oDatetime) {
+        let datetimeStr = "";
+
+        if (oDatetime != null && oDatetime != "") {
+            let datetimeArr = oDatetime.split(' ');
+            let dateArr = datetimeArr[0].split('/');
+            let timeArr = datetimeArr[1].split(':');
+            let year = dateArr[2];
+            let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+            let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+            let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+            let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+            let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+            datetimeStr = year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+        }
+
+        return datetimeStr;
+    }
+</script>

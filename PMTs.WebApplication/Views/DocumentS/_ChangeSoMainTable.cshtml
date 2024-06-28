@@ -1,0 +1,78 @@
+﻿@model PMTs.DataAccess.ComplexModel.CreateDocumentSModel
+
+@using PMTs.DataAccess.ModelView
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    Layout = null;
+}
+
+<table id="changeSoTbl" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:20%">@Localizer["OrderItem"]</th>
+            <th style="width:20%">@Localizer["เปลี่ยนจำนวน"]</th>
+            <th style="width:20%">@Localizer["เปลี่ยนกำหนดส่ง"]</th>
+            <th style="width:10%">@Localizer["Hold"]</th>
+            <th style="width:10%">@Localizer["ยกเลิก"]</th>
+            <th style="width:20%">@Localizer["Action"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ldocumentSlist != null)
+        {
+            @foreach (var item in Model.ldocumentSlist)
+            {
+        <tr>
+            <td>@item.OrderItem</td>
+            @if (item.OrderQtyOld != item.OrderQtyNew)
+            {
+                <td style="text-align:center">/</td>
+            }
+            else
+            {
+                <td style="text-align:center"></td>
+            }
+
+            @if (item.DuedateOld.HasValue && item.DuedateNew.HasValue && item.DuedateOld.Value.ToString("dd/MM/yyyy") != item.DuedateNew.Value.ToString("dd/MM/yyyy"))
+            {
+                <td style="text-align:center">/</td>
+            }
+            else
+            {
+                <td style="text-align:center"></td>
+            }
+
+            @if (item.Hold == true)
+            {
+                <td style="text-align:center">/</td>
+            }
+            else
+            {
+                <td style="text-align:center"></td>
+            }
+
+            @if (item.Cancel == true)
+            {
+                <td style="text-align:center">/</td>
+            }
+            else
+            {
+                <td style="text-align:center"></td>
+            }
+
+            <td class="text-center">
+                <a data-target="@item.Id"  data-snumber="@item.Snumber" style="cursor:pointer;padding-left:10px;padding-right:10px" onclick="EditDocumentSlst(this.getAttribute('data-target'),this.getAttribute('data-snumber'));">
+                    <i class="fas fa-pencil-alt text-warning"></i>
+                </a>
+                <a data-target="@item.Id" data-snumber="@item.Snumber" style="cursor:pointer;padding-left:10px;padding-right:10px" onclick="DeleteDocumenSlst(this.getAttribute('data-target'),this.getAttribute('data-snumber'));">
+                    <i class="fas fa-trash text-danger"></i>
+                </a>
+            </td>
+        </tr>
+            }
+        }
+    </tbody>
+</table>

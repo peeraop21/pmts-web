@@ -1,0 +1,261 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceAllowance.MaintenanceAllowanceViewModel
+
+@{
+    ViewData["Title"] = "Allowance Precess";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["Allowance Process"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalAllowance">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span> @Localizer["Create"]
+                            </button>
+                            <partial name="_CreateModal" model="Model" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+
+                    <div class="box" id="Allowance-table">
+                        <partial name="_AllowanceTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        function viewShow(Id, EMachine, ERange, EPercen, ESheetMin, ESheetMax) {
+            $('#Id').val(Id);
+            $('#Machine').val(EMachine);
+            $('#Range').val(ERange);
+            $('#Percen').val(EPercen);
+            $('#SheetMin').val(ESheetMin);
+            $('#SheetMax').val(ESheetMax);
+
+            $('#modal-view').modal('show');
+        }
+
+        function viewEdit(Id, EMachine, ERange, EPercen, ESheetMin, ESheetMax) {
+            $('#EId').val(Id);
+            $('#EMachine').val(EMachine);
+            $('#ERange').val(ERange);
+            $('#EPercen').val(EPercen);
+            $('#ESheetMin').val(ESheetMin);
+            $('#ESheetMax').val(ESheetMax);
+
+            $('#modal-edit').modal('show');
+        }
+
+        function getData() {
+            let req = {
+                "Id": $("#EId").val(),
+                "Machine": $("#EMachine").val(),
+                "Range": $("#ERange").val(),
+                "Percen": $("#EPercen").val(),
+                "SheetMin": $("#ESheetMin").val(),
+                "SheetMax": $("#ESheetMax").val(),
+            };
+            return req;
+        }
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#AllowanceViewModel_Machine').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                var form = $('#create-Allowance-form').serialize();
+                $.ajax({
+                    url: '@Url.Action("SaveAllowance", "MaintenanceAllowance")',
+                    type: "POST",
+                    async: false,
+                    data: form,
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAllowanceTableNew(data);
+                        swal("Save Success!", { icon: "success", });
+                        $('#modal-create').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        $('.btnupdateallow').click(function () {
+            DisabledSubmitButton(this);
+            //var form = $('#update_form_allowance').serialize();
+            if ($('#EMachine').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                var form = JSON.stringify(getData());
+                $.ajax({
+                    url: '@Url.Action("UpdateAllowance", "MaintenanceAllowance")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAllowanceTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+       });
+
+        function UpdateAllowanceTableNew(res) {
+            $('#Allowance-table').html(res.View);
+            $('#Allowance-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#Allowance-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModalAllowance').click(function () {
+           // $(".field-validation-error span").hide();
+            $('#modal-create').modal('show');
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+
+        //$('#btnSubmit').click(function () {
+        //    $('.add-row').remove();
+        //});
+
+        @*function UpdateAllowanceTable() {
+            $.ajax({
+                url: '@Url.Action("UpdateAllowanceTable", "MaintenanceAllowance")',
+                success: function (res) {
+                    $('#Allowance-table').html(res);
+                    $('#Allowance-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+                },
+                error: function () {  }
+            });
+        }
+
+        function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeleteAllowance", "MaintenanceAllowance")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                swal("Deleted!", {
+                                    icon: "success",
+                                });
+                                //UpdateAllowanceTable();
+                                //window.location.reload(true);
+                                UpdateAllowanceTableNew(res);
+                            }
+                        }
+                    });
+                    } else {
+                    }
+                });
+        }
+
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+               // modalDialog(success, SaveSuccess);
+                swal("Success!", { icon: "success", });
+                //UpdateAllowanceTable();
+                UpdateAllowanceTableNew(res);
+            }
+            else {
+               // modalDialog(error, SaveFailed);
+                swal("Failed!", { icon: "warning", });
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+              //  $('.modal').modal('hide');
+               // modalDialog(success, UpdateSuccess);
+                swal("Success!", { icon: "success", });
+                //UpdateAllowanceTable();
+                UpdateAllowanceTableNew(res);
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+            }
+            else {
+               // modalDialog(error, UpdateFailed);
+                swal("Failed!", { icon: "warning", });
+            }
+        };
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                //modalDialog(success, UpdateSuccess);
+                swal("Success!", { icon: "success", });
+                // UpdateAllowanceTable();
+                UpdateAllowanceTableNew(res);
+            }
+            else {
+               // modalDialog(error, UpdateFailed);
+                swal("Failed!", { icon: "warning", });
+            }
+        };*@
+    </script>
+
+}

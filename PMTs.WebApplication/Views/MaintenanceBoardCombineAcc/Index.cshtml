@@ -1,0 +1,204 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceBoardCombineAcc.MaintenanceBoardCombineAccViewModel
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+
+@{
+    ViewData["Title"] = "Maintenance Board Combine Acc";
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+    var shortName = Model.CompanyProfiles.Where(x => x.Text == userSession.FactoryCode).First().Value.Split(" ")[1].ToUpper().ToString();
+    var saleOrg = userSession.SaleOrg.ToString();
+    var factoryCode = userSession.FactoryCode.ToString();
+}
+
+<style>
+    .center {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="fa fa-cog"></i> &nbsp;@Localizer["Maintenance Board Combine Acc"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div style="margin-right:5px">
+                            <a asp-action="Index" asp-controller="MaintenancePlantCostField" class="btn btn-info" style="min-height:35px;min-width:100px;float:right;opacity:0.9"><i class="fa fa-arrow-circle-right"></i> &nbsp;@Localizer["Set Column Template"]</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-body">
+                        <div style="background-color:white;padding:20px 0px;" class="text-center">@Localizer["explaintext"]
+                            <div style="background-color:white;" class="text-center">@Localizer["explaintext_size"] </div>
+                        </div>
+                        <div style="background-color:white;height:58vh" class="text-center">
+                            <form id="fromBoardCombineAcc">
+                                <div class="form-group row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-5">
+                                        <input type="file" name="fileUpload" id="fileUpload" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                        <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:170px;float:right" onclick="thisFileUpload();">@Localizer["Import cost"] @shortName&ensp;<i class="fa fa-upload"></i></a>
+                                        <label for="fileUpload"></label>
+                                    </div>
+                                    <div class="mr-2"></div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="fileDownload" id="fileDownload" style="display:none;" value="">
+                                        <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:170px;float:left" onclick="thisFileDownload()">@Localizer["Load Template"] @shortName&ensp;<i class="fa fa-download"></i></a>
+                                        <label for="fileDownload"></label>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#fileDownload").val("");
+        });
+
+        function thisFileUpload() {
+            document.getElementById("fileUpload").click();
+        };
+
+        function thisFileDownload() {
+            $("#fileDownload").val("download");
+
+            //var saleOrg = $("#exportSelect").val();
+
+            swal({
+                title: "Are you sure?",
+                text: "Export file will replace with " + '@saleOrg' +"_BoardCombineAcc.xlsx",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        document.location.href = '@Url.Action("MaintenanceBoardCombineAccExportExcel", "MaintenanceBoardCombineAcc")' + "?exportSelect=" + '@factoryCode';
+                    }
+                });
+        };
+
+        $('#fileUpload').change(function () {
+
+            //var saleOrg = $("#importSelect").val();
+
+            swal({
+                title: "Are you sure?",
+                text: "Import excel data to saleOrg " + '@saleOrg' + " (BoardCombineAcc)",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let form = $('#fromBoardCombineAcc')[0];
+                        let data = new FormData(form);
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ExcelBoardCombineAcc", "MaintenanceBoardCombineAcc")',
+                            data: data,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess)
+                                {
+                                    if (res.TypeAction == "Import Data") {
+                                        swal(res.TypeAction + " Result!", res.ExceptionMessage, {
+                                            icon: "info"
+                                        })
+                                            .then(() => {
+                                                window.location.href = "@Url.Action("Index", "MaintenanceBoardCombineAcc")";
+                                            });
+                                    } else
+                                    {
+                                        swal(res.TypeAction + " Success!", {icon:"success"})
+                                        .then(()=> {
+                                                window.location.href = "@Url.Action("Index", "MaintenanceBoardCombineAcc")";
+                                            });
+                                    }
+                                }
+                                else
+                                {
+                                    swal(res.TypeAction + " Failed!", res.ExceptionMessage , {icon:"warning"})
+                                        .then(()=> {
+                                            window.location.href = "@Url.Action("Index", "MaintenanceBoardCombineAcc")";
+                                    });
+                                }
+                            },
+                            error: function () {
+                            // return false;
+                            }
+                        });
+                    }
+                });
+        });
+
+        var OnSaveSuccess = function (res) {
+            if (res.IsSuccess)
+            {
+                if (res.TypeAction == "Import Data") {
+                    swal(res.TypeAction + " Result!", res.ExceptionMessage, {
+                        icon: "info", buttons: false
+                    })
+                        .then(() => {
+                            window.location.href = "@Url.Action("Index", "MaintenanceBoardCombineAcc")";
+                        });
+                } else
+                {
+                    swal(res.TypeAction + " Success!", {icon:"success"})
+                    .then(()=> {
+                            window.location.href = "@Url.Action("Index", "MaintenanceBoardCombineAcc")";
+                        });
+                }
+            }
+            else
+            {
+                swal(res.TypeAction + " Failed!", res.ExceptionMessage , {icon:"warning"})
+                    .then(()=> {
+                        window.location.href = "@Url.Action("Index", "MaintenanceBoardCombineAcc")";
+                });
+            }
+        };
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+}

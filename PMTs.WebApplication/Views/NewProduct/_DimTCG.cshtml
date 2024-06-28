@@ -1,0 +1,86 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    ViewBag.Title = "";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="row" style="width: 100%">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-2">
+                <label> @Localizer["Cost per Ton"] : <i style="color:red"> *</i></label>
+            </div>
+            <div class="col-sm-2">
+                <input type="text" asp-for="modelProductSpec.CostPerTon" tabindex="1" class="mytextboxNumber form-control" autocomplete="off" required>
+            </div>
+            @*<div class="col-sm-11">
+                <input id="PrintMaster" name="PrintMaster" type="file" title="search image" accept="image/*" onchange="show_Drawing(this)" />
+            </div>
+            <div class="col-sm-1">
+                <i id="RM_Drawing" class="mdi mdi-close" style="color:red; display:none;" onclick="ClosePic()"></i>
+            </div>*@
+            <div class="col-sm-3">
+                @Localizer["FG Weight"]<i style="color:red"> *</i>
+            </div>
+            <div class="col-sm-2">
+                <input asp-for="modelProductSpec.WeightBox" tabindex="2" type="text" class="mytextboxNumber form-control" autocomplete="off" required />
+            </div>
+            <div class="col-sm-2">
+                @*<span id="modelProductSpec_Weight-error" class="text-danger" style="display: none;">@Localizer["required"]</span>*@
+                <span id="modelProductSpec_Weight-request" class="text-danger" style="display: none;">@Localizer["must100kg"]</span>
+                <input class="filled-in" type="checkbox" value="" id="chkTwoP" disabled>
+                <label class="form-check-label" id="lbTwoP" for="chkTwoP" style="font-size:14px; font-weight:300;">
+                    @Localizer["2Pieces"]
+                </label>
+                @*<input type="hidden" asp-for="modelProductSpec.PrintMaster" />*@
+                <input type="hidden" asp-for="modelProductSpec.TwoPiece" />
+                <input type="hidden" asp-for="modelProductSpec.Hierarchy" />
+                <button id="btProcess" class="btn btn-info waves-effect waves-light" type="button" hidden></button>
+            </div>
+        </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-1">
+                </div>
+                @if (Model.modelProductInfo.PLANTCODE != null)
+                {
+                    <div class="col-sm-2">
+                        <label> @Localizer["Cost OEM"] : <i style="color:red"> *</i></label>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" asp-for="modelProductSpec.CostOEM" tabindex="3" class="mytextboxNumber form-control" autocomplete="off" required>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-2">
+                    </div>
+                }
+                <div class="col-sm-3">
+                    @Localizer["FG Area"]<i style="color:red"> *</i>
+                </div>
+                <div class="col-sm-2">
+                    <input asp-for="modelProductSpec.BoxArea" tabindex="4" value="1" type="text" class="mytextboxNumber form-control" autocomplete="off" disabled />
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
+
+        <br />
+        <div class="row" style="height:auto">
+            <div class="col-sm-11">
+                <input id="PrintMaster" name="PrintMaster" type="file" title="search image" accept="image/*" onchange="show_Drawing(this)" />
+            </div>
+            <div class="col-sm-1">
+                <i id="RM_Drawing" class="mdi mdi-close" style="color:red; display:none;" onclick="ClosePic()"></i>
+            </div>
+        </div>
+    </div>
+</div>

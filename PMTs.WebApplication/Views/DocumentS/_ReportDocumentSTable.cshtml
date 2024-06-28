@@ -1,0 +1,63 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.Models.DocumentSlist>
+@{
+    Layout = null;
+    //report สรุปประวัติการเปลี่ยนแปลง
+}
+<style>
+    .dataTables_length {
+        float: left
+    }
+</style>
+
+<table id="reportDocumentSTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:60px">@Localizer["FactoryCode"]</th>
+            <th style="width:80px">@Localizer["CreatedDate"]</th>
+            <th style="width:80px">@Localizer["SNumber"]</th>
+            <th style="width:100px">@Localizer["CustomerName"]</th>
+            <th style="width:80px">@Localizer["SO"]</th>
+            <th style="width:80px">@Localizer["PC"]</th>
+            <th style="width:80px">@Localizer["Material No."]</th>
+            <th style="width:50px">@Localizer["Flute"]</th>
+            <th style="width: 80px">@Localizer["DuedateOld"]</th>
+            <th style="width: 80px">@Localizer["DuedateNew"]</th>
+            <th style="width: 80px">@Localizer["OrderQtyOld"]</th>
+            <th style="width: 80px">@Localizer["OrderQtyNew"]</th>
+            <th style="width:50px">@Localizer["Cancel"]</th>
+            <th style="width:50px">@Localizer["Hold"]</th>
+            <th style="width:50px">@Localizer["Remark"]</th>
+            <th style="width:60px">@Localizer["User"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ if (Model != null)
+            {
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">@item.FactoryCode</td>
+                        <td class="text-center">@item.CreatedDate.Value.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@item.Snumber</td>
+                        <td class="text-center">@item.CustomerName</td>
+                        <td class="text-center">@item.OrderItem</td>
+                        <td class="text-center">@item.Pc</td>
+                        <td class="text-center">@item.MaterialNo</td>
+                        <td class="text-center">@item.Flute</td>
+                        <td class="text-center">@item.DuedateOld.Value.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@item.DuedateNew.Value.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@item.OrderQtyOld</td>
+                        <td class="text-center">@item.OrderQtyNew</td>
+                        <td class="text-center">@item.Cancel</td>
+                        <td class="text-center">@item.Hold</td>
+                        <td class="text-center">@item.Remark</td>
+                        <td class="text-center">@item.CreatedBy</td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ModelView.Report.CheckDueDateToolong>
+
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckOrderTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th>@Localizer["S/O ปัจจุบัน"]</th>
+            <th>@Localizer["Material No"]</th>
+            <th>@Localizer["Product Code"]</th>
+            <th style="width:18%">@Localizer["Customer"]</th>
+            <th>@Localizer["Batch"]</th>
+            <th>@Localizer["กำหนดส่ง"]</th>
+            <th>@Localizer["ItemNote"]</th>
+            <th>@Localizer["Order Qty."]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.OrderItem</td>
+                    <td>@item.MaterialNo</td>
+                    <td>@item.PC</td>
+                    <td>@item.Name</td>
+                    <td>@item.Batch</td>
+                    <td>@item.DueDate.ToString("dd/MM/yyyy")</td>
+                    <td>@item.ItemNote</td>
+                    <td>@item.OrderQuant</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

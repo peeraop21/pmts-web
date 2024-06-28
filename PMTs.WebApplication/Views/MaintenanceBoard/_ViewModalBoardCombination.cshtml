@@ -1,0 +1,86 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+@{
+    ViewData["Title"] = "MainTain BoardCombind";
+}
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal_ViewBoardCombindMainTain" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" style="width: 100%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Maintain Board Combination"]</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <label class="form-check-label" style="font-size:16px; font-weight:bold">รายการที่ใช้บ่อย</label>
+                            </div>
+                            <div class="col-md-8">
+                                <button type="button" class="btn btn-sm btn-info" onclick="handleSelectAllProductType(@("'.product-type-head-check-group-priority'"))">Select All</button>
+                                <button type="button" class="btn btn-sm btn-warning" onclick="handleClearAllProductType(@("'.product-type-head-check-group-priority'"))">Clear All</button>
+                            </div>
+                        </div>
+                        @foreach (var item in Model.ProductTypeOptions.Where(w => w.GroupPriority == 1).Select((value, index) => new { Index = index, Value = value}))
+                        {
+                            <div class="row form-group form-check ">
+                                <input type="checkbox" class="form-check-input product-type-head-check-group-priority" onchange="handleProductTypeGroupPriorityHeadChecked(@("'#productTypeGroupPriorityCollapse_" + item.Index + "'"), @(item.Index))" id="@("productTypeHeadGroupPriorityCheck_" + item.Index)" value="@item.Value.KindOfProductName">
+                                <label class="form-check-label" for="@("productTypeHeadGroupPriorityCheck_" + item.Index)">@item.Value.KindOfProductName</label>
+                                <label style="text-decoration:underline; color:darkblue; cursor:pointer;" id="@("btnCollapeProductTypeHeadGroupPriority_" + item.Index)" onclick="handleCollapseProductTypeGroupPriorityHead(@("'#productTypeGroupPriorityCollapse_" + item.Index + "'"), @(item.Index))" id="@("productTypeHeadGroupPriorityCheck_" + item.Index))">show detail</label>
+                            </div>
+
+                            <div class="collapse div-product-type-collapse-group-priority" id="@("productTypeGroupPriorityCollapse_" + item.Index)">
+                                @for (int j = 0; j < item.Value.ProductTypeOptions.Count(); j++)
+                                {
+                                    <div class="row ml-4 form-group form-check " id="@("divProductTypeGroupPriorityCollapse-" + item.Index + "-" + j + "_" + item.Value.ProductTypeOptions[j].Value)">
+                                        <input type="checkbox" class="form-check-input product-type-check @("product-type-check-section-group-priority-"+ item.Index)" id="@("productTypeGroupPriorityCheck_" + item.Index + "_" + j)" value="@(item.Value.ProductTypeOptions[j].Value)">
+                                        <label class="form-check-label" for="@("productTypeGroupPriorityCheck_" + item.Index + "_" + j)">@item.Value.ProductTypeOptions[j].Name</label>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <label class="form-check-label" style="font-size:16px; font-weight:bold">รายการที่ใช้ไม่บ่อย</label>
+                            </div>
+                            <div class="col-md-8">
+                                <button type="button" class="btn btn-sm btn-info" onclick="handleSelectAllProductType(@("'.product-type-head-check'"))">Select All</button>
+                                <button type="button" class="btn btn-sm btn-warning" onclick="handleClearAllProductType(@("'.product-type-head-check'"))">Clear All</button>
+                            </div>
+                        </div>
+                        @foreach (var item in Model.ProductTypeOptions.Where(w => w.GroupPriority == 0).Select((value, index) => new { Index = index, Value = value }))
+                        {
+                            <div class="row form-group form-check ">
+                                <input type="checkbox" class="form-check-input product-type-head-check" onchange="handleProductTypeHeadChecked(@("'#productTypeCollapse_" + item.Index + "'"), @(item.Index))" id="@("productTypeHeadCheck_" + item.Index)" value="@item.Value.KindOfProductName">
+                                <label class="form-check-label" for="@("productTypeHeadCheck_" + item.Index)">@item.Value.KindOfProductName</label>
+                                <label style="text-decoration:underline; color:darkblue; cursor:pointer;" id="@("btnCollapeProductTypeHead_" + item.Index)" onclick="handleCollapseProductTypeHead(@("'#productTypeCollapse_" + item.Index + "'"), @(item.Index))" id="@("productTypeHeadCheck_" + item.Index))">show detail</label>
+                            </div>
+
+                            <div class="collapse div-product-type-collapse" id="@("productTypeCollapse_" + item.Index)">
+                                @for (int j = 0; j < item.Value.ProductTypeOptions.Count(); j++)
+                                {
+                                    <div class="row ml-4 form-group form-check " id="@("divProductTypeCollapse-" + item.Index + "-" + j + "_" + item.Value.ProductTypeOptions[j].Value)">
+                                        <input type="checkbox" class="form-check-input product-type-check @("product-type-check-section-"+ item.Index)" id="@("productTypeCheck_" + item.Index + "_" + j)" value="@(item.Value.ProductTypeOptions[j].Value)">
+                                        <label class="form-check-label" for="@("productTypeCheck_" + item.Index + "_" + j)">@item.Value.ProductTypeOptions[j].Name</label>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="handleExport()">@Localizer["Export"]</button>
+                    <button type="button" class="btn btn-danger" onclick="backToCreateModal()">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

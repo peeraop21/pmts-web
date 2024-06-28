@@ -1,0 +1,98 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.LogisticAndWarehouse.TruckOptimizeMainModel
+@using System.Linq
+
+@{
+    Layout = null;
+}
+
+<table id="truck-optimize-table" class="table  table-bordered  table-hover " width="100%">
+    <thead>
+        <tr class=" text-center">
+            <th width="22%">@Localizer["Material No."]</th>
+            <th width="22%">@Localizer["Created By"]</th>
+            <th width="22%">@Localizer["Created Date"]</th>
+            <th width="22%">@Localizer["Last Update"]</th>
+            <th width="12%">@Localizer["Option"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.TruckOptimizeViewModels)
+        {
+            <tr>
+                @*<td>
+                    @if (@item.IsAvailable)
+                    {
+                        <label class="text-success">Available</label>
+                    }
+                    else
+                    {
+                        <label class="text-danger">Unavailable</label>
+                    }
+                </td>*@
+                <td>@item.MaterialNo</td>
+                <td>@item.CreatedBy</td>
+                <td>@item.CreatedDate</td>
+                <td>@item.UpdatedDate</td>
+                <td class="text-center">
+                    @if (@item.IsAvailable)
+                    {
+                        <a class="btn-default option-btn m1"
+                           data-Id="@item.Id"
+                           data-FactoryCode="@item.FactoryCode"
+                           data-MaterialNo="@item.MaterialNo"
+                           data-FGBundleH="@item.FgbundleH"
+                           data-FGBundleL="@item.FgbundleL"
+                           data-FGBundleW="@item.FgbundleW"
+                           data-FGPalletH="@item.FgpalletH"
+                           data-FGPalletL="@item.FgpalletL"
+                           data-FGPalletW="@item.FgpalletW"
+                           data-PalletSizeH="@item.PalletSizeH"
+                           data-PalletSizeL="@item.PalletSizeL"
+                           data-PalletSizeW="@item.PalletSizeW"
+                           data-CreatedBy="@item.CreatedBy"
+                           data-CreatedDate="@item.CreatedDate"
+                           data-UpdatedBy="@item.UpdatedBy"
+                           data-UpdatedDate="@item.UpdatedDate"
+                           onclick="BindTruckOptimizesView(this)">
+                            <span class="fas fa-file-alt text-info mr-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="View"></span>
+                        </a>
+                        <a class="btn-default option-btn m1"
+                           data-Id="@item.Id"
+                           data-FactoryCode="@item.FactoryCode"
+                           data-MaterialNo="@item.MaterialNo"
+                           data-FGBundleH="@item.FgbundleH"
+                           data-FGBundleL="@item.FgbundleL"
+                           data-FGBundleW="@item.FgbundleW"
+                           data-FGPalletH="@item.FgpalletH"
+                           data-FGPalletL="@item.FgpalletL"
+                           data-FGPalletW="@item.FgpalletW"
+                           data-PalletSizeH="@item.PalletSizeH"
+                           data-PalletSizeL="@item.PalletSizeL"
+                           data-PalletSizeW="@item.PalletSizeW"
+                           data-CreatedBy="@item.CreatedBy"
+                           data-CreatedDate="@item.CreatedDate"
+                           data-UpdatedBy="@item.UpdatedBy"
+                           data-UpdatedDate="@item.UpdatedDate"
+                           onclick="BindTruckOptimizesEdit(this)">
+                            <span class="fas fa-pencil-alt text-warning ml-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="Edit"></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn-default option-btn m-1"
+                           data-MaterialNo="@item.MaterialNo"
+                           onclick="CreateNewTruckOptimize(this)">
+                            <span class="fas fa-plus-circle text-info btn" aria-hidden="true" style="cursor:pointer" title="Create"></span>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>
+
+<partial name="_CreateEditModal" model="@Model.TruckOptimize" />

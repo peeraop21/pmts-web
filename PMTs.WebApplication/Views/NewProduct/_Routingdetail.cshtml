@@ -1,0 +1,175 @@
+﻿@model IEnumerable<PMTs.DataAccess.ModelView.Report.MasterCardRouting>
+
+@{
+    Layout = null;
+}
+
+@{
+    var jointSeparate = "";
+}
+<table style="width:initial ;height:980px ;border-top:none;border-bottom:none;border-left:none;" class="tableMO">
+    <tbody>
+        <tr style="height: 40px; width:initial;">
+            <td colspan="3" style="vertical-align: middle;">
+                @if (Model.Count() > 0)
+                {
+                    <div style="margin-left:1px;" class="row">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-4 text-center">In</div>
+                        <div class="col-xs-4 text-center">Out</div>
+                    </div>
+                }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="vertical-align: text-top;">
+                <div>
+                    @foreach (var item in Model)
+                    {
+                        <div style="margin-left:5px;">
+                            <div style="width:440px;word-wrap:break-word">@item.Routing.SeqNo. @item.Routing.Machine</div>
+                        </div>
+                        @if (item.MachineGroup == "1")
+                        {
+                            <div style="margin-left:1px;" class="row">
+                                <div class="col-xs-4">หน้ากว้าง @item.Routing.PaperWidth</div>
+                                <div class="col-xs-4 text-center">
+                                    ตัด @item.Routing.CutNo
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    เศษ @item.Routing.Trim = @String.Format("{0:0.00}", Convert.ToDouble(@item.Routing.PercenTrim))%
+                                </div>
+                            </div>
+                        }
+                        <div style="margin-left:1px;" class="row">
+                            <div class="col-xs-4">
+                                ขนาดแผ่น(กxย)
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                @item.Routing.SheetInWid x @item.Routing.SheetInLeg
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                @item.Routing.SheetOutWid x @item.Routing.SheetOutLeg
+                            </div>
+                        </div>
+                        <div style="margin-left:1px;" class="row">
+                            <div class="col-xs-4">
+                                น้ำหนัก(กก.)
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                @String.Format("{0:0.000}", @item.Routing.WeightIn)
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                @String.Format("{0:0.000}", @item.Routing.WeightOut)
+                            </div>
+                        </div>
+                        <div style="margin-left:1px;" class="row">
+                            <div class="col-xs-4">
+                                จำนวนเปิด
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                @item.Routing.NoOpenIn
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                @item.Routing.NoOpenOut
+                            </div>
+                        </div>
+
+                        <div style="margin-left:1px;" class="row">
+                            <div id="routingMachine_@item.Routing.SeqNo" class="col-xs-12" style="word-wrap:break-word"></div>
+                        </div>
+                        <div style="margin-left:1px;" class="row">
+                            <div id="routingColor_@item.Routing.SeqNo" class="col-xs-12" style="word-wrap:break-word"></div>
+                        </div>
+
+                        @if (item.MachineGroup == "1")
+                        {
+                            var scoreText = "";
+                            <div style="margin-left:1px;float:none" class="row">
+                                @if (item.Routing.ScoreType != null && item.Routing.ScoreType != "")
+                                {
+                                    scoreText = "ScoreType : " + item.Routing.ScoreType;
+                                    @if (item.Routing.ScoreGap != null && item.Routing.ScoreGap.HasValue)
+                                    {
+                                        scoreText = scoreText + ", ScoreGap : " + item.Routing.ScoreGap.Value;
+
+                                    }
+                                    <div style="white-space:pre-line" class="col-xs-12">@scoreText</div>
+                                }
+                            </div>
+                        }
+
+                        jointSeparate = "";
+
+                        @if (!String.IsNullOrEmpty(item.Routing.JoinMatNo))
+                        {
+                            jointSeparate = $"Joint To : {item.Routing.JoinMatNo}, ";
+                        }
+                        @if (!String.IsNullOrEmpty(item.Routing.SeparatMatNo))
+                        {
+                            jointSeparate = jointSeparate + $"Separate To : {item.Routing.SeparatMatNo}, ";
+                        }
+
+                        if (jointSeparate != "")
+                        {
+                            jointSeparate = jointSeparate.Substring(0, jointSeparate.Length - 2);
+                            <div style="margin-left:1px;float:none" class="row">
+                                <div style="white-space:pre-wrap" class="col-xs-12">@jointSeparate</div>
+                            </div>
+                        }
+
+                        @if (item.MachineGroup == "1" && item.Routing.Coatings.Count() > 0)
+                        {
+                            <div style="margin-left:10px;margin-right:10px;padding-top:10px" class="row">
+                                <table class="table table-bordered col-sm-12" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="text-center" style="font-size:medium">Coating</th>
+                                        </tr>
+                                        <tr style="color:lightslategray">
+                                            <th class="text-center" style="font-size:small" width="20%">Station</th>
+                                            <th class="text-center" style="font-size:small" width="20%">Type</th>
+                                            <th class="text-center" style="font-size:small" width="20%">Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var coating in item.Routing.Coatings)
+                                        {
+                                            <tr>
+                                                <td class="text-center" style="font-size:x-small">@coating.Station</td>
+                                                <td class="text-center" style="font-size:x-small">@coating.Type</td>
+                                                <td class="text-center" style="font-size:x-small">@coating.Name</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                        @if (item.Routing.RepeatLength.HasValue)
+                        {
+                            if (item.Routing.RepeatLength.Value != 0)
+                            {
+
+                                <div style="margin-left:1px;float:none" class="row">
+                                    <div class="col-xs-12">RepeatLength : @item.Routing.RepeatLength.Value</div>
+                                </div>
+                            }
+                        }
+
+                        @if (!String.IsNullOrEmpty(item.Routing.RemarkInprocess))
+                        {
+                            <div style="margin-left:1px;float:none" class="row">
+                                <div style="white-space:pre-wrap" class="col-xs-12">หมายเหตุ : @item.Routing.RemarkInprocess.ToString()</div>
+                            </div>
+                        }
+
+                        <div class="row" style="padding-left:14px">
+                            <hr class="col-xs-12" style="border-top: dashed 1px;width:420px;color:black" />
+                        </div>
+                    }
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

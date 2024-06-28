@@ -1,0 +1,1074 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceMachine.MaintenanceMachineViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.MachineViewModelList)
+{
+    if (item.MachineStatus == true)
+    {
+        <tr>
+            <th scope="row">@No</th>
+            <td>@item.Machine1</td>
+            <td>@item.Code</td>
+            <td>@item.PlanCode</td>
+            <td>
+                @foreach (var MacGroup in Model.MachineGroupList)
+                {
+                    @if (MacGroup.GroupCode == item.MachineGroup)
+                    {
+                        @MacGroup.GroupName;
+                    }
+
+                }
+            </td>
+
+            <td class="text-center">
+                <button type="button" class="btn btn-default"
+                        data-machine-id="@item.Id"
+                        data-machine-name="@item.Machine1"
+                        data-machine-code="@item.Code"
+                        data-plantcode="@item.PlanCode"
+                        data-colour="@item.Colour"
+                        data-glue="@item.Glue"
+                        data-speed="@item.Speed"
+                        data-spePercen="@item.SpePercen"
+                        data-speMin="@item.SpeMin"
+                        data-speMax="@item.SpeMax"
+                        data-speTranf="@item.SpeTranf"
+                        data-machineGroup="@item.MachineGroup"
+                        data-isCalPaperwidth="@item.IsCalPaperwidth"
+                        data-isPropCor="@item.IsPropCor"
+                        data-isPropDieCut="@item.IsPropDieCut"
+                        data-isPropPrint="@item.IsPropPrint"
+                        data-Hardship="@item.Hardship"
+                        data-MinQuantity="@item.MinQuantity"
+                        data-MinSpeed="@item.MinSpeed"
+                        data-platen="@item.Platen"
+                        data-rotary="@item.Rotary"
+                        data-ShowProcess="@item.ShowProcess"
+                        data-stdspeed ="@item.StdSpeed"
+                        data-setuptime="@item.SetupTime"
+                        data-stdSetuptime="@item.StdSetupTime"
+                        data-downtime="@item.DownTime"
+                        data-stddowntime="@item.StdDowntime"
+                        data-cap="@item.Cap"
+                        data-maxTonsFG="@item.MaxTonsFG"
+                        data-Leadtime="@item.Leadtime"
+                        data-codeMachineType="@item.CodeMachineType"
+                        data-glueType="@item.GlueType"
+                        onclick="BindMachineView(this)">
+                    <span class="fas fa-file-alt text-info btn" aria-hidden="true" style="cursor:pointer" title="View"></span>
+                </button>
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-default"
+                        data-machine-id="@item.Id"
+                        data-machine-name="@item.Machine1"
+                        data-machine-code="@item.Code"
+                        data-plantcode="@item.PlanCode"
+                        data-colour="@item.Colour"
+                        data-glue="@item.Glue"
+                        data-speed="@item.Speed"
+                        data-spePercen="@item.SpePercen"
+                        data-speMin="@item.SpeMin"
+                        data-speMax="@item.SpeMax"
+                        data-speTranf="@item.SpeTranf"
+                        data-machineGroup="@item.MachineGroup"
+                        data-isCalPaperwidth="@item.IsCalPaperwidth"
+                        data-isPropCor="@item.IsPropCor"
+                        data-isPropDieCut="@item.IsPropDieCut"
+                        data-isPropPrint="@item.IsPropPrint"
+                        data-createdDate="@item.CreatedDate"
+                        data-createdBy="@item.CreatedBy"
+                        data-Hardship="@item.Hardship"
+                        data-MinQuantity="@item.MinQuantity"
+                        data-MinSpeed="@item.MinSpeed"
+                        data-platen="@item.Platen"
+                        data-rotary="@item.Rotary"
+                        data-ShowProcess="@item.ShowProcess"
+                        data-stdspeed="@item.StdSpeed"
+                        data-setuptime="@item.SetupTime"
+                        data-stdSetuptime="@item.StdSetupTime"
+                        data-downtime ="@item.DownTime"
+                        data-stddowntime="@item.StdDowntime"
+                        data-cap="@item.Cap"
+                        data-maxTonsFG="@item.MaxTonsFG"
+                        data-Leadtime="@item.Leadtime"
+                        data-codeMachineType="@item.CodeMachineType"
+                        data-glueType="@item.GlueType"
+                        onclick="BindMachineEdit(this)">
+                    <span class="fas fa-pencil-alt text-warning" aria-hidden="true" style="cursor:pointer" title="Edit"></span>
+                </button>
+            </td>
+            <td class="text-center">
+                <button onclick="ConfirmDelete(@item.Id)" type="button" class="btn btn-default">
+                    <span class="fas fa-trash text-danger" style="cursor:pointer" title="Delete"></span>
+                </button>
+            </td>
+        </tr>
+
+        No++;
+    }
+}
+
+<!-- Start View Modal -->
+<div class="modal bs-example-modal-lg" id="modal-machine-view">
+    <div class="modal-dialog modal-xl" style="width: 90%">
+        <form id="view-Machine-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Detail Of Machine"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="machine-id-view" name="Id" asp-for="MachineViewModel.Id" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Machine Name"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" maxlength="50" id="machine-name-view" name="Machine1" asp-for="MachineViewModel.Machine1" readonly />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Code">@Localizer["Machine Code"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" maxlength="20" id="machine-code-view" name="Code" asp-for="MachineViewModel.Code" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="PlanCode">@Localizer["Plan Code"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" maxlength="10" id="plantcode-view" name="PlanCode" asp-for="MachineViewModel.PlanCode" readonly />
+                        </div>
+
+                        <div class="form-group col-md-2">
+
+                            <label class="control-label" for="Colour">@Localizer["Colour"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="colour-view" name="Colour" asp-for="MachineViewModel.Colour" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Glue"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="glue-view" name="Glue" asp-for="MachineViewModel.Glue" disabled />
+                            <label for="Glue-view"></label>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Platen"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="platen-view" name="Platen" asp-for="MachineViewModel.Platen" disabled />
+                            <label for="Platen-view"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Rotary"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="rotary-view" name="Rotary" asp-for="MachineViewModel.Rotary" disabled />
+                            <label for="Rotary-view"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Speed"]<label class="speedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speed-view" name="Speed" asp-for="MachineViewModel.Speed" readonly />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Speed"]<label class="stdspeedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="stdspeed-view" name="StdSpeed" asp-for="MachineViewModel.StdSpeed" readonly />
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Setup Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="setuptime-view" name="SetupTime" asp-for="MachineViewModel.SetupTime" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Setup Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="stdSetuptime-view" name="StdSetupTime" asp-for="MachineViewModel.StdSetupTime" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Down Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="downtime-view" name="DownTime" asp-for="MachineViewModel.DownTime" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Down Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="stddowntime-view" name="StdDowntime" asp-for="MachineViewModel.StdDowntime" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpePercen">@Localizer["SpePercen"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="spePercen-view" name="SpePercen" asp-for="MachineViewModel.SpePercen" readonly />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpeMin">@Localizer["SpeMin"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speMin-view" name="SpeMin" asp-for="MachineViewModel.SpeMin" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpeMax">@Localizer["SpeMax"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speMax-view" name="SpeMax" asp-for="MachineViewModel.SpeMax" readonly />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpeTranf">@Localizer["SpeTranf"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speTranf-view" name="SpeTranf" asp-for="MachineViewModel.SpeTranf" readonly />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Hardship">@Localizer["Hardship"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="Hardship-view" name="Hardship" asp-for="MachineViewModel.Hardship" readonly />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="MinQuantity">@Localizer["MinQuantity"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="MinQuantity-view" name="MinQuantity" asp-for="MachineViewModel.MinQuantity" readonly />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="MinSpeed">@Localizer["MinSpeed"]<label class="minspeedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="MinSpeed-view" name="MinSpeed" asp-for="MachineViewModel.MinSpeed" readonly />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Cap">@Localizer["CAP"]<label class="caplabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="cap-view" name="Cap" asp-for="MachineViewModel.Cap" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="MaxTonsFG">@Localizer["Max Tons FG"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="maxTonsFG-view" name="maxTonsFG" asp-for="MachineViewModel.MaxTonsFG" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Leadtime">@Localizer["Lead Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="leadTime-view" name="leadTime" asp-for="MachineViewModel.Leadtime" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Machine Group"]</label>
+                        </div>
+                        <div class="form-group col-md-5">
+                            @*<input class="form-control" asp-for="MachineViewModel.MachineGroup" />*@
+                            <select class="form-control" onchange="setUnitDesc(this.value);" id="machine-group-view" name="MachineGroup" asp-for="MachineViewModel.MachineGroup" asp-items="@(new SelectList(Model.MachineGroupList,"GroupCode","GroupName"))" disabled>
+                                <option value="">--- Please Select Item ---</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="IsCalPaperwidth">@Localizer["IsCalPaperwidth"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsCalPaperwidth-view" name="IsCalPaperwidth" asp-for="MachineViewModel.IsCalPaperwidth" disabled />
+                            <label for="IsCalPaperwidth-view"></label>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["IsPropCor"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropCor-view" name="IsPropCor" asp-for="MachineViewModel.IsPropCor" disabled />
+                            <label for="IsPropCor-view"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["IsPropPrint"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropPrint-view" name="IsPropPrint" asp-for="MachineViewModel.IsPropPrint" disabled />
+                            <label for="IsPropPrint-view"></label>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["IsPropDieCut"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropDieCut-view" name="IsPropDieCut" asp-for="MachineViewModel.IsPropDieCut" disabled />
+                            <label for="IsPropDieCut-view"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["ShowProcess"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="ShowProcess-view" name="ShowProcess" asp-for="MachineViewModel.ShowProcess" disabled />
+                            <label for="ShowProcess-view"></label>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["ConfigAutoRouting"]</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpePercen">@Localizer["CodeMachineType"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="codeMachineType-view" name="codeMachineType" asp-for="MachineViewModel.CodeMachineType"  disabled />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["GlueType"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <select class="form-control" id="machinegluetype-view" name="machine-gluetype" asp-for="MachineViewModel.GlueType"
+                                    asp-items="@(new SelectList(Model.JoinList,"JointName","JointName"))" disabled>
+                                <option value=""> @Localizer["Please Select Item"] </option>
+                            </select>
+
+                            @*<select class="form-control" id="machine-group-edit" name="machine-group-edit" asp-for="MachineViewModel.MachineGroup"
+                        asp-items="@(new SelectList(Model.MachineGroupList,"GroupCode","GroupName"))">
+                    <option value="">--- Please Select Item ---</option>
+                </select>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- /.modal -->
+<!-- End View Modal -->
+<!-- Start Edit Modal -->
+<div class="modal bs-example-modal-lg" id="modal-machine-edit">
+    <div class="modal-dialog modal-xl" style="width: 90%">
+        <form id="edit-Machine-form">
+            <input type="hidden" id="machine-created-date-edit" asp-for="MachineViewModel.CreatedDate" />
+            <input type="hidden" id="machine-created-by-edit" asp-for="MachineViewModel.CreatedBy" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Machine</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="machine-id-edit" name="Id" asp-for="MachineViewModel.Id" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Machine Name"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" maxlength="50" id="machine-name-edit" name="Machine1" asp-for="MachineViewModel.Machine1" readonly />
+                            <span id="machine-name-edit-req" class="text-danger" hidden>The Machine field is requried</span>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Code">@Localizer["Machine Code"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" maxlength="20" id="machine-code-edit" name="Code" asp-for="MachineViewModel.Code" />
+                            <span id="machine-code-edit-req" class="text-danger" hidden>The Code field is requried</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="PlanCode">@Localizer["Plan Code"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" maxlength="10" id="plantcode-edit" name="PlanCode" asp-for="MachineViewModel.PlanCode" />
+                            <span id="plan-code-edit-req" class="text-danger" hidden>The plan field is requried</span>
+                        </div>
+
+                        <div class="form-group col-md-2">
+
+                            <label class="control-label" for="Colour">@Localizer["Colour"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="colour-edit" name="Colour" asp-for="MachineViewModel.Colour" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Glue"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="glue-edit" name="Glue" asp-for="MachineViewModel.Glue" />
+                            <label for="glue-edit"></label>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Platen"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="platen-edit" name="Platen" asp-for="MachineViewModel.Platen" />
+                            <label for="platen-edit"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Rotary"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="rotary-edit" name="Glue" asp-for="MachineViewModel.Rotary" />
+                            <label for="rotary-edit"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Speed"]<label class="speedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speed-edit" name="Speed" asp-for="MachineViewModel.Speed" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Speed"]<label class="stdspeedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="stdspeed-edit" name="StdSpeed" asp-for="MachineViewModel.StdSpeed" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Setup Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="setuptime-edit" name="SetupTime" asp-for="MachineViewModel.SetupTime" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Setup Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="stdSetuptime-edit" name="StdSetupTime" asp-for="MachineViewModel.StdSetupTime" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Down Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="downtime-edit" name="DownTime" asp-for="MachineViewModel.DownTime" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Down Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="stddowntime-edit" name="StdDowntime" asp-for="MachineViewModel.StdDowntime" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpePercen">@Localizer["SpePercen"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="spepercen-edit" name="SpePercen" asp-for="MachineViewModel.SpePercen" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpeMin">@Localizer["SpeMin"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speMin-edit" name="SpeMin" asp-for="MachineViewModel.SpeMin" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpeMax">@Localizer["SpeMax"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speMax-edit" name="SpeMax" asp-for="MachineViewModel.SpeMax" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpeTranf">@Localizer["SpeTranf"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="speTranf-edit" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Hardship"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="hardship-edit" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["MinQuantity"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="minQuantity-edit" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["MinSpeed"]<label class="minspeedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="minSpeed-edit" name="MinSpeed" asp-for="MachineViewModel.MinSpeed" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["CAP"]<label class="caplabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="cap-edit" name="Cap" asp-for="MachineViewModel.Cap" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Max Tons FG"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="maxTonsFG-edit" name="maxTonsFG" asp-for="MachineViewModel.MaxTonsFG" />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Lead Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="leadTime-edit" name="leadTime" asp-for="MachineViewModel.Leadtime" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Machine Group"]</label>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <select class="form-control" onchange="setUnitDesc(this.value);" id="machine-group-edit" name="machine-group-edit" asp-for="MachineViewModel.MachineGroup" asp-items="@(new SelectList(Model.MachineGroupList,"GroupCode","GroupName"))">
+                                <option value="">--- Please Select Item ---</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="IsCalPaperwidth">@Localizer["IsCalPaperwidth"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsCalPaperwidth-edit" name="IsCalPaperwidth" asp-for="MachineViewModel.IsCalPaperwidth" />
+                            <label for="IsCalPaperwidth-edit"></label>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["IsPropCor"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropCor-edit" name="IsPropCor" asp-for="MachineViewModel.IsPropCor" />
+                            <label for="IsPropCor-edit"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["IsPropPrint"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropPrint-edit" name="IsPropPrint" asp-for="MachineViewModel.IsPropPrint" />
+                            <label for="IsPropPrint-edit"></label>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["IsPropDieCut"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropDieCut-edit" name="IsPropDieCut" asp-for="MachineViewModel.IsPropDieCut" />
+                            <label for="IsPropDieCut-edit"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["ShowProcess"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="checkbox" class="filled-in" id="ShowProcess-edit" asp-for="MachineViewModel.ShowProcess" />
+                            <label for="ShowProcess-edit"></label>
+                        </div>
+                        <div class="form-group col-md-5"></div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["ConfigAutoRouting"]</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpePercen">@Localizer["CodeMachineType"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="codeMachineType-edit" name="codeMachineType" asp-for="MachineViewModel.CodeMachineType" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["JointType"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <select class="form-control" id="machinegluetype-edit" name="machine-gluetype"  asp-for="MachineViewModel.GlueType"
+                                    asp-items="@(new SelectList(Model.JoinList,"JointName","JointName"))">
+                                <option value=""> @Localizer["Please Select Item"] </option>
+                            </select>
+
+                            @*<select class="form-control" id="machine-group-edit" name="machine-group-edit" asp-for="MachineViewModel.MachineGroup"
+                                    asp-items="@(new SelectList(Model.MachineGroupList,"GroupCode","GroupName"))">
+                                <option value="">--- Please Select Item ---</option>
+                            </select>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="edit-machine-btn" class="btn btn-info">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+<script>
+    var IsCalPaperwidth = false;
+    var IsPropCor = false;
+    var IsPropPrint = false;
+    var IsPropDieCut = false;
+    var Glue = false;
+    var Rotary = false;
+    var Platen = false;
+    var ShowProcess = false;
+
+    $(function () {
+        $("#edit-machine-btn").click(function () {
+
+            let isSubmit = true;
+            let machine = $("#machine-name-edit").val();
+            let code = $("#machine-code-edit").val();
+            let plan = $("#plan-code-edit").val();
+
+            if(machine == "")
+            {
+                $("#machine-name-edit-req").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#machine-name-edit-req").attr("hidden",true);
+            }
+
+            if(code == "")
+            {
+                $("#machine-code-edit-req"+number).removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#machine-code-edit-req").attr("hidden",true);
+            }
+
+            if (plan == "") {
+                $("plan-code-edit-req" + number).removeAttr("hidden");
+                isSubmit = false;
+            } else {
+                $("plan-code-edit-req").attr("hidden", true);
+            }
+
+            if(isSubmit)
+            {
+                let speMin = $("#speMin-edit").val() == "" ? null : $("#speMin-edit").val();
+                let speMax = $("#speMax-edit").val() == "" ? null : $("#speMax-edit").val();
+                let speTranf = $("#speTranf-edit").val() == "" ? null : $("#speTranf-edit").val();
+                let spePercen = $("#spepercen-edit").val() == "" ? null : $("#spepercen-edit").val();
+                let speed = $("#speed-edit").val() == "" ? null : $("#speed-edit").val();
+                let hardship = $("#hardship-edit").val() == "" ? null : $("#hardship-edit").val();
+                let minQuantity = $("#minQuantity-edit").val() == "" ? null : $("#minQuantity-edit").val();
+                let minSpeed = $("#minSpeed-edit").val() == "" ? null : $("#minSpeed-edit").val();
+                let colour = $("#colour-edit").val() == "" ? null : $("#colour-edit").val();
+                let createdDate = $("#machine-created-date-edit").val() == "" ? null : $("#machine-created-date-edit").val();
+                let createdBy = $("#machine-created-by-edit").val() == "" ? null : $("#machine-created-by-edit").val();
+                let stdspeed = $("#stdspeed-edit").val() == "" ? null : $("#stdspeed-edit").val();
+                let setuptime = $("#setuptime-edit").val() == "" ? null : $("#setuptime-edit").val();
+                let stdSetuptime = $("#stdSetuptime-edit").val() == "" ? null : $("#stdSetuptime-edit").val();
+                let downtime = $("#downtime-edit").val() == "" ? null : $("#downtime-edit").val();
+                let stddowntime = $("#stddowntime-edit").val() == "" ? null : $("#stddowntime-edit").val();
+                let cap = $("#cap-edit").val() == "" ? null : $("#cap-edit").val();
+                let maxTonsFG = $("#maxTonsFG-edit").val() == "" ? null : $("#maxTonsFG-edit").val();
+                let leadTime = $("#leadTime-edit").val() == "" ? null : $("#leadTime-edit").val();
+
+                let data = {
+                    "Id": $("#machine-id-edit").val(),
+                    "Machine1": $("#machine-name-edit").val(),
+                    "Code": $("#machine-code-edit").val(),
+                    "PlanCode": $("#plantcode-edit").val(),
+                    "Colour": colour,
+                    "Glue": Glue,
+                    "Platen": Platen,
+                    "Rotary": Rotary,
+                    "Speed": speed,
+                    "SpePercen": spePercen,
+                    "SpeMin": speMin,
+                    "SpeMax": speMax,
+                    "SpeTranf": speTranf,
+                    "MachineGroup": $("#machine-group-edit").val(),
+                    "IsCalPaperwidth": IsCalPaperwidth,
+                    "IsPropCor": IsPropCor,
+                    "IsPropDieCut": IsPropDieCut,
+                    "IsPropPrint": IsPropPrint,
+                    "CreatedDate": ChangeDateTimeFormat(createdDate),
+                    "CreatedBy": createdBy,
+                    "Hardship": hardship,
+                    "MinQuantity": minQuantity,
+                    "MinSpeed": minSpeed,
+                    "ShowProcess": ShowProcess,
+                    "stdspeed": stdspeed,
+                    "setuptime": setuptime,
+                    "stdSetuptime": stdSetuptime,
+                    "downtime": downtime,
+                    "stddowntime": stddowntime,
+                    "cap": cap,
+                    "maxTonsFG": maxTonsFG,
+                    "leadTime": leadTime
+
+                }
+
+                let formData = JSON.stringify(data);
+                console.log(formData);
+                $.ajax({
+                    url: '@Url.Action("UpdateMachine", "MaintenanceMachine")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: formData.toString()
+                    },
+                    dataType: "json",
+	                success: function (res) {
+                        if (res.IsSuccess) {
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+
+                            swal("Update Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                            $('#Machine-table').html(res.ViewResponse);
+                            $('#Machine-data-table').DataTable();
+                            $('body').css('padding', '0px');
+                            $('.form-group').css('display', 'block');
+                            $('.form-inline').css('width', '-webkit-fill-available');
+                            $('.form-control').css('width', '-webkit-fill-available');
+                        }
+                        else {
+                            swal("Uppdate Failed", res.ExceptionMessage, "warning");//modalDialog(error, SaveFailed);
+                        }
+	                },
+	                error: function () {
+		                // return false;
+	                }
+                });
+            }
+        });
+
+        $("#IsCalPaperwidth-edit").click(function () {
+            if ($(this).prop("checked") == true) {
+                IsCalPaperwidth = true;
+            }
+            else if ($(this).prop("checked") == false) {
+                IsCalPaperwidth = false;
+            }
+        });
+
+        $("#glue-edit").click(function () {
+            if ($(this).is(":checked")) {
+                Glue = true;
+            }
+            else {
+                Glue = false;
+            }
+        });
+
+        $("#rotary-edit").click(function () {
+            if ($(this).is(":checked")) {
+                Rotary = true;
+            }
+            else {
+                Rotary = false;
+            }
+        });
+
+        $("#platen-edit").click(function () {
+            if ($(this).is(":checked")) {
+                Platen = true;
+            }
+            else {
+                Platen = false;
+            }
+        });
+
+        $("#IsPropCor-edit").click(function () {
+            if ($(this).prop("checked") == true) {
+                IsPropCor = true;
+            }
+            else if ($(this).prop("checked") == false) {
+                IsPropCor = false;
+            }
+        });
+
+        $("#IsPropPrint-edit").click(function () {
+            if ($(this).prop("checked") == true) {
+                IsPropPrint = true;
+            }
+            else if ($(this).prop("checked") == false) {
+                IsPropPrint = false;
+            }
+        });
+
+        $("#IsPropDieCut-edit").click(function () {
+            if ($(this).prop("checked") == true) {
+                IsPropDieCut = true;
+            }
+            else if ($(this).prop("checked") == false) {
+                IsPropDieCut = false;
+            }
+        });
+
+        $("#ShowProcess-edit").click(function () {
+            if ($(this).prop("checked") == true) {
+                ShowProcess = true;
+            }
+            else if ($(this).prop("checked") == false) {
+                ShowProcess = false;
+            }
+        });
+    });
+
+    function ChangeDateTimeFormat(oDatetime) {
+        let datetimeStr = "";
+
+        if (oDatetime != null && oDatetime != "") {
+            let datetimeArr = oDatetime.split(' ');
+            let dateArr = datetimeArr[0].split('/');
+            let timeArr = datetimeArr[1].split(':');
+            let year = dateArr[2];
+            let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+            let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+            let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+            let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+            let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+            datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+        }
+
+        return datetimeStr;
+    }
+
+    function BindMachineView(item) {
+        $("#machine-id-view").val($(item).attr("data-machine-id"));
+        $("#machine-name-view").val($(item).attr("data-machine-name"));
+        $("#machine-code-view").val($(item).attr("data-machine-code"));
+        $("#plantcode-view").val($(item).attr("data-plantcode"));
+        $("#colour-view").val($(item).attr("data-colour"));
+        $("#speed-view").val($(item).attr("data-speed"));
+        $("#spePercen-view").val($(item).attr("data-spepercen"));
+        $("#speMin-view").val($(item).attr("data-speMin"));
+        $("#speMax-view").val($(item).attr("data-speMax"));
+        $("#speTranf-view").val($(item).attr("data-speTranf"));
+        $("#Hardship-view").val($(item).attr("data-Hardship"));
+        $("#MinQuantity-view").val($(item).attr("data-MinQuantity"));
+        $("#MinSpeed-view").val($(item).attr("data-MinSpeed"));
+        $("#machine-group-view").val($(item).attr("data-machineGroup"));
+        IsCalPaperwidth = $(item).attr("data-isCalPaperwidth");
+        IsPropCor = $(item).attr("data-isPropCor");
+        IsPropPrint = $(item).attr("data-IsPropPrint");
+        IsPropDieCut = $(item).attr("data-isPropDieCut");
+        ShowProcess = $(item).attr("data-ShowProcess");
+        Glue = $(item).attr("data-glue");
+        Rotary = $(item).attr("data-rotary");
+        Platen = $(item).attr("data-platen");
+
+        CheckAttr("glue-view", Glue);
+        CheckAttr("rotary-view", Rotary);
+        CheckAttr("platen-view", Platen);
+        CheckAttr("IsCalPaperwidth-view", IsCalPaperwidth);
+        CheckAttr("IsPropCor-view", IsPropCor);
+        CheckAttr("IsPropPrint-view", IsPropPrint);
+        CheckAttr("IsPropDieCut-view", IsPropDieCut);
+        CheckAttr("ShowProcess-view", ShowProcess);
+
+        stdspeed = $(item).attr("data-stdspeed");
+        setuptime = $(item).attr("data-setuptime");
+        stdSetuptime = $(item).attr("data-stdSetuptime");
+        downtime = $(item).attr("data-downtime");
+        stddowntime = $(item).attr("data-stddowntime");
+        cap = $(item).attr("data-cap");
+
+        setUnitDesc($(item).attr("data-machineGroup"));
+        $("#modal-machine-view").modal("show");
+    }
+
+    function CheckAttr(nameOfAttr, isChecked) {
+        if (isChecked == "True") {
+            $("#" + nameOfAttr).attr("checked", true);
+        }
+        else {
+            $("#" + nameOfAttr).removeAttr("checked");
+        }
+    }
+
+    function BindMachineEdit(item) {
+
+        $("#machine-id-edit").val($(item).attr("data-machine-id"));
+        $("#machine-name-edit").val($(item).attr("data-machine-name"));
+        $("#machine-code-edit").val($(item).attr("data-machine-code"));
+        $("#plantcode-edit").val($(item).attr("data-plantcode"));
+        $("#colour-edit").val($(item).attr("data-colour"));
+        $("#speed-edit").val($(item).attr("data-speed"));
+        $("#spepercen-edit").val($(item).attr("data-spepercen"));
+        $("#speMin-edit").val($(item).attr("data-speMin"));
+        $("#speMax-edit").val($(item).attr("data-speMax"));
+        $("#speTranf-edit").val($(item).attr("data-speTranf"));
+        $("#hardship-edit").val($(item).attr("data-Hardship"));
+        $("#minQuantity-edit").val($(item).attr("data-MinQuantity"));
+        $("#minSpeed-edit").val($(item).attr("data-MinSpeed"));
+        $("#machine-group-edit").val($(item).attr("data-machineGroup"));
+        $("#machine-created-date-edit").val($(item).attr("data-createdDate"));
+        $("#machine-created-by-edit").val($(item).attr("data-createdBy"));
+
+        IsCalPaperwidth = $(item).attr("data-isCalPaperwidth");
+        IsPropCor = $(item).attr("data-isPropCor");
+        IsPropPrint = $(item).attr("data-IsPropPrint");
+        IsPropDieCut = $(item).attr("data-isPropDieCut");
+        ShowProcess = $(item).attr("data-ShowProcess");
+        Glue = $(item).attr("data-glue");
+        Rotary = $(item).attr("data-rotary");
+        Platen = $(item).attr("data-platen");
+
+        CheckAttr("rotary-edit", Rotary);
+        CheckAttr("platen-edit", Platen);
+        CheckAttr("glue-edit", Glue);
+        CheckAttr("IsCalPaperwidth-edit", IsCalPaperwidth);
+        CheckAttr("IsPropCor-edit", IsPropCor);
+        CheckAttr("IsPropPrint-edit", IsPropPrint);
+        CheckAttr("IsPropDieCut-edit", IsPropDieCut);
+        CheckAttr("ShowProcess-edit", ShowProcess);
+
+        $("#stdspeed-edit").val($(item).attr("data-stdspeed"));
+        $("#setuptime-edit").val($(item).attr("data-setuptime"));
+        $("#stdSetuptime-edit").val($(item).attr("data-stdSetuptime"));
+        $("#downtime-edit").val($(item).attr("data-downtime"));
+        $("#stddowntime-edit").val($(item).attr("data-stddowntime"));
+        $("#cap-edit").val($(item).attr("data-cap"));
+        $("#maxTonsFG-edit").val($(item).attr("data-maxTonsFG"));
+        $("#leadTime-edit").val($(item).attr("data-leadTime"));
+        $("#codeMachineType-edit").val($(item).attr("data-createdBy"));
+        $("#machinegluetype-edit").val($(item).attr("data-glueType"));
+
+        //stdspeed=$(item).attr("data-stdspeed");
+        //setuptime=$(item).attr("data-setuptime");
+        //stdSetuptime=$(item).attr("data-stdSetuptime");
+        //downtime=$(item).attr("data-downtime");
+        //stddowntime=$(item).attr("data-stddowntime");
+        //cap=$(item).attr("data-cap");
+
+        setUnitDesc($(item).attr("data-machineGroup"));
+        $("#modal-machine-edit").modal("show");
+    }
+
+    function setUnitDesc(machineGroup) {
+        if (machineGroup == "1") {
+            document.getElementsByClassName("speedlabel")[0].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("speedlabel")[1].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("speedlabel")[2].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("stdspeedlabel")[0].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("stdspeedlabel")[1].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("stdspeedlabel")[2].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("minspeedlabel")[0].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("minspeedlabel")[1].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("minspeedlabel")[2].innerHTML = "&nbsp;(เมตร/นาที)";
+            document.getElementsByClassName("caplabel")[0].innerHTML = "&nbsp;(เมตร/วัน)";
+            document.getElementsByClassName("caplabel")[1].innerHTML = "&nbsp;(เมตร/วัน)";
+            document.getElementsByClassName("caplabel")[2].innerHTML = "&nbsp;(เมตร/วัน)";
+        }
+        else {
+            document.getElementsByClassName("speedlabel")[0].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("speedlabel")[1].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("speedlabel")[2].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("stdspeedlabel")[0].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("stdspeedlabel")[1].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("stdspeedlabel")[2].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("minspeedlabel")[0].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("minspeedlabel")[1].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("minspeedlabel")[2].innerHTML = "&nbsp;(ใบ/นาที)";
+            document.getElementsByClassName("caplabel")[0].innerHTML = "&nbsp;(ใบ/วัน)";
+            document.getElementsByClassName("caplabel")[1].innerHTML = "&nbsp;(ใบ/วัน)";
+            document.getElementsByClassName("caplabel")[2].innerHTML = "&nbsp;(ใบ/วัน)";
+        }
+    }
+</script>

@@ -1,0 +1,39 @@
+﻿@model PMTs.DataAccess.ModelView.ProductCatalog.ProductCatalogModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+    <div class="box-header">
+        <h3 class="box-title"><i class="mdi mdi-format-color-fill"></i>Material :  <label class="control-label" id="bomMaterial">@Localizer["Material"]</label> </h3>
+    </div>
+
+        <div class="box-body table-responsive">
+            <table id="BomdatatableParent" class="table table-bordered color-table dataTable no-footer" cellspacing="0">
+                <thead>
+                    <tr style="white-space:nowrap;background:darkgray;color:black;">
+                        <th>@Localizer["Material No"]</th>
+                        <th>@Localizer["WeighBom"]</th>
+                        <th>@Localizer["Amount"]</th>
+                        @*<th>@Localizer["Description"]</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.bomStructView)
+                    {
+                        <tr>
+                            <td>@item.Follower</td>
+                            <td>@item.WeighBom</td>
+                            <td>@item.Amount</td>
+                            @*<td>@item.Description</td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @section Scripts{
+            <script>
+                $(document).ready(function () {
+                    $('#BomdatatableParent').DataTable();
+                });
+            </script>
+        }

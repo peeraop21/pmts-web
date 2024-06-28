@@ -1,0 +1,284 @@
+﻿@model PMTs.DataAccess.ModelView.MasterUserViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Detail User";
+}
+<div class="row page-titles">
+    <div class="col-md-5 col-8 align-self-center">
+        <h3 class="text-themecolor m-b-0 m-t-0">@Localizer["Account Management"]</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-action="Index">@Localizer["Account"]</a>
+            </li>
+            <li class="breadcrumb-item active">@Localizer["Edit Account"]</li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-outline-warning">
+            <div class="card-header">
+                <h4 class="m-b-0 text-white">@Localizer["Edit Personal Information"]</h4>
+            </div>
+            <div class="card-body">
+                <form class="form-horizontal" asp-action="EditMasterUser" role="form">
+                    <div class="form-body">
+                        <h3 class="box-title">Person Info</h3>
+                        <hr class="m-t-0 m-b-20">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["USERNAME"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="USER_NAME" class="form-control" required />
+                                        <span asp-validation-for="USER_NAME" class="text-danger"></span>
+                                        <input type="hidden" asp-for="PASSWORD" />
+                                        <input type="hidden" asp-for="USER_ID" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Role"]:</label>
+                                    <div class="col-md-9">
+                                        <select asp-for="Role.RoleId"
+                                                asp-items="ViewBag.Roles" class="form-control"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["DOMAIN"]:</label>
+                                    <div class="col-md-9">
+                                        <select asp-for="USER_DOMAIN" class="form-control" asp-items="ViewBag.UserDomain"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3"></label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static"> </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["SALE ORG"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="SALE_ORG" class="form-control" required />
+                                        <span asp-validation-for="SALE_ORG" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["PLANT CODE"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="PLANT_CODE" class="form-control" required />
+                                        <span asp-validation-for="PLANT_CODE" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["First Name[EN]"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="FIRST_NAME_EN" class="form-control" required />
+                                        <span asp-validation-for="FIRST_NAME_EN" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Last Name[EN]"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="LAST_NAME_EN" class="form-control" required />
+                                        <span asp-validation-for="LAST_NAME_EN" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["First Name[TH]"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="FIRST_NAME_TH" class="form-control" required />
+                                        <span asp-validation-for="FIRST_NAME_TH" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Last Name[TH]"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="LAST_NAME_TH" class="form-control" required />
+                                        <span asp-validation-for="LAST_NAME_TH" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["E-mail"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="EMAIL" class="form-control" required />
+                                        <span asp-validation-for="EMAIL" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Telephone"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="TELEPHONE" class="form-control" required />
+                                        <span asp-validation-for="TELEPHONE" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Mobile No"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="MOBILE_NO" class="form-control" required />
+                                        <span asp-validation-for="MOBILE_NO" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Password Hint"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="PASSWORD_HINT" class="form-control" />
+                                        <span asp-validation-for="PASSWORD_HINT" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Comment"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="COMMENT" class="form-control" />
+                                        <span asp-validation-for="COMMENT" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Role"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <select asp-for="Role.RoleId"
+                                                asp-items="ViewBag.Roles" class="form-control"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Status"]:</label>
+                                    <div class="col-md-9">
+                                        <input type="checkbox" id="md_checkbox_29" asp-for="IS_FLAG_DELETE" class="filled-in chk-col-teal">
+                                        <label for="md_checkbox_29"></label>   <span class="small text-danger">(Check = NonActive)</span>
+                                        @*<input data-toggle="toggle" asp-for="IS_FLAG_DELETE" class="flat-red" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled"><label>aa</label>*@
+                                        @*@if (Model.IS_FLAG_DELETE == true)
+                                            {
+                                                <button class="btn bg-danger" type="button" disabled></button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn bg-success" type="button" disabled></button>
+                                            }*@
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3"></label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>@Localizer["Update Profile"]</button>
+                                        <a class="btn btn-inverse" asp-action="index">@Localizer["Cancel"]</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <a asp-action="ChangePassword" id="btnChangepass"
+                                   asp-route-USER_ID="@Model.USER_ID" class="text-themecolor"><i class="ti-settings"></i>@Localizer["Change Password"]</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        //iCheck for checkbox and radio inputs
+        $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass: 'iradio_minimal-blue'
+        })
+        //Red color scheme for iCheck
+        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass: 'iradio_minimal-red'
+        })
+        //Flat red color scheme for iCheck
+        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass: 'iradio_flat-green'
+        })
+
+    })
+</script>
+
+<script src="~/AdminLTE/plugins/iCheck/icheck.min.js"></script>

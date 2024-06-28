@@ -1,0 +1,27 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceJoint.MaintenanceJointViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<div class="box-header">
+        <h3 class="box-title"><i class="mdi mdi-layers"></i> Joint</h3>
+    </div>*@
+
+<div class="box-body">
+    <table id="Joint-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col" width="10%">@Localizer["No."]</th>
+                <th scope="col" width="15%">@Localizer["JointId"]</th>
+                <th scope="col" width="25%">@Localizer["JointName"]</th>
+                <th scope="col" width="35%">@Localizer["JointDescription"]</th>
+                <th scope="col" width="7%" class="text-center">@Localizer["View"]</th>
+                <th scope="col" width="7%" class="text-center">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

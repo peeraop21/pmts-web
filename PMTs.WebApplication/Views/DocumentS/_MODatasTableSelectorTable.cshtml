@@ -1,0 +1,194 @@
+﻿@model IEnumerable<PMTs.DataAccess.ComplexModel.DocumentsMOData>
+
+@using PMTs.DataAccess.ModelView
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    Layout = null;
+}
+<form id="frm">
+
+    <table id="MODatasTableSelector" class="table table-bordered table-hover" width="100%">
+        <thead class="thead-light text-center">
+            <tr>
+                <th class="nosort" width="30px"></th>
+                <th style="width:55px">@Localizer["FactoryCode"]</th>
+                <th style="width:75px">@Localizer["OrderItem"]</th>
+                <th style="width:75px">@Localizer["Material No"]</th>
+                <th style="width:120px">@Localizer["Name"]</th>
+                <th style="width:80px">@Localizer["Order Quantity"]</th>
+                <th style="width:80px">@Localizer["Change Quantity"]</th>
+                <th style="width:80px">@Localizer["DueDate"]</th>
+                <th style="width:80px">@Localizer["DueDateChange"]</th>
+                <th style="width:60px">@Localizer["Piece Set"]</th>
+                <th style="width:80px">@Localizer["Box Status"]</th>
+                <th style="width:100px">@Localizer["BoxType"]</th>
+                <th style="width:80px">@Localizer["ProductType"]</th>
+                <th style="width:160px">@Localizer["Remark"]</th>
+                <th style="width:140px">@Localizer["Hold/ยกเลิก"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center" onclick="GetOrderItem(this)">
+                            <input type="checkbox" class="filled-in select-item-check chk-mo" id="@item.OrderItem"
+                                   data-id="@item.Id"
+                                   data-FactoryCode="@item.FactoryCode"
+                                   data-SNumber="@item.Snumber"
+                                   data-PC="@item.OrderQuantity"
+                                   data-orderQuant="@item.OrderQuantity"
+                                   value="@item.OrderItem" />
+                            <label for="@item.OrderItem"></label>
+                        </td>
+                        <td>@item.FactoryCode</td>
+                        <td>@item.OrderItem</td>
+                        <td>@item.MaterialNo</td>
+                        <td>@item.CustomerName</td>
+
+                        <td>@item.OrderQuantity</td>
+                        <td>
+                            <input class="orderQuantity" style="max-width:100px" type="text" id="change-@item.OrderItem" name="change-@item.OrderItem"
+                                   data-orderItem="@item.OrderItem"
+                                   data-isBox="@item.isBox"
+                                   data-orderQuantity="@item.OrderQuantity"
+                                   onkeyup="ChangeQuantity(this)"
+                                   value="@item.ChangeQuantity" />
+                        </td>
+                        <td>
+                            <input type="date" value="@item.DueDate.ToString("yyyy-MM-dd")" disabled />
+                        </td>
+                        <td><input class="datefield"
+                                   data-val="true"
+                                   data-val-required="Date is required"
+                                   id="DueDate-@item.OrderItem"
+                                   name="DueDate-@item.OrderItem"
+                                   data-isBox="@item.isBox"
+                                   data-dueDate="@item.DueDate"
+                                   data-orderItem="@item.OrderItem"
+                                   type="date"
+                                   onchange="ChangeDueDate(this)"
+                                   value="@item.DueDate.ToString("yyyy-MM-dd")" />
+                        </td>
+                        <td>@item.PieceSet</td>
+                        <td>
+                            @{
+                                if (item.MaterialType == "81")
+                                {
+                                    <select class="form-control boxTypeStatus"
+                                            id="boxTypeStatus-@item.OrderItem"
+                                            data-orderItem="@item.OrderItem"
+                                            data-isBox="@item.isBox"
+                                            onchange="ChangeBoxStatus(this)"
+                                            name="boxTypeStatus-@item.OrderItem">
+                                        <option value="" selected></option>
+                                        <option value="ยังไม่ plan">@Localizer["ยังไม่ plan"]</option>
+                                        <option value="ยังไม่ออกแผ่น">@Localizer["ยังไม่ออกแผ่น"]</option>
+                                        <option value="ออกแผ่นเเล้ว">@Localizer["ออกแผ่นเเล้ว"]</option>
+                                        <option value="ผลิตเสร็จแล้ว">@Localizer["ผลิตเสร็จแล้ว"]</option>
+                                    </select>
+
+                                }
+                                else if (item.MaterialType == "82")
+                                {
+                                    <select class="form-control boxTypeStatus"
+                                            id="boxTypeStatus-@item.OrderItem"
+                                            data-orderItem="@item.OrderItem"
+                                            data-isBox="@item.isBox"
+                                            onchange="ChangeBoxStatus(this)"
+                                            name="boxTypeStatus-@item.OrderItem">
+                                        <option value="" selected></option>
+                                        <option value="Supplier">@Localizer["Supplier"]</option>
+                                        <option value="ยังไม่ plan">@Localizer["ยังไม่ plan"]</option>
+                                        <option value="ผลิตเสร็จแล้ว">@Localizer["ผลิตเสร็จแล้ว"]</option>
+                                    </select>
+
+                                }
+                                else
+                                {
+                                    <select class="form-control boxTypeStatus"
+                                            id="boxTypeStatus-@item.OrderItem"
+                                            data-orderItem="@item.OrderItem"
+                                            data-isBox="@item.isBox"
+                                            onchange="ChangeBoxStatus(this)"
+                                            name="boxTypeStatus-@item.OrderItem">
+                                        <option value="" selected></option>
+                                        <option value="กล่อง">@Localizer["กล่อง"]</option>
+                                    </select>
+                                }
+                            }
+                        </td>
+                        <td>@item.BoxType</td>
+                        <td>@item.ProductType</td>
+                        <td>
+                            <input class="orderQuantity" style="width:100%" type="text"
+                               id="remark-@item.OrderItem"
+                               name="remark-@item.OrderItem"
+                               value="@item.Remark" />
+                        </td>
+                        <td>
+                            @if (item.Hold.HasValue && item.Hold.Value)
+                            {
+                                <div class="form-group form-check form-check-inline">
+                                    <input type="checkbox" class="form-check-input filled-in holdcancel"
+                                           id="hold-@item.OrderItem"
+                                           name="hold-@item.OrderItem"
+                                           data-orderItem="@item.OrderItem"
+                                           data-isBox="@item.isBox"
+                                           onchange="CheckHoldCancel(this)"
+                                           value="@item.Hold" checked="checked" />
+                                    <label for="hold-@item.OrderItem">@Localizer["Hold"]</label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group form-check form-check-inline">
+                                    <input type="checkbox" class="form-check-input filled-in holdcancel"
+                                           id="hold-@item.OrderItem"
+                                           name="hold-@item.OrderItem"
+                                           data-orderItem="@item.OrderItem"
+                                           data-isBox="@item.isBox"
+                                           onchange="CheckHoldCancel(this)"
+                                           value="@item.Hold" />
+                                    <label for="hold-@item.OrderItem">@Localizer["Hold"]</label>
+                                </div>
+                            }
+
+                            @if (item.Hold.HasValue && item.Cancel.Value)
+                            {
+                                <div class="form-group form-check form-check-inline">
+                                    <input type="checkbox" class="form-check-input filled-in holdcancel"
+                                           id="cancel-@item.OrderItem"
+                                           name="cancel-@item.OrderItem"
+                                           data-orderItem="@item.OrderItem"
+                                           data-isBox="@item.isBox"
+                                           onchange="CheckHoldCancel(this)"
+                                           value="@item.Cancel" checked="checked" />
+                                    <label for="cancel-@item.OrderItem">@Localizer["ยกเลิก"]</label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group form-check form-check-inline">
+                                    <input type="checkbox" class="form-check-input filled-in holdcancel"
+                                           id="cancel-@item.OrderItem"
+                                           name="cancel-@item.OrderItem"
+                                           data-orderItem="@item.OrderItem"
+                                           data-isBox="@item.isBox"
+                                           onchange="CheckHoldCancel(this)"
+                                           value="@item.Cancel" />
+                                    <label for="cancel-@item.OrderItem">@Localizer["ยกเลิก"]</label>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</form>

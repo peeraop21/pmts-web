@@ -1,0 +1,37 @@
+﻿@model IEnumerable<PMTs.DataAccess.ComplexModel.ChangeBoardNewMaterial>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<table id="AlreadyChangeBoardNewMaterialTable" class="table table-bordered color-table">
+    <thead>
+        <tr class="color-table text-center">
+            <th style="width:100px">@Localizer["Material No"]</th>
+            <th style="width:90px">@Localizer["PC"]</th>
+            <th style="width:90px">@Localizer["Flute"]</th>
+            <th style="width:150px">@Localizer["NewBoard"]</th>
+            <th style="width:100px">@Localizer["Price"]</th>
+            <th style="width:100px">@Localizer["HVA"]</th>
+            <th style="width:150px">@Localizer["Board Alternative"]</th>
+            <th style="width:150px">@Localizer["NEW_CODE"]</th>
+            <th style="width:100px">@Localizer["NEW_Cost"]</th>
+            <th style="width:500px">@Localizer["Error Message"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.CopyMaterialNo)</td>
+                <td>@Html.DisplayFor(modelItem => item.PC)</td>
+                <td>@Html.DisplayFor(modelItem => item.Flute)</td>
+                <td>@Html.DisplayFor(modelItem => item.NewBoard)</td>
+                <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.HighValue)</td>
+                <td>@Html.DisplayFor(modelItem => item.BoardAlternative)</td>
+                <td>@Html.DisplayFor(modelItem => item.CodeNewBoard)</td>
+                <td>@Html.DisplayFor(modelItem => item.Cost)</td>
+                <td class="text-danger" style="font-weight:400">@Html.DisplayFor(modelItem => item.ErrorMessage)</td>
+            </tr>
+        }
+    </tbody>
+</table>

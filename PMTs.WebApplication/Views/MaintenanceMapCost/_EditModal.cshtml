@@ -1,0 +1,98 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceMapCost.HierarchyCreateModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var actionName = ViewData["Title"];
+}
+
+<div class="modal bs-example-modal-lg" id="modal-view-hierarchy">
+    <div class="modal-dialog modal-lg" style="width:90%">
+        <div class="modal-content">
+            <form id="from-@actionName-view">
+                @*<input type="hidden" asp-for="CreatedBy" />
+                    <input type="hidden" asp-for="CreatedDate" />
+                    <input type="hidden" asp-for="UpdatedBy" />
+                    <input type="hidden" asp-for="UpdatedDate" />*@
+
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left" id="myLargeModalLabel">Create  @ViewData["Title"]</h4>
+                    <button type="button" class="close pull-right" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["Name"]</label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <input style="word-break:break-word;word-wrap:break-word" id="Hierarchy-view" class="form-control" maxlength="10" readonly />
+                        </div>
+                        <div class="col-md-1"></div>
+
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["Description"]</label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <textarea class="form-control" id="Description-view" rows="3" maxlength="50" readonly></textarea>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger waves-effect text-center col-md-1" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal bs-example-modal-lg" id="modal-edit-hierarchy">
+    <div class="modal-dialog modal-lg" style="width:90%">
+        <div class="modal-content">
+            <form id="from-@actionName-edit">
+                <input id="Id-edit" type="hidden" asp-for="Id" />
+                <input id="CreatedDate-edit" type="hidden" asp-for="CreatedDate" />
+                <input id="CreatedBy-edit" type="hidden" asp-for="CreatedBy" />
+                @*<input type="hidden" asp-for="CreatedBy" />
+                    <input type="hidden" asp-for="CreatedDate" />
+                    <input type="hidden" asp-for="UpdatedBy" />
+                    <input type="hidden" asp-for="UpdatedDate" />*@
+
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left" id="myLargeModalLabel">Create  @ViewData["Title"]</h4>
+                    <button type="button" class="close pull-right" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["Name"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <input style="word-break:break-word;word-wrap:break-word" id="Hierarchy-edit" class="form-control" maxlength="10" asp-for="Name" />
+                            <span asp-validation-for="Name" class="text-danger" style="float:left"></span>
+                        </div>
+                        <div class="col-md-1"></div>
+
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["Description"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <textarea class="form-control" asp-for="Description" id="Description-edit" rows="3" maxlength="50"></textarea>
+                            <span asp-validation-for="Description" class="text-danger" style="float:left"></span>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="CreateAndUpdateHierarchy('@actionName','edit')" id="btnEditHierarchy" class="btn btn-success text-center col-md-1">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-center col-md-1" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

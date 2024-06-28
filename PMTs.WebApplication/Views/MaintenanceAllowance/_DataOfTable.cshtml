@@ -1,0 +1,266 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceAllowance.MaintenanceAllowanceViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.AllowanceViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Machine</td>
+        <td>@item.Range</td>
+        <td>@item.Percen</td>
+        <td>@item.SheetMin</td>
+        <td>@item.SheetMax</td>
+        <td align="center">
+            <button type="button" class="btn btn-default"
+                    data-id="@item.Id" data-Machine="@item.Machine"
+                    data-Range="@item.Range" data-Percen="@item.Percen"
+                    data-SheetMin="@item.SheetMin" data-SheetMax="@item.SheetMax"
+                    onclick="viewShow(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-Machine')
+                    , this.getAttribute('data-Range')
+                    , this.getAttribute('data-Percen')
+                    , this.getAttribute('data-SheetMin')
+                    , this.getAttribute('data-SheetMax'))">
+                <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td align="center">
+            <button type="button" class="btn btn-default"
+                    data-id="@item.Id" data-Machine="@item.Machine"
+                    data-Range="@item.Range" data-Percen="@item.Percen"
+                    data-SheetMin="@item.SheetMin" data-SheetMax="@item.SheetMax"
+                    onclick="viewEdit(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-Machine')
+                    , this.getAttribute('data-Range')
+                    , this.getAttribute('data-Percen')
+                    , this.getAttribute('data-SheetMin')
+                    , this.getAttribute('data-SheetMax'))">
+                <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+            </button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal fade bs-example-modal-lg" id="modal-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View Allowance Precess"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Id" />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Machine"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Machine" id="Machine" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Range"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Range" id="Range" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Percen"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Percen" id="Percen" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["SheetMin"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="SheetMin" id="SheetMin" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["SheetMax"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="SheetMax" id="SheetMax" readonly />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="update_form_allowance" enctype="multipart/form-data">
+            @*asp-controller="MaintenanceAllowance" asp-action="UpdateAllowance" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">*@
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit Allowance Process"]</h4>
+                    <button type="button" class="close" data-dismiss="modal"  data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="EId" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Machine"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EMachine" name="Machine" maxlength="50" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Range">@Localizer["Range"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="ERange" name="Range" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Percen">@Localizer["Percen"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EPercen" name="Percen" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+
+                            <label class="control-label" for="SheetMin">@Localizer["SheetMin"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="ESheetMin" name="SheetMin" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SheetMax">@Localizer["SheetMax"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="ESheetMax" name="SheetMax" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnUpdateAllow" class="btn btn-info btnupdateallow">@Localizer["Update"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+    <script>
+
+    @*function getData() {
+        let req = {
+            "Id": $("#EId").val(),
+            "Machine": $("#EMachine").val(),
+            "Range": $("#ERange").val(),
+            "Percen": $("#EPercen").val(),
+            "SheetMin": $("#ESheetMin").val(),
+            "SheetMax": $("#ESheetMax").val(),
+        };
+        return req;
+    }
+
+    $(document).ready(function () {
+          $('.btnupdateallow').click(function () {
+            //var form = $('#update_form_allowance').serialize();
+            var form = JSON.stringify(getData());
+                   $.ajax({
+                    url: '@Url.Action("UpdateAllowance", "MaintenanceAllowance")',
+                       type: "POST",
+                       async: false,
+                       data:
+                       {
+                           req: form.toString()
+                       },
+                       dataType: "json",
+                       success: function (data) {
+                           UpdateAllowanceTableNew(data);
+                           swal("Update Success!", { icon: "success", });
+                           $('#modal-edit').modal('hide');
+                           $('.modal-backdrop').hide();
+                    }
+                 });
+       });
+    });
+
+        function UpdateAllowanceTableNew(res) {
+            $('#Allowance-table').html(res.View);
+            $('#Allowance-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }*@
+
+         $('.btnupdateallow').click(function () {
+            //var form = $('#update_form_allowance').serialize();
+            if ($('#EMachine').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                var form = JSON.stringify(getData());
+                $.ajax({
+                    url: '@Url.Action("UpdateAllowance", "MaintenanceAllowance")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAllowanceTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+       });
+
+        function UpdateAllowanceTableNew(res) {
+            $('#Allowance-table').html(res.View);
+            $('#Allowance-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }
+    </script>

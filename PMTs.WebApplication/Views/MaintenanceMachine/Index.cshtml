@@ -1,0 +1,692 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceMachine.MaintenanceMachineViewModel
+
+@{
+    ViewData["Title"] = "Machine";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-wrench"></i> @Localizer["Machine"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btn-create-machine-modal">
+                        <span class="btn-label">
+                            <i class="fa fa-plus-square text-left"></i>
+                        </span>@Localizer["Create"]
+                    </button>
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="Machine-table">
+                <partial name="_MachineTable" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        var IsCalPaperwidth = false;
+        var IsPropCor = false;
+        var IsPropPrint = false;
+        var IsPropDieCut = false;
+        var Glue = false;
+        var Rotary = false;
+        var Platen = false;
+        var ShowProcess = false;
+
+        $('#btnShowCreateModal').click(function () {
+            $(".field-validation-error span").hide();
+        });
+
+        $(function () {
+            var arrCustShipTo = [];
+            var next = 1;
+
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#Machine-data-table').DataTable();
+
+            $(".add-more").click(function (e) {
+                if ($('#ModelToSave_CustShipTo').val() === "") {
+                    $('#Validate_For_CustShipTo').css('display', 'block');
+                    return false;
+                }
+                else {
+                    $('#Validate_For_CustShipTo').css('display', 'none');
+                    e.preventDefault();
+                    var custShipToValue = $('#ModelToSave_CustShipTo').val();
+                    $('#ModelToSave_CustShipTo').val(null);
+                    $('#Input_CustShipTo_Col').append('<div class="add-row" style="display: flex;"><input class="addNew_CustShipTo form-control" type="text" value="' + custShipToValue + '" style="width: 100%; margin-top: 10px;" disabled><button type="button" class="btn btn-danger remove-me" style="margin-top: 10px; margin-left: 5px;">-</button></div>');
+                    arrCustShipTo.push(custShipToValue);
+                    next = next + 1;
+                    $('#CustShipToArrayList').val(arrCustShipTo.toString());
+
+                    $('.remove-me').click(function (e) {
+                        e.preventDefault();
+                        var $row = $(this).closest('.add-row');
+                        var InputBox = $row.find('.addNew_CustShipTo');
+                        $(InputBox).remove();
+                        $(this).remove();
+                        next = next - 1;
+                        var indexOfRemove = arrCustShipTo.indexOf(InputBox.val());
+                        if (indexOfRemove > -1) {
+                            arrCustShipTo.splice(indexOfRemove, 1);
+                        }
+                        $('#CustShipToArrayList').val(arrCustShipTo.toString());
+                    });
+                }
+            });
+
+            $("#IsCalPaperwidth-edit").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsCalPaperwidth = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsCalPaperwidth = false;
+                }
+            });
+
+            $("#glue-edit").click(function () {
+                if ($(this).is(":checked")) {
+                    Glue = true;
+                }
+                else {
+                    Glue = false;
+                }
+            });
+
+            $("#platen-edit").click(function () {
+                if ($(this).is(":checked")) {
+                    Platen = true;
+                }
+                else {
+                    Platen = false;
+                }
+            });
+
+            $("#rotary-edit").click(function () {
+                if ($(this).is(":checked")) {
+                    Rotary = true;
+                }
+                else {
+                    Rotary = false;
+                }
+            });
+
+            $("#IsPropCor-edit").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsPropCor = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsPropCor = false;
+                }
+            });
+
+            $("#IsPropPrint-edit").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsPropPrint = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsPropPrint = false;
+                }
+            });
+
+            $("#IsPropDieCut-edit").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsPropDieCut = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsPropDieCut = false;
+                }
+            });
+
+            //Create checkBox
+            $("#IsCalPaperwidth-create").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsCalPaperwidth = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsCalPaperwidth = false;
+                }
+            });
+
+            $("#IsPropCor-create").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsPropCor = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsPropCor = false;
+                }
+            });
+
+            $("#IsPropPrint-create").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsPropPrint = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsPropPrint = false;
+                }
+            });
+
+            $("#IsPropDieCut-create").click(function () {
+                if ($(this).prop("checked") == true) {
+                    IsPropDieCut = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    IsPropDieCut = false;
+                }
+            });
+
+            $("#ShowProcess-edit").click(function () {
+                if ($(this).prop("checked") == true) {
+                    ShowProcess = true;
+                }
+                else if ($(this).prop("checked") == false) {
+                    ShowProcess = false;
+                }
+            });
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+        //function AddMoreCustShipToForEdit(custShipToParentIdElement, custShipToIdElement, custChipToArrayListIdElement, custCode) {
+        //    var custShipToValue = $("#"+custShipToIdElement).val();
+        //    $("#" + custShipToIdElement).val(null);
+
+        //    var custShipToList = JSON.parse($("#" + custChipToArrayListIdElement).val());
+        //    custShipToList.push({ "Seq": null, "ShipTo": custShipToValue, "Description": custCode, "TransportZone": null, "DeliveryDistance": null, "DeliveryTime": null, "CustPreWait": null, "CustPostWait": null, "CustRecvTime": null });
+        //    $("#" + custChipToArrayListIdElement).val(JSON.stringify(custShipToList));
+
+        //    var elementNo = custShipToParentIdElement.substring(custShipToParentIdElement.lastIndexOf("-"));
+        //    elementNo = elementNo.replace("-", "");
+        //    var inputElementId = "CustShipTo-edit-"+elementNo;
+        //    $("#" + custShipToParentIdElement).append('<div class="add-row" style="display: flex;"><input class="form-control" id="'+inputElementId+'" type="text" value="' + custShipToValue + '" style="width: 100%; margin-top: 10px;" disabled><button type="button" class="btn btn-danger" style="margin-top: 10px; margin-left: 5px;" onclick="RemoveCustShipToItem(this, \''+inputElementId+'\')">-</button></div>');
+        //}
+
+        //function RemoveCustShipToItem(e, elementId, custChipToArrayListIdElement, elementItemId) {
+        //    var custShipToList = JSON.parse($("#" + custChipToArrayListIdElement).val());
+        //    var itemToRemove = $("#" + elementItemId).val();
+
+        //    var custShipToListNew = custShipToList.filter(function (object) {
+        //        return object.ShipTo !== itemToRemove;
+        //    });
+
+        //    $("#" + custChipToArrayListIdElement).val(JSON.stringify(custShipToListNew));
+
+        //    e.parentNode.remove();
+        //}
+
+        function CreateMachine()
+        {
+            let isSubmit = true;
+            let machine = $("#machineCreate").val();
+            let code = $("#codeCreate").val();
+            let plan = $("#planCreate").val();
+
+            if (machine.trim() == "")
+            {
+                $("#machineCreateReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#machineCreateReq").attr("hidden",true);
+            }
+
+            if (code.trim() == "")
+            {
+                $("#codeCreateReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#codeCreateReq").attr("hidden",true);
+            }
+
+            if (plan.trim() == "") {
+                $("#planCreateReq").removeAttr("hidden");
+                isSubmit = false;
+            } else {
+                $("#planCreateReq").attr("hidden", true);
+            }
+
+            if(isSubmit)
+            {
+                let form = $('#create-Machine-form')[0];
+                let data = new FormData(form);
+
+                $.ajax({
+	                type: 'POST',
+	                enctype: 'multipart/form-data',
+	                url: '@Url.Action("SaveMachine", "MaintenanceMachine")',
+	                data: data,
+	                async: false,
+	                processData: false,
+	                contentType: false,
+	                cache: false,
+	                success: function (res) {
+                        if (res.IsSuccess) {
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+
+                            swal("Save Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                            $('#Machine-table').html(res.ViewResponse);
+                            $('#Machine-data-table').DataTable();
+                            $('body').css('padding', '0px');
+                            $('.form-group').css('display', 'block');
+                            $('.form-inline').css('width', '-webkit-fill-available');
+                            $('.form-control').css('width', '-webkit-fill-available');
+                        }
+                        else {
+                            swal("Save Failed", res.ExceptionMessage, "warning");//modalDialog(error, SaveFailed);
+                        }
+	                },
+	                error: function () {
+		                // return false;
+	                }
+                });
+
+                //$('#create-Machine-form').each(function () {
+                //    this.reset();
+                //});
+            }
+        }
+
+        $("#edit-machine-btn").click(function () {
+
+            DisabledSubmitButton(this);
+            let isSubmit = true;
+            let machine = $("#machine-name-edit").val();
+            let code = $("#machine-code-edit").val();
+            let plan = $("#plantcode-edit").val();
+
+            if (machine.trim() == "")
+            {
+                $("#machine-name-edit-req").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#machine-name-edit-req").attr("hidden",true);
+            }
+
+            if (code.trim() == "")
+            {
+                $("#machine-code-edit-req"+number).removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#machine-code-edit-req").attr("hidden",true);
+            }
+
+            if (plan.trim() == "") {
+                $("#plan-code-edit-req" + number).removeAttr("hidden");
+                isSubmit = false;
+            } else {
+                $("#plan-code-edit-req").attr("hidden", true);
+            }
+
+            if(isSubmit)
+            {
+
+                let speMin = $("#speMin-edit").val() == "" ? null : $("#speMin-edit").val();
+                let speMax = $("#speMax-edit").val() == "" ? null : $("#speMax-edit").val();
+                let speTranf = $("#speTranf-edit").val() == "" ? null : $("#speTranf-edit").val();
+                let spePercen = $("#spepercen-edit").val() == "" ? null : $("#spepercen-edit").val();
+               // let spePercen = "99999";
+                let speed = $("#speed-edit").val() == "" ? null : $("#speed-edit").val();
+                let hardship = $("#hardship-edit").val() == "" ? null : $("#hardship-edit").val();
+                let minQuantity = $("#minQuantity-edit").val() == "" ? null : $("#minQuantity-edit").val();
+                let minSpeed = $("#minSpeed-edit").val() == "" ? null : $("#minSpeed-edit").val();
+                let colour = $("#colour-edit").val() == "" ? null : $("#colour-edit").val();
+                let createdDate = $("#machine-created-date-edit").val() == "" ? null : $("#machine-created-date-edit").val();
+                let createdBy = $("#machine-created-by-edit").val() == "" ? null : $("#machine-created-by-edit").val();
+
+                let stdspeed = $("#stdspeed-edit").val() == "" ? null : $("#stdspeed-edit").val();
+                let setuptime = $("#setuptime-edit").val() == "" ? null : $("#setuptime-edit").val();
+                let stdSetuptime = $("#stdSetuptime-edit").val() == "" ? null : $("#stdSetuptime-edit").val();
+                let downtime = $("#downtime-edit").val() == "" ? null : $("#downtime-edit").val();
+                let stddowntime = $("#stddowntime-edit").val() == "" ? null : $("#stddowntime-edit").val();
+                let cap = $("#cap-edit").val() == "" ? null : $("#cap-edit").val();
+                let maxTonsFG = $("#maxTonsFG-edit").val() == "" ? null : $("#maxTonsFG-edit").val();
+                let leadTime = $("#leadTime-edit").val() == "" ? null : $("#leadTime-edit").val();
+
+                let data = {
+                    "Id": $("#machine-id-edit").val(),
+                    "Machine1": $("#machine-name-edit").val(),
+                    "Code": $("#machine-code-edit").val(),
+                    "PlanCode": $("#plantcode-edit").val(),
+                    "Colour": colour,
+                    "Glue": Glue,
+                    "Platen": Platen,
+                    "Rotary": Rotary,
+                    "Speed": speed,
+                    "SpePercen": spePercen,
+                    "SpeMin": speMin,
+                    "SpeMax": speMax,
+                    "SpeTranf": speTranf,
+                    "MachineGroup": $("#machine-group-edit").val(),
+                    "IsCalPaperwidth": IsCalPaperwidth,
+                    "IsPropCor": IsPropCor,
+                    "IsPropDieCut": IsPropDieCut,
+                    "IsPropPrint": IsPropPrint,
+                    "CreatedDate": ChangeDateTimeFormat(createdDate),
+                    "CreatedBy": createdBy,
+                    "Hardship": hardship,
+                    "MinQuantity": minQuantity,
+                    "MinSpeed": minSpeed,
+                    "ShowProcess": ShowProcess,
+                    "stdspeed": stdspeed,
+                    "setuptime": setuptime,
+                    "stdSetuptime": stdSetuptime,
+                    "downtime": downtime,
+                    "stddowntime": stddowntime,
+                    "cap": cap,
+                    "maxTonsFG": maxTonsFG,
+                    "leadTime" : leadTime,
+                    "CodeMachineType": $("#codeMachineType-edit").val(),
+                    "GlueType": $("#machinegluetype-edit").val()
+                }
+
+                let formData = JSON.stringify(data);
+
+                $.ajax({
+                    url: '@Url.Action("UpdateMachine", "MaintenanceMachine")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: formData.toString()
+                    },
+                    dataType: "json",
+	                success: function (res) {
+                        if (res.IsSuccess) {
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+
+                            swal("Update Successfully", "", "success");//modalDialog(success, SaveSuccess);
+                            window.location.href = 'MaintenanceMachine';
+                            $('#Machine-table').html(res.ViewResponse);
+                            $('#Machine-data-table').DataTable();
+                        }
+                        else {
+                            swal("Uppdate Failed", res.ExceptionMessage, "warning");//modalDialog(error, SaveFailed);
+                        }
+	                },
+	                error: function () {
+		                // return false;
+	                }
+                });
+            }
+        });
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        @*function UpdateMachineTable() {
+            $.ajax({
+                url: '@Url.Action("UpdateMachineTable", "MaintenanceMachine")',
+                success: function (res) {
+                },
+                error: function () {  }
+            });
+        }*@
+
+        function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeleteMachine", "MaintenanceMachine")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                $('.modal-backdrop').hide();
+                                $("body").removeClass("modal-open");
+
+                                //swal("Deleted!", {
+                                //    icon: "success",
+                                //});
+                                //UpdateMachineTable();
+                                //window.location.reload(true);
+
+                                $('.modal').modal('hide');
+                                $('.modal-backdrop').hide();
+                                $("body").removeClass("modal-open");
+
+                                swal("Deleted Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                                $('#Machine-table').html(res.ViewResponse);
+                                $('#Machine-data-table').DataTable();
+                            }
+                        }
+                    });
+                    } else {
+                    }
+                });
+        }
+
+        function BindMachineView(item) {
+
+            $("#machine-id-view").val($(item).attr("data-machine-id"));
+            $("#machine-name-view").val($(item).attr("data-machine-name"));
+            $("#machine-code-view").val($(item).attr("data-machine-code"));
+            $("#plantcode-view").val($(item).attr("data-plantcode"));
+            $("#colour-view").val($(item).attr("data-colour"));
+            $("#speed-view").val($(item).attr("data-speed"));
+            $("#spePercen-view").val($(item).attr("data-spepercen"));
+            $("#speMin-view").val($(item).attr("data-speMin"));
+            $("#speMax-view").val($(item).attr("data-speMax"));
+            $("#speTranf-view").val($(item).attr("data-speTranf"));
+            $("#Hardship-view").val($(item).attr("data-Hardship"));
+            $("#MinQuantity-view").val($(item).attr("data-MinQuantity"));
+            $("#MinSpeed-view").val($(item).attr("data-MinSpeed"));
+            $("#machine-group-view").val($(item).attr("data-machineGroup"));
+
+            //tassanai autorouting
+
+            $("#codeMachineType-view").val($(item).attr("data-codeMachineType"));
+            $("#machinegluetype-view").val($(item).attr("data-glueType"));
+            //tassanai autorouting
+
+            IsCalPaperwidth = $(item).attr("data-isCalPaperwidth");
+            IsPropCor = $(item).attr("data-isPropCor");
+            IsPropPrint = $(item).attr("data-IsPropPrint");
+            IsPropDieCut = $(item).attr("data-isPropDieCut");
+            ShowProcess = $(item).attr("data-ShowProcess");
+            Glue = $(item).attr("data-glue");
+            Rotary = $(item).attr("data-rotary");
+            Platen = $(item).attr("data-platen");
+
+            CheckAttr("glue-view", Glue);
+            CheckAttr("rotary-view", Rotary);
+            CheckAttr("platen-view", Platen);
+            CheckAttr("IsCalPaperwidth-view", IsCalPaperwidth);
+            CheckAttr("IsPropCor-view", IsPropCor);
+            CheckAttr("IsPropPrint-view", IsPropPrint);
+            CheckAttr("IsPropDieCut-view", IsPropDieCut);
+            CheckAttr("ShowProcess-view", ShowProcess);
+
+            $("#stdspeed-view").val($(item).attr("data-stdspeed"));
+            $("#setuptime-view").val($(item).attr("data-setuptime"));
+            $("#stdSetuptime-view").val($(item).attr("data-stdSetuptime"));
+            $("#downtime-view").val($(item).attr("data-downtime"));
+            $("#stddowntime-view").val($(item).attr("data-stddowntime"));
+            $("#cap-view").val($(item).attr("data-cap"));
+            $("#maxTonsFG-view").val($(item).attr("data-maxTonsFG"));
+            $("#leadTime-view").val($(item).attr("data-leadTime"));
+            setUnitDesc($(item).attr("data-machineGroup"));
+            $("#modal-machine-view").modal("show");
+        }
+
+        function CheckAttr(nameOfAttr, isChecked)
+        {
+            if (isChecked == "True") {
+                $("#" + nameOfAttr).attr("checked", true);
+            }
+            else{
+                $("#" + nameOfAttr).removeAttr("checked");
+            }
+        }
+
+        function BindMachineEdit(item) {
+            $("#machine-id-edit").val($(item).attr("data-machine-id"));
+            $("#machine-name-edit").val($(item).attr("data-machine-name"));
+            $("#machine-code-edit").val($(item).attr("data-machine-code"));
+            $("#plantcode-edit").val($(item).attr("data-plantcode"));
+            $("#colour-edit").val($(item).attr("data-colour"));
+            $("#speed-edit").val($(item).attr("data-speed"));
+            $("#spepercen-edit").val($(item).attr("data-spepercen"));
+            $("#speMin-edit").val($(item).attr("data-speMin"));
+            $("#speMax-edit").val($(item).attr("data-speMax"));
+            $("#speTranf-edit").val($(item).attr("data-speTranf"));
+            $("#hardship-edit").val($(item).attr("data-Hardship"));
+            $("#minQuantity-edit").val($(item).attr("data-MinQuantity"));
+            $("#minSpeed-edit").val($(item).attr("data-MinSpeed"));
+            $("#machine-group-edit").val($(item).attr("data-machineGroup"));
+            $("#machine-created-date-edit").val($(item).attr("data-createdDate"));
+            $("#machine-created-by-edit").val($(item).attr("data-createdBy"));
+            //tassanai autorouting
+
+            $("#codeMachineType-edit").val($(item).attr("data-codeMachineType"));
+            $("#machinegluetype-edit").val($(item).attr("data-glueType"));
+            //tassanai autorouting
+
+            IsCalPaperwidth = $(item).attr("data-isCalPaperwidth");
+            IsPropCor = $(item).attr("data-isPropCor");
+            IsPropPrint = $(item).attr("data-IsPropPrint");
+            IsPropDieCut = $(item).attr("data-isPropDieCut");
+            Glue = $(item).attr("data-glue");
+            Rotary = $(item).attr("data-rotary");
+            Platen = $(item).attr("data-platen");
+            ShowProcess = $(item).attr("data-ShowProcess");
+
+            CheckAttr("rotary-edit", Rotary);
+            CheckAttr("platen-edit", Platen);
+            CheckAttr("glue-edit", Glue);
+            CheckAttr("IsCalPaperwidth-edit", IsCalPaperwidth);
+            CheckAttr("IsPropCor-edit", IsPropCor);
+            CheckAttr("IsPropPrint-edit", IsPropPrint);
+            CheckAttr("IsPropDieCut-edit", IsPropDieCut);
+            CheckAttr("ShowProcess-edit", ShowProcess);
+
+            $("#stdspeed-edit").val($(item).attr("data-stdspeed"));
+            $("#setuptime-edit").val($(item).attr("data-setuptime"));
+            $("#stdSetuptime-edit").val($(item).attr("data-stdSetuptime"));
+            $("#downtime-edit").val($(item).attr("data-downtime"));
+            $("#stddowntime-edit").val($(item).attr("data-stddowntime"));
+            $("#cap-edit").val($(item).attr("data-cap"));
+            $("#maxTonsFG-edit").val($(item).attr("data-maxTonsFG"));
+            $("#leadTime-edit").val($(item).attr("data-leadTime"));
+
+            //set unit description in form
+            setUnitDesc($(item).attr("data-machineGroup"));
+
+            $("#modal-machine-edit").modal("show");
+        }
+        $('#btn-create-machine-modal').click(function () {
+
+            $('#create-Machine-form').each(function () {
+                this.reset();
+            });
+            //  $(".field-validation-error span").hide();
+            setUnitDesc("-1");
+            $('#modal-create-machine').modal('show');
+            $('#ShowProcess').attr('checked',true);
+
+        });
+
+        function setUnitDesc(machineGroup) {
+            if (machineGroup == "1") {
+                document.getElementsByClassName("speedlabel")[0].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("speedlabel")[1].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("speedlabel")[2].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("stdspeedlabel")[0].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("stdspeedlabel")[1].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("stdspeedlabel")[2].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("minspeedlabel")[0].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("minspeedlabel")[1].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("minspeedlabel")[2].innerHTML = "&nbsp;(เมตร/นาที)";
+                document.getElementsByClassName("caplabel")[0].innerHTML = "&nbsp;(เมตร/วัน)";
+                document.getElementsByClassName("caplabel")[1].innerHTML = "&nbsp;(เมตร/วัน)";
+                document.getElementsByClassName("caplabel")[2].innerHTML = "&nbsp;(เมตร/วัน)";
+            }
+            else {
+                document.getElementsByClassName("speedlabel")[0].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("speedlabel")[1].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("speedlabel")[2].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("stdspeedlabel")[0].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("stdspeedlabel")[1].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("stdspeedlabel")[2].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("minspeedlabel")[0].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("minspeedlabel")[1].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("minspeedlabel")[2].innerHTML = "&nbsp;(ใบ/นาที)";
+                document.getElementsByClassName("caplabel")[0].innerHTML = "&nbsp;(ใบ/วัน)";
+                document.getElementsByClassName("caplabel")[1].innerHTML = "&nbsp;(ใบ/วัน)";
+                document.getElementsByClassName("caplabel")[2].innerHTML = "&nbsp;(ใบ/วัน)";
+            }
+        }
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

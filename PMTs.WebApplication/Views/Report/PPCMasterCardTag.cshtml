@@ -1,0 +1,2225 @@
+﻿@model PMTs.DataAccess.ModelView.PrintMasterCardMOModel
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Report
+@using PMTs.DataAccess.ModelView.Login;
+
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+
+@{
+    Layout = null;
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+}
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="~/lib/material-pro/main/css/bootstrap.min5.css" rel="stylesheet" />
+    <link href="~/js/jquery-ui.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+    <style>
+        .row {
+            margin-right: 0px;
+        }
+
+        .hrStyle {
+            margin: 15px 0px 5px 20px;
+            width: 582px;
+            border-top: dashed 1px black;
+        }
+
+        .titleRouting {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .labelRouting {
+            font-size: 16px;
+        }
+
+        .labelMatBOM {
+            font-size: 16px;
+            font-weight: 500;
+            padding:0px;
+            margin:0px;
+        }
+
+        .lineBreak {
+            page-break-after: always;
+        }
+
+        .boarderLeft {
+            border-left: 1px solid black;
+        }
+
+        .barcodetext {
+            font-family: 'Free 3 of 9';
+            line-height: 0.7;
+            font-size: 70px;
+        }
+
+        .lineMO {
+            border: 1px solid black;
+        }
+
+        .frame {
+            height: 160px; /*can be anything*/
+            width: 160px; /*can be anything*/
+            position: relative;
+        }
+
+        .imageFrame {
+            max-height: 100%;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+
+        .tableMO {
+            border-left: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+
+        /*.divbo {
+            height: 100px;
+            width: 100px;
+            float: none;
+            padding-left: 20px;
+            padding-bottom : 10px;
+            background-color: powderblue;
+        }*/
+
+        /*Font style*/
+        .FontHeader {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 36px; /* fallback */
+            max-height: 75px; /* fallback */
+            font-size: 32px;
+            padding-left: 5px;
+        }
+
+        .FontSubHeader1 {
+            word-break: break-all;
+            max-height: 46px;
+            line-height: 48px;
+            font-size: 30px;
+            padding-left: 5px;
+        }
+
+        .FontSubHeader2 {
+            word-break: break-all;
+            max-height: 46px;
+            line-height: 36px;
+            font-size: 24px;
+            padding-left: 5px;
+        }
+
+        .FontLenghtTable {
+            word-break: break-all;
+            max-height: 46px;
+            line-height: 32px;
+            font-size: 20px;
+            padding-left: 5px;
+            font-weight: 800
+        }
+
+        .FontTitle {
+            word-break: break-all;
+            font-size: 20px;
+            padding-left: 5px;
+        }
+
+        .FontParagraph {
+            word-break: break-all;
+            font-size: x-large;
+            padding-left: 5px;
+        }
+
+        .FontSO {
+            word-break: break-all;
+            font-size: 21px;
+        }
+
+        .FontCustomer {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 50px; /* fallback */
+            max-height: 99px; /* fallback */
+            font-size: 50px;
+            font-weight: bold;
+            padding-left: 3px;
+            padding-bottom: 10px;
+            font-family: AngsanaUPC;
+        }
+
+        .textImageDetail {
+            font-size: 15px;
+            max-height: 17px;
+            max-width: 45px
+        }
+        /*End Font style*/
+
+        .bordered {
+            display: table;
+            margin: 1em;
+        }
+
+            .bordered .highlight {
+                border: 1px solid black;
+                /*background: transparent;*/
+            }
+
+        div.a {
+            width: 150px;
+            height: 80px;
+            /*background-color: yellow;*/
+            -ms-transform: rotate(20deg); /* IE 9 */
+            transform: rotate(20deg);
+        }
+
+        .wrapper {
+            margin: 0 auto;
+            width: 960px;
+            background: #EFEFEF;
+        }
+
+        .table-break-word {
+            width: 100%;
+            table-layout: fixed;
+            word-wrap: break-word;
+        }
+
+        .table-break-all {
+            word-break: break-all;
+        }
+
+        .padTag {
+            padding: 0px 10px 0px 20px;
+            font-size: 17px;
+        }
+
+        .padTagSubject {
+            padding: 0px 10px 0px 140px;
+            font-size: 17px;
+        }
+
+        .padTag2 {
+            padding: 0px 10px 0px 30px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .padTagSubject2 {
+            padding: 0px 10px 0px 150px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .tabletag {
+            border: 1px solid black;
+        }
+
+        .tdtag {
+            border: 1px solid black;
+        }
+
+        .outer {
+            background-color: white;
+            width: 1px;
+            position: relative;
+            display: inline-block;
+            margin: 0 15px;
+            max-width: 18px;
+            /*white-space: nowrap;*/
+        }
+
+        .inner {
+            font-family:Tahoma;
+            font-size: 20px;
+            color: black;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            padding: 13px 0px 0px 0px;
+            /*width: 400px;*/
+            /*background-color: red;*/
+            /*height: 100px;
+
+            display: inline-block;
+            top: 50%;
+            left: 50%;
+            background: #DDD;*/
+            /*word-break:break-all;*/
+        }
+
+        .inner3 {
+            font-family:Tahoma;
+            font-size: 21px;
+            color: black;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            padding: 13px 0px 0px 0px;
+            /*width: 400px;*/
+            /*background-color: red;*/
+            /*height: 100px;
+
+            display: inline-block;
+            top: 50%;
+            left: 50%;
+            background: #DDD;*/
+            /*word-break:break-all;*/
+        }
+
+        .inner2 {
+            font-size: 50px;
+            color: black;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            padding: 0px 0px 0px 0px;
+            padding-top: 50px;
+            text-align: left;
+            /*width: 400px;*/
+            /*background-color: red;*/
+            /*height: 100px;
+
+            display: inline-block;
+            top: 50%;
+            left: 50%;
+            background: #DDD;*/
+            /*word-break:break-all;*/
+        }
+
+        .inner4 {
+            font-size: 55px;
+            color: black;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            padding: 0px 0px 0px 0px;
+            padding-top: 50px;
+            text-align: left;
+            /*width: 400px;*/
+            /*background-color: red;*/
+            /*height: 100px;
+
+            display: inline-block;
+            top: 50%;
+            left: 50%;
+            background: #DDD;*/
+            /*word-break:break-all;*/
+        }
+
+        .rotate {
+            -moz-transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+            -webkit-transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+            transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+            transform-origin: left top;
+        }
+
+        .pre {
+            white-space: pre-wrap;
+            word-break: keep-all
+        }
+
+    </style>
+</head>
+
+<body>
+    @{
+        var numberOfMasterCard = 1;
+        var Orderitem = "";
+
+    }
+    <div id="pageMasterCard" class="container" style="width: 1550px;height: 100%;padding: 0px 15px 150px 15px;">
+
+        @foreach (var item in Model.MasterCardMOs)
+        {
+            Orderitem = item.OrderItem;
+
+            numberOfMasterCard = numberOfMasterCard + 1;
+
+            @if (item.IsBundle)
+            {
+                @if (item.NoTagBundle != null)
+                {
+                    <div style="width:1550px;height: auto; padding: 10px 10px 10px 10px;">
+
+                        <input type="hidden" id="NoTagBundle" value="@item.NoTagBundle" />
+                        <input type="hidden" id="TagBundle" value="@item.TagBundle" />
+                        <input type="hidden" id="TagPallet" value="@item.TagPallet" />
+                        <div class="row">
+                            @if (item.NoTagBundle == "9tag")
+                            {
+
+                                string[] arr = item.TagBundle.Split("$");
+                                string res = "";
+                                int starttxt = 0;
+                                int endtxt = 0;
+                                var hiddenstyle = "hidden";
+
+                                <table>
+                                    <tr>
+                                        <td width="97%">
+                                            @for (var i = 0; i < 9; i++)
+
+                                            {
+
+                                                <div class="col-xs-4" style="padding: 2px 13px 2px 2px;">
+
+                                                    <br />
+                                                    <table width="100%" style="border: solid 1px; padding-left: 5px; padding-top: 50px; padding-bottom: 5px; margin-top: 5px; " height="685px">
+                                                        <tr>
+
+                                                            @foreach (var itxt in arr)
+                                                            {
+
+                                                                string[] arr2 = itxt.Split(":");
+
+                                                                @if (arr2[1] != "Customer" && arr2[1] != "SO" && arr2[1] != "SaleText" && arr2[1] != "Description" &&
+                                                                    arr2[1] != "Material" && arr2[1] != "Product" && arr2[1] != "PartNo" && arr2[1] != "PONo" && arr2[1] != "จำนวนสั่งลูกค้า" && arr2[1] != "จำนวนกล่องต่อพาเลท" &&
+                                                                    arr2[1] != "กำหนดส่ง" && arr2[1] != "WeightBox" && arr2[1] != "Remark" && arr2[1] != "ProductionDate" && arr2[1] != "ผู้ตรวจสอบ" && arr2[1] != "วันที่ตรวจสอบ" && arr2[1] != "น้ำหนักต่อห่อ")
+                                                                {
+
+                                                                    <td rowspan="3" width="0px" height="620px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate pre" style="width: 610px"> @arr2[1]</div>
+                                                                        </div>
+                                                                    </td>
+
+                                                                }
+
+                                                                @if (arr2[1] == "Customer")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "SO")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "SaleText")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "Description")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "Material")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "Product")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                 @if (arr2[1] == "PartNo")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "PONo")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "จำนวนสั่งลูกค้า")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "จำนวนกล่องต่อพาเลท")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "กำหนดส่ง")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "WeightBox")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "Remark")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "ProductionDate")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "ผู้ตรวจสอบ")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "วันที่ตรวจสอบ")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "น้ำหนักต่อห่อ")
+                                                                {
+                                                                    <td width="0px" height="70px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate"> @arr2[2] </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                            }
+
+                                                            @if(arr.Count() <=6) {
+                                                                @for (var td = arr.Count(); td < 9; td++)
+                                                                {
+                                                               <td width="0px" height="70px">
+                                                                    <div class="outer">
+                                                                        <div class="inner rotate"> &nbsp;</div>
+                                                                    </div>
+                                                                </td>
+                                                                }
+                                                            }
+
+                                                           @* @for (var td = arr.Count(); td < 9; td++)
+                                                            {
+                                                                <td width="0px" height="70px">
+                                                                    <div class="outer">
+                                                                        <div class="inner rotate"> &nbsp;</div>
+                                                                    </div>
+                                                                </td>
+                                                            }*@
+                                                        </tr>
+
+                                                        @* ========================================================== *@
+
+                                                        <tr>
+                                                            @foreach (var itxt in arr)
+                                                            {
+
+                                                                string[] arr2 = itxt.Split(":");
+
+                                                                @if (arr2[1] == "Customer")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Customer", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="65px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px">  @item.CustNameNOSoldto</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "SO")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("SO", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width:390px"><b> @item.OrderItem</b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "SaleText")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("SaleText", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.Sale_Text1  @item.Sale_Text2  @item.Sale_Text3 @item.Sale_Text4</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "Description")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Description", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width:390px"><b> @item.Description</b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "Material")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Material", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.Material_No</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "Product")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Product", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width:390px"> <b>@item.PC </b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "PartNo")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("PartNo", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width:390px"> <b>@item.Part_No </b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "PONo")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("PONo", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.PoNo</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "จำนวนสั่งลูกค้า")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("จำนวนสั่งลูกค้า", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.Order_Quant</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "จำนวนกล่องต่อพาเลท")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Quantity", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.BoxPalet</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "กำหนดส่ง")
+
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("กำหนดส่ง", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.Due_Text</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "WeightBox")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("WeightBox", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.WeightBox</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "Remark")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Remark", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px"> @item.ItemNote</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "ProductionDate")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("ProductionDate", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px">  .......................................... </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "ผู้ตรวจสอบ")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("ผู้ตรวจสอบ", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px">  .......................................... </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "วันที่ตรวจสอบ")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("วันที่ตรวจสอบ", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px">  .......................................... </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "น้ำหนักต่อห่อ")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("น้ำหนักต่อห่อ", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="350px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width:390px">  .......................................... </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                            }
+
+                                                             @if(arr.Count() <=6) {
+                                                                @for (var td = arr.Count(); td < 9; td++)
+                                                                {
+                                                                <td width="0px" height="100px">
+                                                                    <div class="outer">
+                                                                        <div class="inner rotate"> &nbsp;</div>
+                                                                    </div>
+                                                                </td>
+                                                                }
+                                                            }
+                                                           @* @for (var td = arr.Count(); td < 9; td++)
+                                                            {
+                                                                <td width="0px" height="100px">
+                                                                    <div class="outer">
+                                                                        <div class="inner rotate"> &nbsp;</div>
+                                                                    </div>
+                                                                </td>
+                                                            }*@
+                                                        </tr>
+                                                        <tr>
+                                                            @foreach (var itxt in arr)
+                                                            {
+
+                                                                string[] arr2 = itxt.Split(":");
+                                                                @if (arr2[1] == "Customer")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Customer", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> บริษัท </div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "SO")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("SO", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width: 150px"> <b> S/O</b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "SaleText")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("SaleText", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> SaleText</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "Description")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Description", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width: 150px"> <b>Description </b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "Material")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Material", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> Material</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "Product")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Product", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width: 150px"> <b>P/C</b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if (arr2[1] == "PartNo")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("PartNo", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner3 rotate" style="width: 150px"> <b>PartNo</b></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "PONo")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("PONo", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> PONo</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "จำนวนสั่งลูกค้า")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("จำนวนสั่งลูกค้า", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> จำนวนสั่งลูกค้า</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "จำนวนกล่องต่อพาเลท")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Quantity", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            @*<div class="inner rotate" style="width: 150px"> Quantity</div>*@
+                                                                            <div class="inner rotate" style="width: 150px"> <span style="font-size:14px">กล่อง/พาเลท</span></div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "กำหนดส่ง")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("กำหนดส่ง", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> กำหนดส่ง</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "WeightBox")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("WeightBox", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> WeightBox</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "Remark")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("Remark", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> Remark</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "ProductionDate")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("ProductionDate", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> วันที่ผลิต</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "ผู้ตรวจสอบ")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("ผู้ตรวจสอบ", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> ผู้ตรวจสอบ</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "วันที่ตรวจสอบ")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("วันที่ตรวจสอบ", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> วันที่ตรวจสอบ</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+
+                                                                @if (arr2[1] == "น้ำหนักต่อห่อ")
+                                                                {
+                                                                    res = Array.Find(arr, ele => ele.StartsWith("น้ำหนักต่อห่อ", StringComparison.Ordinal));
+                                                                    hiddenstyle = "";
+
+                                                                    <td width="0px" height="150px">
+                                                                        <div class="outer">
+                                                                            <div class="inner rotate" style="width: 150px"> น้ำหนักต่อห่อ</div>
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                            }
+
+                                                             @if(arr.Count() <=6) {
+                                                                @for (var td = arr.Count(); td < 9; td++)
+                                                                {
+                                                                 <td width="0px" height="150px">
+                                                                    <div class="outer">
+                                                                        <div class="inner rotate"> &nbsp;</div>
+                                                                    </div>
+                                                                </td>
+                                                                }
+                                                            }
+
+                                                           @* @for (var td = arr.Count(); td < 9; td++)
+                                                            {
+                                                                <td width="0px" height="150px">
+                                                                    <div class="outer">
+                                                                        <div class="inner rotate"> &nbsp;</div>
+                                                                    </div>
+                                                                </td>
+                                                            }*@
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            }
+                                        </td>
+
+                                        <td height="800px" style="vertical-align:top;padding-top:300px">
+                                            <div class="outer" style="height:500px">
+                                                <div class="inner rotate">
+
+                                                    <table style="width:600px">
+                                                        <tr>
+                                                            <td>
+                                                                S/O:@Orderitem
+                                                            </td>
+                                                            <td>
+                                                                @Localizer["เวลา"] : @DateTime.Now
+                                                            </td>
+                                                            <td>
+                                                                @Localizer["Printed by"] : @item.CustomerContact
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                            else if (item.NoTagBundle == "6tag")
+                            {
+                                string[] arr = item.TagBundle.Split("$");
+                                string res = "";
+                                int starttxt = 0;
+                                int endtxt = 0;
+                                var hiddenstyle = "hidden";
+
+                                @for (var i = 0; i < 6; i++)
+                                {
+                                    <div class="col-xs-6" style="padding: 20px 10px 10px 10px;">
+                                        <table width="100%" style="border:solid 1px;font-size:25px" height="680px">
+
+                                            @foreach (var itxt in arr)
+                                            {
+
+                                                string[] arr2 = itxt.Split(":");
+
+                                                @if (arr2[1] != "Customer" && arr2[1] != "SO" && arr2[1] != "SaleText" && arr2[1] != "Description" &&
+                                            arr2[1] != "Material" && arr2[1] != "Product" && arr2[1] != "PartNo" && arr2[1] != "PONo" && arr2[1] != "จำนวนสั่งลูกค้า" && arr2[1] != "จำนวนกล่องต่อพาเลท" &&
+                                            arr2[1] != "กำหนดส่ง" && arr2[1] != "WeightBox" && arr2[1] != "Remark" && arr2[1] != "ProductionDate" && arr2[1] != "ผู้ตรวจสอบ" && arr2[1] != "วันที่ตรวจสอบ" && arr2[1] != "น้ำหนักต่อห่อ")
+                                                {
+                                                    <tr>
+                                                        <td colspan="3" style="height: 25px; padding-left: 5px;">
+                                                           <font class="pre"> @arr2[1] </font>
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Customer")
+                                                {
+                                                    hiddenstyle = "";
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px; ">
+                                                            บริษัท
+                                                        </td>
+                                                        <td style="height:65px; width:250px; word-break:break-word;">
+                                                            @item.CustNameNOSoldto
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @*// @arr2[2]*@
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "SO")
+                                                {
+
+                                                    <tr style="font-size:26px;font-weight:bold">
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            SO
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.OrderItem
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @*//  @arr2[2]*@
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "SaleText")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            SaleText
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Sale_Text1  @item.Sale_Text2  @item.Sale_Text3 @item.Sale_Text4
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Description")
+                                                {
+
+                                                    <tr style="font-size: 26px; font-weight: bold; margin-bottom: 30px">
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            Description
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Description
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Material")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            Material
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Material_No
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Product")
+                                                {
+                                                    <tr style="font-size:26px;font-weight:bold">
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            Product
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.PC
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                @if (arr2[1] == "PartNo")
+                                                {
+                                                    <tr style="font-size:26px;font-weight:bold">
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            PartNo
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Part_No
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "PONo")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            PONo
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.PoNo
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "จำนวนสั่งลูกค้า")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            จำนวนสั่งลูกค้า
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Order_Quant
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "จำนวนกล่องต่อพาเลท")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px; word-break:break-word;">
+                                                            จำนวนกล่อง ต่อพาเลท
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.BoxPalet
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "กำหนดส่ง")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("กำหนดส่ง", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            กำหนดส่ง
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Due_Text
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "WeightBox")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("WeightBox", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            WeightBox
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.WeightBox
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Remark")
+
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("Remark", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            Remark
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @item.ItemNote
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "ProductionDate")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("ProductionDate", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            Remark
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "ผู้ตรวจสอบ")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("ผู้ตรวจสอบ", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            ผู้ตรวจสอบ
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "ตรวจสอบ")
+
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("วันที่ตรวจสอบ", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            วันที่ตรวจสอบ
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "น้ำหนักต่อห่อ")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("น้ำหนักต่อห่อ", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 55px; width: 75px; padding-left: 5px;">
+                                                            น้ำหนักต่อห่อ
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 55px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                            @for (var td = arr.Count(); td < 9; td++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                }
+                                <table width="100%">
+                                    <tr>
+                                        <td style="text-align:right">  S/O:@Orderitem S/O:@Orderitem &nbsp;@Localizer["เวลา"] : @DateTime.Now &nbsp; @Localizer["Printed by"] : @item.CustomerContact</td>
+                                    </tr>
+                                </table>
+                            }
+                            else if (item.NoTagBundle == "4tag")
+                            {
+                                string[] arr = item.TagBundle.Split("$");
+                                string res = "";
+                                int starttxt = 0;
+                                int endtxt = 0;
+                                var hiddenstyle = "hidden";
+
+                                @for (var i = 0; i < 4; i++)
+                                {
+
+                                    <div class="col-xs-6" style="padding: 20px 20px 2px 2px;">
+                                        <table width="100%" style="border:solid 1px;font-size:32px" height="1040px">
+
+                                            @foreach (var itxt in arr)
+                                            {
+
+                                                string[] arr2 = itxt.Split(":");
+
+                                                @if (arr2[1] != "Customer" && arr2[1] != "SO" && arr2[1] != "SaleText" && arr2[1] != "Description" &&
+                                            arr2[1] != "Material" && arr2[1] != "Product" && arr2[1] != "PartNo" && arr2[1] != "PONo" && arr2[1] != "จำนวนสั่งลูกค้า" && arr2[1] != "จำนวนกล่องต่อพาเลท" &&
+                                            arr2[1] != "กำหนดส่ง" && arr2[1] != "WeightBox" && arr2[1] != "Remark" && arr2[1] != "ProductionDate" && arr2[1] != "ผู้ตรวจสอบ" && arr2[1] != "วันที่ตรวจสอบ" && arr2[1] != "น้ำหนักต่อห่อ")
+                                                {
+                                                    <tr>
+                                                        <td colspan="3" style="height: 65px; padding-left: 5px; ">
+                                                            <font class="pre"> @arr2[1] </font>
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Customer")
+                                                {
+                                                    hiddenstyle = "";
+                                                    <tr>
+                                                        <td style="height: 25px;max-height:65px width: 90px; padding-left: 5px; ">
+                                                            บริษัท
+                                                        </td>
+                                                        <td style="height: 25px; width:250px; word-break:break-word;">
+                                                            @item.CustNameNOSoldto
+                                                        </td>
+                                                        <td style="height: 25px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "SO")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            SO
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.OrderItem
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "SaleText")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            SaleText
+                                                        </td>
+                                                        <td style="height:25px; width:250px">
+                                                            @item.Sale_Text1  @item.Sale_Text2  @item.Sale_Text3 @item.Sale_Text4
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Description")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            Description
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Description
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Material")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            Material
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Material_No
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Product")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            Product
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.PC
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "PartNo")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            PartNo
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Part_No
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "PONo")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            PONo
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.PoNo
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "จำนวนสั่งลูกค้า")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            จำนวนสั่งลูกค้า
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Order_Quant
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "จำนวนกล่องต่อพาเลท")
+                                                {
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px; word-break:break-word;">
+                                                            จำนวนกล่อง/พาเลท
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.BoxPalet
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "กำหนดส่ง")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("กำหนดส่ง", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            กำหนดส่ง
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.Due_Text
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "WeightBox")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("WeightBox", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            WeightBox
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            @item.WeightBox
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "Remark")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("Remark", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            Remark
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @item.ItemNote
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "ProductionDate")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("ProductionDate", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            Remark
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "ผู้ตรวจสอบ")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("ผู้ตรวจสอบ", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            ผู้ตรวจสอบ
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "ตรวจสอบ")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("วันที่ตรวจสอบ", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            วันที่ตรวจสอบ
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                                @if (arr2[1] == "น้ำหนักต่อห่อ")
+                                                {
+                                                    res = Array.Find(arr, ele => ele.StartsWith("น้ำหนักต่อห่อ", StringComparison.Ordinal));
+                                                    hiddenstyle = "";
+
+                                                    <tr>
+                                                        <td style="height: 65px; width: 75px; padding-left: 5px;">
+                                                            น้ำหนักต่อห่อ
+                                                        </td>
+                                                        <td style="height:25px; width:250px; word-break:break-word;">
+                                                            ..........................................
+                                                        </td>
+                                                        <td style="height: 65px; width: 75px;">
+                                                            @arr2[2]
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                            @for (var td = arr.Count(); td < 9; td++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                }
+
+                                <table width="100%">
+                                    <tr>
+                                        <td style="text-align:right">  S/O:@Orderitem S/O:@Orderitem &nbsp;@Localizer["เวลา"] : @DateTime.Now &nbsp; @Localizer["Printed by"] : @item.CustomerContact</td>
+                                    </tr>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+
+            @if (item.IsPallet)
+            {
+                @if (item.TagPallet != null)
+                {
+                    string[] arr = item.TagPallet.Split("$");
+                    string res = "";
+                    int starttxt = 0;
+                    int endtxt = 0;
+                    var hiddenstyle = "hidden";
+
+                    <div style="width:1500px;height: auto; padding: 10px 10px 10px 10px;">
+                        <div class="row">
+
+                            <div class="col-xs-12" style="padding: 2px 2px 2px 2px;">
+                                <br />
+                                <table border="0">
+                                    <tr>
+                                        <td width="98%">
+                                            <table width="1500px" style="border:solid 1px; padding-top:50px;padding-bottom:5px;margin-top:5px;font-size:20px;font-weight:bold;max-height:2110px" height="2110px">
+                                                <tr>
+                                                    @foreach (var itxt in arr)
+                                                    {
+                                                        string[] arr2 = itxt.Split(":");
+
+                                                        @if (arr2[1] != "Customer" && arr2[1] != "SO" && arr2[1] != "SaleText" && arr2[1] != "Description" &&
+                                                    arr2[1] != "Material" && arr2[1] != "Product" && arr2[1] != "PartNo" && arr2[1] != "PONo" && arr2[1] != "จำนวนสั่งลูกค้า" && arr2[1] != "จำนวนกล่องต่อพาเลท" &&
+                                                    arr2[1] != "กำหนดส่ง" && arr2[1] != "WeightBox" && arr2[1] != "Remark" && arr2[1] != "ProductionDate" && arr2[1] != "ผู้ตรวจสอบ" && arr2[1] != "วันที่ตรวจสอบ" && arr2[1] != "น้ำหนักต่อห่อ")
+                                                        {
+                                                            <td rowspan="2" width="0px" height="1400">
+                                                                <div class="outer">
+                                                                    <div class="inner2 rotate pre" style="width: 2000px"> @arr2[1]</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Customer")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Customer", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.CustNameNOSoldto</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "SO")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("SO", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"><b> @item.OrderItem</b></div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "SaleText")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("SaleText", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.Sale_Text1  @item.Sale_Text2  @item.Sale_Text3 @item.Sale_Text4</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Description")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Description", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.Description</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Material")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Material", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.Material_No</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Product")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Product", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> <b>@item.PC</b></div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "PartNo")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("PartNo", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> <b>@item.Part_No</b></div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "PONo")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("PONo", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.PoNo</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "จำนวนสั่งลูกค้า")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("จำนวนสั่งลูกค้า", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> &nbsp;@item.Order_Quant @arr2[2]</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "จำนวนกล่องต่อพาเลท")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Quantity", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px">&nbsp; @item.BoxPalet @arr2[2]</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "กำหนดส่ง")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("กำหนดส่ง", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.Due_Text</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "WeightBox")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("WeightBox", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.WeightBox @arr2[2]</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Remark")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Remark", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px"> @item.ItemNote</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "ProductionDate")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("ProductionDate", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px">  .......................................... </div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "ผู้ตรวจสอบ")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("ผู้ตรวจสอบ", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px">  .......................................... </div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "วันที่ตรวจสอบ")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("วันที่ตรวจสอบ", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px">  .......................................... </div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "น้ำหนักต่อห่อ")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("น้ำหนักต่อห่อ", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="1200px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width:1200px;padding-top:140px">  .......................................... </div>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    }
+
+                                                    @for (var td = arr.Count(); td < 9; td++)
+                                                    {
+                                                        <td width="0px" height="1200px">
+                                                            <div class="outer">
+                                                                <div class="inner2 rotate"> &nbsp;</div>
+                                                            </div>
+                                                        </td>
+                                                    }
+                                                </tr>
+                                                <tr>
+                                                    @foreach (var itxt in arr)
+                                                    {
+                                                        string[] arr2 = itxt.Split(":");
+                                                        @if (arr2[1] == "Customer")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Customer", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> บริษัท </div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "SO")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("SO", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"><b> S/O</b></div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "SaleText")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("SaleText", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> SaleText</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Description")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Description", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> Description</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Material")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Material", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> Material</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Product")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Product", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> <b>P/C</b></div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "PartNo")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("PartNo", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> PartNo</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "PONo")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("PONo", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> PONo</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "จำนวนสั่งลูกค้า")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("จำนวนสั่งลูกค้า", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> จำนวนสั่งลูกค้า</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "จำนวนกล่องต่อพาเลท")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Quantity", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> กล่อง/พาเลท</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "กำหนดส่ง")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("กำหนดส่ง", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> กำหนดส่ง</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "WeightBox")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("WeightBox", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> WeightBox</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "Remark")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("Remark", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> Remark</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "ProductionDate")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("ProductionDate", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> วันที่ผลิต</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "ผู้ตรวจสอบ")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("ผู้ตรวจสอบ", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> ผู้ตรวจสอบ</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "วันที่ตรวจสอบ")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("วันที่ตรวจสอบ", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> วันที่ตรวจสอบ</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+
+                                                        @if (arr2[1] == "น้ำหนักต่อห่อ")
+                                                        {
+                                                            res = Array.Find(arr, ele => ele.StartsWith("น้ำหนักต่อห่อ", StringComparison.Ordinal));
+                                                            hiddenstyle = "";
+
+                                                            <td width="0px" height="280px">
+                                                                <div class="outer">
+                                                                    <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate" style="width: 290px;padding-top:140px"> น้ำหนักต่อห่อ</div>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    }
+
+                                                    @for (var td = arr.Count(); td < 9; td++)
+                                                    {
+                                                        <td width="0px" height="350px">
+                                                            <div class="outer">
+                                                                <div class="@(item.CustCode == "DSGIN"?"inner4":"inner2") rotate"> &nbsp;</div>
+                                                            </div>
+                                                        </td>
+                                                    }
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td height="800px" style="vertical-align:top;padding-top:300px;width:1550px;">
+                                            <div class="outer" style="height:500px">
+                                                <div class="inner rotate">
+                                                    <table style="width:600px">
+                                                        <tr>
+                                                            <td>
+                                                                S/O:@Orderitem
+                                                            </td>
+                                                            <td>
+                                                                @Localizer["เวลา"] : @DateTime.Now
+                                                            </td>
+                                                            <td>
+                                                                @Localizer["Printed by"] : @item.CustomerContact
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+
+    <script language="javascript" type="text/javascript">
+        var pageInitialized = false;
+
+        $(document).ready(function () {
+
+        });
+    </script>
+</body>
+</html>

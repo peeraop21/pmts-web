@@ -1,0 +1,233 @@
+﻿@model PMTs.DataAccess.ModelView.PresaleChangeViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Change Product";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<style>
+    table, th {
+        width: 200px
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<br />
+<div class="card">
+    <div class="card-body">
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-md-12">
+                    <h3 class="text-themecolor"><i class="mdi mdi-content-duplicate"></i>@Localizer["Change Product"]</h3>
+                </div>
+            </div>
+            <div class="row justify-content-between">
+                <div class="col-12 row justify-content-between">
+
+                    <div class="col-md-12">
+                        <div class="row line-space">
+
+                            <div class="col-md-4 ml-2" style="padding: 0px;text-align: right;">
+                                <select class="form-control custom-select col-md-4 text-sm-left" id="typeSearch" name="typeSearch">
+                                    <option value="Material No">@Localizer["Material No"]</option>
+                                    <option value="PSMID">@Localizer["PSM ID"]</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4" style="padding:0">
+                                <input type="text" class="form-control" placeholder="Search" aria-invalid="false" id="keySearch" name="keySearch">
+                                <span class="input-group-btn" style="width:0px;"></span>
+                            </div>
+                            <div class="form-group col-md-2 ml-1" style="padding: 0px;">
+                                <button class="btn btn-info" onclick="SearchChangeProduct()" style="max-height:30px;min-width:100px">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-12"><hr /></div>
+
+                <div id="divChangeProductTable" class="table-responsive m-t-10">
+                    @Html.Partial("_TableChangeProduct", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/bootstrap.css" />
+    <script src="~/js/bootstrap.bundle.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('#changeProductTable').DataTable({
+                'bFilter': false,
+                'scrollY': 300,
+                'scrollX': true,
+                'scrollCollapse': true,
+                'paging': true,
+                'fixedColumns': true,
+            });
+        });
+
+        $("#btnClearPresale").click(function () {
+            $('#formPresale')[0].reset();
+        });
+
+        function CompareChangeProduct(factory, materialNo, psmId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckCompareMasterData", "Presale") ',
+                datatype: "json",
+                data: { facrotyCode: factory, materialNo: materialNo },
+                success: function (res) {
+                    if (res.HasMasterData) {
+                        window.location.href = "@Url.Action("CompareProduct", "Presale")" + "?materialNo=" + materialNo + "&psmId=" + psmId;
+                    }
+                    else {
+                        swal("PMTs Search...!", "Can't find master data which you want to compare. ", "warning");
+                    }
+                },
+                error: function (res) {
+                    //modalDialog("warning", res.Message);
+                    swal("Search Failed", "", "warning");
+                }
+            });
+        }
+
+        //var OnSaveSuccess = function (res) {
+        //    $("#divChangeProductTable").html(res);
+
+        //    $('#changeProductTable').DataTable({
+        //        'bFilter': false,
+        //        'scrollY': 300,
+        //        'scrollX': true,
+        //        'scrollCollapse': true,
+        //        'paging': true,
+        //        'fixedColumns': true,
+        //    });
+        //};
+
+        $('#keySearch').on('keypress', function (e) {
+            if (e.which === 13) {
+                SearchChangeProduct();
+            }
+        });
+
+        function SearchChangeProduct() {
+            let typeSearch = $("#typeSearch").val();
+            let keySearch = $("#keySearch").val();
+
+            $.ajax({
+                url: '@Url.Action("SearchChangeProduct", "Presale")',
+                data: { typeSearch: typeSearch, keySearch: keySearch },
+                type: "POST",
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+
+                        $("#divChangeProductTable").html(res.View);
+
+                        $('#changeProductTable').DataTable({
+                            'bFilter': false,
+                            'scrollY': 300,
+                            'scrollX': true,
+                            'scrollCollapse': true,
+                            'paging': true,
+                            'fixedColumns': true,
+                        });
+
+                        if (!res.isExistPresale) {
+                            swal("Search Failed!", "ไม่พบ " + typeSearch + ": " + keySearch, "warning");
+                        }
+                    }
+                    else {
+                        swal("Search Failed!", res.ExceptionMessage, "warning");
+                    }
+
+                },
+                error: function () {
+                    console.log('error in scope')
+                }
+            });
+        }
+
+        async function downloadURI(blobUrl, name) {
+            let blob = await fetch(blobUrl).then((r) => r.blob());
+            var f = new FileReader();
+            f.readAsDataURL(blob);
+            f.onload = d => {
+                var uri = d.target.result;
+                var link = document.createElement('a');
+                link.download = name;
+                link.href = uri;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                delete link;
+            }
+        }
+
+        async function OpenFileByUrl(val) {
+            if (val) {
+                window.open(val);
+                let name = val.split('/').pop()
+                let type = "data:'application/pdf'";
+
+                await downloadURI(val, name);
+            }
+        }
+
+        function SentPresaleSameMatStatus(PSM_ID, id, action) {
+            swal({
+                title: "Presale Management",
+                text: "Do you want to " + action + "?",
+                icon: "info",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SentPresaleSameMatStatus", "Presale") ',
+                            datatype: "json",
+                            data: {
+                                status: action === 'Accept' ? "2" : "4",
+                                id: id,
+                                psmId: PSM_ID
+                            },
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    let messageAction = action == 'Accept' ? PSM_ID + " has been accepted." : PSM_ID + " has been rejected.";
+                                    swal({
+                                        title: "Presale Management",
+                                        text: messageAction,
+                                        icon: "success",
+                                        buttons: {
+                                            confirm: "Ok",
+                                        },
+                                        dangerMode: false,
+                                    }).then((willDelete) => {
+                                        location.reload();
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                swal(res.Message, "", "warning");
+                            }
+                        });
+                    }
+                });
+        }
+    </script>
+
+}

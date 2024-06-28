@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<PMTs.DataAccess.ModelView.ProductCatalog.ScalePriceMatProductModel>
+@inject IViewLocalizer Localizer
+@{
+    Layout = null;
+}
+
+<table id="ScalePriceMatProductTable" class="table table-bordered table-hover">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:80px">@Localizer["MatNo"]</th>
+            <th style="width:120px">@Localizer["PC"]</th>
+            <th style="width:60px">@Localizer["ScaleQty"]</th>
+            <th style="width:70px">@Localizer["NetPrice"]</th>
+            <th style="width:60px">@Localizer["Rate"]</th>
+            <th style="width:70px">@Localizer["Start Date"]</th>
+            <th style="width:70px">@Localizer["End Date"]</th>
+            <th style="width:120px">@Localizer["PartNo"]</th>
+            <th style="width:80px">@Localizer["CustID"]</th>
+            <th style="width:80px">@Localizer["CustCode"]</th>
+            <th style="width:150px">@Localizer["CustName"]</th>
+            <th style="width:150px">@Localizer["SaleText1"]</th>
+            <th style="width:60px">@Localizer["Flute"]</th>
+            <th style="width:180px">@Localizer["Board"]</th>
+            <th style="width:40px">@Localizer["Leg"]</th>
+            <th style="width:40px">@Localizer["Wid"]</th>
+            <th style="width:40px">@Localizer["Hig"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td class="text-center">@item.MaterialNo</td>
+            <td class="text-center">@item.Pc</td>
+            <td class="text-center">@item.ScaleQty</td>
+            @if (item.NetPrice.HasValue)
+            {
+                <td>@item.NetPrice.Value.ToString("0.00")</td>
+            }
+            else
+            {
+                <td></td>
+            }
+            @if (item.Rate.HasValue)
+            {
+                <td>@item.Rate.Value.ToString("0.00")</td>
+            }
+            else
+            {
+                <td></td>
+            }
+
+            @if (item.StartDate.HasValue)
+            {
+                <td class="text-center">@item.StartDate.Value.ToShortDateString()</td>
+            }
+            else
+            {
+                <td></td>
+            }
+
+            @if (item.EndDate.HasValue)
+            {
+                <td class="text-center">@item.EndDate.Value.ToShortDateString()</td>
+            }
+            else
+            {
+                <td></td>
+            }
+            <td class="text-center">@item.PartNo</td>
+            <td class="text-center">@item.CusId</td>
+            <td class="text-center">@item.CustCode</td>
+            <td class="text-center">@item.CustName</td>
+            <td class="text-center">@item.SaleText1</td>
+            <td class="text-center">@item.Flute</td>
+            <td class="text-center">@item.Board</td>
+            <td class="text-center">@item.Leg</td>
+            <td class="text-center">@item.Wid</td>
+            <td class="text-center">@item.Hig</td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,280 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.AutoPackingSpec.AutoPackingSpecMainModel
+
+@{
+    ViewData["Title"] = "Customer";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .form-control-sm {
+        min-height: 30px;
+    }
+
+    .setLeft {
+        text-align: left;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-home-variant"></i>&nbsp;@Localizer["AutoPackingCustomer"]</h3>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="text-right" style="padding-top:10px">
+                @ViewBag.ErrorMessage
+                <form>
+                    <div class="controls">
+                        <div class="input-group">
+                            <select class="form-control custom-select col-md-4 text-sm-left" name="typeSearch">
+                                <option value="Customer_Name">@Localizer["Customer Name"]</option>
+                                <option value="Customer_Code">@Localizer["Customer Code"]</option>
+                                <option value="Customer_Id">@Localizer["Customer Id"]</option>
+                            </select>
+
+                            <input type="text" id="input-keySearch" class="form-control col-md-5" placeholder="Search" aria-invalid="false" name="keySearch">
+                            <span class="input-group-btn" style="width:0px;"></span>
+
+                            <div class="input-group-append">
+                                <button asp-action="Index" style="padding: 0 5px;" class="btn btn-info"><i class="fa fa-search"></i> @Localizer["Search"]</button>
+                            </div>
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="divAutoPackingCustomer">
+            <partial name="_AutoPackingCustomerTable" model="Model" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        const configList = @Html.Raw(Json.Serialize(Model.AutoPackingConfigs));
+        let actionStatus = "";
+
+        $(function () {
+            actionStatus = "";
+            $('#auto-packing-customer-table').DataTable({
+                "paging": true,
+                "dom": 'Bfrt<"float-left"i>p',
+            });
+            ClearAutoPackingCustomer();
+
+            $('.option-selected').attr('disabled', false);
+        });
+
+        function CloseAutoPackingCustomer() {
+            $('.option-selected').attr('disabled', true);
+            $("#modal-apc-create-edit").modal('hide');
+            $(".modal-backdrop").attr("hidden", true);
+        }
+
+        function ClearAutoPackingCustomer() {
+            $("#APC_CusID").val("");
+            $("#APC_CusID").val("");
+            $("#APC_CornerGuard").val("");
+            $("#APC_NBottomBoardType").val("");
+            $("#APC_NStrapCompression").val("");
+            $("#APC_NTopBoardType").val("");
+            $("#APC_CPalletArrange").val("");
+            $("#APC_CPalletStackPos").val("");
+            $("#APC_CStrapperBottomProtection").val("");
+            $("#APC_CStrapperTopProtection").val("");
+            $("#APC_CStrapType").val("");
+            $("#APC_NWrapType").val("");
+            $("#APC_NPalletType").val("");
+
+            $("#APC_CornerGuard").attr("readonly", true);
+            $("#APC_CPalletArrange").attr("readonly", true);
+            $("#APC_CPalletStackPos").attr("readonly", true);
+            $("#APC_CStrapperBottomProtection").attr("readonly", true);
+            $("#APC_CStrapperTopProtection").attr("readonly", true);
+            $("#APC_CStrapType").attr("readonly", true);
+            $("#APC_NBottomBoardType").attr("readonly", true);
+            $("#APC_NPalletType").attr("readonly", true);
+            $("#APC_NStrapCompression").attr("readonly", true);
+            $("#APC_NTopBoardType").attr("readonly", true);
+            $("#APC_NWrapType").attr("readonly", true);
+
+            $("#APC_SaveBtn").attr("disabled", true);
+            CloseAutoPackingCustomer();
+        }
+
+        function SaveAutoPackingCustomer() {
+            $("#APC_SaveBtn").attr("disabled", true);
+            var form = $('#edit-autopackingcustomer')[0];
+            var data = new FormData(form);
+
+            data.append("action", actionStatus);
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("SaveAndEditAutoPackingCustomer", "AutoPackingCustomer")',
+                data: data,
+                async: false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Updated successfully", "", "success")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    let cusIdParam = "";
+                                    if ($("#APC_CusId").val() != "" && $("#APC_CusId").val() != null)
+                                    {
+                                        cusIdParam = $("#APC_CusId").val();
+                                    }
+                                    $('#divAutoPackingCustomer').html(res.View);
+                                    $('#auto-packing-customer-table').DataTable({
+                                        "paging": true,
+                                        "dom": 'Bfrt<"float-left"i>p'
+                                    });
+                                    $(".modal-backdrop").attr("hidden", true);
+                                    CloseAutoPackingCustomer();
+                                }
+                            });
+                    }
+                    else
+                    {
+                        swal("Updated Fail", res.ExceptionMessage, "warning")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    ClearAutoPackingCustomer();
+                                }
+                            });
+                    }
+                }
+            });
+        }
+
+        function BindAutoPackingCustomerView(item) {
+            actionStatus = "View";
+            SetDefaultSelection(item);
+
+            $("#APC_CornerGuard").attr("readonly", true);
+            $("#APC_CPalletArrange").attr("readonly", true);
+            $("#APC_CPalletStackPos").attr("readonly", true);
+            $("#APC_CStrapperBottomProtection").attr("readonly", true);
+            $("#APC_CStrapperTopProtection").attr("readonly", true);
+            $("#APC_CStrapType").attr("readonly", true);
+            $("#APC_NBottomBoardType").attr("readonly", true);
+            $("#APC_NPalletType").attr("readonly", true);
+            $("#APC_NStrapCompression").attr("readonly", true);
+            $("#APC_NTopBoardType").attr("readonly", true);
+            $("#APC_NWrapType").attr("readonly", true);
+            $('.option-selected').attr('disabled', true);
+
+            document.getElementById('modelHeader').innerHTML = 'View Auto Packing Customer';
+            $("#APC_SaveBtn").attr("hidden", true);
+            $("#modal-apc-create-edit").modal('show');
+        }
+
+        function BindAutoPackingCustomerEdit(item) {
+            actionStatus = "Edit";
+            $('.option-selected').attr('disabled', false);
+            SetDefaultSelection(item);
+
+            $("#APC_CornerGuard").attr("readonly", false);
+            $("#APC_CPalletArrange").attr("readonly", false);
+            $("#APC_CPalletStackPos").attr("readonly", false);
+            $("#APC_CStrapperBottomProtection").attr("readonly", false);
+            $("#APC_CStrapperTopProtection").attr("readonly", false);
+            $("#APC_CStrapType").attr("readonly", false);
+            $("#APC_NBottomBoardType").attr("readonly", false);
+            $("#APC_NPalletType").attr("readonly", false);
+            $("#APC_NStrapCompression").attr("readonly", false);
+            $("#APC_NTopBoardType").attr("readonly", false);
+            $("#APC_NWrapType").attr("readonly", false);
+
+            $("#APC_CreatedDate").val($(item).attr("data-CreatedDate"));
+            $("#APC_CreatedBy").val($(item).attr("data-CreatedBy"));
+            $("#APC_Id").val($(item).attr("data-Id"));
+            $("#APC_FactoryCode").val($(item).attr("data-FactoryCode"));
+
+            $("#APC_SaveBtn").attr("hidden", false);
+            $("#APC_SaveBtn").attr("disabled", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Edit Auto Packing Customer';
+            $("#modal-apc-create-edit").modal('show');
+        }
+
+        function CreateNewAutoPackingCustomer(item) {
+            actionStatus = "Save";
+            $('.option-selected').attr('disabled', false);
+            $("#APC_CusId").val($(item).attr("data-CusId"));
+            $("#APC_CustName").val($(item).attr("data-CustName"));
+            $("#APC_CornerGuard").attr("readonly", false);
+            $("#APC_CPalletArrange").attr("readonly", false);
+            $("#APC_CPalletStackPos").attr("readonly", false);
+            $("#APC_CStrapperBottomProtection").attr("readonly", false);
+            $("#APC_CStrapperTopProtection").attr("readonly", false);
+            $("#APC_CStrapType").attr("readonly", false);
+            $("#APC_NBottomBoardType").attr("readonly", false);
+            $("#APC_NPalletType").attr("readonly", false);
+            $("#APC_NStrapCompression").attr("readonly", false);
+            $("#APC_NTopBoardType").attr("readonly", false);
+            $("#APC_NWrapType").attr("readonly", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Create Auto Packing Customer';
+
+            $("#APC_SaveBtn").attr("disabled", false);
+            $("#modal-apc-create-edit").modal('show');
+        }
+
+        function SetDefaultSelection(item) {
+            $("#APC_CusId").val($(item).attr("data-CusId"));
+            $("#APC_CustName").val($(item).attr("data-CustName"));
+            $("#APC_CornerGuard").val($(item).attr("data-CornerGuard"));
+            $("#APC_NBottomBoardType").val($(item).attr("data-NBottomBoardType"));
+            $("#APC_NStrapCompression").val($(item).attr("data-NStrapCompression"));
+            $("#APC_NTopBoardType").val($(item).attr("data-NTopBoardType"));
+
+            let cPalletArrange = configList.filter(c => { return c.Code == $(item).attr("data-CPalletArrange") && c.Subject == "cPalletArrange" });
+            let cPalletStackPos = configList.filter(c => { return c.Code == $(item).attr("data-CPalletStackPos") && c.Subject == "cPalletStackPos" });
+            let cStrapperBottomProtection = configList.filter(c => { return c.Code == $(item).attr("data-CStrapperBottomProtection") && c.Subject == "cStrapperBottomProtection" });
+            let cStrapperTopProtection = configList.filter(c => { return c.Code == $(item).attr("data-CStrapperTopProtection") && c.Subject == "cStrapperTopProtection" });
+            let cStrapType = configList.filter(c => { return c.Code == $(item).attr("data-CStrapType") && c.Subject == "cStrapType" });
+            let nWrapType = configList.filter(c => { return c.Code == $(item).attr("data-NWrapType") && c.Subject == "nWrapType" });
+            let nPalletType = configList.filter(c => { return c.Code == $(item).attr("data-NPalletType") && c.Subject == "nPalletType" });
+
+            let cPalletArrangeValue = cPalletArrange == null || cPalletArrange == "" ? "" : cPalletArrange[0].Code;
+            let cPalletStackPosValue = cPalletStackPos == null || cPalletStackPos == "" ? "" : cPalletStackPos[0].Code;
+            let cStrapperBottomProtectionValue = cStrapperBottomProtection == null || cStrapperBottomProtection == "" ? "" : cStrapperBottomProtection[0].Code;
+            let cStrapperTopProtectionValue = cStrapperTopProtection == null || cStrapperTopProtection == "" ? "" : cStrapperTopProtection[0].Code;
+            let cStrapTypeValue = cStrapType == null || cStrapType == "" ? "" : cStrapType[0].Code;
+            let nWrapTypeValue = nWrapType == null || nWrapType == "" ? "" : nWrapType[0].Code;
+            let nPalletTypeValue = nPalletType == null || nPalletType == "" ? "" : nPalletType[0].Code;
+
+            $("#APC_CPalletArrange").val(cPalletArrangeValue);
+            $("#APC_CPalletStackPos").val(cPalletStackPosValue);
+            $("#APC_CStrapperBottomProtection").val(cStrapperBottomProtectionValue);
+            $("#APC_CStrapperTopProtection").val(cStrapperTopProtectionValue);
+            $("#APC_CStrapType").val(cStrapTypeValue);
+            $("#APC_NWrapType").val(nWrapTypeValue);
+            $("#APC_NPalletType").val(nPalletTypeValue);
+        }
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+}

@@ -1,0 +1,389 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceFlute.MaintenanceFluteModel
+
+<div class="modal" id="modal_ViewFlute">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Maintain Flute"]</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-5" style="padding:0">
+                        <div class="card" id="idcardFlute">
+                            <div class="card-header">
+                                <h3 class="">
+                                    @Localizer["Flute"]
+                                </h3>
+                                <hr>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Flute"] <i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="text" id="idFlut" class="form-control" maxlength="10" />
+                                        <span id="idFlute-error" class="text-danger" style="display: none;">@Localizer["The Flute field is required."]</span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Code"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="text" id="idCode" class="form-control" maxlength="4" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Description"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="text" id="idDescription" class="form-control" maxlength="40" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Height"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idHeight" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">@Localizer["A"]</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idA" class="form-control" />
+                                    </div>
+
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">@Localizer["D1"]</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idD1" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">@Localizer["B"]</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idB" class="form-control" />
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">@Localizer["D2"]</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idD2" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">@Localizer["C"]</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idC" class="form-control" />
+                                    </div>
+
+                                    @*<div class="form-group col-md-1">
+            <label class="control-label">Tr1</label>
+        </div>
+        <div class="form-group col-md-4">
+            <input type="number" id="idTr1" class="form-control" />
+        </div>*@
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">@Localizer["Trim"]</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idTrim" class="form-control" />
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">Tr2</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idTr2" class="form-control" />
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label class="control-label">Tr3</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="number" id="idTr3" class="form-control" />
+                                    </div>
+                                </div>*@
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["JoinSize"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idJoinSize" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["GlueArea"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idGlueArea" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["BundlePiece"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idBundlePiece" class="form-control" />
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">Layer</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idLayer" class="form-control" />
+                                    </div>
+                                </div>*@
+
+                                @*<div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">Trim</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idTrim" class="form-control" />
+                                    </div>
+                                </div>*@
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Stack"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idStack" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Waste_Stack"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idWaste_Stack" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Speed_factor"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idSpeed_factor" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Speed"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idSpeed" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["SetupTime"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idSetupTime" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["NoOfChange"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idNoOfChange" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["LayerPallet"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idLayerPallet" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label">@Localizer["Thickness"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idThickness" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">@Localizer["BoxPerBundle_NoJoint"]</label>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="number" id="idBoxPerBundle_NoJoint" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">@Localizer["LayerPerPallet_NoJoint"]</label>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="number" id="idLayerPerPallet_NoJoint" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                                            <input type="checkbox" class="form-check-input" id="idStatus" checked>
+                                            <label class="form-check-label" for="idStatus">@Localizer["Active"]</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-7" style="padding:0">
+                        <div class="card" id="idcardFluteTR">
+                            <div class="card-header">
+                                <h3 class="">
+                                    @Localizer["Flute Takeup Ratio"]
+                                </h3>
+                                <hr>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div id="detailBoard" style="margin-top:30px">
+                                    <partial name="_fluteTrView" model="Model" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="idaddmodal" class="btn btn-primary">@Localizer["Save"]</button>
+                    <button type="button" id="idupdatemodal" class="btn btn-primary">@Localizer["Update"]</button>
+                    <button type="button" id="idcancelmodals" class="btn btn-warning">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#idcancelmodals').click(function () {
+        $('#modal_ViewFlute').modal("hide");
+    });
+
+    $('#idaddmodal').click(function () {
+    if ($("#idFlute").val() === "") {
+        swal("Please Input Flute", "", "warning");
+        $('#idFlute-error').show();
+    } else
+    {
+            $.ajax({
+            url: '@Url.Action("CheckDuplicateFlute", "MaintenanceFlute")',
+            type: "POST",
+            async: false,
+            dataType: "json",
+            data: { board: $('#idFlute').val() },
+                success: function (data) {
+                    if (data.dup === "0") {
+                        $('#idflute-error').hide()
+                        if (CheckDuplicateItem().length > 0) {
+                            swal("FluteTR Item is Duplicate . Please Check Data.", "", "warning");
+                        }
+                        //else if (CheckDuplicateStation().length > 0) {
+                        //    swal("FluteTR Station is Duplicate . Please Check Data.", "", "warning");
+                        //}
+                        else {
+                        $('#idflute-error').hide()
+                            subAddData();
+                        }
+
+                    }
+                    else
+                    {
+                        swal("Flute Is Duplicate", "", "warning");
+                        $('#idFlute-error').show();
+                    }
+
+                }
+            });
+    }
+
+    });
+
+    $('#idupdatemodal').click(function () {
+    if ($("#idFlute").val() === "") {
+        swal("Please Input Flute", "", "warning");
+        $('#idFlute-error').show();
+    } else
+    {
+            $.ajax({
+            url: '@Url.Action("CheckDuplicateFlute", "MaintenanceFlute")',
+            type: "POST",
+            async: false,
+            dataType: "json",
+            data: { board: $('#idFlute').val() },
+                success: function (data) {
+                    if (data.dup === "0") {
+                        $('#idflute-error').hide()
+                        if (CheckDuplicateItem().length > 0) {
+                            swal("FluteTR Item is Duplicate . Please Check Data.", "", "warning");
+                        }
+                        //else if (CheckDuplicateStation().length > 0) {
+                        //    swal("FluteTR Station is Duplicate . Please Check Data.", "", "warning");
+                        //}
+                        else {
+                        $('#idflute-error').hide()
+                            subUpdateData();
+                        }
+
+                    }
+                    else
+                    {
+                        swal("Flute Is Duplicate", "", "warning");
+                        $('#idFlute-error').show();
+                    }
+
+                }
+            });
+    }
+
+});
+</script>

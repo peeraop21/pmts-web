@@ -1,0 +1,275 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenancePMTsConfig.MaintenancePMTsConfigViewModel
+
+@{
+    ViewData["Title"] = "PMTsConfig";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-file-document-box"></i> @Localizer["PMTsConfig"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalPMTsConfig">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Create"]
+                    </button>
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="box" id="PMTsConfig-table">
+                <partial name="_PMTsConfigTable" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        function viewShow(Id, EFucName, EFucValue, EDescription) {
+            $('#Id').val(Id);
+            $('#FucName').val(EFucName);
+            $('#FucValue').val(EFucValue);
+            $('#Description').val(EDescription);
+            $('#modal-view').modal('show');
+        }
+
+        function viewEdit(Id, EFucName, EFucValue, EDescription, ECreatedDate, ECreatedBy) {
+            $('#EId').val(Id);
+            $('#EFucName').val(EFucName);
+            $('#EFucValue').val(EFucValue);
+            $('#EDescription').val(EDescription);
+           // let newDateTime = ChangeDateTimeFormat(ECreatedDate);
+            //alert("newDateTime : " + newDateTime + "\n ECreatedDate : " + ECreatedDate);
+            $('#ECreatedDate').val(ECreatedDate);
+            $('#ECreatedBy').val(ECreatedBy);
+            $('#modal-edit').modal('show');
+        }
+
+        function getData() {
+            let req = {
+                "Id": $("#EId").val(),
+                "FucName": $("#EFucName").val(),
+                "FucValue": $("#EFucValue").val(),
+                "Description": $("#EDescription").val(),
+                "CreatedDate": $("#ECreatedDate").val(),
+                "CreatedBy": $("#ECreatedBy").val(),
+            };
+            return req;
+        }
+
+        $('#btnSubmitMaintainCoreconfig').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#PMTsConfigViewModel_FucName').val() === "" || $('#PMTsConfigViewModel_FucValue').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                var form = $('#create-PMTsConfig-form').serialize();
+                $.ajax({
+                    url: '@Url.Action("SavePMTsConfig", "MaintenancePMTsConfig")',
+                    type: "POST",
+                    async: false,
+                    data: form,
+                    dataType: "json",
+                    success: function (data) {
+                        UpdatePMTsConfigTableNew(data);
+                        swal("Save Success!", { icon: "success", });
+                        $('#modal-create').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        $('.btneditmaintaincorconfig').click(function () {
+            debugger;
+            DisabledSubmitButton(this);
+            if ($('#EFucName').val() === "" || $('#EFucValue').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                //var form = JSON.stringify(getData());
+                var form = getData();
+                var data = form;
+               // var form = $('#edit-maintain-corconfig').serialize();
+                $.ajax({
+                    url: '@Url.Action("UpdatePMTsConfig", "MaintenancePMTsConfig")',
+                    type: "POST",
+                    async: false,
+                    //data:
+                    //{
+                    //    req: form.toString()
+                    //},
+                    data: data,
+                    //{
+                    //    req: form.toString()
+                    //},
+                    dataType: "json",
+                    success: function (data) {
+                        UpdatePMTsConfigTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+       });
+
+        function UpdatePMTsConfigTableNew(res) {
+            $('#PMTsConfig-table').html(res.View);
+            $('#PMTsConfig-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+
+            //$('.modal').modal('hide');
+            //$('.modal-backdrop').hide();
+            //$("body").removeClass("modal-open");
+        }
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#PMTsConfig-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModalPMTsConfig').click(function () {
+           // $(".field-validation-error span").hide();
+            $('#modal-create').modal('show');
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+        @*function UpdatePMTsConfigTable() {
+            $.ajax({
+                url: '@Url.Action("UpdatePMTsConfigTable", "MaintenancePMTsConfig")',
+                success: function (res) {
+                    $('#PMTsConfig-table').html(res);
+                    $('#PMTsConfig-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+                },
+                error: function () {  }
+            });
+        }
+
+        function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeletePMTsConfig", "MaintenancePMTsConfig")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                swal("Deleted!", {
+                                    icon: "success",
+                                });
+                                UpdatePMTsConfigTable();
+                                window.location.reload(true);
+                            }
+                        }
+                    });
+                    } else {
+                    }
+                });
+        }
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+               // modalDialog(success, SaveSuccess);
+                swal("Success!", {
+                    icon: "success",
+                });
+                // UpdatePMTsConfigTable();
+                UpdatePMTsConfigTableNew(res);
+            }
+            else {
+                //  modalDialog(error, SaveFailed);
+                swal("Faile!", {
+                icon: "success",
+                });
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+               // $('.modal').modal('hide');
+               // modalDialog(success, UpdateSuccess);
+                swal("Success!", {
+                    icon: "success",
+                });
+               // UpdatePMTsConfigTable();
+                UpdatePMTsConfigTableNew(res);
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+            }
+            else {
+               // modalDialog(error, UpdateFailed);
+                swal("Faile!", {
+                    icon: "success",
+                });
+            }
+        };
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                //modalDialog(success, UpdateSuccess);
+                swal("Success!", {
+                    icon: "success",
+                });
+               // UpdatePMTsConfigTable();
+                UpdatePMTsConfigTableNew(res);
+            }
+            else {
+                //modalDialog(error, UpdateFailed);
+                swal("Faile!", {
+                    icon: "success",
+                });
+            }
+        };*@
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

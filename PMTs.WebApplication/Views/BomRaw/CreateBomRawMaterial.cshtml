@@ -1,0 +1,149 @@
+﻿@model PMTs.DataAccess.ModelView.BomRawMaterial.BomRawMaterialViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="card">
+    <div class="card-header border">
+        <div class="row">
+            <div class="col-md-6"><h4>General</h4></div>
+            <div class="col-md-6 text-right">
+                <div class="card-actions d-flex">
+                    <a class="" data-action="collapse">
+                        <i class="ti-minus"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body collapse show border">
+        <div class="row pb-1">
+            <div class="form-group col-md-2 setLeft">
+                <label class="control-label" asp-for="GeneralViewModel.FGMaterial">@Localizer["FG Material"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="input-group footable-filtering-search">
+                    <label class="sr-only">Search</label>
+                    <div class="input-group">
+                        <input id="FGMaterial" style="height:100%" type="text" class="form-control" placeholder="Search">
+                        <div class="input-group-append">
+                            <button id="btnSearchFg"
+                                    type="button"
+                                    class="btn btn-primary"
+                                    style="height: 32px; background-color: #1e88e5; border-color: #dbdbdb;"
+                                    onclick="ClickSearchFg()">
+                                <span class="fas fa-search"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-2">
+                <label class="control-label">@Localizer["Creation By"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <input style="height:100%" id="CreationBy" class="form-control" asp-for="GeneralViewModel.CreationBy" readonly />
+            </div>
+        </div>
+        <div class="row pb-1">
+            <div class="form-group col-md-2">
+                <label class="control-label">@Localizer["Description"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <input style="height:100%" id="Description" class="form-control" asp-for="GeneralViewModel.Description" />
+            </div>
+            <div class="form-group col-md-2">
+                <label class="control-label">@Localizer["Creation Date"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <input style="height:100%" id="CreationDate" class="form-control" asp-for="GeneralViewModel.CreationDate" readonly />
+            </div>
+        </div>
+        <div class="row pb-1">
+            <div class="form-group col-md-2">
+                <label class="control-label">@Localizer["Description 2"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <input style="height:100%" id="Description2" class="form-control" asp-for="GeneralViewModel.Description2" />
+            </div>
+            <div class="form-group col-md-2">
+                <label class="control-label">@Localizer["Last User Modified"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <input style="height:100%" id="LastUserModified" class="form-control" asp-for="GeneralViewModel.LastUserModified" readonly />
+            </div>
+        </div>
+        <div class="row pb-1">
+            <div class="form-group col-md-2 setLeft">
+                <label class="control-label" asp-for="GeneralViewModel.UnitOfMeasureCode">@Localizer["Unit of Measure Code"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                @*<input class="form-control" asp-for="AccountViewModel.SaleOrg" required />
+                    <span asp-validation-for="AccountViewModel.SaleOrg" class="text-danger"></span>*@
+
+                @*<select id="UnitOfMeasureCode" class="form-control" asp-for="GeneralViewModel.UnitOfMeasureCode" asp-items="@(new SelectList(Model.Lst_UnitOfMeasureCode,"Value","Text"))">
+                    <option value="">@Localizer["Choose here"]</option>
+                    </select>*@
+                <input style="height:100%" id="UnitOfMeasureCode" class="form-control" asp-for="GeneralViewModel.UnitOfMeasureCode" readonly />
+            </div>
+            <div class="form-group col-md-2">
+                <label class="control-label">@Localizer["Last Date Modified"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <input style="height:100%" id="LastDateModified" class="form-control" asp-for="GeneralViewModel.LastDateModified" readonly />
+            </div>
+        </div>
+        <div class="row pb-1">
+            <div class="form-group col-md-2 setLeft">
+                <label class="control-label" asp-for="GeneralViewModel.Status">@Localizer["Status"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                @*<input class="form-control" asp-for="AccountViewModel.SaleOrg" required />
+                    <span asp-validation-for="AccountViewModel.SaleOrg" class="text-danger"></span>*@
+
+                <select style="height:100%" id="Status" class="form-control" asp-for="GeneralViewModel.Status">
+                    <option value="">@Localizer["--Select--"]</option>
+                    <option value="New">@Localizer["New"]</option>
+                    <option value="Repeat">@Localizer["Repeat"]</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header border">
+        <div class="row">
+            <div class="col-md-6"><h4>Lines</h4></div>
+            <div class="col-md-6 text-right">
+                <div class="card-actions d-flex">
+                    <a class="" data-action="collapse">
+                        <i class="ti-minus"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body collapse show border">
+        <div class="row box">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button id="btnAddMat" style="width:100px;height:30px" class="btn btn-success" disabled="disabled"><i class="fa mdi">@Localizer["Add"]</i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <br />
+                <partial name="_LinesTable" model="Model" />
+            </div>
+        </div>
+        <div class="row box">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button id="btnSaveMat" style="width:100px;height:30px" class="btn btn-info" disabled="disabled"><i class="fa mdi">@Localizer["Save"]</i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

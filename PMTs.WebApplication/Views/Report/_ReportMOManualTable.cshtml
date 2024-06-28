@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ModelView.Report.CheckRepeatOrder>
+@using System.Linq
+
+@{
+    Layout = null;
+}
+
+<table id="ReportMOManualTable" class="table table-bordered table-hover">
+    <thead class="thead-light text-center">
+        <tr>
+            @*<th style="width:70px">@Localizer["MO_Status"]</th>*@
+            <th style="width:80px">@Localizer["OrderItem"]</th>
+            <th style="width:80px">@Localizer["Material No"]</th>
+            <th style="width:90px">@Localizer["PC"]</th>
+            <th style="width:160px">@Localizer["Name"]</th>
+            <th style="width:160px">@Localizer["Description"]</th>
+            <th style="width:60px">@Localizer["Order Qty"]</th>
+            <th style="width:60px">@Localizer["Target Qty"]</th>
+            <th style="width:70px">@Localizer["Original Due Date"]</th>
+            <th style="width:70px">@Localizer["Due Date"]</th>
+            <th style="width:100px">@Localizer["ItemNote"]</th>
+            <th style="width:100px">@Localizer["Batch"]</th>
+            <th style="width:70px">@Localizer["PoNo"]</th>
+            <th style="width:70px">@Localizer["Create Date"]</th>
+            <th style="width:70px">@Localizer["Updated Date"]</th>
+</thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            @*<td class="text-center">@item.MOStatus</td>*@
+            <td class="text-center">@item.OrderItem</td>
+            <td class="text-center">@item.MaterialNo</td>
+            <td class="text-center">@item.PC</td>
+            <td class="text-left">@item.Name</td>
+            <td class="text-left">@item.Description</td>
+            <td class="text-center">@item.OrderQuant.ToString("#,###")</td>
+            <td class="text-center">@item.TargetQuant.Value.ToString("#,###")</td>
+            <td class="text-center">@item.OriginalDueDate.ToString("dd/MM/yyyy")</td>
+            <td class="text-center">@item.DueDate.ToString("dd/MM/yyyy")</td>
+            <td class="text-center">@item.ItemNote</td>
+            <td class="text-center">@item.Batch</td>
+            <td class="text-center">@item.PoNo</td>
+            <td class="text-center">@item.CreateDate.ToString("dd/MM/yyyy")</td>
+            <td class="text-center">@item.UpdatedDate.ToString("dd/MM/yyyy")</td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,1942 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+}
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row justify-content-between">
+            <div class="col-6">
+                <h3 class="text-themecolor">@Localizer["New Product"]</h3>
+            </div>
+            @if (@Model.MaterialNo != null)
+            {
+                <div class="col-6">
+                    <h3 class="box-title text-right">
+                        @Localizer["Material No"]   : @Model.MaterialNo
+                    </h3>
+                </div>
+            }
+        </div>
+        <hr />
+    </div>
+
+    <div class="card-body">
+        <form id="form" asp-controller="NewProduct" asp-action="SaveCategories" method="post" data-ajax="true" data-ajax-method="post" data-ajax-success="OnSaveSuccess">
+            @*<form asp-controller="NewProduct" asp-action="SaveCategories" method="post" data-ajax="true" data-ajax-method="post" >*@
+            <input type="hidden" asp-for="modelCategories.HierarchyLV3" />
+            <input type="hidden" asp-for="modelCategories.HierarchyLV4" />
+            <input type="hidden" asp-for="modelCategories.ProductTypeName" />
+            <input type="hidden" asp-for="modelCategories.MatCode" />
+            <input type="hidden" asp-for="modelCategories.FormGroup" />
+            <input type="hidden" asp-for="modelCategories.RSCStyle" />
+            <input type="hidden" asp-for="modelCategories.IsTwoPiece" />
+            <input type="hidden" asp-for="modelCategories.BoxHandle" />
+
+            <div class="form-group" style="padding:0 0px">
+                <div class="row" style="padding-bottom:5px">
+                    <div class="col-7 row form-group">
+                        <label class="col-md-4 control-label" style="text-align:right">
+                            @Localizer["Kinds Of Product Group"]
+                        </label>
+                        <div class="col-md-8">
+                            <input type="hidden" id="modelCategories_Id_kProdGrp" asp-for="modelCategories.Id_kProdGrp" />
+                            @Html.TextBoxFor(m => m.modelCategories.KpgName, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-5 row form-group">
+                        <label class="col-md-5 control-label" style="text-align:right">
+                            @Localizer["HierarchyLV2"]<i style="color:white;padding-right:2px">*</i>
+                        </label>
+                        <div class="col-md-7 control-label">
+                            <input id="modelCategories_HierarchyLV2" asp-for="modelCategories.HierarchyLV2" type="text" class="form-control" readonly />
+                            @*@Html.TextBoxFor(m => m.modelCategories.HierarchyLV2, new { @class = "form-control", @readonly = "readonly" })*@
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-bottom:5px">
+                    <div class="col-7 row form-group">
+                        <label class="col-md-4 control-label" style="text-align:right">
+                            @Localizer["Process Cost"] <i style="color:red">*</i>
+                        </label>
+                        <div class="col-md-8">
+                            <select class="form-control" asp-for="modelCategories.Id_ProcCost" required="" style="width: 100%"
+                                    asp-items="@(new SelectList(Model.modelCategories.ProcessCostList,"Id","Name"))">
+                                <option value="">--- @Localizer["Please Select Item"] ---</option>
+                            </select>
+                            <span id="processCost-errorMassage" class="text-danger" style="display: none;"> @Localizer["The process cost field is required."]</span>
+
+                            @Html.ValidationMessageFor(m => m.modelCategories.Id_ProcCost, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-5 row form-group">
+                        <label class="col-md-5 control-label" style="text-align:right">
+                            @Localizer["HierarchyLV3"]<i class="hierarchyLv3Required" style="color:red;padding-right:2px">*</i>
+                        </label>
+                        <div class="col-md-7 control-label">
+                            <select class="form-control" id="modelCategories_hierarchyLV3Id" required="required" asp-for="modelCategories.hierarchyLV3Id" style="width: 100%">
+                                <option value="">--- @Localizer["Please Select Item"] ---</option>
+                            </select>
+                            <span id="hierarchylv3-errorMassage" class="text-danger" style="display: none;">The hierarchy level 3 field is required.</span>
+                            @Html.ValidationMessageFor(m => m.modelCategories.hierarchyLV3Id, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-bottom:5px">
+                    <div class="col-7 row form-group">
+                        <label class="col-md-4 control-label" style="text-align:right">
+                            @Localizer["Kinds Of Product"]<i style="color:red">*</i>
+                        </label>
+                        <div class="col-md-8">
+                            <select class="form-control" asp-for="modelCategories.Id_kProd" required="" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.KindOfProductList,"Id","Name"))">
+                                <option value="">--- @Localizer["Please Select Item"] ---</option>
+                            </select>
+                            <span id="KindsOfProduct-errorMassage" class="text-danger" style="display: none;">@Localizer["The kinds of product field is required."]</span>
+                            @Html.ValidationMessageFor(m => m.modelCategories.Id_kProd, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-5 row form-group">
+                        <label class="col-md-5 control-label" style="text-align:right">
+                            @Localizer["HierarchyLV4"]<i class="hierarchyLv4Required" style="color:red;padding-right:2px">*</i>
+                        </label>
+                        <div class="col-md-7 control-label">
+                            <select id="modelCategories_hierarchyLV4Id" class="form-control" style="width: 100%">
+                                <option value="">--- @Localizer["Please Select Item"] ---</option>
+                            </select>
+                            <span id="hierarchylv4-errorMassage" class="text-danger" style="display: none;">@Localizer["The hierarchy level 4 field is required."]</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-bottom:5px">
+                    <div class="col-7 row form-group">
+                        <label class="col-md-4 control-label" style="text-align:right">
+                            @Localizer["Product Type"] <i style="color:red">*</i>
+                        </label>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div id="divProdType" class="col-md-12">
+                                    <select id="modelCategories_Id_ProdType" required="" asp-for="modelCategories.Id_ProdType" class="form-control" style="width: 100%">
+                                        <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                    </select>
+                                    <span id="productType-errorMassage" class="text-danger" style="display: none;">@Localizer["The product type field is required."]</span>
+                                    @Html.ValidationMessageFor(m => m.modelCategories.Id_ProdType, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div id="divRSCStyle" class="col-md-6">
+                                    <select id="RSCStyleSelect" asp-for="modelCategories.RSCStyleId" class="form-control" style="width:100%">
+                                        <option value='1'>Standard</option>")
+                                        <option value='2'>Full Overlap</option>")
+                                        <option value='3'>Tele Top Lid</option>")
+                                        <option value='4'>Tele Bottom Lid</option>")
+                                        <option value='5'>Sleeve</option>")
+                                        <option value='6'>Rotary</option>")
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5 row form-group">
+                    </div>
+                </div>
+                <div class="row" style="padding-bottom:5px">
+                    <div class="col-7 row form-group">
+                        <label class="col-md-4 control-label" style="text-align:right">
+                            @Localizer["Material Type"]
+                        </label>
+                        <div class="col-md-8">
+                            <select asp-for="modelCategories.Id_MatType" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.MaterialTypeList,"Id","Description"))"></select>
+                            @Html.ValidationMessageFor(m => m.modelCategories.Id_MatType, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-5 row form-group"></div>
+                </div>
+                <div class="row" style="padding-bottom:5px">
+                    <div class="col-7 row form-group">
+                        <label class="col-md-4 control-label" style="text-align:right">
+                            @Localizer["Product Unit"]
+                        </label>
+                        <div class="col-md-8">
+                            <select asp-for="modelCategories.Id_PU" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.UnitMaterialList,"Id","Name"))"></select>
+                            @Html.ValidationMessageFor(m => m.modelCategories.Id_PU, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-5 row form-group"></div>
+                </div>
+                <div class="row" style="padding-bottom:5px">
+                    <div class="col-7 row form-group">
+                        <label class="col-md-4 control-label" style="text-align:right">
+                            @Localizer["Sales Unit"]
+                        </label>
+                        <div class="col-md-8">
+                            <select asp-for="modelCategories.Id_SU" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.UnitMaterialList,"Id","Name"))"></select>
+                            @Html.ValidationMessageFor(m => m.modelCategories.Id_SU, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-5 row form-group"></div>
+                </div>
+
+                @if (userSession.BusinessGroup == "Offset")// "Offset"
+                {
+                    <div class="row" style="padding-bottom:5px">
+                        <div class="col-7 row form-group">
+                            <label class="col-md-4 control-label" style="text-align:right">
+                                @Localizer["FSC-Type Code"]
+                            </label>
+                            <div class="col-md-8">
+                                <select id="modelCategories_fscCode" asp-for="modelCategories.fscCode" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.FSCCodes,"FscSalesText","FscProductType"))"></select>
+                            </div>
+                        </div>
+                        <div class="col-5 row form-group"></div>
+                    </div>
+                    <div class="row" style="padding-bottom:5px" id="divSelectFscFgCode" hidden>
+                        <div class="col-7 row form-group">
+                            <label class="col-md-4 control-label" style="text-align:right">
+                                @Localizer["FSC-FG Type Code"]
+                            </label>
+                            <div class="col-md-8">
+                                <select id="modelCategories_fscFgCode" asp-for="modelCategories.fscFgCode" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.FSCFGCodes,"FscFgCode","FscFgDescription"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select><span id="fscFgCode-errorMassage" class="text-danger" style="display: none;">@Localizer["The FSC FG type code field is required."]</span>
+                                @Html.ValidationMessageFor(m => m.modelCategories.fscFgCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-5 row form-group"></div>
+                    </div>
+                    <div class="row" style="padding-bottom:5px">
+                        <div class="col-7 row form-group">
+                            <label class="col-md-4 control-label" style="text-align:right">
+                                @Localizer["LOB"]
+                            </label>
+                            <div class="col-md-8">
+                                <select id="modelCategories_RpacLob" asp-for="modelCategories.RpacLob" class="form-control" style="width:100%">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                    <option value='Hard Line'>Hard Line</option>")
+                                    <option value='Soft Line'>Soft Line</option>")
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-5 row form-group"></div>
+                    </div>
+                    <div class="row" style="padding-bottom:5px">
+                        <div class="col-7 row form-group">
+                            <label class="col-md-4 control-label" style="text-align:right">
+                                @Localizer["Program"]
+                            </label>
+                            <div class="col-md-8">
+                                <select id="modelCategories_RpacProgram" asp-for="modelCategories.RpacProgram" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.PPCMasterRpacs.Where(p=>p.DimensionCode=="PROGRAM"),"RpacCode","RpacName"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-5 row form-group"></div>
+                    </div>
+                    <div class="row" style="padding-bottom:5px">
+                        <div class="col-7 row form-group">
+                            <label class="col-md-4 control-label" style="text-align:right">
+                                @Localizer["Brand"]
+                            </label>
+                            <div class="col-md-8">
+                                <select id="modelCategories_RpacBrand" asp-for="modelCategories.RpacBrand" class="form-control" style="width: 100%;" asp-items="@(new SelectList(Model.modelCategories.PPCMasterRpacs.Where(p=>p.DimensionCode=="BRAND"),"RpacCode","RpacName"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-5 row form-group"></div>
+                    </div>
+                    <div class="row" style="padding-bottom:5px">
+                        <div class="col-7 row form-group">
+                            <label class="col-md-4 control-label" style="text-align:right">
+                                @Localizer["Packaging Type"]
+                            </label>
+                            <div class="col-md-8">
+                                <select id="modelCategories_RpacPackagingType" asp-for="modelCategories.RpacPackagingType" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.modelCategories.PPCMasterRpacs.Where(p=>p.DimensionCode=="PACKAGING TYPE"),"RpacCode","RpacName"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-5 row form-group"></div>
+                    </div>
+                }
+
+                <br />
+                <section class="card-footer bg-transparent">
+                    <div class="row justify-content-end">
+                        <div class="form-group">
+                            <button type="button" id="btnNextCat" onclick="CheckValidate()" class="btn btn-info btn-fixsize">
+                                @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i>
+                            </button>
+                            <button class="btn btn-info btn-fixsize" type="button" id="btnNextLoad" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
+                            <span class="small text-danger "><i class="fa fa-"></i>@ViewBag.SaveCat</span>
+                            <label class="col-sm-1"></label>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script language="javascript" type="text/javascript">
+
+        var kop = 0;
+        var pcc = 0;
+        var pdt = 0;
+        var ProcessCostArr = [];
+        var KindOfProductArr = [];
+        var ProductTypeArr = [];
+        var HierarchyLV3Arr = [];
+        var HierarchyLV4Arr = [];
+        var MaterialTypeArr = [];
+        var UnitMaterial = [];
+
+        //create variable get id from model
+        var processCostId = $("#modelCategories_Id_ProcCost").val();
+        var kindOfProductId = $("#modelCategories_Id_kProd").val();
+        var productTypeId = $("#modelCategories_Id_ProdType").val();
+        var hierarchyLV3Id = $("#modelCategories_hierarchyLV3Id").val();
+        var hierarchyLV4Id = $("#modelCategories_hierarchyLV4Id").val();
+        var IsHierarchyLv3Required = true;
+        var IsHierarchyLv4Required = true;
+
+        //create variable get list from model
+        const selectedPlaceholder = "";
+        const kindOfProducts = @Html.Raw(Json.Serialize(Model.modelCategories.KindOfProductList));
+        const kindOfProductGroups = @Html.Raw(Json.Serialize(Model.modelCategories.KindOfProductGroupList));
+        const processCosts = @Html.Raw(Json.Serialize(Model.modelCategories.ProcessCostList));
+        const productTypes = @Html.Raw(Json.Serialize(Model.modelCategories.ProductTypeList));
+        const materialTypes = @Html.Raw(Json.Serialize(Model.modelCategories.MaterialTypeList));
+        const UnitMaterials = @Html.Raw(Json.Serialize(Model.modelCategories.UnitMaterialList));
+        const hierarchyLV2s = @Html.Raw(Json.Serialize(Model.modelCategories.HierarchyLV2List));
+        const hierarchyLV3s = @Html.Raw(Json.Serialize(Model.modelCategories.HierarchyLv3s));
+        const hierarchyLV4s = @Html.Raw(Json.Serialize(Model.modelCategories.HierarchyLv4s));
+        const mapCosts = @Html.Raw(Json.Serialize(Model.modelCategories.MapcostList));
+
+        //create variable check element click
+        const kindOfProductElementName = "kindOfProduct";
+        const processCostElementName = "processCost";
+        const productTypeElementName = "productType";
+        const reloadElementName = "Reload";
+        const isPpcGroup = '@userSession.BusinessGroup' == "Offset" && '@Model.EventFlag' == "Create";
+
+        function ProcCostVal() { return $('#modelCategories_Id_ProcCost').val() }
+        function KindsOfProductVal() { return $('#modelCategories_Id_kProd').val() }
+        function ProcductTypeVal() { return $('#modelCategories_Id_ProdType').val() }
+        function HierarchyLV3Val() { return $('#modelCategories_hierarchyLV3Id').val() }
+        function HierarchyLV4Val() { return $('#modelCategories_hierarchyLV4Id').val() }
+        function FscCodeVal() { return $("#modelCategories_fscCode").val() }
+        function FscFGCodeVal() { return $("#modelCategories_fscFgCode").val() }
+
+        $(document).ready(function () {
+            LoadingButton(false);
+            $("#processCost-errorMassage").hide();
+            $("#KindsOfProduct-errorMassage").hide();
+            $("#productType-errorMassage").hide();
+            $("#hierarchylv3-errorMassage").hide();
+            $("#hierarchylv4-errorMassage").hide();
+            $("#fscFgCode-errorMassage").hide();
+
+            if (FscCodeVal() == null || FscCodeVal() == "") {
+                $("#divSelectFscFgCode").prop("hidden", true);
+            } else {
+                $("#divSelectFscFgCode").prop("hidden", false);
+            }
+
+            var actionTran = '@Model.EventFlag';
+
+            if ('@Model.modelCategories.FormGroup' == "STDRSC") {
+                $('#divRSCStyle').show();
+                $('#divRSCStyle').addClass('col-md-6');
+
+                $('#divProdType').removeClass('col-md-12');
+                $('#divProdType').addClass('col-md-6');
+            }
+            else {
+                $('#divRSCStyle').hide();
+
+                $('#divProdType').removeClass('col-md-6');
+                $('#divProdType').addClass('col-md-12');
+            }
+
+            //Initial list of hierarchy lv3 in selection
+            InitialHierarchyLv3AndLv4();
+
+            if (@Model.modelCategories.Id_MatType !== null)
+            {
+                MaterialTypeArr = [];
+                $.each(materialTypes, function (key, mtObject)
+                {
+                    MaterialTypeArr.push(new Array(mtObject.Id, { "Id": mtObject.Id, "Name": mtObject.MatCode+" "+mtObject.Description }));
+                });
+
+                GenarateHtmlSelect("modelCategories_Id_MatType", MaterialTypeArr);
+                SelectOptional("modelCategories_Id_MatType", MaterialTypeArr, @Model.modelCategories.Id_MatType);
+            }
+
+            //check new create or modify then matching data to view
+            let id_ProcCost = @Model.modelCategories.Id_ProcCost;
+            let id_ProdType = @Model.modelCategories.Id_ProdType;
+            let id_kProd = @Model.modelCategories.Id_kProd;
+
+            if (id_ProcCost == "0") {
+                id_ProcCost = "";
+            }
+
+            if (id_ProdType == "0" ){
+                id_ProdType = "";
+            }
+
+            if (id_kProd == "0") {
+                id_kProd = "";
+            }
+
+            MatchingCategories(id_ProcCost, id_ProdType, id_kProd, reloadElementName);
+
+            if ((actionTran === "Edit" && '@Model.TransactionDetail.IsOldMaterial' === "False") || (@Model.TransactionDetail.MaxStep != null && @Model.TransactionDetail.MaxStep >= 3))  @*|| ('@Model.MaterialNo' != "" && actionTran != "CreateOs" && actionTran != "CreateTrading" && actionTran !== "Edit")*@
+            {
+                //$('#modelCategories_KpgName').prop('disabled', true);
+                //$('#modelCategories_HierarchyLV2').prop('disabled', true);
+                $('#modelCategories_Id_ProcCost').prop('disabled', true);
+                $('#modelCategories_Id_kProd').prop('disabled', true);
+                $('#modelCategories_Id_ProdType').prop('disabled', true);
+                $('#modelCategories_Id_MatType').prop('disabled', true);
+                $('#modelCategories_Id_PU').prop('disabled', true);
+                $('#modelCategories_Id_SU').prop('disabled', true);
+                $('#modelCategories_hierarchyLV3Id').prop('disabled', true);
+                $('#StatusFlag').prop('disabled', true);
+                $('#RSCStyleSelect').prop('disabled', true);
+                $('#modelCategories_hierarchyLV4Id').prop('disabled', true);
+
+                $('#modelCategories_fscCode').prop('disabled', true);
+                $('#modelCategories_fscFgCode').prop('disabled', true);
+                $('#modelCategories_RpacLob').prop('disabled', true);
+                $('#modelCategories_RpacProgram').prop('disabled', true);
+                $('#modelCategories_RpacBrand').prop('disabled', true);
+                $('#modelCategories_RpacPackagingType').prop('disabled', true);
+            }
+        });
+
+        function CheckValidate()
+        {
+            LoadingButton(true);
+            ShowValidateMessage();
+            var eventFlag = '@Model.EventFlag';
+
+            if (isPpcGroup && (FscCodeVal() != null && FscCodeVal() != "")) {
+                if (ProcCostVal() == "" || KindsOfProductVal() == "" || ProcductTypeVal() == "" || (HierarchyLV3Arr.length != 0 && HierarchyLV3Val() == "" || ((FscCodeVal() != null && FscCodeVal() != "NONE") && FscFGCodeVal() == ""))) {
+                    LoadingButton(false);
+                    return false;
+                }
+            }
+            else
+            {
+                if (ProcCostVal() == "" || KindsOfProductVal() == "" || ProcductTypeVal() == "" || (HierarchyLV3Arr.length != 0 && HierarchyLV3Val() == "" )) {
+                    LoadingButton(false);
+                    return false;
+                }
+            }
+
+            if (eventFlag === "Edit")
+            {
+                if ('@Model.TransactionDetail.IsOldMaterial' === "True") {
+                    BindDataToModel();
+                    $("#form").submit();
+                }
+                else
+                {
+                    window.location.href = '@Url.Action("Customer", "NewProduct")';
+
+                }
+            }
+            else
+            {
+                if (@Model.TransactionDetail.MaxStep != null && @Model.TransactionDetail.MaxStep >= 4) {
+                    window.location.href = '@Url.Action("Customer", "NewProduct")';
+                }
+                else
+                {
+                    //set data selected to model
+                    BindDataToModel();
+
+                    if (HierarchyLV4Arr.length != 0) {
+                        if (HierarchyLV4Val() != "") {
+                            $("#form").submit();
+                        }
+                        else {
+                            //req field
+                            $(".hierarchyLv4Required").css("color", "red");
+                            //$("#modelCategories_hierarchyLV3Id").addAttr("required");
+                            $('#modelCategories_hierarchyLV4Id').attr("required", "");
+                        }
+                        //else {
+                        //    swal({
+                        //        title: "Are you sure to continue?",
+                        //        text: "You don't choose Hierarchy Level 4",
+                        //        icon: "warning",
+                        //        buttons: true,
+                        //        dangerMode: false,
+                        //    })
+                        //        .then((willDelete) => {
+                        //            if (willDelete) {
+                        //                $("#form").submit();
+                        //            }
+                        //        });
+                        //}
+                    }
+                    else {
+                        $("#form").submit();
+                    }
+                    LoadingButton(false);
+                    return false;
+                }
+
+            }
+        }
+
+        function BindDataToModel()
+        {
+            //set selected value model to model when submit form
+            $.each(kindOfProductGroups, function(kpgKey,kpgObject)
+            {
+                if (kpgObject.Name == $('#modelCategories_KpgName').val())
+                {
+                    $('#modelCategories_Id_kProdGrp').val(kpgObject.Id);
+                }
+            });
+
+            $.each(materialTypes, function (mtKey, mtObject)
+            {
+                if (mtObject.Id == $('#modelCategories_Id_MatType').val())
+                {
+                    $('#modelCategories_MatCode').val(mtObject.MatCode);
+                }
+            });
+
+            var twoPiece = productTypes.filter(p => { return p.Id == $('#modelCategories_Id_ProdType').val() });
+            $('#modelCategories_IsTwoPiece').val(twoPiece[0].IsTwoPiece);
+
+            hierarchyLV3Id = $('#modelCategories_hierarchyLV3Id').val();
+            $('#modelCategories_HierarchyLV3').val(hierarchyLV3Id);
+
+            hierarchyLV4Id = $('#modelCategories_hierarchyLV4Id').val();
+
+            $('#modelCategories_HierarchyLV4').val(hierarchyLV4Id);
+
+            //set RSC Style
+            switch ($('#RSCStyleSelect').val()) {
+                case "1":
+                    $('#modelCategories_RSCStyle').val("Standard");
+                    break;
+                case "2":
+                    $('#modelCategories_RSCStyle').val("Full Overlap");
+                    break;
+                case "3":
+                    $('#modelCategories_RSCStyle').val("Tele Top Lid");
+                    break;
+                case "4":
+                    $('#modelCategories_RSCStyle').val("Tele Bottom Lid");
+                    break;
+                case "5":
+                    $('#modelCategories_RSCStyle').val("Sleeve");
+                    break;
+                case "6":
+                    $('#modelCategories_RSCStyle').val("Rotary");
+                    break;
+                default:
+                    $('#modelCategories_RSCStyle').val("Standard");
+                    break;
+            }
+        }
+
+        function SortByName(x, y) {
+            return ((x[1].Name == y[1].Name) ? 0 : ((x[1].Name > y[1].Name) ? 1 : -1));
+        }
+
+        function GenarateHtmlSelect(nameOfElement, modelArr) {
+            modelArr.sort(SortByName);
+
+            var elementId = "#" + nameOfElement;
+            $(elementId).empty();
+
+            if (nameOfElement == "modelCategories_Id_MatType" || nameOfElement == "RSCStyleSelect" || nameOfElement == "modelCategories_Id_PU" || nameOfElement == "modelCategories_Id_SU") {
+
+                $.each(modelArr, function (key, value) {
+                    $(elementId).append($("<option></option>").attr("value", value[1].Id).text(value[1].Name));
+                });
+            } else
+            {
+                $(elementId).append($("<option></option>").attr("value", "").text("--- Please Select Item ---"));
+                $.each(modelArr, function (key, value) {
+                    $(elementId).append($("<option></option>").attr("value", value[1].Id).text(value[1].Name));
+                });
+            }
+        }
+
+        function SelectOptional(nameOfElement, modelArr, selectedOption)
+        {
+            var elementId = "#" + nameOfElement;
+
+            $.each(modelArr, function (key, value)
+            {
+                if (value[1].Id == selectedOption)
+                {
+                    $(elementId).val(selectedOption);
+                }
+            });
+        }
+
+        function CheckDuplicateDataInArray(modelArr,id,name)
+        {
+            var result = true;
+
+            $.each(modelArr,function (key, obj)
+            {
+                if (obj[1].Id == id && obj[1].Name == name )
+                {
+                    result = false;
+                }
+            });
+
+            return result;
+        }
+
+        function CheckDuplicateDataInArrayByName(modelArr, id, name, IsHierarchLv3) {
+            var duplicateResult = true;
+
+            if (IsHierarchLv3) {
+                $.each(modelArr, function (key, obj) {
+                    if (obj[1].Id == id) {
+                        duplicateResult = false;
+                    }
+                });
+            } else {
+                if (modelArr.filter(m => m[0] == name || m[1].Id == id || m[1].Name == name) != "") {
+                    duplicateResult = false;
+                }
+                //$.each(modelArr, function (key, obj) {
+                //    if (obj[1].Id == id || obj[1].Name == name) {
+                //        duplicateResult = false;
+                //    }
+                //});
+            }
+
+            return duplicateResult;
+        }
+
+        function MatchingCategories(processCostId, productTypeId, kindOfProductId, elementName)
+        {
+            GenarateMatchingCategories(processCostId, productTypeId, kindOfProductId, elementName);
+
+            //auto set selected
+            if (ProcessCostArr.length == 1) {
+                if ((elementName == processCostElementName && processCostId != selectedPlaceholder) || elementName != processCostElementName)
+                {
+                    SelectOptional("modelCategories_Id_ProcCost", ProcessCostArr, ProcessCostArr[0][0]);
+                    processCostId = ProcessCostArr[0][0];
+                }
+            }
+
+            if (KindOfProductArr.length == 1) {
+                if (elementName == kindOfProductElementName && kindOfProductId != selectedPlaceholder || elementName != kindOfProductElementName)
+                {
+                    SelectOptional("modelCategories_Id_kProd", KindOfProductArr, KindOfProductArr[0][0]);
+                    kindOfProductId = KindOfProductArr[0][0];
+                }
+            }
+
+            if (ProductTypeArr.length == 1) {
+                if (elementName == productTypeElementName && productTypeId != selectedPlaceholder || elementName != productTypeElementName)
+                {
+                    SelectOptional("modelCategories_Id_ProdType", ProductTypeArr, ProductTypeArr[0][0]);
+                    productTypeId = ProductTypeArr[0][0];
+                }
+            }
+
+            if (ProcessCostArr.length == 1 || KindOfProductArr.length == 1 || ProductTypeArr.length == 1) {
+                var element = "";
+
+                if (processCostId == null || processCostId == "")
+                    element = processCostElementName;
+                else if (kindOfProductId == null || kindOfProductId == "")
+                    element = kindOfProductElementName;
+                else if (productTypeId == null || productTypeId == "")
+                    element = productTypeElementName;
+                else
+                    element = reloadElementName;
+
+                GenarateMatchingCategories(processCostId, productTypeId, kindOfProductId, element);
+            }
+
+            //check set kind of product group name
+            kindOfProductId = $("#modelCategories_Id_kProd").val();
+            processCostId = $("#modelCategories_Id_ProcCost").val();
+            productTypeId = $("#modelCategories_Id_ProdType").val();
+
+            //set HierarchyLV2
+            if (productTypeId == selectedPlaceholder) {
+                HierarchyLV3Arr = [];
+                HierarchyLV4Arr = [];
+                $('#modelCategories_HierarchyLV2').val("");
+                $('#modelCategories_hierarchyLV3Id').val("");
+                $('#modelCategories_HierarchyLV3').val("");
+                $('#modelCategories_hierarchyLV4Id').val("");
+                $('#modelCategories_HierarchyLV4').val("");
+
+                GenarateHtmlSelect("modelCategories_hierarchyLV3Id", HierarchyLV3Arr);
+                GenarateHtmlSelect("modelCategories_hierarchyLV4Id", HierarchyLV4Arr);
+            } else {
+                $.each(productTypes, function (key, obj) {
+                    if (obj.Id == productTypeId) {
+                        $('#modelCategories_HierarchyLV2').val(obj.HierarchyLv2);
+                    }
+                });
+            }
+
+            var nameOfHierarchyLV2 = $('#modelCategories_HierarchyLV2').val();
+            var trimNameOfHierarchyLV2 = $.trim(nameOfHierarchyLV2);
+            hierarchyLV3 = $("#modelCategories_HierarchyLV3").val();
+
+            //genarate HierarchyLV3
+            if (trimNameOfHierarchyLV2 != null && trimNameOfHierarchyLV2 != "") {
+                if (elementName == productTypeElementName
+                    || elementName == reloadElementName
+                    || hierarchyLV3 == selectedPlaceholder) {
+                    HierarchyLV3Arr = [];
+
+                    $.each(mapCosts, function (mcKey, ObjMapCost) {
+                        var mapCostHierarchy2 = $.trim(ObjMapCost.Hierarchy2);
+                        if (mapCostHierarchy2 === trimNameOfHierarchyLV2) {
+                            if (CheckDuplicateDataInArrayByName(HierarchyLV3Arr, ObjMapCost.Hierarchy3, ObjMapCost.Hierarchy3, true)) {
+                                var existHierarchyLV3 = hierarchyLV3s.filter(h => { return h.Hierarchy3 == ObjMapCost.Hierarchy3 });
+                                var des = "";
+                                $.each(existHierarchyLV3, function (k, o) {
+                                    $.each(o, function (k1, o1) {
+                                        if (k1 == "Description") {
+                                            des = o1;
+                                        }
+                                    });
+                                });
+
+                                if (des != "") {
+                                    HierarchyLV3Arr.push(new Array(ObjMapCost.Hierarchy3, { "Id": ObjMapCost.Hierarchy3, "Name": ObjMapCost.Hierarchy3 + " " + des }));
+                                } else {
+                                    HierarchyLV3Arr.push(new Array(ObjMapCost.Hierarchy3, { "Id": ObjMapCost.Hierarchy3, "Name": ObjMapCost.Hierarchy3 }));
+                                }
+
+                            }
+                        }
+                    });
+
+                    HierarchyLV4Arr = [];
+
+                    $.each(HierarchyLV3Arr, function (h3Key, h3Obj) {
+                        $.each(mapCosts, function (mcKey, ObjMapCost) {
+                            if (h3Obj[0] === $.trim(ObjMapCost.Hierarchy3) && trimNameOfHierarchyLV2 === $.trim(ObjMapCost.Hierarchy2)) {
+
+                                //check lv 4 duplicate
+                                if (CheckDuplicateDataInArrayByName(HierarchyLV4Arr, ObjMapCost.Id, ObjMapCost.Hierarchy4, false)) {
+                                    var hierarchy4 = ObjMapCost.Hierarchy4;
+                                    if (hierarchy4 == null || hierarchy4 == "") {
+                                        hierarchy4 = "whitespace";
+                                    }
+
+                                    var existHierarchyLV4 = hierarchyLV4s.filter(h => { return h.Hierarchy4 == ObjMapCost.Hierarchy4 });
+                                    var des = "";
+                                    $.each(existHierarchyLV4, function (k, o) {
+                                        $.each(o, function (k1, o1) {
+                                            if (k1 == "Description") {
+                                                des = o1;
+                                            }
+                                        });
+                                    });
+
+                                    if (des != "" && hierarchy4 != "whitespace") {
+                                        HierarchyLV4Arr.push(new Array(ObjMapCost.Hierarchy4, { "Id": hierarchy4, "Name": ObjMapCost.Hierarchy4 + " " + des }));
+                                    } else {
+                                        HierarchyLV4Arr.push(new Array(ObjMapCost.Hierarchy4, { "Id": hierarchy4, "Name": ObjMapCost.Hierarchy4 }));
+                                    }
+                                }
+                            }
+                        });
+                    });
+                    GenarateHtmlSelect("modelCategories_hierarchyLV3Id", HierarchyLV3Arr);
+                    GenarateHtmlSelect("modelCategories_hierarchyLV4Id", HierarchyLV4Arr);
+
+                    //HierarchyLV3 has been set
+                    if (elementName == reloadElementName) {
+                        var tempHierarchyLV3 = $('#modelCategories_HierarchyLV3').val();
+                        SelectOptional("modelCategories_hierarchyLV3Id", HierarchyLV3Arr, tempHierarchyLV3);
+                        var tempHierarchyLV4 = $('#modelCategories_HierarchyLV4').val();
+                        SelectOptional("modelCategories_hierarchyLV4Id", HierarchyLV4Arr, tempHierarchyLV4);
+                    }
+                }
+            }
+
+            //set HierarchyLV3
+            if (HierarchyLV3Arr.length == 1) {
+                SelectOptional("modelCategories_hierarchyLV3Id", HierarchyLV3Arr, HierarchyLV3Arr[0][0]);
+            }
+
+            hierarchyLV3Id = $("#modelCategories_hierarchyLV3Id").val();
+
+            if (hierarchyLV3Id != null || $(hierarchyLV3Id != selectedPlaceholder))
+            {
+                HierarchyLV4Arr = [];
+
+                $.each(HierarchyLV3Arr, function (h3Key, h3Obj) {
+                    $.each(mapCosts, function (mcKey, ObjMapCost) {
+                        if (hierarchyLV3Id === $.trim(ObjMapCost.Hierarchy3) && trimNameOfHierarchyLV2 === $.trim(ObjMapCost.Hierarchy2)) {
+
+                            //check lv 4 duplicate
+                            if (CheckDuplicateDataInArrayByName(HierarchyLV4Arr, ObjMapCost.Id, ObjMapCost.Hierarchy4, false)) {
+                                var hierarchy4 = ObjMapCost.Hierarchy4;
+                                if (hierarchy4 == null || hierarchy4 == "") {
+                                    hierarchy4 = "whitespace";
+                                }
+                                var existHierarchyLV4 = hierarchyLV4s.filter(h => { return h.Hierarchy4 == ObjMapCost.Hierarchy4 });
+                                var des = "";
+                                $.each(existHierarchyLV4, function (k, o) {
+                                    $.each(o, function (k1, o1) {
+                                        if (k1 == "Description") {
+                                            des = o1;
+                                        }
+                                    });
+                                });
+
+                                if (des != "" && hierarchy4 != "whitespace") {
+                                    HierarchyLV4Arr.push(new Array(ObjMapCost.Hierarchy4, { "Id": hierarchy4, "Name": ObjMapCost.Hierarchy4 + " " + des }));
+                                } else {
+                                    HierarchyLV4Arr.push(new Array(ObjMapCost.Hierarchy4, { "Id": hierarchy4, "Name": ObjMapCost.Hierarchy4 }));
+                                }
+                            }
+                        }
+                    });
+                });
+
+                GenarateHtmlSelect("modelCategories_hierarchyLV4Id", HierarchyLV4Arr);
+            }
+
+            //set HierarchyLV4
+            if (HierarchyLV4Arr.length == 1) {
+                $(".hierarchyLv4Required").css("color", "white");
+                $("#hierarchylv4-errorMassage").hide();
+                $("#modelCategories_hierarchyLV4Id").prop('disabled', true);
+
+                if (HierarchyLV4Arr[0][1].Id == "whitespace") {
+
+                    SelectOptional("modelCategories_hierarchyLV4Id", HierarchyLV4Arr, HierarchyLV4Arr[0][1].Id);
+                } else {
+
+                    SelectOptional("modelCategories_hierarchyLV4Id", HierarchyLV4Arr, HierarchyLV4Arr[0][0]);
+                }
+            }
+            else if (HierarchyLV4Arr.length != 0 && elementName == reloadElementName && '@Model.modelCategories.HierarchyLV4' != null) {
+                $(".hierarchyLv4Required").css("color", "red");
+                $("#modelCategories_hierarchyLV4Id").prop('disabled', false);
+                var IsExistHierarchyLv4 = HierarchyLV4Arr.filter(p => { return p[1].Name == '@Model.modelCategories.HierarchyLV4' });
+
+                if (IsExistHierarchyLv4 != null) {
+                    SelectOptional("modelCategories_hierarchyLV4Id", HierarchyLV4Arr, '@Model.modelCategories.HierarchyLV4');
+                }
+            }
+            else if (HierarchyLV4Arr.length != 0)
+            {
+                $(".hierarchyLv4Required").css("color", "red");
+                $("#modelCategories_hierarchyLV4Id").prop('disabled', false);
+            }
+
+            //set Kinds Of Product Group name
+            $('#modelCategories_KpgName').val("");
+            $.each(hierarchyLV2s, function (key, hieLv2Object)
+            {
+                if (hieLv2Object.IdProcessCost == processCostId && hieLv2Object.IdKindOfProduct == kindOfProductId && hieLv2Object.IdProductType == productTypeId) {
+                    $.each(kindOfProductGroups, function (kpKey, kpObject) {
+                        if (kpObject.Id == hieLv2Object.IdKindOfProductGroup)
+                            $('#modelCategories_KpgName').val(kpObject.Name);
+                    });
+                }
+            });
+
+            //check required field hierarchy lv3
+            if (HierarchyLV3Arr.length == 0) {
+                $(".hierarchyLv3Required").css("color", "white");
+                $("#modelCategories_hierarchyLV3Id").removeAttr("required");
+                IsHierarchyLv3Required = false;
+            }
+            else
+            {
+                $(".hierarchyLv3Required").css("color", "red");
+                //$("#modelCategories_hierarchyLV3Id").addAttr("required");
+                $('#modelCategories_hierarchyLV3Id').attr("required", "");
+                IsHierarchyLv3Required = true;
+            }
+
+            //if ($("#modelCategories_Id_ProdType").val() == '710') {
+            //    $("#modelCategories_Id_PU").val("2");
+            //    $("#modelCategories_Id_SU").val("2");
+            //}
+
+            if ($("#modelCategories_Id_ProdType").val() == '840') {
+                $("#modelCategories_Id_MatType").val("6");
+            }
+        }
+
+        function GenarateMatchingCategories(processCostId, productTypeId, kindOfProductId, elementName) {
+            var caseGenarateHtml = "";
+            if (processCostId == selectedPlaceholder) {
+                if (kindOfProductId == selectedPlaceholder) {
+                    if (productTypeId == selectedPlaceholder) {
+                        //0,0,0
+                        ProcessCostArr = [];
+                        KindOfProductArr = [];
+                        ProductTypeArr = [];
+
+                        caseGenarateHtml = "000";
+                        $.each(processCosts, function (key, object) {
+                            ProcessCostArr.push(new Array(object.Id, { "Id": object.Id, "Name": object.Name }));
+                        });
+
+                        $.each(kindOfProducts, function (key, object) {
+                            KindOfProductArr.push(new Array(object.Id, { "Id": object.Id, "Name": object.Name }));
+                        });
+
+                        $.each(productTypes, function (key, object) {
+                            ProductTypeArr.push(new Array(object.Id, { "Id": object.Id, "Name": object.HierarchyLv2 + " " + object.Name }));
+                        });
+                    }
+                    else {
+                        caseGenarateHtml = "001";
+                        //0,0,1
+                        ProcessCostArr = [];
+                        KindOfProductArr = [];
+                        ProductTypeArr = [];
+
+                        $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                            if (hieLv2Object.IdProductType == productTypeId) {
+                                $.each(processCosts, function (pcKey, pcObject) {
+                                    if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                        if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                            ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                    }
+
+                                });
+
+                                $.each(kindOfProducts, function (ptKey, kpObject) {
+                                    if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                        if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                            KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                    }
+
+                                });
+                            }
+                        });
+                        if (ProcessCostArr.length == 1 && KindOfProductArr.length == 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdProcessCost == ProcessCostArr[0][0] && hieLv2Object.IdKindOfProduct == KindOfProductArr[0][0]) {
+                                    $.each(productTypes, function (key, ptbject) {
+                                        if (ptbject.Id == hieLv2Object.IdProductType)
+                                            ProductTypeArr.push(new Array(ptbject.Id, { "Id": ptbject.Id, "Name": ptbject.HierarchyLv2 + " " + ptbject.Name }));
+                                    });
+                                }
+                            });
+                        }
+                        else if (ProcessCostArr.length == 1 && KindOfProductArr.length != 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdProcessCost == ProcessCostArr[0][0]) {
+                                    $.each(productTypes, function (key, ptbject) {
+                                        if (ptbject.Id == hieLv2Object.IdProductType)
+                                            ProductTypeArr.push(new Array(ptbject.Id, { "Id": ptbject.Id, "Name": ptbject.HierarchyLv2 + " " + ptbject.Name }));
+                                    });
+                                }
+                            });
+                        }
+                        else if (ProcessCostArr.length != 1 && KindOfProductArr.length == 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdKindOfProduct == KindOfProductArr[0][0]) {
+                                    $.each(productTypes, function (key, ptbject) {
+                                        if (ptbject.Id == hieLv2Object.IdProductType)
+                                            ProductTypeArr.push(new Array(ptbject.Id, { "Id": ptbject.Id, "Name": ptbject.HierarchyLv2 + " " + ptbject.Name }));
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            $.each(productTypes, function (key, ptbject) {
+                                ProductTypeArr.push(new Array(ptbject.Id, { "Id": ptbject.Id, "Name": ptbject.HierarchyLv2 + " " + ptbject.Name }));
+                            });
+                        }
+                    }
+                }
+                else {
+                    if (productTypeId == selectedPlaceholder) {
+                        caseGenarateHtml = "010";
+                        //0,1,0
+                        ProcessCostArr = [];
+                        KindOfProductArr = [];
+                        ProductTypeArr = [];
+
+                        $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                            if (hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                $.each(processCosts, function (pcKey, pcObject) {
+                                    if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                        if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                            ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                    }
+                                });
+
+                                $.each(productTypes, function (ptKey, ptObject) {
+                                    if (ptObject.Id == hieLv2Object.IdProductType) {
+                                        if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                            ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                    }
+                                });
+                            }
+                        });
+
+                        if (ProcessCostArr.length == 1 && ProductTypeArr.length == 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdProcessCost == ProcessCostArr[0][0] && hieLv2Object.IdProductType == ProductTypeArr[0][0]) {
+                                    $.each(kindOfProducts, function (key, kpbject) {
+                                        if (kpbject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpbject.Id, kpbject.Name)) {
+                                                KindOfProductArr.push(new Array(kpbject.Id, { "Id": kpbject.Id, "Name": kpbject.Name }));
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else if (ProcessCostArr.length == 1 && ProductTypeArr.length != 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdProcessCost == ProcessCostArr[0][0]) {
+                                    $.each(kindOfProducts, function (key, kpbject) {
+                                        if (kpbject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpbject.Id, kpbject.Name)) {
+                                                KindOfProductArr.push(new Array(kpbject.Id, { "Id": kpbject.Id, "Name": kpbject.Name }));
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else if (ProcessCostArr.length != 1 && ProductTypeArr.length == 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdProductType == ProductTypeArr[0][0]) {
+                                    $.each(kindOfProducts, function (key, kpbject) {
+                                        if (kpbject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpbject.Id, kpbject.Name)) {
+                                                KindOfProductArr.push(new Array(kpbject.Id, { "Id": kpbject.Id, "Name": kpbject.Name }));
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            $.each(kindOfProducts, function (key, kpbject) {
+                                KindOfProductArr.push(new Array(kpbject.Id, { "Id": kpbject.Id, "Name": kpbject.Name }));
+                            });
+                        }
+                    }
+                    else {
+                        caseGenarateHtml = "011";
+                        //0,1,1
+                        ProcessCostArr = [];
+
+                        if (elementName == processCostElementName) {
+                            KindOfProductArr = [];
+                            ProductTypeArr = [];
+                        }
+                        else if (elementName == productTypeElementName) {
+                            KindOfProductArr = [];
+                        }
+                        else if (elementName == kindOfProductElementName) {
+                            ProductTypeArr = [];
+                        }
+
+                        $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                            if (elementName == productTypeElementName) {
+                                if (hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(kindOfProducts, function (kpKey, kpObject) {
+                                        if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                                KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+                            else if (elementName == kindOfProductElementName) {
+                                if (hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(productTypes, function (ptKey, ptObject) {
+                                        if (ptObject.Id == hieLv2Object.IdProductType) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                                ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+                            else if (elementName == processCostElementName) {
+                                if (hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(kindOfProducts, function (kpKey, kpObject) {
+                                        if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                                KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                        }
+                                    });
+                                }
+
+                                if (hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(productTypes, function (ptKey, ptObject) {
+                                        if (ptObject.Id == hieLv2Object.IdProductType) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                                ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+
+                            if (hieLv2Object.IdProductType == productTypeId && hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                $.each(processCosts, function (pcKey, pcObject) {
+                                    if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                        if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                            ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+            else {
+                if (kindOfProductId == selectedPlaceholder) {
+                    if (productTypeId == selectedPlaceholder) {
+                        caseGenarateHtml = "100";
+                        //1,0,0
+                        ProcessCostArr = [];
+                        KindOfProductArr = [];
+                        ProductTypeArr = [];
+
+                        $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                            if (hieLv2Object.IdProcessCost == processCostId) {
+                                $.each(kindOfProducts, function (kpKey, kpObject) {
+                                    if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                        if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                            KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                    }
+                                });
+
+                                $.each(productTypes, function (ptKey, ptObject) {
+                                    if (ptObject.Id == hieLv2Object.IdProductType) {
+                                        if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                            ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                    }
+                                });
+                            }
+                        });
+
+                        if (KindOfProductArr.length == 1 && ProductTypeArr.length == 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdKindOfProduct == KindOfProductArr[0][0] && hieLv2Object.IdProductType == ProductTypeArr[0][0]) {
+                                    $.each(processCosts, function (key, pcbject) {
+                                        if (pcbject.Id == hieLv2Object.IdProcessCost)
+                                            ProcessCostArr.push(new Array(pcbject.Id, { "Id": pcbject.Id, "Name": pcbject.Name }));
+                                    });
+                                }
+                            });
+                        }
+                        else if (KindOfProductArr.length == 1 && ProductTypeArr.length != 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdKindOfProduct == KindOfProductArr[0][0]) {
+                                    $.each(processCosts, function (key, pcbject) {
+                                        if (pcbject.Id == hieLv2Object.IdProcessCost)
+                                            ProcessCostArr.push(new Array(pcbject.Id, { "Id": pcbject.Id, "Name": pcbject.Name }));
+                                    });
+                                }
+                            });
+                        }
+                        else if (KindOfProductArr.length != 1 && ProductTypeArr.length == 1) {
+                            $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                                if (hieLv2Object.IdProductType == ProductTypeArr[0][0]) {
+                                    $.each(processCosts, function (key, pcbject) {
+                                        if (pcbject.Id == hieLv2Object.IdProcessCost)
+                                            ProcessCostArr.push(new Array(pcbject.Id, { "Id": pcbject.Id, "Name": pcbject.Name }));
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            $.each(processCosts, function (key, pcbject) {
+                                ProcessCostArr.push(new Array(pcbject.Id, { "Id": pcbject.Id, "Name": pcbject.Name }));
+                            });
+                        }
+                    }
+                    else {
+                        caseGenarateHtml = "101";
+                        //1,0,1
+                        KindOfProductArr = [];
+
+                        if (elementName == processCostElementName) {
+                            ProductTypeArr = [];
+                        }
+                        else if (elementName == productTypeElementName) {
+                            ProcessCostArr = [];
+                        }
+                        else if (elementName == kindOfProductElementName) {
+                            ProcessCostArr = [];
+                            ProductTypeArr = [];
+                        }
+
+                        $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                            if (elementName == processCostElementName) {
+                                if (hieLv2Object.IdProcessCost == processCostId) {
+                                    $.each(productTypes, function (ptKey, ptObject) {
+                                        if (ptObject.Id == hieLv2Object.IdProductType) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                                ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+                            else if (elementName == productTypeElementName) {
+                                if (hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(processCosts, function (pcKey, pcObject) {
+                                        if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                            if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                                ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+                            else if (elementName == kindOfProductElementName) {
+                                if (hieLv2Object.IdProcessCost == processCostId) {
+                                    $.each(productTypes, function (ptKey, ptObject) {
+                                        if (ptObject.Id == hieLv2Object.IdProductType) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                                ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                        }
+                                    });
+                                }
+
+                                if (hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(processCosts, function (pcKey, pcObject) {
+                                        if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                            if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                                ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+
+                            if (hieLv2Object.IdProductType == productTypeId && hieLv2Object.IdProcessCost == processCostId) {
+                                $.each(kindOfProducts, function (kpKey, kpObject) {
+                                    if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                        if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                            KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+                else {
+                    if (productTypeId == selectedPlaceholder) {
+                        caseGenarateHtml = "110";
+                        //1,1,0
+                        ProductTypeArr = [];
+
+                        if (elementName == processCostElementName) {
+                            KindOfProductArr = [];
+                        }
+                        else if (elementName == kindOfProductElementName) {
+                            ProcessCostArr = [];
+                        }
+                        else if (elementName == productTypeElementName) {
+                            ProcessCostArr = [];
+                            KindOfProductArr = [];
+                        }
+
+                        $.each(hierarchyLV2s, function (hieLv2Key, hieLv2Object) {
+                            if (elementName == processCostElementName) {
+                                if (hieLv2Object.IdProcessCost == processCostId) {
+                                    $.each(kindOfProducts, function (kpKey, kpObject) {
+                                        if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                                KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+
+                            if (elementName == kindOfProductElementName) {
+                                if (hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(processCosts, function (pcKey, pcObject) {
+                                        if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                            if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                                ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+
+                            if (elementName == productTypeElementName) {
+
+                                if (hieLv2Object.IdProcessCost == processCostId) {
+                                    $.each(kindOfProducts, function (kpKey, kpObject) {
+                                        if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                                KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                        }
+                                    });
+
+                                }
+                                if (hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(processCosts, function (pcKey, pcObject) {
+                                        if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                            if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                                ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+
+                            if (hieLv2Object.IdKindOfProduct == kindOfProductId && hieLv2Object.IdProcessCost == processCostId) {
+                                $.each(productTypes, function (ptKey, ptObject) {
+                                    if (ptObject.Id == hieLv2Object.IdProductType) {
+                                        if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                            ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        caseGenarateHtml = "111";
+                        //1,1,1
+                        if (elementName == processCostElementName) {
+                            KindOfProductArr = [];
+                            ProductTypeArr = [];
+                        }
+                        else if (elementName == kindOfProductElementName) {
+                            ProcessCostArr = [];
+                            ProductTypeArr = [];
+                        }
+                        else if (elementName == productTypeElementName) {
+                            ProcessCostArr = [];
+                            KindOfProductArr = [];
+                        }
+                        else if (elementName == reloadElementName) {
+                            ProcessCostArr = [];
+                            KindOfProductArr = [];
+                            ProductTypeArr = [];
+                        }
+
+                        $.each(hierarchyLV2s, function (key, hieLv2Object) {
+                            if (elementName == processCostElementName) {
+                                if (hieLv2Object.IdProcessCost == processCostId && hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(productTypes, function (ptKey, ptObject) {
+                                        if (ptObject.Id == hieLv2Object.IdProductType) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                                ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                        }
+                                    });
+                                }
+
+                                if (hieLv2Object.IdProcessCost == processCostId && hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(kindOfProducts, function (kpKey, kpObject) {
+                                        if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                                KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+                            else if (elementName == kindOfProductElementName) {
+                                if (hieLv2Object.IdProcessCost == processCostId && hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(productTypes, function (ptKey, ptObject) {
+                                        if (ptObject.Id == hieLv2Object.IdProductType) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                                ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                        }
+                                    });
+                                }
+
+                                if (hieLv2Object.IdKindOfProduct == kindOfProductId && hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(processCosts, function (pcKey, pcObject) {
+                                        if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                            if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                                ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                        }
+                                    });
+                                }
+
+                            }
+                            else if (elementName == productTypeElementName) {
+                                if (hieLv2Object.IdProcessCost == processCostId && hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(kindOfProducts, function (kpKey, kpObject) {
+                                        if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                                KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                        }
+                                    });
+                                }
+
+                                if (hieLv2Object.IdKindOfProduct == kindOfProductId && hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(processCosts, function (pcKey, pcObject) {
+                                        if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                            if (CheckDuplicateDataInArray(ProcessCostArr, pcObject.Id, pcObject.Name))
+                                                ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+                            else if (elementName == reloadElementName) {
+                                if (hieLv2Object.IdProductType == productTypeId && hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(processCosts, function (ptKey, pcObject) {
+                                        if (pcObject.Id == hieLv2Object.IdProcessCost) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, pcObject.Id, pcObject.Name))
+                                                ProcessCostArr.push(new Array(pcObject.Id, { "Id": pcObject.Id, "Name": pcObject.Name }));
+                                        }
+                                    });
+                                }
+
+                                if (hieLv2Object.IdProcessCost == processCostId && hieLv2Object.IdKindOfProduct == kindOfProductId) {
+                                    $.each(productTypes, function (ptKey, ptObject) {
+                                        if (ptObject.Id == hieLv2Object.IdProductType) {
+                                            if (CheckDuplicateDataInArray(ProductTypeArr, ptObject.Id, ptObject.Name))
+                                                ProductTypeArr.push(new Array(ptObject.Id, { "Id": ptObject.Id, "Name": ptObject.HierarchyLv2 + " " + ptObject.Name }));
+                                        }
+                                    });
+                                }
+
+                                if (hieLv2Object.IdProcessCost == processCostId && hieLv2Object.IdProductType == productTypeId) {
+                                    $.each(kindOfProducts, function (kpKey, kpObject) {
+                                        if (kpObject.Id == hieLv2Object.IdKindOfProduct) {
+                                            if (CheckDuplicateDataInArray(KindOfProductArr, kpObject.Id, kpObject.Name))
+                                                KindOfProductArr.push(new Array(kpObject.Id, { "Id": kpObject.Id, "Name": kpObject.Name }));
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
+            switch (caseGenarateHtml) {
+                case "000":
+                    {
+                        GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                        GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+                    }
+                    break;
+                case "001":
+                    {
+                        GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                        GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+
+                        SelectOptional("modelCategories_Id_ProdType", ProductTypeArr, productTypeId);
+
+                    }
+                    break;
+                case "010":
+                    {
+                        GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                        GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+
+                        SelectOptional("modelCategories_Id_kProd", KindOfProductArr, kindOfProductId);
+                    }
+                    break;
+                case "011":
+                    {
+                        GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+
+                        if (elementName == kindOfProductElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+                        }
+                        else if (elementName == productTypeElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        }
+                        else if (elementName == processCostElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                            GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+                        }
+
+                        SelectOptional("modelCategories_Id_kProd", KindOfProductArr, kindOfProductId);
+                        SelectOptional("modelCategories_Id_ProdType", ProductTypeArr, productTypeId);
+                    }
+                    break;
+                case "100":
+                    {
+                        GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                        GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+
+                        SelectOptional("modelCategories_Id_ProcCost", ProcessCostArr, processCostId);
+                    }
+                    break;
+                case "101":
+                    {
+                        GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+
+                        if (elementName == processCostElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+                        }
+                        else if (elementName == productTypeElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                        }
+                        else if (elementName == kindOfProductElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                            GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+                        }
+
+                        SelectOptional("modelCategories_Id_ProcCost", ProcessCostArr, processCostId);
+                        SelectOptional("modelCategories_Id_ProdType", ProductTypeArr, productTypeId);
+                    }
+                    break;
+                case "110":
+                    {
+                        GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+
+                        if (elementName == processCostElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        }
+                        else if (elementName == kindOfProductElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                        }
+                        else if (elementName == productTypeElementName) {
+                            GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                            GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        }
+
+                        SelectOptional("modelCategories_Id_kProd", KindOfProductArr, kindOfProductId);
+                        SelectOptional("modelCategories_Id_ProcCost", ProcessCostArr, processCostId);
+                    }
+                    break;
+
+                case "111":
+                    {
+
+                        GenarateHtmlSelect("modelCategories_Id_ProcCost", ProcessCostArr);
+                        GenarateHtmlSelect("modelCategories_Id_kProd", KindOfProductArr);
+                        GenarateHtmlSelect("modelCategories_Id_ProdType", ProductTypeArr);
+
+                        SelectOptional("modelCategories_Id_ProcCost", ProcessCostArr, processCostId);
+                        SelectOptional("modelCategories_Id_kProd", KindOfProductArr, kindOfProductId);
+                        SelectOptional("modelCategories_Id_ProdType", ProductTypeArr, productTypeId);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        $("#modelCategories_Id_ProcCost").change(function ()
+        {
+            var kindOfProductId = $("#modelCategories_Id_kProd").val();
+            var processCostId = $("#modelCategories_Id_ProcCost").val();
+            var productTypeId = $("#modelCategories_Id_ProdType").val();
+
+            if ((processCostId == "" && (kindOfProductId == "110" || productTypeId == "850"))
+                || (processCostId == "" && (kindOfProductId == "200" || productTypeId == "860"))
+                || (processCostId == "" && (kindOfProductId == "999" || productTypeId == "840"))
+            ){
+                ResetSelection(processCostElementName);
+            }
+            else
+            {
+                MatchingCategories(processCostId, productTypeId, kindOfProductId, processCostElementName);
+                SetFormGroup();
+            }
+        });
+
+        $("#modelCategories_Id_kProd").change(function ()
+        {
+            var kindOfProductId = $("#modelCategories_Id_kProd").val();
+            var processCostId = $("#modelCategories_Id_ProcCost").val();
+            var productTypeId = $("#modelCategories_Id_ProdType").val();
+            if ((kindOfProductId == "" && (processCostId == "70" || productTypeId == "850"))
+                || (kindOfProductId == "" && (processCostId == "110" || productTypeId == "860"))
+                || (kindOfProductId == "" && (processCostId == "100" || productTypeId == "840"))
+            ) {
+                ResetSelection(kindOfProductElementName);
+            }
+            else {
+                MatchingCategories(processCostId, productTypeId, kindOfProductId, kindOfProductElementName);
+                SetFormGroup();
+            }
+        });
+
+        $("#modelCategories_Id_ProdType").change(function ()
+        {
+            var kindOfProductId = $("#modelCategories_Id_kProd").val();
+            var processCostId = $("#modelCategories_Id_ProcCost").val();
+            var productTypeId = $("#modelCategories_Id_ProdType").val();
+            hierarchyLV3Id = $("#modelCategories_HierarchyLV3").val();
+
+            if ((productTypeId == "" && (processCostId == "70" || kindOfProductId == "110"))
+                || (productTypeId == "" && (processCostId == "110" || kindOfProductId == "200"))
+                || (productTypeId == "" && (processCostId == "100" || kindOfProductId == "999"))
+            ) {
+                ResetSelection(productTypeElementName);
+            }
+            else {
+                MatchingCategories(processCostId, productTypeId, kindOfProductId, productTypeElementName);
+                SetFormGroup();
+            }
+        });
+
+        $("#modelCategories_fscCode").change(function () {
+            if (FscCodeVal() != null && FscCodeVal() != "") {
+                $("#divSelectFscFgCode").prop("hidden", false);
+            } else {
+                $("#divSelectFscFgCode").prop("hidden", true);
+                $("#modelCategories_fscFgCode").val("")
+            }
+        });
+
+        function ResetSelection(elementName)
+        {
+            MatchingCategories("", "", "", elementName);
+
+            InitialHierarchyLv3AndLv4();
+
+            $("#modelCategories_Id_PU").val("1");
+            $("#modelCategories_Id_SU").val("1");
+
+        }
+
+        function InitialHierarchyLv3AndLv4()
+        {
+            HierarchyLV3Arr = [];
+            HierarchyLV4Arr = [];
+            $.each(mapCosts, function (mcKey, mcObject) {
+                if (CheckDuplicateDataInArrayByName(HierarchyLV3Arr, mcObject.Hierarchy3, mcObject.Hierarchy3, true)) {
+                    var existHierarchyLV3 = hierarchyLV3s.filter(h => { return h.Hierarchy3 == mcObject.Hierarchy3 });
+                    var des = "";
+                    $.each(existHierarchyLV3, function (k, o) {
+                        $.each(o, function (k1, o1) {
+                            if (k1 == "Description") {
+                                des = o1;
+                            }
+                        });
+                    });
+
+                    if (des != "") {
+                        HierarchyLV3Arr.push(new Array(mcObject.Hierarchy3, { "Id": mcObject.Hierarchy3, "Name": mcObject.Hierarchy3 + " " + des }));
+                    } else {
+                        HierarchyLV3Arr.push(new Array(mcObject.Hierarchy3, { "Id": mcObject.Hierarchy3, "Name": mcObject.Hierarchy3 }));
+                    }
+                }
+
+                if (CheckDuplicateDataInArrayByName(HierarchyLV4Arr, mcObject.Id, mcObject.Hierarchy4, false)) {
+                    var existHierarchyLV4 = hierarchyLV4s.filter(h => { return h.Hierarchy4 == mcObject.Hierarchy4 });
+                    var des = "";
+                    $.each(existHierarchyLV4, function (k, o) {
+                        $.each(o, function (k1, o1) {
+                            if (k1 == "Description") {
+                                des = o1;
+                            }
+                        });
+                    });
+
+                    if (des != "") {
+                        HierarchyLV4Arr.push(new Array(mcObject.Hierarchy4, { "Id": mcObject.Hierarchy4, "Name": mcObject.Hierarchy4 + " " + des }));
+                    } else {
+                        HierarchyLV4Arr.push(new Array(mcObject.Hierarchy4, { "Id": mcObject.Hierarchy4, "Name": mcObject.Hierarchy4 }));
+                    }
+                }
+            });
+            GenarateHtmlSelect("modelCategories_hierarchyLV3Id", HierarchyLV3Arr);
+            GenarateHtmlSelect("modelCategories_hierarchyLV4Id", HierarchyLV4Arr);
+        }
+
+        $("#modelCategories_Id_MatType").change(function ()
+        {
+            //#region select unit from matType
+            var selected = $(this).val();
+
+            $("#modelCategories_Id_PU").val(1);
+            $("#modelCategories_Id_SU").val(1);
+
+            if (selected == 2 || selected == 4 || selected == 7)
+            {
+                $("#modelCategories_Id_PU").val(3);
+                $("#modelCategories_Id_SU").val(3);
+            }
+            //#endregion
+        });
+
+        $("#modelCategories_hierarchyLV3Id").change(function () {
+            var hierarchyLV3Id = $(this).val();
+            var nameOfHierarchyLV2 = $('#modelCategories_HierarchyLV2').val();
+
+            if (HierarchyLV3Val() != "") {
+                $("#hierarchylv3-errorMassage").hide();
+                $("#hierarchylv4-errorMassage").hide();
+            } else {
+                $("#hierarchylv3-errorMassage").show();
+            }
+
+            //genarate HierarchyLV3
+            if (nameOfHierarchyLV2 != null && nameOfHierarchyLV2 != "") {
+                HierarchyLV4Arr = [];
+
+                $.each(mapCosts, function (mcKey, ObjMapCost) {
+                    if ($.trim(hierarchyLV3Id) === $.trim(ObjMapCost.Hierarchy3) && $.trim(nameOfHierarchyLV2) === $.trim(ObjMapCost.Hierarchy2)) {
+                        if (CheckDuplicateDataInArrayByName(HierarchyLV4Arr, ObjMapCost.Id, ObjMapCost.Hierarchy4, false)) {
+                            var hierarchy4 = ObjMapCost.Hierarchy4;
+                            if (hierarchy4 == null || hierarchy4 == "") {
+                                hierarchy4 = "whitespace";
+                            }
+
+                            var existHierarchyLV4 = hierarchyLV4s.filter(h => { return h.Hierarchy4 == ObjMapCost.Hierarchy4 });
+                            var des = "";
+                            $.each(existHierarchyLV4, function (k, o) {
+                                $.each(o, function (k1, o1) {
+                                    if (k1 == "Description") {
+                                        des = o1;
+                                    }
+                                });
+                            });
+
+                            if (des != "") {
+                                HierarchyLV4Arr.push(new Array(ObjMapCost.Hierarchy4, { "Id": hierarchy4, "Name": ObjMapCost.Hierarchy4 + " " + des }));
+                            } else {
+                                HierarchyLV4Arr.push(new Array(ObjMapCost.Hierarchy4, { "Id": hierarchy4, "Name": ObjMapCost.Hierarchy4 }));
+                            }
+                        }
+                    }
+                });
+
+                GenarateHtmlSelect("modelCategories_hierarchyLV4Id", HierarchyLV4Arr);
+            }
+            //set HierarchyLV4
+            if (HierarchyLV4Arr.length == 1) {
+                $(".hierarchyLv4Required").css("color", "white");
+                $("#hierarchylv4-errorMassage").hide();
+                $("#modelCategories_hierarchyLV4Id").prop('disabled', true);
+                SelectOptional("modelCategories_hierarchyLV4Id", HierarchyLV4Arr, HierarchyLV4Arr[0][1].Id);
+            } else {
+                $(".hierarchyLv4Required").css("color", "red");
+                $("#modelCategories_hierarchyLV4Id").prop('disabled', false);
+            }
+
+        });
+
+        $("#modelCategories_hierarchyLV4Id").change(function () {
+            if (HierarchyLV4Val() != "") {
+                $("#hierarchylv4-errorMassage").hide();
+            } else
+            {
+                $("#hierarchylv4-errorMassage").show();
+            }
+        });
+
+        var OnSaveSuccess = function (res) {
+            if (typeof res.isSuccess === 'undefined') {
+                window.location.href = '@Url.Action("Index", "Login")';
+            }
+            else
+            {
+                if (res.isSuccess) {
+                    window.location = "Customer";
+                }
+                else {
+                    //modalDialog(error, SaveFailed);
+                    swal("Save Failed", "", "warning");
+                }
+            }
+        };
+
+        function SetFormGroup()
+        {
+            if ($('#modelCategories_Id_ProdType').val() != "") {
+                $.each(productTypes, function (ptKey, ptObject) {
+                    if (ptObject.Id == $('#modelCategories_Id_ProdType').val()) {
+                        $('#modelCategories_ProductTypeName').val(ptObject.Name);
+                        $('#modelCategories_FormGroup').val(ptObject.FormGroup);
+                        $('#modelCategories_BoxHandle').val(ptObject.BoxHandle)
+                    }
+                });
+            }
+
+            if ($('#modelCategories_FormGroup').val() == "STDRSC") {
+                $('#divRSCStyle').show();
+                $('#divRSCStyle').addClass('col-md-6');
+
+                $('#divProdType').removeClass('col-md-12');
+                $('#divProdType').addClass('col-md-6');
+
+                if ('@Model.EventFlag' === "Edit")
+                {
+                    $('#RSCStyleSelect').prop('disabled', true);
+                }
+            }
+            else {
+                $('#divRSCStyle').hide();
+
+                $('#divProdType').removeClass('col-md-6');
+                $('#divProdType').addClass('col-md-12');
+            }
+
+            $("#modelCategories_Id_PU").empty();
+            $("#modelCategories_Id_SU").empty();
+
+            UnitMaterialArr = [];
+            $.each(UnitMaterials, function (umKey, umObject) {
+                UnitMaterialArr.push(new Array(umObject.Id, { "Id": umObject.Id, "Name": umObject.Name }));
+            });
+
+            GenarateHtmlSelect("modelCategories_Id_PU", UnitMaterialArr);
+            GenarateHtmlSelect("modelCategories_Id_SU", UnitMaterialArr);
+
+            //#region select unit from productType
+            let productTypeSelected = productTypes.filter(p => { return p.Id == $('#modelCategories_Id_ProdType').val() });
+
+            if (productTypeSelected != null && productTypeSelected != "") {
+
+                $("#modelCategories_Id_PU").val(productTypeSelected[0].UnitDefault);
+                $("#modelCategories_Id_SU").val(productTypeSelected[0].UnitDefault);
+            } else {
+
+                $("#modelCategories_Id_PU").val(1);
+                $("#modelCategories_Id_SU").val(1);
+            }
+            // #endregion
+
+            //#region select unit from matType
+            let selected = $("#modelCategories_Id_MatType").val();
+
+            if (selected == 2) {
+                $("#modelCategories_Id_PU").val(3);
+                $("#modelCategories_Id_SU").val(3);
+            }
+                // #endregion
+
+            //if ($('#modelCategories_FormGroup').val() == "SF" || $('#modelCategories_FormGroup').val() == "ROLL") {
+            //    $("#modelCategories_Id_PU").val("2");
+            //    $("#modelCategories_Id_SU").val("2");
+            //}
+            //else
+            //{
+            //    $("#modelCategories_Id_PU").empty();
+            //    $("#modelCategories_Id_SU").empty();
+
+            //    UnitMaterialArr = [];
+            //    $.each(UnitMaterials, function (umKey,umObject) {
+            //        UnitMaterialArr.push(new Array(umObject.Id, { "Id": umObject.Id, "Name": umObject.Name }));
+            //    });
+
+            //    GenarateHtmlSelect("modelCategories_Id_PU", UnitMaterialArr);
+            //    GenarateHtmlSelect("modelCategories_Id_SU", UnitMaterialArr);
+
+            //    //#region select unit from productType
+            //    let productTypeSelected = productTypes.filter(p => { return p.Id == $('#modelCategories_Id_ProdType').val() });
+
+            //    if (productTypeSelected != null && productTypeSelected != "") {
+            //        $("#modelCategories_Id_PU").val(productTypeSelected.UnitDefault);
+            //        $("#modelCategories_Id_SU").val(productTypeSelected.UnitDefault);
+            //    } else {
+
+            //        $("#modelCategories_Id_PU").val(1);
+            //        $("#modelCategories_Id_SU").val(1);
+            //    }
+            //    // #endregion
+
+            //    //#region select unit from matType
+            //    let selected = $("#modelCategories_Id_MatType").val();
+
+            //    if (selected == 2) {
+            //        $("#modelCategories_Id_PU").val(3);
+            //        $("#modelCategories_Id_SU").val(3);
+            //    }
+            //    // #endregion
+            //}
+
+        }
+
+        function ShowValidateMessage()
+        {
+            if (ProcCostVal() == "")
+            {
+                $("#processCost-errorMassage").show();
+            } else {
+
+                $("#processCost-errorMassage").hide();
+            }
+
+            if (KindsOfProductVal() == "") {
+                $("#KindsOfProduct-errorMassage").show();
+            } else {
+
+                $("#KindsOfProduct-errorMassage").hide();
+            }
+
+            if (ProcductTypeVal() == "") {
+                $("#productType-errorMassage").show();
+            } else {
+
+                $("#productType-errorMassage").hide();
+            }
+
+            if (HierarchyLV3Val() == "" && IsHierarchyLv3Required) {
+                $("#hierarchylv3-errorMassage").show();
+            } else {
+
+                $("#hierarchylv3-errorMassage").hide();
+            }
+
+            if (HierarchyLV4Val() == "" && HierarchyLV4Arr.length != 0) {
+                $("#hierarchylv4-errorMassage").show();
+            } else {
+
+                $("#hierarchylv4-errorMassage").hide();
+            }
+
+            if (FscCodeVal() != null && FscCodeVal() != "NONE") {
+                if (FscFGCodeVal() == "" || FscFGCodeVal() == null) {
+                    $("#fscFgCode-errorMassage").show();
+                } else {
+                    $("#fscFgCode-errorMassage").hide();
+                }
+            }
+        }
+
+        function LoadingButton(value) {
+            if (value) {
+                $('#btnNextCat').hide();
+                $('#btnNextLoad').show();
+            } else {
+                $('#btnNextLoad').hide();
+                $('#btnNextCat').show();
+            }
+        }
+    </script>
+
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>$.widget.bridge('uibutton', $.ui.button);</script>
+    <!-- Bootstrap 3.3.7 -->
+
+}

@@ -1,0 +1,27 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenancePaperGrade.MaintenancePaperGradeViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body">
+    <table id="PaperGrade-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Paper"] </th>
+                <th scope="col">@Localizer["BasicWeight"]</th>
+                <th scope="col">@Localizer["Grade"]</th>
+                <th scope="col">@Localizer["Group"]</th>
+                <th scope="col">@Localizer["Length"]</th>
+                <th scope="col">@Localizer["View"]</th>
+                <th scope="col">@Localizer["Edit"]</th>
+
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,1116 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<style>
+    .ui-menu {
+        max-height: 300px;
+        margin-bottom: 10px;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <div class="row justify-content-between">
+            <div class="col-6">
+                <h3 class="text-themecolor">@Localizer["New Product"]</h3>
+            </div>
+            @if (@Model.MaterialNo != null)
+            {
+            <div class="col-6">
+                <h3 class="box-title text-right">
+                    @Localizer["Material No"] : @Model.MaterialNo
+                </h3>
+            </div>
+            }
+        </div>
+        <hr />
+    </div>
+
+    <div class="card-body">
+        <form id="fromCustomer" asp-controller="NewProduct" asp-action="SaveCustomer" data-ajax="true" data-ajax-method="post" data-ajax-success="OnSaveSuccess" class="form-material">
+            <input type="hidden" id="modelProductCustomer_PriorityFlag" asp-for="modelProductCustomer.PriorityFlag" />
+            <center>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-3 text-right control-label col-form-label">@Localizer["Search"] : <i style="color:red"> *</i> </label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="inpWire" placeholder='@Localizer["placeholder"]'>
+                    </div>
+                </div>
+            </center>
+            <div class="collapse" id="coll">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="m-b-0 text-gray">@Localizer["Infomation"]</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">@Localizer["Customer Name"]:</label>
+                            <div class="col-sm-3">
+                                <input type="hidden" asp-for="modelProductCustomer.CusId" id="inp_Cust_ID" />
+                                <input type="text" class="form-control no-border text-red" asp-for="modelProductCustomer.CustName" id="inp_Customername" style="background-color :white;  font-weight:bold; color:black; color:black;" readonly />
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label">@Localizer["Customer Code"]  :</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control no-border" asp-for="modelProductCustomer.CustCode" id="inp_Customer" style="background-color :white; font-weight:bold; color:black;" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">@Localizer["Sold to"]:</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control no-border" asp-for="modelProductCustomer.SoldToCode" id="inp_soldto" style="background-color :white; font-weight:bold; color:black;" readonly />
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label">@Localizer["Product Group"] : <i style="color:red">*</i></label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control no-border" asp-for="modelProductCustomer.IndDes" id="IndDes" style="background-color :white;  color:black;font-weight:bold; color:dimgray;" />
+                                <span style="color:red" hidden id="productGroupReq">The Product Group field is required.</span>
+                                <input type="hidden" class="form-control no-border" asp-for="modelProductCustomer.PalletOverhang" id="IndPalletOverhang" style="background-color :white;  color:black;" />
+                            </div>
+                        </div>
+                        @*<div class="form-group row">
+          <label class="col-sm-2 text-right control-label col-form-label">@Localizer["Delivery Time"] :</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control no-border" asp-for="modelProductCustomer.CustDeliveryTime" id="inp_Delivery" style="background-color :white; font-weight:bold; color:black;" readonly />
+            </div>
+        </div>*@
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">@Localizer["zone"] :</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control no-border" asp-for="modelProductCustomer.Zone" id="inp_zone" style="background-color :white; font-weight:bold; color:black;" readonly />
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label">@Localizer["Route"] :</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control no-border" asp-for="modelProductCustomer.Route" id="inp_Route" style="background-color :white; font-weight:bold; color:black;" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">@Localizer["Customer Requirement"] :</label>
+                            <div class="col-sm-3">
+                                <textarea class="form-control no-border" asp-for="modelProductCustomer.CustReq" id="inp_CustReq" style="resize: none;background-color :white; font-weight:bold; color:black;" rows="3" maxlength="160" placeholder="160 Digits"></textarea>
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label"> @Localizer["Material Comment"] :</label>
+                            <div class="col-md-3">
+                                <textarea class="form-control" asp-for="modelProductCustomer.MaterialComment" id="MaterialComment" style="resize: none;background-color :white; font-weight:bold; color:black;" rows="3" maxlength="160" placeholder="160 Digits"></textarea>
+                            </div>
+                        </div>
+
+                        @*Tassanai*@
+                        <input type="hidden" asp-for="modelProductCustomer.COA" id="COA" />
+                        <input type="hidden" asp-for="modelProductCustomer.Film" id="Film" />
+
+                        <input type="hidden" id="QaSpecArr" name="QaSpecArr" />
+                        @*@if (Model.modelProductCustomer.QualitySpecs != null)
+        {
+            <div id="divIsNotQualitySpecs" class="form-group row" hidden>
+                <div class="text-left col-md-12 control-label col-form-label"><font size="3">@Localizer["Quality Agent Specification"]</font></div>
+                <div class="container">
+                    <div id="divQaSpec" class="row">
+                        @{
+                            foreach (var item in Model.modelProductCustomer.QualitySpecs)
+                            {
+                                var optionList = Model.modelProductCustomer.QaItems.Where(q => q.TestName == @item.Name).Select(q => q.Unit).ToList();
+                                <div class="col-md-2">
+                                    <label class="float-right col-form-label">@item.Name : </label>
+                                </div>
+                                <div class="col-md-4 row">
+                                    <input class="form-control col-md-6 qaInput" type="number" id="inputQaSpec-@item.Name.Replace(" ","-")" value="@item.Value" />
+                                    <span>&nbsp;</span>
+                                    <select id="selectQaSpec-@item.Name" class="form-control col-md-5 qaSelect" style="min-width:80px;text-align-last:center">
+                                        @foreach (var option in optionList)
+                                        {
+                                            <option value="@option">@option</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div id="divIsNotQualitySpecs" class="form-group row" hidden>
+                <div class="text-left col-md-12 control-label col-form-label"><font size="3">@Localizer["Quality Agent Specification"]</font></div>
+                <div class="container">
+                    <div id="divQaSpec" class="row">
+                    </div>
+                </div>
+            </div>
+        }*@
+                        <div id="divIsNotQualitySpecs" class="form-group row">
+                            <div class="text-left col-md-12 control-label col-form-label"><font size="3">@Localizer["Quality Agent Specification"]</font></div>
+                            <div class="container">
+                                <div id="divQaSpec" class="row">
+                                </div>
+                            </div>
+                        </div>
+
+                        @* Tag Print So *@
+
+                        <div class="row">
+                            <input type="hidden" asp-for="modelProductCustomer.TagBundle" id="TagBundle" />
+                            <input type="hidden" asp-for="modelProductCustomer.NoTagBundle" id="NoTagBundle" />
+                            <input type="hidden" asp-for="modelProductCustomer.TagPallet" id="TagPallet" />
+                            <input type="hidden" asp-for="modelProductCustomer.HeadTagBundle" id="HeadTagBundle" />
+                            <input type="hidden" asp-for="modelProductCustomer.FootTagBundle" id="FootTagBundle" />
+                            <input type="hidden" asp-for="modelProductCustomer.HeadTagPallet" id="HeadTagPallet" />
+                            <input type="hidden" asp-for="modelProductCustomer.FootTagPallet" id="FootTagPallet" />
+
+                        <input type="hidden" asp-for="modelProductCustomer.Freetext1TagBundle" id="Freetext1TagBundle" />
+                        <input type="hidden" asp-for="modelProductCustomer.Freetext2TagBundle" id="Freetext2TagBundle" />
+                        <input type="hidden" asp-for="modelProductCustomer.Freetext3TagBundle" id="Freetext3TagBundle" />
+
+                        <input type="hidden" asp-for="modelProductCustomer.Freetext1TagPallet" id="Freetext1TagPallet" />
+                        <input type="hidden" asp-for="modelProductCustomer.Freetext2TagPallet" id="Freetext2TagPallet" />
+                        <input type="hidden" asp-for="modelProductCustomer.Freetext3TagPallet" id="Freetext3TagPallet" />
+
+                            @*<div class="col-md-12">@Localizer["Tag Print SO"]</div>*@
+                            <div class="col-md-6">
+
+                                <div class="card earning-widget">
+                                    <div class="card-header">
+                                        <div class="card-actions">
+                                            <a class="" data-action="collapse"><i class="ti-plus"></i></a>
+                                        </div>
+                                        <h4 class="card-title m-b-0"> @Localizer["Config Tag bundle"]</h4>
+                                    </div>
+                                    <div class="card-body b-t collapse">
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                                @*@Model.modelProductCustomer.NoTagBundle*@
+                                                <input class="form-check-input" type="radio" name="tag-edit" id="9tag-edit" value="9tag">
+                                                <label class="form-check-label" for="9tag-edit">@Localizer["9tag"]</label>
+
+                                                <input class="form-check-input" type="radio" name="tag-edit" id="6tag-edit" value="6tag">
+                                                <label class="form-check-label" for="6tag-edit">@Localizer["6tag"]</label>
+
+                                                <input class="form-check-input" type="radio" name="tag-edit" id="4tag-edit" value="4tag">
+                                                <label class="form-check-label" for="4tag-edit">@Localizer["4tag"]</label>
+
+                                                &nbsp; &nbsp; &nbsp;<input type="button" value="Reset NoTag" onclick="setTagNull();" class="btn btn-warning" />
+                                                <div class="card-body">
+
+                                                    <div id="Divtagbundle-customer-edit" class="row"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary">@Localizer["Tagbundle"]</button>*@
+                                @*<div class="col-md-12"><h4>@Localizer["Tagbundle"]</h4></div>
+                <div class="row">
+                </div>*@
+                            </div>
+
+                            <div class="col-md-6" style="padding:0;">
+                                @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary">@Localizer["Tagpallet"]</button>*@
+
+                                <div class="col-md-12">
+                                    @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary" onclick="openTagPallet();">@Localizer["Tagpallet"]</button>*@
+
+                                    <div class="card earning-widget" style="background-color:antiquewhite">
+                                        <div class="card-header" style="background-color:antiquewhite">
+                                            <div class="card-actions">
+                                                <a class="" data-action="collapse"><i class="ti-plus"></i></a>
+                                            </div>
+                                            <h4 class="card-title m-b-0"> @Localizer["Config Tag pallet"]</h4>
+                                        </div>
+                                        <div class="card-body b-t collapse">
+                                            <div class="row">
+                                                <div class="col-md-12">
+
+                                                    <br />
+
+                                                    <div class="card-body">
+
+                                                        <div id="Divtagpallet-customer-edit" class="row"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="col-md-12"><h4>@Localizer["Tagpallet"]</h4></div>
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <br />
+
+                        <div class="card-body">
+
+                            <div id="Divtagpallet-customer-edit" class="row"></div>
+                        </div>
+                    </div>
+                </div>*@
+                            </div>
+                        </div>
+                    </div>
+
+                    <section class="card-footer bg-transparent">
+                        <div class="row justify-content-end">
+                            <div class="form-group">
+
+                                <button type="button" id="btn-customer-submit" class="btn btn-info btn-fixsize" onclick="return ValidateSubmit()">@Localizer["Next"]  <i class="fa fa-arrow-circle-right"></i><span class="small text-danger "><i class="fa fa-"></i></span></button>
+                                <button class="btn btn-info btn-fixsize" type="button" id="btnNextLoad" disabled>
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Loading...
+                                </button>
+                                <label class="col-sm-1"></label>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Page script -->
+@section Scripts {
+    <script>
+
+        LoadingButton(false);
+
+        const CustomerList = @Html.Raw(Json.Serialize(@Model.modelProductCustomer.CustomerList));
+        const CustShipToList = @Html.Raw(Json.Serialize(@Model.modelProductCustomer.CustShipToList));
+        const ProductGroupList = @Html.Raw(Json.Serialize(@Model.modelProductCustomer.ProductGroupList));
+        const QaItemList = @Html.Raw(Json.Serialize(@Model.modelProductCustomer.QaItems));
+        const QualitySpecList = @Html.Raw(Json.Serialize(@Model.modelProductCustomer.QualitySpecs));
+
+        const BundleInput = $('#TagBundle').val();
+        const PalletInput = $('#TagPallet').val();
+        const HeadTagBundle = $('#HeadTagBundle').val();
+        const FootTagBundle = $('#FootTagBundle').val();
+        const HeadTagPallet = $('#HeadTagPallet').val();
+        const FootTagPallet = $('#FootTagPallet').val();
+        const actionTran = '@Model.EventFlag';
+        debugger;
+        const Freetext1TagBundle = $('#Freetext1TagBundle').val();
+        const Freetext2TagBundle = $('#Freetext2TagBundle').val();
+        const Freetext3TagBundle = $('#Freetext3TagBundle').val();
+
+        const Freetext1TagPallet = $('#Freetext1TagPallet').val();
+        const Freetext2TagPallet = $('#Freetext2TagPallet').val();
+        const Freetext3TagPallet = $('#Freetext3TagPallet').val();
+
+       //
+        var QaSpecInputIdArr = [];
+       // console.log(TagPrintItemsBundle);
+
+        var ProductGroupAutoCompleteData = $.map(ProductGroupList, function (item) {
+            return {
+                label: item.Description,
+                value: item.Code
+            }
+        });
+
+        const TagPrintItemsBundle = @Html.Raw(Json.Serialize(@Model.modelProductCustomer.TagPrintSO));
+
+       //
+
+        if ($('#NoTagBundle').val() == "9tag") {
+            $('#9tag-edit').attr('checked', true)
+        } else if ($('#NoTagBundle').val() == "6tag") {
+            $('#6tag-edit').attr('checked', true)
+
+        } else if ($('#NoTagBundle').val() ==  "4tag") {
+            $('#4tag-edit').attr('checked', true)
+
+        } else {
+            $('#9tag-edit').attr('checked', false)
+            $('#6tag-edit').attr('checked', false)
+            $('#4tag-edit').attr('checked', false)
+        }
+
+        $("#IndDes").autocomplete({
+            minLength: 1,
+            source: ProductGroupAutoCompleteData,
+            select: function (event, ui) {
+                event.preventDefault();
+                $("#IndDes").val(ui.item.label);
+                for (var i = 0; i < ProductGroupList.length; i++) {
+                    if (ProductGroupList[i].Code == ui.item.value) {
+                        $('#IndDes').val(ProductGroupList[i].Description);
+                    }
+                }
+            }
+        });
+        var CustomerAutoCompleteData = $.map(CustomerList, function (item) {
+            return {
+                label: item.CustCode != null ? item.CusId + " " + item.CustCode.trim() + " " + item.CustName.trim() : item.CusId + " " + item.CustCode + " " +item.CustName.trim(),
+                value: item.Id,
+                custCode: item.CustCode,
+            }
+        });
+
+        AppendTagbundleCheckBox($('#TagBundle').val().split('$'), HeadTagBundle, FootTagBundle,Freetext1TagBundle,Freetext2TagBundle,Freetext3TagBundle);
+
+        AppendTagpalletCheckBox($('#TagPallet').val().split('$'), HeadTagPallet, FootTagPallet,Freetext1TagPallet,Freetext2TagPallet,Freetext3TagPallet);
+
+        if ($('#inp_Customername').val() != "" && actionTran == "Presale") {
+            let noTagBundle = '@Model.modelProductCustomer.NoTagBundle';
+            let tagPallet = '@Model.modelProductCustomer.TagPallet';
+            let headTagBundle = '@Model.modelProductCustomer.HeadTagBundle';
+            let footTagBundle = '@Model.modelProductCustomer.FootTagBundle';
+            let headTagPallet = '@Model.modelProductCustomer.HeadTagPallet';
+            let footTagPallet = '@Model.modelProductCustomer.FootTagPallet';
+            debugger;
+            let freetext1TagBundle = '@Model.modelProductCustomer.Freetext1TagBundle';
+            let freetext2TagBundle = '@Model.modelProductCustomer.Freetext2TagBundle';
+            let freetext3TagBundle = '@Model.modelProductCustomer.Freetext3TagBundle';
+
+            let freetext1TagPallet = '@Model.modelProductCustomer.Freetext1TagPallet';
+            let freetext2TagPallet = '@Model.modelProductCustomer.Freetext2TagPallet';
+            let freetext3TagPallet = '@Model.modelProductCustomer.Freetext3TagPallet';
+
+            if (noTagBundle != "" || tagPallet != "" || tagPallet != "" || headTagBundle != "" || footTagBundle != "" || headTagPallet != "" || footTagPallet != "") {
+                $(".collapse").collapse('show');
+            }
+        }
+
+        $(function () {
+            QaSpecInputIdArr = [];
+
+            if ($('#inp_Customername').val() != "") {
+                $('#coll').show();
+                $('#inp_Customername').val();
+                $('#inp_Customer').val();
+                $('#IndDes').val();
+
+            }
+
+            if (actionTran === "Edit"|| ('@Model.MaterialNo' != "" && actionTran != "CreateOs" && actionTran != "CreateTrading")) {
+                //$('.qaInput').attr("readonly","");
+                //$('.qaSelect').attr("disabled","");
+                //$('#inp_Customername').prop('disabled', true);
+                //$('#inp_Customer').prop('disabled', true);
+                //$('#inp_soldto').prop('disabled', true);
+                //$('#txt_ship_to').prop('disabled', true);
+                //$('#inp_Delivery').prop('disabled', true);
+                //$('#IndDes').prop('disabled', true);
+                //$('#inp_zone').prop('disabled', true);
+                //$('#inp_Route').prop('disabled', true);
+                //$('#inpWire').prop('disabled', true);
+                //$('#inp_CustReq').prop('disabled', true);
+                //$('#MaterialComment').prop('disabled', true);
+
+                $('#inp_CustReq').show();
+                $('#MaterialComment').show();
+            }
+
+            if ('@Model.modelProductCustomer.QualitySpecs.Count' > 0 )
+            {
+                $("#divIsNotQualitySpecs").removeAttr("hidden");
+                var qaspec = CustomerList.filter(c => { return c.CustName == $('#inp_Customername').val() })
+                var QaSpeclist = qaspec[0].QASpec.split(',');
+
+                $.each(QaSpeclist, function (key, object) {
+                    var id = object.replace(' ', '-');
+                    var unitArr = [];
+                    //append input div
+                    $("#divQaSpec").append("<div class=\"col-md-2\"> <label class=\"float-right col-form-label\">" + object + " : </label></div><div class=\"col-md-4 row\"> <input class=\"form-control col-md-6 qaInput\" type=\"number\" id=\"inputQaSpec-" + id + "\" /><span>&nbsp;</span> <select id=\"selectQaSpec-" + id + "\" class=\"form-control col-md-5 qaSelect\" style=\"min-width:80px;text-align-last:center\"></select></div> ");
+
+                    $.each(QaItemList, function (qKey, qObject) {
+                        if (qObject.TestName == object) {
+                            //append option unit div
+                            unitArr.push(qObject.Unit);
+                        }
+                    });
+
+                    $.each(unitArr, function (uKey, value) {
+                        $("#selectQaSpec-" + id).append($("<option></option>").attr("value", value).text(value));
+                    });
+                    QaSpecInputIdArr.push({ "Name": object, "InputId": "inputQaSpec-" + id, "SelectId": "selectQaSpec-" + id });
+                });
+
+                $.each(QualitySpecList, function (qsKey, qsObject) {
+                    var nameOfElement = qsObject.Name.replace(' ', '-');
+                    $("#inputQaSpec-" + nameOfElement).val(qsObject.Value);
+                    $("#selectQaSpec-" + nameOfElement).val(qsObject.Unit);
+                });
+
+            }
+        });
+
+        $("#inpWire").autocomplete({
+
+            minLength: 1,
+            source: CustomerAutoCompleteData,
+            select: function (event, ui) {
+                event.preventDefault();
+                $("#inpWire").val(ui.item.label);
+                $("#divQaSpec").html("")
+                QaSpecInputIdArr = [];
+                for (var i = 0; i < CustomerList.length; i++) {
+                    if (CustomerList[i].Id == ui.item.value) {
+                        $('#inp_Customername').val(CustomerList[i].CustName);
+                        $('#inp_Cust_ID').val(CustomerList[i].CusId);
+                        $('#inp_Customer').val(CustomerList[i].CustCode);
+                        $('#inp_soldto').val(CustomerList[i].SoldToCode);
+                        var indDes = ProductGroupList.filter(p=> {return p.Code == CustomerList[i].IndGrp});
+                        if(indDes != "")
+                        {
+                            $('#IndDes').val(indDes[0].Description);
+                        }else
+                        {
+                            $('#IndDes').val("");
+                        }
+
+                        $('#inp_zone').val(CustomerList[i].Zone);
+                        $('#inp_Route').val(CustomerList[i].Route);
+                        $('#inp_CustReq').val(CustomerList[i].CustReq);
+                        $('#inp_Delivery').val(CustomerList[i].CustDeliveryTime);
+                        $('#IndPalletOverhang').val(CustomerList[i].PalletOverhang);
+                        $('#modelProductCustomer_PriorityFlag').val(CustomerList[i].PriorityFlag);
+                      //
+
+                        $('#TagBundle').val(CustomerList[i].TagBundle)
+                        $('#TagPallet').val(CustomerList[i].TagPallet)
+                        $('#HeadTagBundle').val(CustomerList[i].HeadTagBundle);
+                        $('#FootTagBundle').val(CustomerList[i].FootTagBundle);
+                        $('#HeadTagPallet').val(CustomerList[i].HeadTagPallet);
+                        $('#FootTagPallet').val(CustomerList[i].FootTagPallet);
+
+                        $('#Freetext1TagBundle').val(CustomerList[i].Freetext1TagBundle);
+                        $('#Freetext2TagBundle').val(CustomerList[i].Freetext2TagBundle);
+                        $('#Freetext3TagBundle').val(CustomerList[i].Freetext3TagBundle);
+
+                        $('#Freetext1TagPallet').val(CustomerList[i].Freetext1TagPallet);
+                        $('#Freetext2TagPallet').val(CustomerList[i].Freetext2TagPallet);
+                        $('#Freetext3TagPallet').val(CustomerList[i].Freetext3TagPallet);
+
+                            $('#NoTagBundle').val(CustomerList[i].NoTagBundle)
+
+                            if (CustomerList[i].NoTagBundle == "9tag") {
+                                $('#9tag-edit').attr('checked', true)
+                                $('#6tag-edit').attr('checked', false)
+                                $('#4tag-edit').attr('checked', false)
+                            } else if (CustomerList[i].NoTagBundle == "6tag") {
+                                $('#6tag-edit').attr('checked', true)
+                                $('#9tag-edit').attr('checked', false)
+                                $('#4tag-edit').attr('checked', false)
+
+                            } else if (CustomerList[i].NoTagBundle == "4tag") {
+                                $('#4tag-edit').attr('checked', true)
+                                $('#9tag-edit').attr('checked', false)
+                                $('#6tag-edit').attr('checked', false)
+
+                            } else {
+                                $('#9tag-edit').attr('checked', false)
+                                $('#6tag-edit').attr('checked', false)
+                                $('#4tag-edit').attr('checked', false)
+                                }
+
+                        $('#COA').val(CustomerList[i].COA)
+                        $('#Film').val(CustomerList[i].Film)
+
+                        //alert(CustomerList[i].COA);
+                        console.log(CustomerList[i].TagBundle);
+
+                        var custShipToList = [];
+
+                        for (var j = 0; j < CustShipToList.length; j++) {
+                            if (CustShipToList[j].CustCode === CustomerList[i].CustCode) {
+                                custShipToList.push(CustShipToList[j].ShipTo);
+                            }
+                        }
+
+                        $("#txt_ship_to").val(custShipToList.toString().replace(",", "\n"));
+
+                        if (CustomerList[i].QASpec != null && '@Model.modelProductCustomer.QaItems' != null) {
+                            $("#divIsNotQualitySpecs").removeAttr("hidden");
+                            var QaSpeclist = CustomerList[i].QASpec.split(',');
+
+                            $.each(QaSpeclist, function (key, object) {
+                                var id = object.replace(' ', '-');
+                                var unitArr = [];
+                                //append input div
+                                $("#divQaSpec").append("<div class=\"col-md-2\"> <label class=\"float-right col-form-label\">" + object + " : </label></div><div class=\"col-md-4 row\"> <input class=\"form-control col-md-6 qaInput\" type=\"number\" id=\"inputQaSpec-" + id + "\" /><span>&nbsp;</span> <select id=\"selectQaSpec-" + id +"\" class=\"form-control col-md-5 qaSelect\" style=\"min-width:80px;text-align-last:center\"></select></div> ");
+
+                                $.each(QaItemList, function (qKey, qObject) {
+                                    if (qObject.TestName == object) {
+                                        //append option unit div
+                                        unitArr.push(qObject.Unit);
+                                    }
+                                });
+
+                                $.each(unitArr, function (uKey, value) {
+                                    $("#selectQaSpec-" + id).append($("<option></option>").attr("value", value).text(value));
+                                });
+
+                                QaSpecInputIdArr.push({ "Name": object, "InputId": "inputQaSpec-" + id, "SelectId": "selectQaSpec-" + id});
+                            });
+                        }
+                        else
+                        {
+                            $("#divIsNotQualitySpecs").attr("hidden","");
+                        }
+
+                        // tassanI Tag print so
+
+                        AppendTagbundleCheckBox($('#TagBundle').val().split('$'), $('#HeadTagBundle').val(), $('#FootTagBundle').val(), $('#Freetext1TagBundle').val(), $('#Freetext2TagBundle').val(), $('#Freetext3TagBundle').val());
+                        AppendTagpalletCheckBox($('#TagPallet').val().split('$'), $('#HeadTagPallet').val(), $('#FootTagPallet').val(), $('#Freetext1TagPallet').val(), $('#Freetext2TagPallet').val(), $('#Freetext3TagPallet').val());
+                        $(".collapse").collapse('show');
+                        $('#coll').show();
+                        break;
+                    }
+                }
+
+                let custCodeTrim = ui.item.custCode == null ? ui.item.custCode : ui.item.custCode.trim();
+                if (custCodeTrim == null || custCodeTrim == "") {
+                    $("#btn-customer-submit").attr("disabled",true);
+                    swal({
+                        title: "Customer haven't customer code?",
+                        text: "Click 'Ok' and go to maintain customer \"" + ui.item.label + "\"",
+                        icon: "warning",
+                        buttons: {
+                            //CopyX: {
+                            //    text: "CopyX",
+                            //    value: "CopyX",
+                            //},
+                            Ok: true,
+                            cancel: "Cancel",
+                        },
+                    })
+                        .then((value) => {
+                            switch (value) {
+                                //case "CopyX":
+                                //    alert("Copyx");
+                                //    break;
+
+                                case "Ok":
+                                    window.location.href = '@Url.Action("Index","MaintenanceCustomer")';
+                                    break;
+
+                                default: break;
+                            }
+                        });
+                }
+                else
+                {
+                    $("#btn-customer-submit").removeAttr("disabled");
+                }
+            }
+        });
+
+        function ValidateSubmit()
+        {
+
+            debugger;
+           // modelProductCustomer.TagBundle
+            LoadingButton(true);
+            var NoTagBundle = "";
+            var NumberOfTag = 0
+            if ($('#9tag-edit').prop("checked") == true) {
+                NoTagBundle = "9tag";
+                NumberOfTag = 9;
+            }
+            if ($('#6tag-edit').prop("checked") == true) {
+                NoTagBundle = "6tag";
+                NumberOfTag = 6;
+            }
+            if ($('#4tag-edit').prop("checked") == true) {
+                NoTagBundle = "4tag";
+                NumberOfTag = 4;
+            }
+
+            //alert(NoTagBundle)
+            $('#NoTagBundle').val(NoTagBundle);
+
+            var TagBundle = "";
+            var TagBundleUom = "";
+            var i2 = 0;
+
+            var tagheadEditNo = $("#tagheadEditNo").val();
+            var tagfootEditNo = $("#tagfootEditNo").val();
+            var Adjust1Edit = "";
+            var Adjust2Edit = "";
+              if ($("#tagheadEditNo").length > 0 && tagheadEditNo != 0) {
+                Adjust1Edit = $("#tagheadEditNo").val() + ":" + $("#tagheadEditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            if ($("#tagfootEditNo").length > 0 && tagfootEditNo != 0) {
+                Adjust2Edit = $("#tagfootEditNo").val() + ":" + $("#tagfootEditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            //Freetext
+
+            var tagfree1EditNo = $("#tagfree1EditNo").val();
+            var tagfree2EditNo = $("#tagfree2EditNo").val();
+            var tagfree3EditNo = $("#tagfree3EditNo").val();
+            var Adjusttagfree1Edit = "";
+            var Adjusttagfree2Edit = "";
+            var Adjusttagfree3Edit = "";
+
+            if ($("#tagfree1EditNo").length > 0 && tagfree1EditNo != 0) {
+                Adjusttagfree1Edit = $("#tagfree1EditNo").val() + ":" + $("#tagfree1EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            if ($("#tagfree2EditNo").length > 0 && tagfree2EditNo != 0) {
+                Adjusttagfree2Edit = $("#tagfree2EditNo").val() + ":" + $("#tagfree2EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            if ($("#tagfree3EditNo").length > 0 && tagfree3EditNo != 0) {
+                Adjusttagfree3Edit = $("#tagfree3EditNo").val() + ":" + $("#tagfree3EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            $.each(TagPrintItemsBundle, function (key, Object) {
+
+                let textboxNo = $("#textboxNo-" + Object).val();
+                //var a = textboxNo.val();
+                //console.log(a);
+                if (textboxNo > 0 && textboxNo.length > 0) {
+                    textboxNo = $("#textboxNo-" + Object).val();
+                    TagBundleUom = $("#textboxUom-" + Object).val();
+                    //TagBundle = TagBundle + Object + ",";
+                    TagBundle = TagBundle + textboxNo + ":" + Object + ":" + TagBundleUom + "$";
+                    i2++;
+                }
+
+            });
+
+            if (i2 > 9) {
+                //   alert('123');
+                swal("Exceed the limit (" + NumberOfTag + " Tag/Page)", { icon: "warning", });
+                LoadingButton(false);
+                return false;
+            }
+
+            TagBundle = Adjust1Edit + TagBundle + Adjust2Edit + Adjusttagfree1Edit + Adjusttagfree2Edit + Adjusttagfree3Edit;
+            TagBundle = TagBundle.substring(0, TagBundle.length - 1);
+            $("#TagBundle").val(TagBundle);
+            console.log("TagBundle:" + TagBundle);
+
+            var TagPallet = "";
+            var TagPalletUom = "";
+            var i3 = 0;
+            var tagheadPalletEditNo = $("#tagheadPalletEditNo").val();
+            var tagfootPalletEditNo = $("#tagfootPalletEditNo").val();
+            var Adjust1PalletEdit = "";
+            var Adjust2PalletEdit = "";
+
+            if ($("#tagheadPalletEditNo").length > 0 && tagheadPalletEditNo != 0) {
+                Adjust1PalletEdit = $("#tagheadPalletEditNo").val() + ":" + $("#tagheadPalletEditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            if ($("#tagfootPalletEditNo").length > 0 && tagfootPalletEditNo != 0) {
+                Adjust2PalletEdit = $("#tagfootPalletEditNo").val() + ":" + $("#tagfootPalletEditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            //Freetext
+            debugger;
+            var tagfreePallet1EditNo = $("#tagfreePallet1EditNo").val();
+            var tagfreePallet2EditNo = $("#tagfreePallet2EditNo").val();
+            var tagfreePallet3EditNo = $("#tagfreePallet3EditNo").val();
+            var AdjusttagfreePallet1Edit = "";
+            var AdjusttagfreePallet2Edit = "";
+            var AdjusttagfreePallet3Edit = "";
+
+            if ($("#tagfreePallet1EditNo").length > 0 && tagfreePallet1EditNo != 0) {
+                AdjusttagfreePallet1Edit = $("#tagfreePallet1EditNo").val() + ":" + $("#tagfreePallet1EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+              if ($("#tagfreePallet2EditNo").length > 0 && tagfreePallet2EditNo != 0) {
+                AdjusttagfreePallet2Edit = $("#tagfreePallet2EditNo").val() + ":" + $("#tagfreePallet2EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }  if ($("#tagfreePallet3EditNo").length > 0 && tagfreePallet3EditNo != 0) {
+                AdjusttagfreePallet3Edit = $("#tagfreePallet3EditNo").val() + ":" + $("#tagfreePallet3EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            $.each(TagPrintItemsBundle, function (key, pObject) {
+
+                //   let textboxNo = "#checkbox-pallet-" + pObject.replace(' ', '-');
+                let textboxNo = $("#textboxNo-pallet-" + pObject).val();
+
+                // if ($(chkboxId).prop("checked") == true) {
+                if (textboxNo > 0 && textboxNo.length > 0) {
+                    textboxNo = $("#textboxNo-pallet-" + pObject).val();
+                    TagPalletUom = $("#textboxUom-pallet-" + pObject).val();
+
+                    TagPallet = TagPallet + textboxNo + ":" + pObject + ":" + TagPalletUom + "$";
+                    i3++;
+                }
+
+            });
+            if (i3 > 9) {
+                //   alert('123');
+                swal("Exceed the limit (9 Tag/Page)", { icon: "warning", });
+                LoadingButton(false);
+                return false;
+            }
+
+            TagPallet = Adjust1PalletEdit + TagPallet + Adjust2PalletEdit + AdjusttagfreePallet1Edit + AdjusttagfreePallet2Edit + AdjusttagfreePallet3Edit;
+
+            TagPallet = TagPallet.substring(0, TagPallet.length - 1);
+            $("#TagPallet").val(TagPallet);
+
+            if (Adjust1Edit.length > 0) {
+                Adjust1Edit = Adjust1Edit.substring(0, Adjust1Edit.length - 1);
+            }
+
+            if (Adjust2Edit.length > 0) {
+                Adjust2Edit = Adjust2Edit.substring(0, Adjust2Edit.length - 1);
+            }
+
+            if (Adjust1PalletEdit.length > 0) {
+                Adjust1PalletEdit = Adjust1PalletEdit.substring(0, Adjust1PalletEdit.length - 1);
+            }
+            if (Adjust2PalletEdit.length > 0) {
+                Adjust2PalletEdit = Adjust2PalletEdit.substring(0, Adjust2PalletEdit.length - 1);
+            }
+            debugger;
+            var TagHeadBundle = Adjust1Edit;
+            var TagFootBundle = Adjust2Edit;
+            var TagHeadPallet = Adjust1PalletEdit;
+            var TagFootPallet = Adjust2PalletEdit;
+
+            $("#HeadTagBundle").val(TagHeadBundle);
+            $("#FootTagBundle").val(TagFootBundle);
+            $("#HeadTagPallet").val(TagHeadPallet);
+            $("#FootTagPallet").val(TagFootPallet);
+
+            if (Adjusttagfree1Edit.length > 0) {
+                Adjusttagfree1Edit = Adjusttagfree1Edit.substring(0, Adjusttagfree1Edit.length - 1);
+            }
+            if (Adjusttagfree2Edit.length > 0) {
+                Adjusttagfree2Edit = Adjusttagfree2Edit.substring(0, Adjusttagfree2Edit.length - 1);
+            }
+            if (Adjusttagfree3Edit.length > 0) {
+                Adjusttagfree3Edit = Adjusttagfree3Edit.substring(0, Adjusttagfree3Edit.length - 1);
+            }
+
+            $("#Freetext1TagBundle").val(Adjusttagfree1Edit);
+            $("#Freetext2TagBundle").val(Adjusttagfree2Edit);
+            $("#Freetext3TagBundle").val(Adjusttagfree3Edit);
+
+          if (AdjusttagfreePallet1Edit.length > 0) {
+                AdjusttagfreePallet1Edit = AdjusttagfreePallet1Edit.substring(0, AdjusttagfreePallet1Edit.length - 1);
+            }
+            if (AdjusttagfreePallet2Edit.length > 0) {
+                AdjusttagfreePallet2Edit = AdjusttagfreePallet2Edit.substring(0, AdjusttagfreePallet2Edit.length - 1);
+            }
+            if (AdjusttagfreePallet3Edit.length > 0) {
+                AdjusttagfreePallet3Edit = AdjusttagfreePallet3Edit.substring(0, AdjusttagfreePallet3Edit.length - 1);
+            }
+            $("#Freetext1TagPallet").val(AdjusttagfreePallet1Edit);
+            $("#Freetext2TagPallet").val(AdjusttagfreePallet2Edit);
+            $("#Freetext3TagPallet").val(AdjusttagfreePallet3Edit);
+
+            var eventFlag = '@Model.EventFlag';
+            let productGroup = $('#IndDes').val();
+
+            if (productGroup == null || productGroup == "") {
+                LoadingButton(false);
+                $('#productGroupReq').removeAttr('hidden');
+            }
+            else {
+
+            $('#productGroupReq').attr('hidden', true);
+                var TempQaSpecArr = [];
+                $.each(QaSpecInputIdArr, function (qiKey, qiObject) {
+                    TempQaSpecArr.push({ "Name": qiObject.Name, "Value": Math.round($("#" + qiObject.InputId).val() * 100) / 100, "Unit": $("#" + qiObject.SelectId).val() });
+                });
+
+                $("#QaSpecArr").val(JSON.stringify(TempQaSpecArr));
+
+                //submit form
+                $("#fromCustomer").submit();
+            }
+        }
+
+        var OnSaveSuccess = function (res)
+        {
+            if (typeof res.isSuccess === 'undefined') {
+                window.location.href = '@Url.Action("Index", "Login")';
+            }
+            else {
+                if (res.isSuccess) {
+                    window.location = "ProductInfo";
+                }
+                else {
+                    swal("Save Failed", res.exceptionMessage, "warning");
+                    //modalDialog(error, SaveFailed);
+                }
+            }
+
+        };
+
+        // render to html
+        function AppendTagbundleCheckBox(arrayofTagBundle, headTagBundle, footTagBundle, freetext1TagBundle, freetext2TagBundle, freetext3TagBundle) {
+            debugger;
+            var container1 = $('#Divtagbundle-customer-edit');
+
+            container1.html("");
+
+            //var TagSoItemBundle = parseInt(TagPrintItemsBundle);
+            var i = 0;
+            $('<label />', { text: 'No.', 'class': 'text-left col-2 font-weight-bold' }).appendTo(container1);
+
+            $('<label />', { text: 'Column.', 'class': 'text-left col-6 font-weight-bold' }).appendTo(container1);
+            $('<label />', { text: 'UOM.', 'class': 'text-left col-4 font-weight-bold' }).appendTo(container1);
+
+            var taghead = headTagBundle;
+
+            let objtagheadvalue = taghead.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagheadEditNo',
+                value: objtagheadvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagheadEditColumn',
+                value: objtagheadvalue[1]
+            }).appendTo(container1);
+            $.each(TagPrintItemsBundle, function (key, bundle_obj) {
+
+                var existTagBundle = arrayofTagBundle.filter(q => { return q.substring(q.indexOf(":") + 1, q.lastIndexOf(":")) == bundle_obj });
+                let textboxNoId = "textboxNo-" + bundle_obj;
+
+                let textboxUomId = "textboxUom-" + bundle_obj;
+
+                if (existTagBundle.length > 0) {
+                    let tagsplit = existTagBundle[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: objvalue[0]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: ""
+                    }).appendTo(container1);
+                }
+                //$('<label />', { 'for': checkboxId, text: bundle_obj, 'class': 'mycheckbox-label text-left col-6', 'style': 'min-width:100px' }).appendTo(container1);
+                $('<label />', { 'for': textboxNoId, text: bundle_obj, 'class': 'mycheckbox-label text-left col-6', 'style': 'min-width:100px' }).appendTo(container1);
+
+                if (existTagBundle.length > 0) {
+                    let tagsplit = existTagBundle[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'textbox', 'class': 'form-control col-4', id: textboxUomId,
+                        value: objvalue[2]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', { type: 'textbox', 'class': 'form-control col-4', id: textboxUomId, value: "" }).appendTo(container1);
+                }
+
+                i++;
+            });
+
+        debugger;
+
+            var tagfoot = footTagBundle;
+
+            let objtagfootvalue = tagfoot.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfootEditNo',
+                value: objtagfootvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfootEditColumn',
+                value: objtagfootvalue[1]
+            }).appendTo(container1);
+            ;
+            var freetext1tagbundle = freetext1TagBundle;
+
+            let objtagfree1value = freetext1tagbundle.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfree1EditNo',
+                value: objtagfree1value[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfree1EditColumn',
+                value: objtagfree1value[1]
+            }).appendTo(container1);
+
+            var freetext2tagbundle =freetext2TagBundle;
+
+            let objtagfree2value = freetext2tagbundle.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfree2EditNo',
+                value: objtagfree2value[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfree2EditColumn',
+                value: objtagfree2value[1]
+            }).appendTo(container1);
+
+            var freetext3tagbundle =freetext3TagBundle;
+
+            let objtagfree3value = freetext3tagbundle.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfree3EditNo',
+                value: objtagfree3value[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfree3EditColumn',
+                value: objtagfree3value[1]
+            }).appendTo(container1);
+
+        }
+
+        function AppendTagpalletCheckBox(arrayofTagPallet, headTagPallet, footTagPallet, freetext1TagPallet, freetext2TagPallet, freetext3TagPallet) {
+
+            var container1 = $('#Divtagpallet-customer-edit');
+            //
+            container1.html("");
+
+            //var TagSoItemBundle = parseInt(TagPrintItemsBundle);
+            var i = 0;
+
+            $('<label />', { text: 'No.', 'class': 'text-left col-2 font-weight-bold' }).appendTo(container1);
+
+            $('<label />', { text: 'Column.', 'class': 'text-left col-6 font-weight-bold' }).appendTo(container1);
+            $('<label />', { text: 'UOM.', 'class': 'text-left col-4 font-weight-bold' }).appendTo(container1);
+
+            var tagheadPallet = headTagPallet;
+
+            let objtagheadPalletvalue = tagheadPallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagheadPalletEditNo',
+                value: objtagheadPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagheadPalletEditColumn',
+                value: objtagheadPalletvalue[1]
+            }).appendTo(container1);
+
+            $.each(TagPrintItemsBundle, function (key, pallet_obj) {
+
+                var existTagPallet = arrayofTagPallet.filter(q => { return q.substring(q.indexOf(":") + 1, q.lastIndexOf(":")) == pallet_obj });
+
+                let textboxNoId = "textboxNo-pallet-" + pallet_obj.replace(' ', '-');
+
+                let textboxUomId = "textboxUom-pallet-" + pallet_obj.replace(' ', '-');
+
+                if (existTagPallet.length > 0) {
+                    let tagsplit = existTagPallet[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: objvalue[0]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: ""
+                    }).appendTo(container1);
+                }
+                $('<label />', { 'for': textboxNoId, text: pallet_obj, 'class': 'mycheckbox-label text-left col-6', 'style': 'min-width:100px' }).appendTo(container1);
+                if (existTagPallet.length > 0) {
+                    let tagsplit = existTagPallet[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'textbox', 'class': 'form-control col-4', id: textboxUomId,
+                        value: objvalue[2]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', { type: 'textbox', 'class': 'form-control col-4', id: textboxUomId, value: "" }).appendTo(container1);
+                }
+
+                i++;
+            });
+
+            var tagfootPallet = footTagPallet;
+
+            let objtagfootPalletvalue = tagfootPallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfootPalletEditNo',
+                value: objtagfootPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfootPalletEditColumn',
+                value: objtagfootPalletvalue[1]
+            }).appendTo(container1);
+
+           // var freetext1tagpallet ="";
+
+            var freetext1tagpallet  =freetext1TagPallet;
+
+            let objfreetext1tagPalletvalue = freetext1tagpallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfreePallet1EditNo',
+                value: objfreetext1tagPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfreePallet1EditColumn',
+                value: objfreetext1tagPalletvalue[1]
+            }).appendTo(container1);
+
+            var freetext2tagpallet  =freetext2TagPallet;
+
+            let objfreetext2tagPalletvalue = freetext2tagpallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfreePallet2EditNo',
+                value: objfreetext2tagPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfreePallet2EditColumn',
+                value: objfreetext2tagPalletvalue[1]
+            }).appendTo(container1);
+
+            var freetext3tagpallet  =freetext3TagPallet;
+
+            let objfreetext3tagPalletvalue = freetext3tagpallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfreePallet3EditNo',
+                value: objfreetext3tagPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfreePallet3EditColumn',
+                value: objfreetext3tagPalletvalue[1]
+            }).appendTo(container1);
+
+        }
+
+        function setTagNull() {
+
+            $('input[name="tag-edit"]').prop('checked', false);
+        }
+
+        function LoadingButton(value) {
+            if (value) {
+                $('#btn-customer-submit').hide();
+                $('#btnNextLoad').show();
+            } else {
+                $('#btnNextLoad').hide();
+                $('#btn-customer-submit').show();
+            }
+        }
+    </script>
+}

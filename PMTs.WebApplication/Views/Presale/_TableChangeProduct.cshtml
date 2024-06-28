@@ -1,0 +1,82 @@
+﻿@model PMTs.DataAccess.ModelView.PresaleChangeViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    int No = 1;
+    string[] imgExt = { "jpg", "bmp", "gif", "png" };
+    string pdfExt = "pdf";
+}
+
+<table class="table table-bordered color-table dataTable no-footer" cellspacing="0" id="changeProductTable">
+    <thead>
+        <tr class="color-table text-center">
+            <th scope="col" width="160px">@Localizer["Optional"]</th>
+            <th scope="col" width="70px">@Localizer["File"]</th>
+            <th scope="col" width="150px">@Localizer["FactoryCode"]</th>
+            <th scope="col" width="150px">@Localizer["PSM ID"]</th>
+            <th scope="col" width="150px">@Localizer["Material No"]</th>
+            <th scope="col" width="150px">@Localizer["Sale Text1"]</th>
+            <th scope="col" width="150px">@Localizer["Sale Text2"]</th>
+            <th scope="col" width="150px">@Localizer["Sale Text3"]</th>
+            <th scope="col" width="150px">@Localizer["Sale Text4"]</th>
+            <th scope="col" width="150px">@Localizer["Piece Set"]</th>
+            <th scope="col" width="150px">@Localizer["Print Method"]</th>
+            <th scope="col" width="150px">@Localizer["High Group"]</th>
+            <th scope="col" width="150px">@Localizer["High Value"]</th>
+            <th scope="col" width="150px">@Localizer["Bun"]</th>
+            <th scope="col" width="150px">@Localizer["BunLayer"]</th>
+            <th scope="col" width="150px">@Localizer["LayerPallet"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PresaleChangeProducts)
+        {
+            <tr>
+                <td scope="row">
+                    <center>
+                        <button role="button" class="btn btn-sm btn-outline-success mt-1" onclick="SentPresaleSameMatStatus('@item.PsmId','@item.Id','Accept')">
+                            <i class="mdi mdi-check"></i> <span class="spn">@Localizer["Accept"]</span>
+                        </button>
+                        <button role="button" class="btn btn-sm btn-outline-danger ml-1  mt-1" onclick="SentPresaleSameMatStatus('@item.PsmId','@item.Id','Reject')">
+                            <i class="mdi mdi-close"></i> <span class="spn">@Localizer["Reject"]</span>
+                        </button>
+                        @* <input type="button" class="btn btn-outline-primary btn-sm" onclick="CompareChangeProduct('@item.FactoryCode','@item.MaterialNo','@item.PsmId')" value="@Localizer["Select"]" /> *@
+                    </center>
+                </td>
+                <td scope="row">
+                    @if (!string.IsNullOrEmpty(item.FileChange))
+                    {
+                        if (item.FileChange.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="FileChange" onclick="OpenFileByUrl('@item.FileChange')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["FileChange"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if (imgExt.Any(x => item.FileChange.ToLower().EndsWith(x)))
+                        {
+                            <a id="FileChange" onclick="OpenFileByUrl('@item.FileChange')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["FileChange"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="FileChange" onclick="OpenFileByUrl('@item.FileChange')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["FileChange"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+                    }
+                </td>
+                <td scope="row">@item.FactoryCode</td>
+                <td scope="row">@item.PsmId</td>
+                <td scope="row">@item.MaterialNo</td>
+                <td scope="row">@item.SaleText1</td>
+                <td scope="row">@item.SaleText2</td>
+                <td scope="row">@item.SaleText3</td>
+                <td scope="row">@item.SaleText4</td>
+                <td scope="row">@item.PieceSet</td>
+                <td scope="row">@item.PrintMethod</td>
+                <td scope="row">@item.HighGroup</td>
+                <td scope="row">@item.HighValue</td>
+                <td scope="row">@item.Bun</td>
+                <td scope="row">@item.BunLayer</td>
+                <td scope="row">@item.LayerPalet</td>
+            </tr>
+            No++;
+        }
+    </tbody>
+</table>

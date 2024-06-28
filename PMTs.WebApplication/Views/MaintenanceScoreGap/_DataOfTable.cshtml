@@ -1,0 +1,145 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceScoreGap.MaintenanceScoreGapViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.ScoreGapViewModelList)
+{
+    //if (item.Status == true)
+    //{
+<tr>
+    <th scope="row">@No</th>
+    <td>@item.Flute</td>
+    <td>@item.ScoreGap1</td>
+    <td>
+        @foreach (var Score in Model.ScoreTypeList)
+        {
+            @if (Score.ScoreTypeId == item.ScoreType)
+            {
+                @Score.ScoreTypeName;
+            }
+
+        }
+    </td>
+    <td>@item.ScoreGap1</td>
+
+    <td>
+        <button type="button" class="btn btn-default" onclick="OpenModalView('modal-view-@No')"><span class="fas fa-file-alt text-info btn" aria-hidden="true"></span></button>
+
+        <!-- Start View Modal -->
+        <div class="modal fade bs-example-modal-lg" id="modal-view-@No">
+            <div class="modal-dialog modal-lg" style="width: 90%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">@Localizer["View ScoreGap"]</h4>
+                        <button type="button" class="close" data-dismiss="modal" data-backdrop="false"  aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" asp-for="@item.Id" />
+                        <div class="row">
+                            <div class="form-group col-md-2">
+                                <label class="control-label">@Localizer["Flute"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input type="text" class="form-control" name="Flute" asp-for="@item.Flute" readonly />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-2">
+                                <label class="control-label">@Localizer["ScoreType"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input type="text" class="form-control" name="ScoreType" asp-for="@item.ScoreType" readonly />*@
+                                <select class="form-control" name="ScoreType" asp-for="@item.ScoreType" asp-items="@(new SelectList(Model.ScoreTypeList,"ScoreTypeId","ScoreTypeName"))" readonly>
+                                    <option>--- Please Select Item ---</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label">@Localizer["ScoreGap1"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input type="text" class="form-control" name="ScoreGap1" asp-for="@item.ScoreGap1" readonly />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        </div>
+        <!-- /.modal -->
+        <!-- End View Modal -->
+    </td>
+    <td>
+        <button type="button" class="btn btn-default" onclick="OpenModalView('modal-edit-@No')"><span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span></button>
+
+        <!-- Start Edit Modal -->
+        <div class="modal fade" id="modal-edit-@No">
+            <div class="modal-dialog modal-lg" style="width: 90%">
+                <form asp-controller="MaintenanceScoreGap" asp-action="UpdateScoreGap" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">
+                    <input type="hidden" id="CreatedDate" name="CreatedDate" asp-for="@item.CreatedDate" />
+                    <input type="hidden" id="CreatedBy" name="CreatedBy"  asp-for="@item.CreatedBy" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">@Localizer["Edit ScoreGap"]</h4>
+                            <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="Id" asp-for="@item.Id" />
+                            <div class="row">
+                                <div class="form-group col-md-2">
+                                    <label class="control-label">@Localizer["Flute"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" id="Flute" name="Flute" maxlength="3" asp-for="@item.Flute" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-2">
+                                    <label class="control-label">@Localizer["ScoreType"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <select class="form-control" name="ScoreType" asp-for="@item.ScoreType" asp-items="@(new SelectList(Model.ScoreTypeList,"ScoreTypeId","ScoreTypeName"))">
+                                        <option>--- Please Select Item ---</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label class="control-label" for="List">@Localizer["ScoreGap1"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="number" class="form-control" id="ScoreGap1" name="ScoreGap1" asp-for="@item.ScoreGap1" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-info">@Localizer["Save"]</button>
+
+                            <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+        <!-- End Edit Modal -->
+    </td>
+@*<td>
+        <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+    </td>*@
+</tr>
+
+    No++;
+    @* } *@
+}

@@ -1,0 +1,28 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceMachine.MaintenanceMachineViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<div class="box-header">
+        <h3 class="box-title"><i class="mdi mdi-wrench"></i> Machine</h3>
+    </div>*@
+
+<div class="box-body">
+    <table id="Machine-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col" width="8%">@Localizer["No."]</th>
+                <th scope="col" width="15%">@Localizer["Machine Name"]</th>
+                <th scope="col" width="15%">@Localizer["Machine Code"]</th>
+                <th scope="col" width="15%">@Localizer["Plan Code"]</th>
+                <th scope="col" width="25%">@Localizer["Machine Group"]</th>
+                <th scope="col" width="9%" class="text-center">@Localizer["View"]</th>
+                <th scope="col" width="9%" class="text-center">@Localizer["Edit"]</th>
+                <th scope="col" width="9%" class="text-center">@Localizer["Delete"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

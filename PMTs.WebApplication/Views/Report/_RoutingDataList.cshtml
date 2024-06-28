@@ -1,0 +1,120 @@
+﻿@model PMTs.DataAccess.ModelView.Report.SaleOrderModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<style>
+    .list-group .active {
+        background-color: aquamarine;
+        border-color: #aed248;
+    }
+</style>
+<div class="row">
+    <div class="col-sm-7" style="    padding: 10px;text-align: center;">
+        <h4>@Localizer["Routing"]</h4>
+    </div>
+    <div class="col-sm-5" style="    padding: 6px;">
+        <div class="row-fluid">
+            <div class="float-right">
+                <button type="button" class="btn btn-danger waves-effect waves-light" style="padding: 5px;" id="btnMoveUp" value="Up" onclick="MoveUpDown(this.value)"><i class="fa fa-arrow-up"></i></button>
+                <button type="button" class="btn btn-danger waves-effect waves-light" style="padding: 5px;" id="btnMoveDown" value="Down" onclick="MoveUpDown(this.value)"><i class="fa fa-arrow-down"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-sm-12 containerlistgroup" style="overflow-y:auto;height:215px;padding-right:10px">
+
+        @foreach (var item in Model.modelRouting.RoutingDataList)
+        {
+        <div class="list-group" id="RoutingData">
+            <a class="list-group-item clearfix" id="lst_@item.SeqNo" value="@item.SeqNo"  data-itemtype="@item.SeqNo" style="cursor:pointer;margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;padding-left:5px;padding-right:0px;padding-bottom:3px;padding-top:3px" onclick="RoutingSelect(@item.SeqNo);">
+                @item.SeqNo | @item.Machine
+                <span style="float:right">
+                    @*<span class="btn btn-xs btn-default" style="padding:3px">
+                        <span class="fa fa-edit" data-target="@item.SeqNo" style="font-size:16px;color:forestgreen" aria-hidden="true" tabindex="0" data-toggle="tooltip" title="Edit" onclick="RoutingEdit(this.getAttribute('data-target'));"></span>
+                    </span>*@
+                    <span class="btn btn-xs btn-default" style="padding:3px">
+                        <span class="fa fa-copy" data-target="@item.SeqNo" style="font-size:16px;color:blue" aria-hidden="true" tabindex="0" data-toggle="tooltip" title="Copy" onclick="CopyRouting(this.getAttribute('data-target'));"></span>
+                    </span>
+                    <span class="btn btn-xs btn-default" style="padding:3px">
+                        <span class="fa fa-trash-alt" data-target="@item.SeqNo" style="font-size:16px;color:red" aria-hidden="true" tabindex="0" data-toggle="tooltip" title="Delete" onclick="DeleteRouting(this.getAttribute('data-target'));"></span>
+                    </span>
+                </span>
+            </a>
+        </div>
+         }
+
+            @*<select multiple class="form-control" id="RoutingData" onclick="event.preventDefault();" ondblclick="RoutingSelect(this.value)" style="height: 250px;">
+
+                @foreach (var item in Model.modelRouting.RoutingDataList)
+                {
+                    <option value="@item.SeqNo">@item.SeqNo | @item.Machine</option>
+                }
+            </select>*@
+        </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+           $(function () {
+        $('.list-group').on('click', '.list-group-item', function () {
+            $('.list-group-item').removeClass('active');
+            $(this).closest('.list-group-item').addClass('active');
+        });
+    });
+
+    });
+
+   // $(function () {
+    //$('.list-group').on('click', '.list-group-item', function () {
+    //        $('.list-group-item').removeClass('active');
+    //        $(this).closest('.list-group-item').addClass('active');
+    //});
+   // });
+
+        //$(".list-group list-group-item").click(function (e) {
+    //    $(".list-group list-group-item").removeClass("active");
+    //    $(e.target).addClass("active");
+    //});
+
+    //$(function () {
+    //    $('.list-group').on('click', '.list-group-item', function () {
+    //        $('.list-group-item').removeClass('active');
+    //        $(this).closest('.list-group-item').addClass('active');
+    //    });
+    //});
+</script>
+
+@*<script>
+
+    (
+        function ($) {
+        var index_seq;
+        var interval;
+        var placeholder = $("#hover-containerlistgroup");
+
+        function mouseIn(event) {
+             index_seq = $(this).data("target");
+        }
+
+        function mouseOut(event) {
+            $(placeholder).css({
+                left: -1000,
+                top: -1000
+            });
+            $(placeholder).html("");
+        }
+
+        $("*[data-target]").hover(mouseIn, mouseOut);
+
+        $("*[data-target]").mousemove(function () {
+            $(placeholder).css({
+                left: event.pageX + 15,
+                top: event.pageY + 15
+            });
+        });
+
+    })($);*@
+
+@*</script>*@

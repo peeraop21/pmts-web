@@ -1,0 +1,875 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>New Product | 6.Routing</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="../../bower_components/Ionicons/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link href="../../dist/css/progress-wizard.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray">
+
+    <div class="wrapper">
+
+        <!-- Left side column. contains the logo and sidebar -->
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content">
+
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-solid">
+
+                            <ul class="progress-indicator" style="padding-top:5px">
+                                <li class="completed"> <span class="bubble"></span> 1.Categories </li>
+                                <li class="completed">
+                                    <span class="bubble"></span> 2.Customer
+                                </li>
+                                <li class="completed">
+                                    <span class="bubble"></span><a href="ProductInfo.html">
+                                        3.Product Information
+                                    </a>
+                                </li>
+                                <li class="completed">
+                                    <span class="bubble"></span><a href="Productspec.html"> 4.Product Spec</a>
+                                </li>
+
+                                <li class="completed">
+                                    <span class="bubble"></span> <a href="Productprop.html">5. Product Properties</a>
+                                </li>
+                                <li class="warning">
+                                    <span class="bubble"></span> 6. Product Routing
+                                </li>
+                                <li> <span class="bubble"></span> 7.ERP/Interface </li>
+                                <li>
+                                    <span class="bubble"></span> 8. Picture
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <h1></h1>
+                <!--<ol class="breadcrumb">
+                  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                  <li><a href="#">Examples</a></li>
+                  <li class="active">User profile</li>
+                </ol>-->
+            </section>
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="col-sm-6">
+                                    <h3 class="box-title">New Product=> 6.Routing</h3>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <h3 class="box-title">
+                                        Material  No : Z03XXXXXXX
+                                    </h3>
+                                </div>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <p class="pull-left visible-xs">
+                                            <button class="btn btn-primary btn-xs" type="button" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                                        </p>
+                                        <p class="pull-right visible-xs">
+                                            <button class="btn btn-primary btn-xs" type="button" data-toggle="offcanvasright"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                                        </p>
+                                        <!--Menu-->
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <a class="btn btn-app ">
+                                                        <i class="fa fa-plus-square "></i>  New
+                                                    </a>
+                                                    <a class="btn btn-app ">
+                                                        <i class="fa fa-copy "></i>  Copy
+                                                    </a>
+                                                    <a class="btn btn-app ">
+                                                        <i class="fa fa-arrow-circle-o-right"></i>  Insert
+                                                    </a>
+                                                    <a class="btn btn-app ">
+                                                        <i class="fa fa-trash"></i>  Delete
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+
+                                                <!-- Routing -->
+                                                <!-- End Routing -->
+                                                <!-- Machine -->
+                                                <div class="col-md-12">
+                                                    <div class="box box-warning">
+                                                        <div class="box-header with-border">
+                                                            <h3 class="box-title">Machine</h3>
+                                                        </div>
+                                                        <div class="box-body">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group">
+                                                                        <div class="row">
+                                                                            <div class="form-group">
+                                                                                <div class="form-group">
+
+                                                                                    <label class="col-sm-2 control-label">Group Machine</label>
+                                                                                    <div class="col-sm-4">
+                                                                                        <select class="form-control">
+                                                                                            <option value="" selected disabled hidden>Choose here</option>
+                                                                                            <option>Group 1</option>
+                                                                                            <option>Group 2</option>
+                                                                                            <option>Group 3</option>
+                                                                                            <option>Group 4</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+
+                                                                                    <label class="col-sm-2 control-label"> Machine</label>
+                                                                                    <div class="col-sm-4">
+                                                                                        <select class="form-control">
+                                                                                            <option value="" selected disabled hidden>Choose here</option>
+                                                                                            <option>COR</option>
+                                                                                            <option>F110</option>
+                                                                                            <option>ASAHI</option>
+                                                                                            <option>F115-IBIS</option>
+                                                                                            <option>คลัง</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <div class="row">
+                                                                            <div class="form-group">
+                                                                                <div class="form-group">
+
+                                                                                    <label class="col-sm-2 control-label"> Machine Move</label>
+                                                                                    <div class="col-sm-4">
+
+                                                                                        <input type="checkbox" placeholder="">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--<button type="submit" class="btn btn-primary center-block"><i class="fa fa-arrow-circle-o-left"></i>Submit</button>-->
+                                                                    <div class="form-group">
+                                                                        <div class="row">
+                                                                            <label class="col-sm-2 control-label">Alternative1</label>
+                                                                            <div class="col-sm-4">
+                                                                                <select class="form-control">
+                                                                                    <option> </option>
+                                                                                    <option>กาวมือ </option>
+                                                                                    <option>เครื่องผ่า2</option>
+                                                                                    <option>เซาะร่องSC002</option>
+                                                                                    <option>D1</option>
+                                                                                    <option>IJIMA-BF1270</option>
+                                                                                    <option>M&M</option>
+                                                                                    <option>P2-3FG90</option>
+                                                                                    <option>P3-2FM84</option>
+                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                    <option>P1-2FG115</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <div class="row">
+                                                                            <label class="col-sm-2 control-label">Alternative2</label>
+                                                                            <div class="col-sm-4">
+                                                                                <select class="form-control">
+                                                                                    <option> </option>
+                                                                                    <option>กาวมือ </option>
+                                                                                    <option>เครื่องผ่า2</option>
+                                                                                    <option>เซาะร่องSC002</option>
+                                                                                    <option>D1</option>
+                                                                                    <option>IJIMA-BF1270</option>
+                                                                                    <option>M&M</option>
+                                                                                    <option>P2-3FG90</option>
+                                                                                    <option>P3-2FM84</option>
+                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                    <option>P1-2FG115</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="form-group">
+
+                                                                        <div class="col-md-6">
+                                                                            <div class="box box-default collapsed-box">
+                                                                                <div class="box-header with-border">
+                                                                                    <h3 class="box-title">Add Alternative</h3>
+
+                                                                                    <div class="box-tools pull-right">
+                                                                                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                                                                            <i class="fa fa-plus"></i>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <!-- /.box-tools -->
+                                                                                </div>
+                                                                                <!-- /.box-header -->
+                                                                                <div class="box-body" style="display: none;">
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-sm-4">Alternative 3</div>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-control">
+                                                                                                    <option> </option>
+                                                                                                    <option>กาวมือ </option>
+                                                                                                    <option>เครื่องผ่า2</option>
+                                                                                                    <option>เซาะร่องSC002</option>
+                                                                                                    <option>D1</option>
+                                                                                                    <option>IJIMA-BF1270</option>
+                                                                                                    <option>M&M</option>
+                                                                                                    <option>P2-3FG90</option>
+                                                                                                    <option>P3-2FM84</option>
+                                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                                    <option>P1-2FG115</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-sm-4">Alternative 4</div>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-control">
+                                                                                                    <option> </option>
+                                                                                                    <option>กาวมือ </option>
+                                                                                                    <option>เครื่องผ่า2</option>
+                                                                                                    <option>เซาะร่องSC002</option>
+                                                                                                    <option>D1</option>
+                                                                                                    <option>IJIMA-BF1270</option>
+                                                                                                    <option>M&M</option>
+                                                                                                    <option>P2-3FG90</option>
+                                                                                                    <option>P3-2FM84</option>
+                                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                                    <option>P1-2FG115</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-sm-4">Alternative 5</div>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-control">
+                                                                                                    <option> </option>
+                                                                                                    <option>กาวมือ </option>
+                                                                                                    <option>เครื่องผ่า2</option>
+                                                                                                    <option>เซาะร่องSC002</option>
+                                                                                                    <option>D1</option>
+                                                                                                    <option>IJIMA-BF1270</option>
+                                                                                                    <option>M&M</option>
+                                                                                                    <option>P2-3FG90</option>
+                                                                                                    <option>P3-2FM84</option>
+                                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                                    <option>P1-2FG115</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-sm-4">Alternative 6</div>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-control">
+                                                                                                    <option> </option>
+                                                                                                    <option>กาวมือ </option>
+                                                                                                    <option>เครื่องผ่า2</option>
+                                                                                                    <option>เซาะร่องSC002</option>
+                                                                                                    <option>D1</option>
+                                                                                                    <option>IJIMA-BF1270</option>
+                                                                                                    <option>M&M</option>
+                                                                                                    <option>P2-3FG90</option>
+                                                                                                    <option>P3-2FM84</option>
+                                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                                    <option>P1-2FG115</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-sm-4">Alternative 7</div>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-control">
+                                                                                                    <option> </option>
+                                                                                                    <option>กาวมือ </option>
+                                                                                                    <option>เครื่องผ่า2</option>
+                                                                                                    <option>เซาะร่องSC002</option>
+                                                                                                    <option>D1</option>
+                                                                                                    <option>IJIMA-BF1270</option>
+                                                                                                    <option>M&M</option>
+                                                                                                    <option>P2-3FG90</option>
+                                                                                                    <option>P3-2FM84</option>
+                                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                                    <option>P1-2FG115</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-sm-4">Alternative 8</div>
+                                                                                            <div class="col-sm-8">
+                                                                                                <select class="form-control">
+                                                                                                    <option> </option>
+                                                                                                    <option>กาวมือ </option>
+                                                                                                    <option>เครื่องผ่า2</option>
+                                                                                                    <option>เซาะร่องSC002</option>
+                                                                                                    <option>D1</option>
+                                                                                                    <option>IJIMA-BF1270</option>
+                                                                                                    <option>M&M</option>
+                                                                                                    <option>P2-3FG90</option>
+                                                                                                    <option>P3-2FM84</option>
+                                                                                                    <option>จ้างSup ภายนอก</option>
+                                                                                                    <option>P1-2FG115</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <!-- /.box-body -->
+                                                                            </div>
+                                                                            <!-- /.box -->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.box-body -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 box-body" id="sidebarRight" role="navigation">
+                                        <div class="box ">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Routing</h3>
+                                            </div>
+                                            <div class="box-body">
+                                                <select multiple class="form-control" style="height: 400px;">
+                                                    <option onclick="myFunction('cor')">1 | Cor</option>
+                                                    <option onclick="myFunction('col')">2 | 3FMR108</option>
+                                                    <option onclick="myFunction('x')">3 | W/H</option>
+                                                </select>
+                                            </div><!--/span-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <!-- Prop -->
+                                    <div class="row">
+                                        <div class="col-xs-6" id="Cor2" style="display:none">
+                                            <div class="box box-warning">
+                                                <div class="box-header with-border">
+                                                    <h3 class="box-title">In/Out properties</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <table class="table table-striped table-bordered">
+
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Properties</th>
+                                                                <th>In</th>
+                                                                <th>Out</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>No. Open </td>
+
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="2">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="1">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Weight </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="1.293">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="1.000">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Sheet length (mm)</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="3243">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="3240">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Sheet  width (mm)</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="2093">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="2090">
+                                                                </td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td>สารเคลือบ : </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value=" ">
+                                                                </td>
+                                                                <td>
+                                                                    <!--<input type="text" class="form-control" placeholder="" value="2090">-->
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-6" id="Cor1" style="display:none">
+                                            <div class="box box-warning">
+                                                <div class="box-header with-border">
+                                                    <h3 class="box-title">Corrugator properties</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <table class="table table-striped table-bordered">
+
+                                                        <!--<thead>
+                        <tr>
+                            <th>Properties 1</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>-->
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Paper roll width</td>
+
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="1800">
+                                                                </td>
+                                                                <td>Cut</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="4">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Trim</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="30">
+                                                                </td>
+                                                                <td>% Trim</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="4">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td> Tear tape</td>
+                                                                <td colspan="4">
+
+                                                                    <input type="checkbox" id="CKTeartape" onclick="Teartape()">
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                    <table class=" table-striped table-bordered" style="display: none;" id="Teartape">
+                                                        <tr>
+                                                            <td> </td>
+                                                            <td> จำนวนเส้น/กล่อง </td>
+                                                            <td colspan="4">
+                                                                <input type="number" class="form-control" placeholder="" min="1" max="9" maxlength="2">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td> ระบุระยะจากขอบกระดาษ </td>
+                                                            <td colspan="4">
+                                                                <input type="number" class="form-control" placeholder="" maxlength="20">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+
+                                                <!-- /.box-body -->
+                                            </div>
+                                        </div>
+                                        <!-- Routing -->
+                                        <!-- Routing -->
+                                        <div class="col-xs-6" id="Col1" style="display:none">
+                                            <div class="box box-warning">
+                                                <div class="box-header with-border">
+                                                    <h3 class="box-title">Printing properties</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <div class="form-group">
+                                                        <table class="table table-striped table-bordered">
+
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Properties</th>
+                                                                    <th>Color</th>
+                                                                    <th>Shade</th>
+                                                                    <th>Area</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Corlor 1</td>
+
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="แดง">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="1100">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="30">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Corlor 2</td>
+
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="น้ำเงิน">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="900">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="30">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Corlor 3</td>
+
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="เหลือง">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="1200">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control" placeholder="" value="40">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <table class="table table-striped table-bordered">
+
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Properties </th>
+                                                                <th>Value</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    Printing plate No.
+                                                                </td>
+
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="T102">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Cutting die No.</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="C254">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Myla No.</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="S3430">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Printing Plate type
+                                                                </td>
+                                                                <td>
+
+                                                                    <div class="row">
+                                                                        <div class="col-sm-5">
+                                                                            <input type="radio" name="contact" checked="checked">Non-Print
+                                                                        </div>
+                                                                        <div class="col-sm-5">
+                                                                            <input type="radio"
+                                                                                   name="contact">Standard
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <div class="col-sm-5">
+                                                                        </div>
+                                                                        <div class="col-sm-5">
+                                                                            <input type="radio"
+                                                                                   name="contact">Semi
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-sm-5">
+                                                                        </div>
+                                                                        <div class="col-sm-6">
+                                                                            <input type="radio"
+                                                                                   name="contact">Shipping Mark
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+                                        </div>
+                                        <!-- End Prop1 -->
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-6" id="Cor1">
+                                            <div class="box box-warning">
+                                                <div class="box-header with-border">
+                                                    <h3 class="box-title">Join to/ Sperate to</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <table class="table table-striped table-bordered">
+
+                                                        <thead>
+                                                            <!--<tr>
+                                                                <th>Properties 1</th>
+                                                                <th>Value</th>
+                                                            </tr>-->
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Join to material No.</td>
+
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="Z03X0000">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Sperate to material No.</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control" placeholder="" value="Z03X0001">
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+                                        </div>
+                                        <!-- End Prop3 -->
+
+                                        <div class="col-xs-6" id="Cor1">
+                                            <div class="box box-warning">
+                                                <div class="box-header with-border">
+                                                    <h3 class="box-title">Remark</h3>
+                                                </div>
+                                                <div class="box-body">
+                                                    <textarea class="form-control center" rows="4"> </textarea>
+
+                                                    <p></p>
+                                                    <input type="file" id="exampleInputFile">
+                                                </div>
+                                                <!-- /.box-body -->
+                                            </div>
+                                        </div>
+                                        <!-- End Prop4 -->
+                                    </div>
+                                </div>
+                                <div class="col-sm-12  text-right">
+                                    <!-- general form elements -->
+                                    <form role="form" action="ERP.html">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-success "><i class="fa fa-save"></i> Save &amp; Next <i class="fa fa-arrow-circle-right"></i></button>
+                                        </div>
+                                    </form>
+
+                                    <!-- /.box -->
+                                    <!-- /.box -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="col-sm-12">
+                                    <h3 class="box-title">Detail</h3>
+                                </div>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="box">
+                                            <div class="box-header with-border">
+                                            </div>
+                                            <!-- /.box-header -->
+                                            <!-- form start -->
+
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12">
+                                                            Diecut
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12">
+                                                            บริษัท แพน-ไทคูณ จำกัด
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12">
+                                                            PANTK อะไหล่กล่องด้านคอยส์ CCS-N 56-63
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12">
+                                                            KT125/CA105/CA105
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <div class="row text-center ">
+                                    <a class="btn btn-app " onclick="window.open('Print_Mastercard.html', '_blank', 'location=no,height=800,width=1200,scrollbars=yes,status=no');">
+                                        <i class="fa fa-print "></i>  Print Master Card
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- /.box-footer -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </section>
+            <!-- /.content -->
+        </div>
+
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
+    <!-- jQuery 3 -->
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="../../bower_components/fastclick/lib/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="../../dist/js/demo.js"></script>
+
+    <script>
+
+        function Teartape() {
+            var checkBox = document.getElementById("CKTeartape");
+            var Tbl = document.getElementById("Teartape");
+
+            if (checkBox.checked == true) {
+                 Tbl.style.display = "block";
+                //Tbl.collapse('show');
+            } else {
+                Tbl.style.display = "none";
+                //Tbl.collapse('hide');
+            }
+        }
+        function myFunction(opt) {
+            var prop1 = document.getElementById("Cor1");
+            var prop2 = document.getElementById("Cor2");
+            var prop3 = document.getElementById("Col1");
+            var prop4 = document.getElementById("Col2");
+
+            if (opt === 'cor') {
+                //if (prop1.style.display === "none") prop1.style.display = "block";
+                //else prop1.style.display = "none";
+                //if (prop2.style.display === "none") prop2.style.display = "block";
+                //else prop2.style.display = "none";
+                prop1.style.display = "block";
+                prop2.style.display = "block";
+                prop3.style.display = "none";
+                prop4.style.display = "none";
+            }
+            if (opt === 'col') {
+                prop1.style.display = "none";
+                prop2.style.display = "block";
+                prop3.style.display = "block";
+                prop4.style.display = "block";
+            }
+            if (opt === 'x') {
+                prop1.style.display = "none";
+                prop2.style.display = "block";
+                prop3.style.display = "none";
+                prop4.style.display = "none";
+            }
+
+        }
+    </script>
+</body>
+</html>

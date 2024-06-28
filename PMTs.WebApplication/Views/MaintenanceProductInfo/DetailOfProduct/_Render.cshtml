@@ -1,0 +1,161 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@if (@Model.modelCategories.Id_ProdType == 130 || @Model.modelCategories.Id_ProdType == 131)
+{
+    <div class="vt1" id="vt1"></div>
+    <div class="vt2" id="vt2"></div>
+    <div class="vt3" id="vt3"></div>
+    <div class="vt4" id="vt4"></div>
+    <div class="vt5" id="vt5"></div>
+    <div class="vt6" id="vt6"></div>
+    <div class="vt7" id="vt7" hidden></div>
+    <div class="vt8" id="vt8" hidden></div>
+    <div class="ht1" id="ht1"></div>
+    <div class="ht2" id="ht2"></div>
+    <div class="ht3" id="ht3"></div>
+    <div class="ht4" id="ht4"></div>
+    <div class="ht5" id="ht5"></div>
+    <div class="ht6" id="ht6" hidden></div>
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input asp-for="modelProductSpec.ScoreL8" type="text" style="position: absolute; left: 58px; width: 30px; border:none; text-align:center; " class="mytextboxNumber" />
+        <input asp-for="modelProductSpec.ScoreL9" type="text" style="position: absolute; left: 118px; width: 30px; border:none; text-align:center; " class="mytextboxNumber" hidden />
+    </div>
+    <br />
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <img id="tooth" src="~/images/toothx.jpg" /><img id="teeth2" src="~/images/2teethx.jpg" style="display: none;" /><img id="teeth3" src="~/images/3teethx.jpg" style="display: none;" />
+        <input asp-for="modelProductSpec.Scorew2" type="text" style="position: absolute; left: 244px; top: 80px; width: 32px; border:none; text-align:center;" />
+        <input asp-for="modelProductSpec.CutSheetWid" type="text" style="position: absolute; left: 268px; top: 140px; width: 33px; border:none; color:gray; text-align:center;" class="mytextboxNumber" readonly />
+    </div>
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input asp-for="modelProductSpec.CutSheetLeng" type="text" style="position: absolute; left: 115px; top: 250px; width: 40px; border:none; text-align:center; color:gray;" class="mytextboxNumber" readonly />
+    </div>
+    <br />
+    <br />
+}
+else if (@Model.modelCategories.Id_ProdType == 90 || @Model.modelCategories.Id_ProdType == 100 || @Model.modelCategories.Id_ProdType == 110)
+{
+    <div class="vl1" id="vl1"></div>
+    <div class="hl1" id="hl1"></div>
+    <div class="hl2" id="hl2"></div>
+    <div class="sheetLenL" id="shLenL"></div>
+    <div class="shL1" id="shL1"></div>
+    <div class="shL2" id="shL2"></div>
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img id="dc" src="~/images/DieCutx.jpg" /><input asp-for="modelProductSpec.CutSheetWid" type="text" style="position: absolute; left: 469px; top: 150px; width: 40px; border:none; text-align:center; color:gray;" readonly />
+    </div>
+    <div class="row">
+        <input asp-for="modelProductSpec.CutSheetLeng" type="text" style="position: absolute; left: 200px; top: 270px; width: 40px; border:none; text-align:center; color:gray;" class="mytextboxNumber" readonly />
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+}
+else if (@Model.modelCategories.ProductTypeName.Contains("RSC"))
+{
+    <div class="vl1" id="vl1"></div>
+    <div class="vl5" id="vl5"></div>
+    <div class="hl1" id="hl1"></div>
+    <div class="hl2" id="hl2"></div>
+    <div class="bigLeftV"></div><div class="bigLeftH1" id="bigLeftH1"></div>
+    <div class="LeftV"></div><div class="LeftH1" id="LeftH1"></div>
+    <div class="lHl" id="lHl"></div>
+    <div class="bigMidV" id="bigMidV"></div>
+    <div class="RightV" id="RightV"></div>
+    <div class="bigRightV" id="bigRightV"></div>
+    <div class="sheetLenL" id="shLenL"></div>
+    <div class="shL1"></div>
+    <div class="shL2" id="shL2"></div>
+    <div class="row">
+        <div class="col-sm-4">
+        </div>
+        <label id="h2" style="position: absolute;">____</label>
+        <label id="h3" style="position: absolute;">____</label>
+    </div>
+    <br />
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input asp-for="modelProductSpec.ScoreL8" type="text" style="position: absolute; left: 100px; width: 40px; border:none; text-align:center; color:gray;" readonly />
+        <input asp-for="modelProductSpec.ScoreL9" type="text" style="position: absolute; left: 280px; width: 40px; border:none; text-align:center; color:gray;" readonly />
+    </div>
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input asp-for="modelProductSpec.ScoreL6" type="text" style="position: absolute; left: 106px; width: 40px; border:none; text-align:center; color:gray;" readonly />
+        <input asp-for="modelProductSpec.ScoreL7" type="text" style="position: absolute; left: 275px; width: 40px; border:none; text-align:center; color:gray;" readonly />
+    </div>
+    <div class="row">
+        &nbsp;
+        <input asp-for="modelProductSpec.JointLap" type="text" style="position: absolute; width: 15px; border:none; text-align:center;" class="mytextboxNumber" />
+        &nbsp;&nbsp;&nbsp;
+        <label id="v1" style="position: absolute;">|</label>
+        <label id="v2" style="position: absolute;">|</label>
+        <input asp-for="modelProductSpec.ScoreL2" type="text" style="position: absolute; left: 60px; top: 60px; width: 40px; border:none; text-align:center;" class="mytextboxNumber" />
+        <input asp-for="modelProductSpec.ScoreL3" type="text" style="position: absolute; left: 150px; top: 60px; width: 40px; border:none; text-align:center;" class="mytextboxNumber" />
+        <input asp-for="modelProductSpec.ScoreL4" type="text" style="position: absolute; left: 230px; top: 60px; width: 40px; border:none; text-align:center;" class="mytextboxNumber" />
+        <input asp-for="modelProductSpec.ScoreL5" type="text" style="position: absolute; left: 325px; top: 60px; width: 40px; border:none; text-align:center;" class="mytextboxNumber" />
+        <input asp-for="modelProductSpec.Slit" type="text" style="position: absolute; left: 400px; width: 15px; border:none; text-align:center;" class="mytextboxNumber" />
+    </div>
+    <div id="xTop" class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <img id="jlapPic1" src="~/images/jLapz.jpg" /><img id="lLx1" src="~/images/lTopz.jpg" /><img id="wLx1" src="~/images/wTopz.jpg" /><img id="lRx1" src="~/images/lTopz.jpg" /><img id="wRx1" src="~/images/wTopz.jpg" /><img id="slitx1" src="~/images/Slitz.jpg" />
+        &nbsp;&nbsp;
+        <input asp-for="modelProductSpec.ScoreW1" type="text" style="position: absolute; top: 97px; left: 400px; width: 35px; border:none; text-align:center;" class="mytextboxNumber" />
+    </div>
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <img id="jLapMid" src="~/images/jLapMidz.jpg" /><img id="lLb" src="~/images/lBodyz.jpg" /><img id="wLb" src="~/images/wBodyzz.jpg" /><img id="lRb" src="~/images/lBodyz.jpg" /><img id="wRb" src="~/images/wBodyz.jpg" /><img id="slitb" src="~/images/SlitMidz.jpg" />
+        &nbsp;&nbsp;
+        <input asp-for="modelProductSpec.Scorew2" type="text" style="position: absolute; top: 165px; left: 400px; width: 35px; border:none; text-align:center;" class="mytextboxNumber" />
+        <input asp-for="modelProductSpec.CutSheetWid" type="text" style="position: absolute; left: 429px; top: 165px; width: 45px; border:none; color:gray; text-align:center;" readonly />
+    </div>
+    <div id="xButton" class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <img id="jlapPic2" src="~/images/jLapz.jpg" /><img id="lLx2" src="~/images/lTopz.jpg" /><img id="wLx2" src="~/images/wTopz.jpg" /><img id="lRx2" src="~/images/lTopz.jpg" /><img id="wRx2" src="~/images/wTopz.jpg" /><img id="slitx2" src="~/images/Slitz.jpg" />
+        &nbsp;&nbsp;
+        <input asp-for="modelProductSpec.Scorew3" type="text" style="position: absolute; top: 235px; left: 400px; width: 35px; border:none; text-align:center;" class="mytextboxNumber" />
+    </div>
+    <br />
+    <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input asp-for="modelProductSpec.CutSheetLeng" type="text" style="position: absolute; left: 190px; top: 270px; width: 40px; border:none; text-align:center; color:gray;" readonly />
+    </div>
+}
+else
+{
+    <input asp-for="modelProductSpec.CutSheetWid" type="hidden" />
+    <input asp-for="modelProductSpec.CutSheetLeng" type="hidden" />
+}
+<script>
+    document.getElementById("v1").style.left = "133px";
+    document.getElementById("v2").style.left = "305px";
+    document.getElementById("h2").style.left = "408px";
+    document.getElementById("h3").style.left = "408px";
+    document.getElementById("h2").style.top = "108px";
+    document.getElementById("h3").style.top = "209px";
+
+    $(document).ready(function () {
+
+        $('.mytextboxNumber').keypress(function (event) {
+            //var verified = (e.which == 8 || e.which == undefined || e.which == 0) ? null : String.fromCharCode(e.which).match(/[^0-9]/);
+            //if (verified) { e.preventDefault(); }
+
+            if ($.inArray(event.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                // Allow: Ctrl+A
+                (event.keyCode == 65 && event.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (event.keyCode >= 35 && event.keyCode <= 39)) {
+                // let it happen, don't do anything
+                return;
+            }
+            else {
+                // Ensure that it is a number and stop the keypress
+                if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                    event.preventDefault();
+                }
+            }
+        });
+    });
+</script>

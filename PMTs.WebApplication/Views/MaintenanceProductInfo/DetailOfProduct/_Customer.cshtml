@@ -1,0 +1,93 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="text-themecolor">
+            New Product > 2.Customer
+        </h3>
+
+        <hr />
+    </div>
+
+    <div class="card-body">
+
+        <form role="form" method="post" asp-action="Customer" class="form-material">
+
+            <!-- /.box-body -->
+
+                <div class="card card-outline-info">
+                    <div class="card-header">
+                        <h4 class="m-b-0 text-white">Customer Infomation</h4>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">Customer Name:</label>
+                            <div class="col-sm-4">
+                                @Html.TextBoxFor(m => m.modelProductCustomer.CusId, new { @id = "inp_Cust_ID", @type = "hidden" })
+                                @Html.TextBoxFor(m => m.modelProductCustomer.CustName, new { @id = "inp_Customername", @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly" , @disabled = "true"})
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label">Customer Code  :</label>
+                            <div class="col-md-4">
+                                @Html.TextBoxFor(m => m.modelProductCustomer.CustCode, new { @id = "inp_Customer", @style = "background-color :white; font-weight:bold; color:black;", @class = "form-control no-border", @readonly = "readonly", @disabled = "true" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">Sold to:</label>
+                            <div class="col-sm-4">
+                                @Html.TextBoxFor(m => m.modelProductCustomer.SoldToCode, new { @id = "inp_soldto", @style = "background-color :white; font-weight:bold; color:black;", @class = "form-control no-border", @readonly = "readonly", @disabled = "true" })
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label">Ship to  :</label>
+                            <div class="col-md-4">
+
+                                @Html.TextAreaFor(m => m.modelProductCustomer.CustShipTo, new { @id = "txt_ship_to", @style = "background-color :white; font-weight:bold; color:black;resize: none;", @readonly = "readonly", @class = "form-control no-border", @disabled = "true" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">Customer Delivery Time:</label>
+                            <div class="col-sm-4">
+                                @Html.TextBoxFor(m => m.modelProductCustomer.CustDeliveryTime, new { @id = "inp_Delivery", @style = "background-color :white; font-weight:bold; color:black;", @class = "form-control no-border", @readonly = "readonly", @disabled = "true" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">Transportation zone:</label>
+                            <div class="col-sm-4">
+                                @Html.TextBoxFor(m => m.modelProductCustomer.Zone, new { @id = "inp_zone", @style = "background-color :white; font-weight:bold; color:black;", @class = "form-control no-border", @readonly = "readonly", @disabled = "true" })
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label">Route :</label>
+                            <div class="col-md-4">
+
+                                @Html.TextBoxFor(m => m.modelProductCustomer.Route, new { @id = "inp_Route", @style = "background-color :white; font-weight:bold; color:black;", @class = "form-control no-border", @readonly = "readonly", @disabled = "true" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 text-right control-label col-form-label">Customer Requirement :</label>
+                            <div class="col-sm-4">
+                                @Html.TextAreaFor(m => m.modelProductCustomer.CustReq, new { @class = "form-control", @id = "inp_CustReq", @rows = "3", @placeholder = "160 Digits", @maxlength = "160", @style = "resize: none;background-color :white; font-weight:bold; color:black;", @disabled = "true" })
+                            </div>
+                            <label class="col-sm-2 text-right control-label col-form-label"> Material Comment :</label>
+                            <div class="col-md-2">
+
+                                @Html.TextAreaFor(m => m.modelProductCustomer.MaterialComment, new { @class = "form-control", @id = "MaterialComment", @rows = "3", @maxlength = "160", @style = "resize: none;background-color :white; font-weight:bold; color:black;", @disabled = "true" })
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+
+                @*<div class="card">*@
+                @*<div class="box-header with-border ">
+                        <h3 class="box-title">Detail</h3>
+                    </div>*@
+
+                <!-- /.box-header -->
+                <!-- form start -->
+        </form>
+        <!-- /.box-footer -->
+    </div>
+</div>

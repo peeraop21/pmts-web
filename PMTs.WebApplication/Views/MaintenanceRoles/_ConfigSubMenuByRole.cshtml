@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceRoles.MaintenanceRolesViewModel
+
+@if (Model.SubMainMenusList != null)
+{
+<div class="card-body">
+    @Localizer["Sublist Menu"]
+
+    <div class="row">
+        <div class="col-md-12">
+            <table id="SubMenuTable" class="table table-bordered color-table">
+                <thead>
+                    <tr style="vertical-align:central">
+                        <th>@Localizer["Active"]</th>
+                        @*<th>Id Mainmenu</th>*@
+                        <th>@Localizer["Mainmenu"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.SubMainMenusList)
+                    {
+                        <tr>
+                            <td class="text-center" style="vertical-align:middle;">
+
+                                @if (item.IdSubMenuRole != null)
+                                {
+
+                                    <input type="checkbox" class="filled-in select-item-check"
+                                           checked id="chksub_@item.Id"
+                                           value="@item.Id"
+                                           data-id="@item.Id"
+                                           data-submenuroleid="@item.SubMenuroleID"
+                                           data-mainmenuid="@item.MainMenuId"
+                                           data-idsubmenurole="@item.IdSubMenuRole"
+                                           onclick="SavesubMenu(this.getAttribute('data-id'),
+    this.getAttribute('data-submenuroleid'),
+    this.getAttribute('data-mainmenuid'),
+    this.getAttribute('data-idsubmenurole'))" />
+                                    <label for="chksub_@item.Id"></label>
+
+                                }
+                                else
+                                {
+
+                                    <input type="checkbox" class="filled-in select-item-check"
+                                           id="chksub_@item.Id"
+                                           value="@item.Id"
+                                           data-id="@item.Id"
+                                           data-submenuroleid="@item.SubMenuroleID"
+                                           data-mainmenuid="@item.MainMenuId"
+                                           data-idsubmenurole="@item.IdSubMenuRole"
+                                           onclick="SavesubMenu(this.getAttribute('data-id'),
+    this.getAttribute('data-submenuroleid'),
+    this.getAttribute('data-mainmenuid'),
+    this.getAttribute('data-idsubmenurole'))" />
+                                    <label for="chksub_@item.Id"></label>
+                                }
+                            </td>
+                            @*<td>@item.Id</td>*@
+                            <td>@item.SubMenuName</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+}

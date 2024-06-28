@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceAdditive.MaintenanceAdditiveViewModel
+
+<div class="box-body">
+    <table id="Allowance-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Type"]</th>
+                <th scope="col">@Localizer["Code"]</th>
+                <th scope="col">@Localizer["Description"]</th>
+                <th scope="col">@Localizer["ConsumptionRate"]</th>
+                <th scope="col">@Localizer["GlueSolidContent"]</th>
+                <th scope="col">@Localizer["Remark"]</th>
+                <th scope="col">@Localizer["Status"]</th>
+                <th scope="col" align="center">@Localizer["View"]</th>
+                <th scope="col" align="center">@Localizer["Edit"]</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @{ int No = 1; }
+
+            @foreach (var item in Model.additives)
+            {
+                //if (item.Status == true)
+                //{
+            <tr>
+                <th scope="row">@No</th>
+                <td>@item.Type</td>
+                <td>@item.Code</td>
+                <td>@item.Description</td>
+                <td>@item.ConsumptionRate</td>
+                <td>@item.GlueSolidContent</td>
+                <td>@item.Remark</td>
+                <td>@item.Status</td>
+                <td align="center">
+                    <button type="button" class="btn btn-default"
+                            data-id="@item.Id"
+                            data-Type="@item.Type" data-Code="@item.Code"
+                            data-Description="@item.Description" data-ConsumptionRate="@item.ConsumptionRate"
+                            data-GlueSolidContent="@item.GlueSolidContent"   data-Remark="@item.Remark"  data-Status="@item.Status"  data-flag="0"
+                            onclick="viewShow(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-Type')
+                    , this.getAttribute('data-Code')
+                     , this.getAttribute('data-Description')
+                    , this.getAttribute('data-ConsumptionRate')
+                    , this.getAttribute('data-GlueSolidContent')
+                    , this.getAttribute('data-Remark') , this.getAttribute('data-Status') , this.getAttribute('data-flag')
+                )">
+                        <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span>
+                    </button>
+                </td>
+
+                <td align="center">
+                    <button type="button" class="btn btn-default"
+                            data-id="@item.Id"
+                            data-Type="@item.Type" data-Code="@item.Code"
+                            data-Description="@item.Description" data-ConsumptionRate="@item.ConsumptionRate"
+                            data-GlueSolidContent="@item.GlueSolidContent" data-Remark="@item.Remark" data-Status="@item.Status" data-flag="1"
+                            onclick="viewShow(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-Type')
+                            , this.getAttribute('data-Code')
+                            , this.getAttribute('data-Description')
+                    , this.getAttribute('data-ConsumptionRate')
+                    , this.getAttribute('data-GlueSolidContent')
+                    , this.getAttribute('data-Remark') , this.getAttribute('data-Status') , this.getAttribute('data-flag')
+                )">
+                        <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+                    </button>
+                </td>
+                @*<td>
+            <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+        </td>*@
+            </tr>
+
+                No++;
+                @* } *@
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+        $('#Allowance-data-table').DataTable();
+    });
+</script>

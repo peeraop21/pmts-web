@@ -1,0 +1,218 @@
+﻿@model PMTs.DataAccess.ModelView.ManageMO.ManageMOViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = null;
+}
+<style>
+    table {
+        table-layout: fixed;
+        width: 100%;
+        border: 1px solid red;
+    }
+
+    td {
+        border: 1px solid blue;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<table id="MODataTable" class="table table-bordered color-table">
+    <thead>
+        <tr class="color-table text-center">
+            <th class="text-center" width="90px" scope="col">@Localizer["Options"]</th>
+            <th class="text-center" width="30px" scope="col" >@Localizer["Bundle Label"]</th>
+            <th class="text-center" width="30px" scope="col" >@Localizer["Pallet Label"]</th>
+            <th class="text-center" width="90px">@Localizer["Sale Order"]</th>
+            <th class="text-center" width="90px">@Localizer["Material No."]</th>
+            <th class="text-center" width="90px">@Localizer["PC"]</th>
+            <th class="text-center" width="200px">@Localizer["Customer Name"]</th>
+            <th class="text-center" width="90px">@Localizer["Sold To"]</th>
+            <th class="text-center" width="90px">@Localizer["Ship To"]</th>
+            <th class="text-center" width="100px">@Localizer["Batch"]</th>
+            <th class="text-center" width="90px">@Localizer["PO Number"]</th>
+            <th class="text-center" width="80px">@Localizer["Order Qty"]</th>
+            <th class="text-center" width="80px">@Localizer["Target Qty"]</th>
+            <th class="text-center" width="160px">@Localizer["Request Date"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MoDatas)
+        {
+        <tr>
+            @if (string.IsNullOrEmpty(item.OrderItem))
+            {
+                <td class="text-center"><i class="fa fa-window-close" style="color: red;"></i></td>
+            }
+            else
+            {
+                <td class="text-center">
+                    @if (Model.IsAttachFilePage)
+                    {
+                        <button type="button" class="btn btn-default" title="Attrach PDF File"
+                                data-OrderItem="@item.OrderItem"
+                                data-customerName="@item.Name"
+                                data-MaterialNo="@item.MaterialNo"
+                                onclick="AttrachPdfFile(this)">
+                            <span class="fa fa-file-pdf text-danger" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default" title="Print"
+                                data-OrderItem="@item.OrderItem"
+                                onclick="PrintMOData('ViewList',this,false)">
+                            <span class="fa fa-print text-dark" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default" title="Preview"
+                                data-OrderItem="@item.OrderItem"
+                                onclick="PrintMOData('ViewList',this,true)">
+                            <span class="fa fa-eye text-info" aria-hidden="true"></span>
+                        </button>
+
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-default" title="Edit"
+                                data-Id="@item.Id"
+                                data-FactoryCode="@item.FactoryCode"
+                                data-MoStatus="@item.MoStatus"
+                                data-OrderItem="@item.OrderItem"
+                                data-MaterialNo="@item.MaterialNo"
+                                data-Name="@item.Name"
+                                data-OrderQuant="@item.OrderQuant"
+                                data-ToleranceOver="@item.ToleranceOver"
+                                data-ToleranceUnder="@item.ToleranceUnder"
+                                data-DueDate="@item.DueDate"
+                                data-TargetQuant="@item.TargetQuant"
+                                data-ItemNote="@item.ItemNote"
+                                data-District="@item.District"
+                                data-PoNo="@item.PoNo"
+                                data-DateTimeStamp="@item.DateTimeStamp"
+                                data-Printed="@item.Printed"
+                                data-Batch="@item.Batch"
+                                data-DueText="@item.DueText"
+                                data-SoldTo="@item.SoldTo"
+                                data-ShipTo="@item.ShipTo"
+                                data-PlanStatus="@item.PlanStatus"
+                                data-StockQty="@item.StockQty"
+                                data-IsCreateManual="@item.IsCreateManual"
+                                data-SentKIWI="@item.SentKiwi"
+                                data-MORNo="@item.Morno"
+                                data-SOKiwi="@item.SoKiwi"
+                                data-SquareINCH="@item.SquareInch"
+                                data-InterfaceTIPs="@item.InterfaceTips"
+                                onclick="EditMoDataModal(this)">
+                            <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default" title="Print"
+                                data-OrderItem="@item.OrderItem"
+                                onclick="PrintMOData('ViewList',this,false)">
+                            <span class="fa fa-print text-dark" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default" title="Preview"
+                                data-OrderItem="@item.OrderItem"
+                                onclick="PrintMOData('ViewList',this,true)">
+                            <span class="fa fa-eye text-info" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default" title="Delete"
+                                data-Id="@item.Id"
+                                data-FactoryCode="@item.FactoryCode"
+                                data-MoStatus="@item.MoStatus"
+                                data-OrderItem="@item.OrderItem"
+                                data-MaterialNo="@item.MaterialNo"
+                                data-Name="@item.Name"
+                                data-OrderQuant="@item.OrderQuant"
+                                data-ToleranceOver="@item.ToleranceOver"
+                                data-ToleranceUnder="@item.ToleranceUnder"
+                                data-DueDate="@item.DueDate"
+                                data-TargetQuant="@item.TargetQuant"
+                                data-ItemNote="@item.ItemNote"
+                                data-District="@item.District"
+                                data-PoNo="@item.PoNo"
+                                data-DateTimeStamp="@item.DateTimeStamp"
+                                data-Printed="@item.Printed"
+                                data-Batch="@item.Batch"
+                                data-DueText="@item.DueText"
+                                data-SoldTo="@item.SoldTo"
+                                data-ShipTo="@item.ShipTo"
+                                data-PlanStatus="@item.PlanStatus"
+                                data-StockQty="@item.StockQty"
+                                data-IsCreateManual="@item.IsCreateManual"
+                                data-SentKIWI="@item.SentKiwi"
+                                data-MORNo="@item.Morno"
+                                data-SOKiwi="@item.SoKiwi"
+                                data-SquareINCH="@item.SquareInch"
+                                data-InterfaceTIPs="@item.InterfaceTips"
+                                onclick="DeleteMoData(this)">
+                            <span class="fas fa-trash text-danger text-danger" aria-hidden="true"></span>
+                        </button>
+                    }
+                </td>
+            }
+        <td>
+            @if (!String.IsNullOrEmpty(item.TagBundle))
+            {
+                <input type="checkbox" class="material-inputs" id="chk-Bundle" checked>
+                <label for="chk-Bundle"></label>
+            }
+        </td>
+        <td>
+            @if (!String.IsNullOrEmpty(item.TagPallet))
+            {
+                <input type="checkbox" class="material-inputs" id="chk-Pallet" checked>
+                <label for="chk-Pallet"></label>
+            }
+        </td>
+            <td align="center">@Html.DisplayFor(modelItem => item.OrderItem)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.PC)</td>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.SoldTo)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.ShipTo)</td>
+            <td>@Html.DisplayFor(modelItem => item.Batch)</td>
+            <td>@Html.DisplayFor(modelItem => item.PoNo)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.OrderQuant)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.TargetQuant)</td>
+            <td align="center">@Html.DisplayFor(modelItem => item.DueDate)</td>
+        </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="9">
+                <div id="tableMOInfo"></div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            $('#MODataTable').DataTable({
+                'bFilter': false,
+                "paging": false,
+                "info": false,
+                "scrollX": true,
+                'columnDefs': [{
+                    'targets': [-1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }],
+                "order": [[1, "desc"]]
+            });
+        });
+    </script>
+}

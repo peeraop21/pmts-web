@@ -1,0 +1,629 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceProductType.MaintenanceKindOfProductGroupCreateModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Product Type";
+    ViewData["CreateAction"] = "CreateProductType";
+    ViewData["EditAction"] = "EditProductType";
+    var createModel = new PMTs.DataAccess.ModelView.MaintenanceProductType.MaintenanceProductTypeCreateModel { Status = true, SelectHierarchyLv2s = Model.SelectHierarchyLv2s, SelectFormGroups = Model.SelectFormGroups };
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<style>
+    /*the container must be positioned relative:*/
+    .autocomplete {
+        position: relative;
+        display: inline-block;
+    }
+
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        /*position the autocomplete items to be the same width as the container:*/
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+            /*when hovering an item:*/
+            .autocomplete-items div:hover {
+                background-color: #e9e9e9;
+            }
+
+    /*when navigating through the items using the arrow keys:*/
+    .autocomplete-active {
+        background-color: DodgerBlue !important;
+        color: #ffffff;
+    }
+</style>
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+
+            <div class="card-body">
+
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3><i class="fa fa-cog"></i>&nbsp;@Localizer["Maintenance Product Type"]</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right">
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btn-create-pt-modal">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span>@Localizer["Create"]</button>
+                        </div>
+                    </div>
+                </div>
+
+                <partial name="_CreateModal" model="createModel" view-data="@ViewData" />
+
+                <div class="box">
+                    <div class="box-body">
+                        <table id="tableData" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+
+                                    <th width="8%" scope="col">@Localizer["UID"]</th>
+                                    <th width="40%" scope="col">@Localizer["Name"]</th>
+                                    <th width="10%" scope="col">@Localizer["Status"]</th>
+                                    <th width="12%" scope="col">@Localizer["Created Date"]</th>
+                                    <th width="12%" scope="col">@Localizer["Updated Date"]</th>
+                                    <th class="text-center" width="10%" scope="col">@Localizer["Options"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ProductTypes)
+                                {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    @if (item.Status.Value)
+                                    {
+                                        <td style="color:limegreen">@Localizer["Use"]</td>
+                                        //ใช้งานอยู่
+                                    }
+                                    else
+                                    {
+                                        <td style="color:red">@Localizer["Not Use"]</td>
+                                        //ไม่ได้ใช้งาน
+                                    }
+                                    <td>@item.CreatedDate</td>
+                                    <td>@item.UpdatedDate</td>
+                                    <td class="text-center">
+                                        @{
+                                            var UID = item.Id != null ? item.Id : 0;
+                                            var Name = item.Name;
+                                            var Description = item.Description;
+                                            var SortIndex = item.SortIndex.HasValue ? item.SortIndex.Value : 0;
+                                            var Status = item.Status.HasValue ? item.Status.Value : true;
+                                            var CreatedBy = item.CreatedBy;
+                                            var CreatedDate = item.UpdatedDate.HasValue ? Convert.ToDateTime(item.CreatedDate.Value).ToString("dddd dd MMMM yyyy HH:mm:ss") : DateTime.Now.ToString("dddd dd MMMM yyyy HH:mm:ss");
+                                            var UpdatedBy = item.UpdatedBy;
+                                            var UpdatedDate = item.UpdatedDate.HasValue ? Convert.ToDateTime(item.UpdatedDate.Value).ToString("dddd dd MMMM yyyy HH:mm:ss") : null;
+                                        }
+                                        <a id="DetailMaterial"
+                                           data-UID="@UID"
+                                           data-Name="@Name"
+                                           data-Description="@Description"
+                                           data-FormGroup="@item.FormGroup"
+                                           data-HierarchyLv2="@item.HierarchyLv2"
+                                           data-UnitDesc="@item.UnitDesc"
+                                           data-SortIndex="@SortIndex"
+                                           data-Status="@Status"
+                                           data-BoxHandle="@item.BoxHandle"
+                                           data-IsTwoPiece="@item.IsTwoPiece"
+                                           data-CreatedBy="@CreatedBy"
+                                           data-CreatedDate="@CreatedDate"
+                                           data-UpdatedBy="@UpdatedBy"
+                                           data-UpdatedDate="@UpdatedDate"
+                                           onclick="BindProductTypeView(this)">
+                                            <i style="cursor:pointer" class="fas fa-file-alt text-info btn" title="View"></i>
+                                        </a>
+                                        <a id="EditMaterial"
+                                           data-UID="@UID"
+                                           data-Name="@Name"
+                                           data-Description="@Description"
+                                           data-FormGroup="@item.FormGroup"
+                                           data-HierarchyLv2="@item.HierarchyLv2"
+                                           data-UnitDesc="@item.UnitDesc"
+                                           data-SortIndex="@SortIndex"
+                                           data-Status="@Status"
+                                           data-BoxHandle="@item.BoxHandle"
+                                           data-IsTwoPiece="@item.IsTwoPiece"
+                                           data-CreatedBy="@CreatedBy"
+                                           data-CreatedDate="@CreatedDate"
+                                           data-UpdatedBy="@UpdatedBy"
+                                           data-UpdatedDate="@UpdatedDate"
+                                           onclick="BindProductTypeEdit(this)">
+                                            <i style="cursor:pointer" class="fas fa-pencil-alt text-warning " title="Edit"></i>
+                                        </a>&nbsp;
+                                        <a id="DeleteMaterial">  <i style="cursor:pointer" onclick="DeleteProductType(@item.Id)" data-toggle="tooltip" title="Delete" class="fas fa-trash text-danger"></i></a>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <br />
+                        <div class="text-right">
+                            <a class="btn btn-outline-secondary waves-effect text-center col-md-1" id="backToMaintenanceCategories" href="../MaintenanceCategories">
+                                <i class="fas fa-arrow-alt-circle-left"></i>@Localizer["Back"]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_EditModal" model="@createModel" view-data="@ViewData" />
+
+@section Scripts
+    {
+    <script>
+        const hierarchyLv2s = @Html.Raw(Json.Serialize(Model.HierarchyLv2s));
+        var StatusEdit = false;
+        var IsTwoPieceCheckBox = false;
+        var BoxxHandleCheckBox = false;
+
+        $(document).ready(function () {
+            autocomplete(document.getElementById("hierarchyLv2AutoComplete"), hierarchyLv2s);
+            var processCostTable = $('#tableData').DataTable();
+        });
+
+        function DeleteProductType(id) {
+
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: 'Post',
+                        url: '@Url.Action("DeleteProductType", "MaintenanceCategories")',
+                        data: { Id: id},
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                $('.modal-backdrop').hide();
+                                $("body").removeClass("modal-open");
+
+                                swal("Deleted!", {icon:"success"})
+                                    .then(()=> {
+                                        window.location.reload(true);
+                                    });
+                            } else
+                            {
+                                swal("Failed to delete!", res.ExeptionMessage, { icon: "warning" })
+                                    .then(() => {
+
+                                    });
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                }
+
+            });
+        }
+
+        function CreateCategoriesModel(kindOfAction)
+        {
+            var form = $('#fromCategoriesCreate')[0];
+            var data = new FormData(form);
+            let urlAction = '';
+            if (kindOfAction == "CreateKindOfProduct")
+            {
+                urlAction = '@Url.Action("CreateKindOfProduct", "MaintenanceCategories")';
+            }
+            else if (kindOfAction == "CreateKindOfProductGroup")
+            {
+                urlAction = '@Url.Action("CreateKindOfProductGroup", "MaintenanceCategories")';
+            }
+            else if (kindOfAction == "CreateProcessCost")
+            {
+                urlAction = '@Url.Action("CreateProcessCost", "MaintenanceCategories")';
+            }
+            else if (kindOfAction == "CreateProductType")
+            {
+                urlAction = '@Url.Action("CreateProductType", "MaintenanceCategories")';
+            }
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: urlAction,
+                data: data,
+                async: false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        if (res.ActionType == "create") {
+                            swal("Created!", { icon: "success" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+                        else if (res.ActionType == "edit") {
+                            swal("Updated!", { icon: "success" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+
+                    } else {
+                        if (res.ActionType == "create") {
+                            swal("Failed to create!", res.ExeptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    $("#UID").focus();
+                                });
+                        }
+                        else if (res.ActionType == "edit") {
+                            swal("Failed to updated!", res.ExeptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+                    }
+                },
+                error: function () {
+                   // return false;
+                }
+            });
+        }
+
+        $("#edit-category-btn").click(function () {
+            let data = {
+                "UID": $("#UID-edit").val(),
+                "Status": StatusEdit,
+                "Name": $("#Name-edit").val(),
+                "Description": $("#Description-edit").val(),
+                "IsTwoPiece": IsTwoPieceCheckBox,
+                "BoxHandle": BoxxHandleCheckBox,
+                "UnitDesc": $("#UnitDesc-edit").val(),
+                "HierarchyLv2": $("#hierarchyLv2Select").val(),
+                "FormGroup": $("#formGroupSelect").val(),
+            };
+
+            var formData = JSON.stringify(data);
+            let urlAction = '@Url.Action("EditProductType", "MaintenanceCategories")';
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: urlAction,
+                data: {
+                    req: formData.toString()
+                },
+                async: false,
+                datatype: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        if (res.ActionType == "create") {
+                            swal("Created!", { icon: "success" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+                        else if (res.ActionType == "edit") {
+                            swal("Updated!", { icon: "success" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+
+                    } else {
+                        if (res.ActionType == "create") {
+                            swal("Failed to create!", res.ExeptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    $("#UID").focus();
+                                });
+                        }
+                        else if (res.ActionType == "edit") {
+                            swal("Failed to updated!", res.ExeptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+                    }
+                },
+                error: function () {
+                    // return false;
+                }
+            });
+        });
+
+        function statusChange(item) {
+            var status = $(item);
+            if (status.val() == "true") {
+                status.attr("style", "background-color:lightgreen");
+                StatusEdit = true;
+            } else {
+                status.attr("style", "background-color:lightcoral");
+                StatusEdit = false;
+            }
+        }
+
+        var onSaveSuccess = function (res) {
+
+            if (res.IsSuccess) {
+                if (res.ActionType == "create") {
+                    swal("Created!", { icon: "success" })
+                        .then(() => {
+                            window.location.reload(true);
+                        });
+                }
+                else if (res.ActionType == "edit") {
+                    swal("Updated!", { icon: "success" })
+                        .then(() => {
+                            window.location.reload(true);
+                        });
+                }
+
+            } else {
+                if (res.ActionType == "create") {
+                    swal("Failed to create!", res.ExeptionMessage, { icon: "warning" })
+                        .then(() => {
+                            $("#UID").focus();
+                        });
+                }
+                else if (res.ActionType == "edit") {
+                    swal("Failed to updated!", res.ExeptionMessage, { icon: "warning" })
+                        .then(() => {
+                            window.location.reload(true);
+                        });
+                }
+            }
+        };
+
+        function BindProductTypeView(item)
+        {
+            $("#UID-view").val($(item).attr("data-UID"));
+            $("#Name-view").val($(item).attr("data-Name"));
+            $("#Description-view").val($(item).attr("data-Description"));
+            $("#FormGroup-view").val($(item).attr("data-FormGroup"));
+            $("#HierarchyLv2-view").val($(item).attr("data-HierarchyLv2"));
+            $("#UnitDesc-view").val($(item).attr("data-UnitDesc"));
+            $("#FormGroups-view").val($(item).attr("data-SelectFormGroups"));
+            $("#SortIndex-view").val($(item).attr("data-SortIndex"));
+            //set status
+            let status = $(item).attr("data-Status");
+            if (status == "True") {
+                $("#selectStatusView-active").removeAttr("hidden");
+                $("#selectStatusView-inactive").val("true");
+                $("#selectStatusView-inactive").attr("hidden", true);
+                $("#selectStatusView-active").attr("disabled",true);
+            } else
+            {
+                $("#selectStatusView-inactive").removeAttr("hidden");
+                $("#selectStatusView-active").attr("hidden", true);
+                $("#selectStatusView-inactive").val("false");
+                $("#selectStatusView-inactive").attr("disabled",true);
+            }
+
+            //set checkbox
+            let boxHandle = $(item).attr("data-BoxHandle");
+            let isTwoPiece = $(item).attr("data-IsTwoPiece");
+            if (boxHandle == "True") {
+                $("#divBoxHandleViewCheckBox").removeAttr("hidden");
+            }
+
+            if (isTwoPiece == "True") {
+                $("#divIsTwoPieceViewCheckBox").removeAttr("hidden");
+            }
+
+            $("#CreatedBy-view").val($(item).attr("data-CreatedBy"));
+            $("#CreatedDate-view").val($(item).attr("data-CreatedDate"));
+            $("#UpdatedBy-view").val($(item).attr("data-UpdatedBy"));
+            $("#UpdatedDate-view").val($(item).attr("data-UpdatedDate"));
+
+            $("#modal-category-view").modal("show");
+        }
+
+        function BindProductTypeEdit(item) {
+            $("#UID-edit").val($(item).attr("data-UID"));
+            $("#Name-edit").val($(item).attr("data-Name"));
+            $("#Description-edit").val($(item).attr("data-Description"));
+            $("#FormGroup-edit").val($(item).attr("data-FormGroup"));
+            $("#formGroupSelect").val($(item).attr("data-FormGroup"));
+            $("#HierarchyLv2-edit").val($(item).attr("data-HierarchyLv2"));
+            $("#hierarchyLv2Select").val($(item).attr("data-HierarchyLv2"));
+            $("#UnitDesc-edit").val($(item).attr("data-UnitDesc"));
+            $("#SortIndex-edit").val($(item).attr("data-SortIndex"));
+            //set status
+            let status = $(item).attr("data-Status");
+            if (status == "True") {
+                $("#selectStatusEdit-active").removeAttr("hidden");
+                $("#selectStatusEdit-active").val("true");
+                $("#selectStatusEdit-inactive").attr("hidden", true);
+                StatusEdit = true;
+            } else {
+                $("#selectStatusEdit-inactive").removeAttr("hidden");
+                $("#selectStatusEdit-inactive").val("false");
+                $("#selectStatusEdit-active").attr("hidden", true);
+                StatusEdit = false;
+            }
+            //set checkbox
+            let boxHandle =  $(item).attr("data-BoxHandle");
+            let isTwoPiece = $(item).attr("data-IsTwoPiece");
+            let boxHandleId = "#BoxHandleEdit";
+            let isTwoPieceId = "#IsTwoPieceEdit";
+            if (boxHandle == "True") {
+                $(boxHandleId).val(true);
+                $(boxHandleId + "CheckBox").attr("checked", true);
+                BoxxHandleCheckBox = true;
+            } else
+            {
+                $(boxHandleId).val(false);
+                $(boxHandleId + "CheckBox").removeAttr("checked");
+                BoxxHandleCheckBox = false;
+            }
+
+            if (isTwoPiece == "True") {
+                $(isTwoPieceId).val(true);
+                $(isTwoPieceId + "CheckBox").attr("checked", true);
+                IsTwoPieceCheckBox = true;
+            } else {
+                $(isTwoPieceId).val(false);
+                $(isTwoPieceId + "CheckBox").removeAttr("checked");
+                IsTwoPieceCheckBox = false;
+            }
+
+            $("#CreatedBy-edit").val($(item).attr("data-CreatedBy"));
+            $("#CreatedDate-edit").val($(item).attr("data-CreatedDate"));
+            $("#UpdatedBy-edit").val($(item).attr("data-UpdatedBy"));
+            $("#UpdatedDate-edit").val($(item).attr("data-UpdatedDate"));
+            $("#modal-category-edit").modal("show");
+        }
+
+        function BoxHandleCheck(action) {
+            let boxHandleIdCheckbox = "#BoxHandle" + action + "CheckBox";
+            let boxHandleId = "#BoxHandle" + action;
+            if ($(boxHandleIdCheckbox).is(":checked")) {
+                $(boxHandleId).val(true);
+                BoxxHandleCheckBox = false;
+            }
+            else {
+                $(boxHandleId).val(false);
+                BoxxHandleCheckBox = false;
+            }
+        }
+
+        function IsTwoPieceCheck(action) {
+            let isTwoPieceIdCheckbox = "#IsTwoPiece" + action + "CheckBox";
+            let isTwoPieceId = "#IsTwoPiece" + action;
+            if ($(isTwoPieceIdCheckbox).is(":checked")) {
+                $(isTwoPieceId).val(true);
+                IsTwoPieceCheckBox = true;
+            }
+            else {
+                $(isTwoPieceId).val(false);
+                IsTwoPieceCheckBox = false;
+            }
+        }
+
+        function autocomplete(inp, arr) {
+            /*the autocomplete function takes two arguments,
+            the text field element and an array of possible autocompleted values:*/
+            var currentFocus;
+            /*execute a function when someone writes in the text field:*/
+            inp.addEventListener("input", function (e) {
+                var a, b, i, val = this.value;
+                /*close any already open lists of autocompleted values*/
+                closeAllLists();
+                if (!val) { return false; }
+                currentFocus = -1;
+                /*create a DIV element that will contain the items (values):*/
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+                /*append the DIV element as a child of the autocomplete container:*/
+                this.parentNode.appendChild(a);
+                /*for each item in the array...*/
+                for (i = 0; i < arr.length; i++) {
+                    /*check if the item starts with the same letters as the text field value:*/
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                        /*create a DIV element for each matching element:*/
+                        b = document.createElement("DIV");
+                        /*make the matching letters bold:*/
+                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                        b.innerHTML += arr[i].substr(val.length);
+                        /*insert a input field that will hold the current array item's value:*/
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                        /*execute a function when someone clicks on the item value (DIV element):*/
+                        b.addEventListener("click", function (e) {
+                            /*insert the value for the autocomplete text field:*/
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            /*close the list of autocompleted values,
+                            (or any other open lists of autocompleted values:*/
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
+                    }
+                }
+            });
+            /*execute a function presses a key on the keyboard:*/
+            inp.addEventListener("keydown", function (e) {
+                var x = document.getElementById(this.id + "autocomplete-list");
+                if (x) x = x.getElementsByTagName("div");
+                if (e.keyCode == 40) {
+                    /*If the arrow DOWN key is pressed,
+                    increase the currentFocus variable:*/
+                    currentFocus++;
+                    /*and and make the current item more visible:*/
+                    addActive(x);
+                } else if (e.keyCode == 38) { //up
+                    /*If the arrow UP key is pressed,
+                    decrease the currentFocus variable:*/
+                    currentFocus--;
+                    /*and and make the current item more visible:*/
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    /*If the ENTER key is pressed, prevent the form from being submitted,*/
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        /*and simulate a click on the "active" item:*/
+                        if (x) x[currentFocus].click();
+                    }
+                }
+            });
+            function addActive(x) {
+                /*a function to classify an item as "active":*/
+                if (!x) return false;
+                /*start by removing the "active" class on all items:*/
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                /*add class "autocomplete-active":*/
+                x[currentFocus].classList.add("autocomplete-active");
+            }
+            function removeActive(x) {
+                /*a function to remove the "active" class from all autocomplete items:*/
+                for (var i = 0; i < x.length; i++) {
+                    x[i].classList.remove("autocomplete-active");
+                }
+            }
+            function closeAllLists(elmnt) {
+                /*close all autocomplete lists in the document,
+                except the one passed as an argument:*/
+                var x = document.getElementsByClassName("autocomplete-items");
+                for (var i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) {
+                        x[i].parentNode.removeChild(x[i]);
+                    }
+                }
+            }
+            /*execute a function when someone clicks in the document:*/
+            document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        $('#btn-create-pt-modal').click(function () {
+            $('#modal-create-category').modal('show');
+        });
+    </script>
+}

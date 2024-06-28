@@ -1,0 +1,204 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceColor.MaintenanceColorViewModel
+
+@{
+    int No = 1;
+}
+
+@foreach (var item in Model.ColorViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Ink</td>
+        <td>@item.Shade</td>
+        <td class="text-center">
+            @if (item.OptDelete.HasValue && item.OptDelete.Value)
+            {
+                //non-active
+                <span class="fas fa-times mt-1" style="color:red"></span>
+            }
+            else
+            {
+                //active
+                <span class="fas fa-check" style="color:limegreen"></span>
+            }
+        </td>
+        <td>@item.MainDensity</td>
+        <td>
+            <button type="button" class="btn btn-default" data-id="@item.Id" data-ink="@item.Ink" data-shade="@item.Shade" data-opt="@item.OptDelete" data-main="@item.MainDensity" onclick="viewShow(this.getAttribute('data-id'),this.getAttribute('data-ink'),this.getAttribute('data-shade'),this.getAttribute('data-opt'),this.getAttribute('data-main'))"><span class="fas fa-file-alt text-info btn" aria-hidden="true"></span></button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-default" data-id="@item.Id" data-ink="@item.Ink" data-shade="@item.Shade" data-opt="@item.OptDelete" data-main="@item.MainDensity" data-createdBy="@item.CreatedBy" data-createdDate="@item.CreatedDate" onclick="viewEdit(this.getAttribute('data-id'),this.getAttribute('data-ink'),this.getAttribute('data-shade'),this.getAttribute('data-opt'),this.getAttribute('data-main'),this.getAttribute('data-createdDate'),this.getAttribute('data-createdBy'))"><span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span></button>
+        </td>
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal  bs-example-modal-lg" id="modal-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View Color"]</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Id" />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Ink"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Ink" id="Ink" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Shade"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Shade" id="Shade" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["StatusColor"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        @*<input type="text" class="form-control" name="OptDelete" id="OptDelete" readonly />*@
+                        <div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                            <input type="checkbox" class="form-check-input" id="OptDelete">
+                            <label class="form-check-label" for="OptDelete"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["MainDensity"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="MainDensity" id="MainDensity" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+<!-- Start Edit Modal -->
+<div class="modal " id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-maintain-color">
+            <input type="hidden" id="ECreatedDate" />
+            <input type="hidden" id="ECreatedBy" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit Color"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="EId" />
+                    <div class="row" style="padding-bottom: 5px;">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Ink"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EInk" name="Ink" maxlength="20" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Shade">@Localizer["Shade"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EShade" name="Shade" maxlength="10" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["StatusColor"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            @*<input type="text" class="form-control" id="EOptDelete" name="OptDelete" />*@
+                            <div class="form-group col-md-12" style="padding:0px;">
+                                <div class="form-check" style="padding-left: 0;">
+                                    <input type="checkbox" class="form-check-input" id="EOptDelete">
+                                    <label class="form-check-label" for="EOptDelete"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="MainDensity">@Localizer["MainDensity"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EMainDensity" name="MainDensity" maxlength="5" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnsubmitmaintaincolorchange" class="btn btn-info btnupdatemaintaincolor">@Localizer["Update"]</button>
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+<script>
+    $('#btnsubmitmaintaincolorchange').click(function () {
+        var tmp = getData();
+        if ($('#EOptDelete').prop('checked')) {
+            Object.assign(tmp, { OptDelete: 0 });
+        } else {
+            Object.assign(tmp, { OptDelete: 1 });
+        }
+        var form = JSON.stringify(tmp);// $('#edit-maintain-color').serialize();
+        $.ajax({
+            url: '@Url.Action("UpdateColor", "MaintenanceColor")',
+            type: "POST",
+            async: false,
+            data: {
+                req: form.toString()
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UpdateColorTableNew(data);
+                    swal("Update Success!", { icon: "success", });
+                } else {
+                    swal("Update Failed", data.ExceptionMessage, "warning");
+                }
+                $('#modal-edit').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+            }
+        });
+    });
+
+    function UpdateColorTableNew(res) {
+        $('#Color-table').html(res.View);
+        $('#Color-data-table').DataTable();
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '-webkit-fill-available');
+        $('.form-control').css('width', '-webkit-fill-available');
+
+    }
+</script>

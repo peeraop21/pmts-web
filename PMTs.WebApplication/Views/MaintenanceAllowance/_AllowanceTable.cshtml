@@ -1,0 +1,94 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceAllowance.MaintenanceAllowanceViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<div class="box-header">
+    <h3 class="box-title"><i class="mdi mdi-clipboard-outline"></i> Allowance Process</h3>
+</div>*@
+
+<div class="box-body">
+    <table id="Allowance-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Machine"]</th>
+                <th scope="col">@Localizer["Range"]</th>
+                <th scope="col">@Localizer["Percen"]</th>
+                <th scope="col">@Localizer["SheetMin"]</th>
+                <th scope="col">@Localizer["SheetMax"]</th>
+                <th scope="col" align="center">@Localizer["View"]</th>
+                <th scope="col" align="center">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+
+        //$(function () {
+        //    $('.form-group').css('display', 'block');
+        //    $('.form-inline').css('width', '100%');
+        //    $('.form-control').css('width', '100%');
+        //    $('input[type=search]').css('width', 'auto');
+
+        //    $('#Allowance-data-table').DataTable();
+        //});
+
+       //$(document).ready(function () {
+           // $('#btnUpdateAllow').click(function () {
+            //    alert("u4")
+                @*var form = $('#update_form_allowance')[0];
+                var data = new FormData(form);
+                $.ajax({
+                    url: '@Url.Action("UpdateAllowance", "MaintenanceAllowance")',
+                    type: "POST",
+                    enctype: 'multipart/form-data',
+                    data: data,
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAllowanceTableNew(data);
+                        // $("#idboardcode").val(data);
+                    }
+                });*@
+     //   });
+
+       //});
+                $('#btnSubmit').click(function () {
+            var form = $('#create-Allowance-form').serialize();
+                   $.ajax({
+                    url: '@Url.Action("SaveAllowance", "MaintenanceAllowance")',
+                       type: "POST",
+                       async: false,
+                       data: form,
+                    dataType: "json",
+                       success: function (data) {
+                           UpdateAllowanceTableNew(data);
+                          // $("#idboardcode").val(data);
+                    }
+                 });
+        });
+
+        $('.btnupdateallow').click(function () {
+          // alert("U")
+            debugger;
+            var form = $('#update_form_allowance').serialize();
+                   $.ajax({
+                    url: '@Url.Action("UpdateAllowance", "MaintenanceAllowance")',
+                       type: "POST",
+                       async: false,
+                       data: form,
+                    dataType: "json",
+                       success: function (data) {
+                           UpdateAllowanceTableNew(data);
+                          // $("#idboardcode").val(data);
+                    }
+                 });
+       });
+    </script>
+}

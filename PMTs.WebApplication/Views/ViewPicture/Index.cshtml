@@ -1,0 +1,192 @@
+﻿@{
+    Layout = null;
+}
+@using Microsoft.AspNetCore.Http
+@*@Context.Session.GetString("Chkname")*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    body {
+        background-color: #e6edf1 !important;
+    }
+    .card {
+        background-color: white;
+
+    }
+    #ViewImg .img-responsive {
+        width: auto!important;
+        height: 240px;
+    }
+    .card-body {
+        text-align: center;
+        padding: 5px;
+    }
+    .zoom-gallery {
+
+    }
+    .content {
+        padding: 5px;
+        text-align: left;
+    }
+    .box {
+        text-align: center;
+    }
+    .container-fluid {
+     padding: 0!important;
+    }
+    .mfp-img {
+        width: 650px!important;
+    }
+</style>
+<!-- Popup CSS -->
+<link href="~/lib/material-pro/main/css/colors/blue.css" rel="stylesheet" />
+<link href="~/lib/material-pro/assets/plugins/Magnific-Popup-master/dist/magnific-popup.css" rel="stylesheet" />
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<link href="~/lib/material-pro/main/css/style.css" rel="stylesheet" />
+<link href="~/css/style.css" rel="stylesheet" />
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="~/lib/material-pro/assets/plugins/Magnific-Popup-master/dist/jquery.magnific-popup-init.js"></script>
+<script src="~/lib/material-pro/assets/plugins/Magnific-Popup-master/dist/jquery.magnific-popup.min.js"></script>
+
+@*<form id="allData" asp-action="ProductPic" method="post" role="form" enctype="multipart/form-data">*@
+<div class="container-fluid">
+    <div id="ViewImg" class="box">
+        <p class="card-title">@Localizer["Material  No"] : @Model.MaterialNo</p>
+        <div class="zoom-gallery row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="content">
+                        <img src="~/pic/drawIcon.png" width="20" height="20" />&nbsp; <span class="card-title"> @Localizer["Drawing"]</span>
+                    </div>
+                    @if(@Model.modelProductPicture.Pic_DrawingPath != null) {
+                    <a href="@Model.modelProductPicture.Pic_DrawingPath" title="Drawing"> <img id="Drawing" src='@Model.modelProductPicture.Pic_DrawingPath' class="img-responsive" alt="img" /></a>
+                    }
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="content">
+                        <img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <span class="card-title"> @Localizer["Print Master"]</span>
+                    </div>
+                    @if (@Model.modelProductPicture.Pic_PrintPath != null)
+                    {
+                        <a href="@Model.modelProductPicture.Pic_PrintPath" title="Print Master"> <img id="Print" src='@Model.modelProductPicture.Pic_PrintPath' class="img-responsive" alt="img" /></a>
+                    }
+                    </div>
+            </div>
+            </div>
+            <div class="zoom-gallery row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="content">
+                            <img src="~/pic/palletIcon.png" width="20" height="20" />&nbsp; <span class="card-title"> @Localizer["Pallet"]</span>
+                        </div>
+                        @if (@Model.modelProductPicture.Pic_PalletPath != null)
+                        {
+                            <a href="@Model.modelProductPicture.Pic_PalletPath" title="Pallet"> <img id="Pallet" src='@Model.modelProductPicture.Pic_PalletPath' class="img-responsive" alt="img" /></a>
+                        }
+                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="content">
+                            <img src="~/pic/fgBoxIcon.jpg" width="20" height="20" />&nbsp; <span class="card-title"> @Localizer["Packaging"]</span>
+                        </div>
+                        @if (@Model.modelProductPicture.Pic_FGPath != null)
+                        {
+                            <a href="@Model.modelProductPicture.Pic_FGPath" title="Packaging"><img id="FG" src='@Model.modelProductPicture.Pic_FGPath' class="img-responsive" alt="img" /></a>
+                        }
+                        </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+            $('.zoom-gallery').magnificPopup({
+                delegate: 'a',
+                type: 'image',
+                closeOnContentClick: true,
+                closeBtnInside: false,
+                mainClass: 'mfp-no-margins mfp-with-zoom',
+                image: {
+                    verticalFit: true
+                },
+                zoom: {
+                    enabled: true,
+                    duration: 300
+                }
+            });
+
+            var path = CutDomain + "/Picture/";
+
+            var Drawing = '@Model.modelProductPicture.Pic_DrawingName'
+            var Dimension = '@Model.modelProductPicture.Pic_DrawingName'
+
+            if (Drawing !== "") {
+                var nameImage = path + Drawing;
+                $('#Pic_Drawing').attr("data-default-file", nameImage);
+                $('#Pic_Drawing').dropify();
+            } else if (Dimension !== "") {
+                //mook
+                var nameImage = path + Dimension;
+                $('#Pic_Drawing').attr("value", Dimension);
+                $('#Pic_Drawing').dropify();
+            }
+
+            var Print = '@Model.modelProductPicture.Pic_PrintName'
+            if ( Print !== "") {
+            var nameImage = path + Print;
+            $('#Pic_Print').attr("data-default-file", nameImage);
+            $('#Pic_Print').dropify();
+
+            }
+
+            var PicPallet = '@Model.modelProductPicture.Pic_PalletName'
+            if (PicPallet !== "") {
+            var nameImage = path + PicPallet;
+            $('#Pic_Pallet').attr("data-default-file", nameImage);
+            $('#Pic_Pallet').dropify();
+
+            }
+
+            var FG = '@Model.modelProductPicture.Pic_FGName'
+            if (FG !== "") {
+            var nameImage = path + FG;
+            $('#Pic_FG').attr("data-default-file", nameImage);
+            $('#Pic_FG').dropify();
+
+            }
+
+            function CutDomain() {
+                var path = location.pathname;
+                var host = location.host;
+                var domain;
+                if (host.indexOf('localhost') > -1) {
+                    if (host.toUpperCase() == "LOCALHOST") {
+                        domain = "http:\\\\" + host + "/" + path.split('/')[1] + "/";
+                    }
+                    else {
+                        domain = "http:\\\\" + host + path.split('/')[0] + "/";
+                    }
+
+                }
+                else {
+                    domain = "http:\\\\" + host + "/" + path.split('/')[1] + "/";
+                }
+                //production
+                if (host.indexOf('10.28.58.90/pmts') > -1) {
+                    domain = "http:\\\\" + host + "/" + path.split('/')[0];
+                }
+                return domain;
+            }
+    </script>
+
+}

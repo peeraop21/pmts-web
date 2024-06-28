@@ -1,0 +1,447 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<!-- You can change the theme colors from here -->
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-6">
+                        <h3 class="text-themecolor">@Localizer["New Product"]</h3>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="box-title text-right">
+                            @Localizer["Material No"] : @Model.MaterialNo
+                        </h3>
+                    </div>
+                </div> <hr />
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div id="tabs" style="width:100%">
+                            <ul>
+                                <li><a href="#tabs-1">@Localizer["T_Plant View"]</a></li>
+                                <li><a href="#tabs-2">@Localizer["T_Sale View"]</a></li>
+                                <li><a href="#tabs-3">@Localizer["T_Purchase"]</a></li>
+                                @*<li><a href="#tabs-4">@Localizer["T_KIWI"]</a></li>*@
+                            </ul>
+                            <div id="tabs-1">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="box box-warning">
+                                            @*<div class="box-header">
+                                                    <h3 class="box-title">@Localizer["Plant View "] @Model.MaterialNo</h3>
+                                                </div>*@
+
+                                            <div id="PlantList-data-table">
+                                                @Html.Partial("_ERPPlantView", Model)
+                                                @*@Html.Partial("_PlantView", Model)*@
+                                            </div>
+                                        </div>
+                                        <!-- /.box -->
+                                    </div>
+                                </div>
+                                <button class="btn btn-info waves-effect waves-light" type="button" data-toggle="collapse" data-target="#PlantView-Collapse"
+                                        aria-expanded="false" aria-controls="PlantView-Collapse">
+                                    <span class="btn-label"><i class="fa fa-plus"></i></span> @Localizer["T_Plant View"]
+                                </button>
+                                <div class="card">
+
+                                    <div class="collapse col-md-12" id="PlantView-Collapse" style="padding-top:15px">
+
+                                        <form novalidate id="PlantViewForm" asp-action="SavePlantViewERP" asp-controller="NewProduct" data-ajax="true" data-ajax-success="OnSaveSuccess" data-ajax-update="#PlantList-data-table" data-ajax-method="POST">
+
+                                            <div class="card-body">
+                                                <div class="box box-warning">
+                                                    <div class="box-header">
+                                                        @{
+                                                            if (Model.PlantOs != null)
+                                                            {
+                                                                <h4>@Localizer["T1_Sale Org"] @Model.PlantOs;</h4>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <h4>  @Localizer["T1_Sale Org"] @ViewBag.Saleorg</h4>
+                                                            }
+                                                        }
+
+                                                        <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="form-group row">
+                                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["T1_Plant"] :<i style="color:red"> *</i></label>
+                                                            <div class="col-sm-8">
+                                                                <div class="controls">
+                                                                    @* @Html.DropDownListFor(m => m.modelProductERP.Plant, Model.modelProductERP.PlantList, "--- Please Select Item ---", new { @class = "form-control" })*@
+                                                                    <select id="selectPlant" asp-for="modelProductERP.Plant" class="form-control" asp-items="@(new SelectList(Model.modelProductERP.PlantList, "Value", "Text", ""))" onchange="PurchaseGrp()"></select>
+                                                                    <span asp-validation-for="modelProductERP.Plant" class="text-danger"></span>
+                                                                    @*<select  asp-for="modelProductERP.Plant" asp-items="@(new SelectList(Model.modelProductERP.PlantList,"Value","Text"))" class="form-control"></select>*@
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["T1_Purchase"] :<i style="color:red"> *</i></label>
+                                                            <div class="col-sm-8">
+                                                                <div class="controls">
+                                                                    <input type="text" class="form-control" asp-for="modelProductERP.PurchCode" id="PurchCode" maxlength="5">
+                                                                    <span asp-validation-for="modelProductERP.PurchCode" class="text-danger"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="inputcost" class="col-sm-4 control-label">@Localizer["T1_Cost"] :<i style="color:red"> *</i></label>
+                                                            <div class="col-sm-8">
+                                                                <div class="controls">
+                                                                    <input type="text" class="form-control mytextboxNumber" id="StdtotalCost" asp-for="modelProductERP.StdtotalCost">
+                                                                    <span asp-validation-for="modelProductERP.StdtotalCost" class="text-danger"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-4"> </div>
+                                                            <div class="col-sm-8">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.box-body -->
+                                                </div>
+                                            </div>
+
+                                            <div class="card-footer">
+
+                                                <div class="row justify-content-end">
+
+                                                    <div class="col-md-2">
+                                                        <button type="submit" class="btn btn-primary" onclick="return validateForm()" id="btnSavePlant" name="btnSavePlant" value="SavePlant">@Localizer["SavePlant"] </button>
+                                                        @*<button type="submit" class="btn btn-primary" id="btnSavePlant" name="btnSavePlant" value="SavePlant">@Localizer["SavePlant"] </button>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tabs-2">
+
+                                <div id="SaleList-data-table">
+                                    @Html.Partial("_ERPSaleView", Model)
+                                </div>
+
+                                <button class="btn btn-info waves-effect waves-light" type="button" data-toggle="collapse" data-target="#SaleView-Collapse"
+                                        aria-expanded="false" aria-controls="SaleView-Collapse">
+                                    <span class="btn-label"><i class="fa fa-plus"></i></span> SaleView
+                                </button>
+                                <div class="card">
+                                    <div class="collapse col-md-12" id="SaleView-Collapse" style="padding-top:15px">
+                                        <form id="SaleViewForm" asp-action="SaveSaleViewERP" asp-controller="NewProduct" data-ajax="true" data-ajax-success="OnSaveSuccessSale" data-ajax-update="#SaleList-data-table" data-ajax-method="POST">
+                                            <div class="card-body">
+                                                <div class="box box-warning">
+
+                                                    <div class="box-header">
+                                                        <h4> @Localizer["H_Sale Org"]  @ViewBag.Saleorg</h4>
+
+                                                        <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <div class="form-group row">
+                                                            <label for="PrdType:" class="col-sm-4 control-label">@Localizer["T2_PrdType"] :</label>
+                                                            <div class="col-sm-8">
+                                                                <select class="form-control" asp-for="modelProductERPSale.OrderType">
+                                                                    @if (ViewBag.cboPrdType == "ZMTO")
+                                                                    {
+                                                                        <option selected>ZMTO</option>
+                                                                        <option>@Localizer["BANC"]</option>
+                                                                        <option>@Localizer["NORM"]</option>
+                                                                        <option>@Localizer["LUMF"]</option>
+
+                                                                    }
+                                                                    else if (ViewBag.cboPrdType == "BANC")
+                                                                    {
+                                                                        <option>@Localizer["ZMTO"]</option>
+                                                                        <option selected>@Localizer["BANC"]</option>
+                                                                        <option>@Localizer["LUMF"]</option>
+                                                                        <option>@Localizer["NORM"]</option>
+                                                                    }
+                                                                    else if (ViewBag.cboPrdType == "NORM")
+                                                                    {
+                                                                        <option>@Localizer["ZMTO"]</option>
+                                                                        <option>@Localizer["BANC"]</option>
+                                                                        <option>@Localizer["LUMF"]</option>
+                                                                        <option selected>@Localizer["NORM"]</option>
+                                                                    }
+                                                                    else if (ViewBag.cboPrdType == "LUMF" || Model.modelCategories.FormGroup == "BOM")
+                                                                    {
+                                                                        <option>@Localizer["ZMTO"]</option>
+                                                                        <option>@Localizer["BANC"]</option>
+                                                                        <option>@Localizer["NORM"]</option>
+                                                                        <option selected>@Localizer["LUMF"]</option>
+                                                                    }
+                                                                </select>
+                                                                <span asp-validation-for="modelProductERPSale.OrderType" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="Channel" class="col-sm-4 control-label">@Localizer["T2_Channel"] :<i style="color:red"> *</i></label>
+                                                            <div class="col-sm-8">
+                                                                <div class="controls">
+                                                                    <select class="form-control" asp-for="modelProductERPSale.Channel">
+                                                                        <option></option>
+                                                                        <option>10</option>
+                                                                        @*<option>30</option>*@
+                                                                        <option>60</option>
+                                                                    </select>
+                                                                    <span asp-validation-for="modelProductERPSale.Channel" class="text-danger"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["Lb_Sale Org"] :<i style="color:red"> *</i></label>
+                                                            <div class="col-sm-8  class=" controls"">
+                                                                @*@Html.DropDownListFor(m => m.modelProductERP.Plant, Model.modelProductERP.PlantList, new { @class = "form-control" })*@
+                                                                @*<select asp-for="modelProductERPSale.SaleOrg" class="form-control" asp-items="@(new SelectList(Model.modelProductERP.PlantList, "Value", "Text", "--- Please Select Item ---")) "></select>*@
+                                                                <select id="selectSale" asp-for="modelProductERPSale.SaleOrg" class="form-control"
+                                                                        asp-items="@(new SelectList(Model.modelProductERPSale.SaleOrgList, "Value", "Text")) ">
+                                                                    <option value="" selected>--- Select Item ---</option>
+                                                                </select>
+
+                                                                <span asp-validation-for="modelProductERPSale.SaleOrg" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["Min Order"] : </label>
+                                                            <div class="col-sm-8">
+
+                                                                <div class="controls">
+                                                                    <input type="number" class="form-control" id="MinQty" asp-for="modelProductERPSale.MinQty">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="row justify-content-end">
+
+                                                    <div class="col-md-2">
+                                                        <button type="submit" class="btn btn-primary" id="btnSave" name="btnSave" value="SaveSale"> @Localizer["Save Sale View"]</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tabs-3">
+                                @Html.Partial("_PurchaseView", Model)
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="card-footer">
+
+                <div class="col-sm-12 text-right">
+                    <!-- general form elements -->
+                    <!--<form role="form" action="Productspec.html">-->
+
+                    <div class="form-group">
+                        @*<form asp-action="ERPNext">*@
+                        <div class="form-group">
+                            <button type="submit" id="SaveErpAndNext" onclick="SaveErpAndNext()" class="btn btn-success btn-fixsize"><i class="fa fa-save"></i>  @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i></button>
+                            <button class="btn btn-info btn-fixsize" type="button" id="btnNextLoad" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
+                        </div>
+                        @*</form>*@
+
+                        <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        var selected_tab = 0;
+        $(function () {
+
+            var tabs = $("#tabs").tabs({
+                select: function (e, i) {
+                    selected_tab = i.index;
+                }
+            });
+            selected_tab = $("#selectedTab").val() != "" ? parseInt($("#selectedTab").val()) : 0;
+            tabs.tabs('select', selected_tab);
+            $("form").submit(function () {
+                $("#selectedTab").val(selected_tab);
+            });
+
+        });
+
+        function PurchaseGrp() {
+            var dataJoint = $("#selectPlant").val();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetPurchaseGrp", "NewProduct")',
+            dataType: "json",
+            data: { Plant: dataJoint },
+            success: function (res) {
+
+                $('#PurchCode').val(res.PurchCodeGrp);
+
+                },
+            error: function (res) {
+
+            }
+        });
+
+        }
+        function SaveErpAndNext() {
+            LoadingButton(true);
+            var form = $('#formPurchase')[0];
+            var data = new FormData(form);
+            debugger;
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("SavePurchaseERP", "NewProduct")',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+
+                    window.location.href =  window.location.href = '@Url.Action("ProductPic", "NewProduct")';
+
+                },
+                error: function () {
+                    LoadingButton(false);
+                }
+            });
+        }
+    </script>
+    <script>
+
+        $(document).ready(function () {
+
+            LoadingButton(false);
+            $('.mytextboxNumber').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|\./;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+            $('.mytextboxNumberNodecimal').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|/;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+        });
+
+        $("#MinQty").change(function () {
+            if ($("#MinQty").val() == "") {
+                $("#MinQty").val(0);
+            }
+        });
+
+        function closeEditModalSale() {
+            $('.close').click();
+            return true;
+        }
+
+        var onUpdateSaleSuccess = function (res) {
+
+            // $.ajax({
+            debugger;
+            // success: function (res) {
+            $('#SaleList-data-table').html(res);
+            $('.modal-backdrop').remove();
+
+        };
+
+        function closeEditModal() {
+            // alert(res);
+            var Purch = $("#PurchCodeEdit").val();
+
+            // alert(bunlayer);
+            if (Purch != "") {
+                $('.close').click();
+                return true;
+            }
+
+            return false;
+        }
+
+        var onUpdateSuccess = function (res) {
+            $('#PlantList-data-table').html(res);
+            $('.modal-backdrop').remove();
+
+        };
+
+        var OnSaveSuccess = function () {
+            swal('Save Success');
+            $('#StdtotalCost').val('0');
+            $('#selectPlant').prop('selectedIndex', 0);
+        };
+
+        function LoadingButton(value) {
+            if (value) {
+                $('#SaveErpAndNext').hide();
+                $('#btnNextLoad').show();
+            } else {
+                $('#btnNextLoad').hide();
+                $('#SaveErpAndNext').show();
+            }
+        }
+    </script>
+
+}

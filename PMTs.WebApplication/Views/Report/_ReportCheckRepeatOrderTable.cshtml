@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ModelView.Report.CheckRepeatOrder>
+
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckOrderTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:12%">@Localizer["Due_Date"]</th>
+            <th style="width:12%">@Localizer["Material No"]</th>
+            <th style="width:13%">@Localizer["Product Code"]</th>
+            <th style="width:31%">@Localizer["Customer"]</th>
+            <th style="width:12%">@Localizer["P/O NO"]</th>
+            <th style="width:12%">@Localizer["จำนวนสั่ง"]</th>
+            <th style="width:8%">@Localizer["Count"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr data-materialNO="@item.MaterialNo"
+                data-poNo="@item.PoNo"
+                data-dueDate="@item.DueDate"
+                data-orderQuant="@item.OrderQuant"
+                onclick="SearchRepeatOrderItems(this)">
+                <td class="text-center">@item.DueDate.ToShortDateString()</td>
+                <td class="text-center">@item.MaterialNo</td>
+                <td class="text-center">@item.PC</td>
+                <td class="text-left">@item.Name</td>
+                <td class="text-center">@item.PoNo</td>
+                <td class="text-center">@item.OrderQuant</td>
+                <td class="text-center">@item.repeatCount</td>
+            </tr>
+        }
+    </tbody>
+</table>

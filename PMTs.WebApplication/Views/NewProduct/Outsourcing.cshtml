@@ -1,0 +1,328 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+
+@model PMTs.DataAccess.ModelView.NewProduct.OutsourcingViewModel
+@{
+    ViewData["Title"] = "Outsourcing";
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+}
+
+<style>
+    .non-padding {
+        padding: 0px
+    }
+
+    .input-field {
+        padding-left: 15px
+    }
+
+    .label-field {
+        vertical-align: central;
+        padding-top: 6px;
+        text-align: right;
+    }
+
+    .newline {
+        padding-top: 7px
+    }
+
+    .font-title {
+        font-size: 14px;
+        font-weight: 500;
+    }
+</style>
+
+<br />
+<div class="card">
+    <div class="card-body">
+        <div class="row justify-content-between">
+            <div class="col-xs-6 col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-view-list"></i> @Localizer["Title"] </h3>
+            </div>
+        </div>
+    </div>
+    <div class="card-body text-center">
+        <form id="outsourceForm" asp-action="NextOutsourcing" asp-controller="NewProduct">
+            <input id="formSaleOrg" asp-for="SaleOrg" type="hidden" />
+            <input id="formOrderTypeId" asp-for="OrderTypeId" type="hidden" />
+            <input id="formAction" asp-for="Action" type="hidden" />
+            <input id="formPlant" asp-for="Plant" type="hidden" />
+            <div class="container row">
+
+                @*Radio button for choose type of outsourcing*@
+                <div class="col-12 form-group row">
+                    <div class="col-md-1"></div>
+                    <div class="control-label label-field col-md-11 non-padding"><font size="5" style="float:left">@Localizer["Process Production Material"]</font> </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-5 label-field" style="padding-left:0">
+                        <div class="float-left col-12">
+                            <input class="form-check-input" type="radio" name="typeOfOs" id="createMaterial" value="Create" checked onclick="CheckRadioSelect(this)">
+                            <label class="form-check-label" for="createMaterial" style="float:left">@Localizer["Create Manual Material"]</label>
+                        </div>
+                        <div class="float-left col-12" style="margin-top:10px;">
+                            <input class="form-check-input" type="radio" name="typeOfOs" id="copyMaterial" value="Copy" onclick="CheckRadioSelect(this)">
+                            <label class="form-check-label" for="copyMaterial" style="float:left">@Localizer["Copy Material"]</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 form-group newline" style="margin-top:20px">
+                    <label class="control-label float-left label-field col-md-2 font-title "> @Localizer["Material No"]</label>
+                    <div class="col-md-4 float-left non-padding">
+                        <input type="text" class="form-control" style="height:calc(2.25rem + 2px);" asp-for="@Model.MaterialNo" required placeholder="Ex. Z12345678" aria-invalid="false" id="materialNo" name="materialNo">
+                        <span id="materialNo-errorMassage" class="text-danger float-left" hidden>The Material No field is required.</span>
+                    </div>
+                    <div class="col-md-4 form-group" style="float:left">
+                        <input type="button" class="btn btn-info btn-fixsize" id="buttonSubmit" onclick="ValidateMaterialNo()" value="Create" style="max-height:38px;float:left;margin-left:10px" />
+                    </div>
+                </div>
+
+                @*Select list for choose type of outsourcing*@
+                <div class="col-12 form-group newline" id="mainDivSelectOutsource" style="margin-bottom:13px" hidden>
+                    <label class="col-md-2 control-label label-field float-left font-title"> @Localizer["Type Outsource"]</label>
+                    <div class="col-md-4 float-left non-padding" id="subDivSelectOutsource">
+                        <select class="custom-select  float-left" id="selectOutsource" style="width: 100%" onchange="ChangeTypeOfOutsource(this)">
+                            <option value="1">@Localizer["Inter-Plant Order"]</option>
+                            <option value="2">@Localizer["Inter-Company Order"]</option>
+                            <option value="3">@Localizer["STO"]</option>
+                            <option value="4">@Localizer["Trading Goods Order"]</option>
+                            <option value="5">@Localizer["Outsource Order"]</option>
+                            <option value="6">@Localizer["3 Party Order"]</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4"></div>
+                </div>
+
+                @*Search material to copy or edit outsource*@
+                <div class="col-12 form-group newline">
+                    <label class="control-label float-left label-field col-md-2 font-title"> @Localizer["Sale Org"]</label>
+                    <div class="col-md-4 float-left non-padding" id="divSelectSaleOrg">
+                        <select class="custom-select" id="saleOrg" name="factoryCode" asp-items="@(new SelectList(Model.CompanyProfiles,"SaleOrg","SaleOrg"))"></select>
+                    </div>
+                </div>
+
+                @*<div id="outsourcingTablePartial">
+                        <partial name="_OutsourcingTable" model="Model" view-data="@ViewData" />
+                    </div>*@
+
+                <div class="help-block"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        const companyProfiles = @Html.Raw(Json.Serialize(Model.CompanyProfiles));
+        const hireOrders = @Html.Raw(Json.Serialize(Model.HireOrders));
+        const hireMappings = @Html.Raw(Json.Serialize(Model.HireMappings));
+        var orderTypeId = 1;
+
+        $(document).ready(function () {
+            $("#materialNo").val("");
+            $("#createMaterial").click();
+            $("#mainDivSelectOutsource").attr("hidden", "true");
+
+            //set data table
+            $('#OsTable').DataTable({
+                "searching": true,
+                'bFilter': false,
+                "scrollX": true,
+                'columnDefs': [{
+                    'targets': [-3, -2, -1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }],
+                "order": [[1, "desc"]]
+            });
+
+            GenerateSaleOrgListByTypeOfOutsource("", "Create");
+        });
+
+        function GetMaterialNoValue() {
+            return $("#materialNo").val();
+        }
+
+        function GetSaleOrgValue() {
+            return $("#saleOrg").val();
+        }
+
+        function GetOrderTypeValue() {
+            return $("#selectOutsource").val();
+        }
+
+        function ValidateMaterialNo() {
+            let action = "";
+            let typeOfOsSelect = document.getElementsByName("typeOfOs");
+            for (var i = 0; i < typeOfOsSelect.length; i++) {
+                if (typeOfOsSelect[i].checked)
+                {
+                    action = typeOfOsSelect[i].value;
+                }
+            }
+
+            let materialNo = GetMaterialNoValue();
+
+            if (materialNo == "") {
+                $("#materialNo-errorMassage").html("The Material No field is required.");
+                $("#materialNo-errorMassage").removeAttr("hidden");
+            }
+            else {
+                if (materialNo.length != 10) {
+                    $("#materialNo-errorMassage").html("The Material No field must be a length 10.");
+                    $("#materialNo-errorMassage").removeAttr("hidden");
+                }
+                else
+                {
+                    let saleOrgArr = GetSaleOrgValue().split(" ");
+                    let plantOs = companyProfiles.filter(c => { return c.SaleOrg == GetSaleOrgValue() })[0].Plant;
+                    $("#materialNo-errorMassage").attr("hidden", "true");
+
+                    //ajax to check duplicate material no
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        url: '@Url.Action("CopyOSCheckMaterial", "NewProduct")',
+                        data: { materialNo: materialNo, action: action, plantOs: plantOs },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                //submit form
+                                $("#formSaleOrg").val(saleOrgArr[0]);
+                                $("#formOrderTypeId").val(parseInt(GetOrderTypeValue()));
+                                $("#formAction").val(action);
+                                $("#formPlant").val(plantOs);
+
+                                $("#outsourceForm").submit();
+                            }
+                            else
+                            {
+                                swal(action + " Failed!", res.ExceptionMessage, { icon: "warning" })
+                                    .then(() => {
+                                    });
+                            }
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            }
+        }
+
+        function CheckRadioSelect(e)
+        {
+            let userGroup = companyProfiles.filter(c => { return c.Plant == '@Model.FactoryLogon' })[0].Group;
+            $action = $(e).val();
+
+            if ($action == "Create") {
+                $("#mainDivSelectOutsource").attr("hidden", "true");
+
+                //gen saleorg select list by type of outsource
+                GenerateSaleOrgListByTypeOfOutsource(orderTypeId, $action)
+
+            } else if ($action == "Copy") {
+                $("#mainDivSelectOutsource").removeAttr("hidden");
+
+                //gen type of outsource select list
+                GenerateSelectListByUserGroup(userGroup);
+
+                //gen saleorg select list by type of outsource
+                GenerateSaleOrgListByTypeOfOutsource(orderTypeId, $action)
+            }
+
+            $("#buttonSubmit").attr("value", $action);
+        }
+
+        function ChangeTypeOfOutsource(e)
+        {
+            $typeOfOutsource = $(e).val();
+            GenerateSaleOrgListByTypeOfOutsource($typeOfOutsource, "Copy");
+        }
+
+        function GenerateSelectListByUserGroup(group)
+        {
+            let appendStr = "";
+            let firstIndex = 1;
+            $("#subDivSelectOutsource").empty();
+
+            $.each(hireMappings, function (hKey,hObj)
+            {
+                if (hObj.GroupBU == group) {
+                    let orderId = hObj.OrderID;
+                    $.each(hireOrders, function (ho_Key, ho_Obj) {
+                        if (orderId == ho_Obj.Id)
+                        {
+                            if (firstIndex == 1)
+                            {
+                                orderTypeId = ho_Obj.Id;
+                            }
+                            appendStr = appendStr + "<option value=\"" + ho_Obj.Id + "\">" + ho_Obj.OrderType + "</option>";
+                            firstIndex++;
+                        }
+                    });
+                }
+            });
+
+            $("#subDivSelectOutsource").append("<select class=\"custom-select  float-left\" id=\"selectOutsource\" style=\"width: 100 % \" onchange=\"ChangeTypeOfOutsource(this)\">" + appendStr + "</select >");
+        }
+
+         function GenerateSaleOrgListByTypeOfOutsource(typeOfOutsource,action)
+        {
+            let appendStr = "";
+            let userGroup = companyProfiles.filter(c => { return c.Plant == '@Model.FactoryLogon' })[0].Group;
+            $("#divSelectSaleOrg").empty();
+
+            if (action == "Create") {
+                $.each(companyProfiles, function (cKey, cObj) {
+                    if (cObj.SaleOrg.split(" ")[0] != '@userSession.SaleOrg')
+                    {
+                        appendStr = appendStr + "<option value=\"" + cObj.SaleOrg + "\">" + cObj.SaleOrg + " " + cObj.ShortName + "</option>";
+                    }
+                });
+            }
+            else if(action == "Copy")
+            {
+                companyProfilesCopy = companyProfiles.filter(c => { return c.StatusPMTs == true });
+
+                if (typeOfOutsource == 1 || typeOfOutsource == 3) {
+                    //where group1
+                    $.each(companyProfilesCopy, function (cKey, cObj) {
+                        if (cObj.Group == userGroup && cObj.SaleOrg.split(" ")[0] != '@userSession.SaleOrg') {
+                            appendStr = appendStr + "<option value=\"" + cObj.SaleOrg + "\">" + cObj.SaleOrg + " " + cObj.ShortName + "</option>";
+                        }
+                    });
+                }
+                else if (typeOfOutsource == 2 || typeOfOutsource == 4) {
+                    //non my group
+                    $.each(companyProfilesCopy, function (cKey, cObj) {
+                        if (cObj.Group != userGroup && cObj.SaleOrg.split(" ")[0] != '@userSession.SaleOrg') {// && cObj.Group != 4) {
+                            appendStr = appendStr + "<option value=\"" + cObj.SaleOrg + "\">" + cObj.SaleOrg + " " + cObj.ShortName + "</option>";
+                        }
+                    });
+                }
+                else if (typeOfOutsource == 5) {
+                    //where group 1,2,3
+                    $.each(companyProfilesCopy, function (cKey, cObj) {
+                        if ((cObj.Group == 1 || cObj.Group == 2 || cObj.Group == 3 || cObj.Group == 4) && cObj.SaleOrg.split(" ")[0] != '@userSession.SaleOrg') {
+                            appendStr = appendStr + "<option value=\"" + cObj.SaleOrg + "\">" + cObj.SaleOrg + " " + cObj.ShortName + "</option>";
+                        }
+                    });
+                }
+
+            }
+
+             $("#divSelectSaleOrg").append("<select class=\"custom-select  float-left\" id=\"saleOrg\" style=\"width:100% \">" + appendStr + "</select>");
+        }
+    </script>
+}

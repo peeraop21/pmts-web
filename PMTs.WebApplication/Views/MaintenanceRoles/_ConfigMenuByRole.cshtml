@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceRoles.MaintenanceRolesViewModel
+
+@if (Model.MainMenusList != null)
+{
+<div class="card-body">
+    @Localizer["Menu"]
+    <div class="row">
+        <div class="col-md-12">
+            <table id="MainMenuTable" class="table table-bordered color-table">
+                <thead>
+                    <tr style="vertical-align:central">
+                        <th width="15%">@Localizer["Active"]</th>
+                        @*<th width="15%">Id</th>*@
+                        <th width="50%">@Localizer["Mainmenu"]</th>
+                        <th width="20%">@Localizer["Config Sub Menu"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.MainMenusList.OrderBy(x => x.Id))
+                    {
+                        <tr>
+                            <td class="text-center" style="vertical-align:middle;">
+
+                                @if (item.RoleId != null)
+                                {
+                                    <input type="checkbox" class="filled-in select-item-check" checked id="chk_@item.Id"
+                                           value="@item.Id" data-id="@item.Id" data-roleId="@item.RoleId"
+                                           data-idmenurole="@item.IdmenuRole"
+                                           onclick="SaveMenu(this.getAttribute('data-id'), this.getAttribute('data-roleId'),
+        this.getAttribute('data-idmenurole'))" />
+                                    <label for="chk_@item.Id"></label>
+                                }
+                                else
+                                {
+
+                                    <input type="checkbox" class="filled-in select-item-check" id="chk_@item.Id"
+                                           value="@item.Id" data-id="@item.Id" data-roleId="@item.RoleId"
+                                           data-idmenurole="@item.IdmenuRole"
+                                           onclick="SaveMenu(this.getAttribute('data-id'), this.getAttribute('data-roleId'),
+        this.getAttribute('data-idmenurole'))" />
+                                    <label for="chk_@item.Id"></label>
+                                }
+                            </td>
+                            @*<td>@item.Id</td>*@
+                            <td>@item.MenuNameEn </td>
+                            @*<td>@item.RoleId</td>*@
+
+                            <td>
+                                @*<button type="button" class="btn btn-default" data-id="@item.Id" data-RoleId="@item.Id" data-RoleName="@item.MenuNameEn"
+                                            onclick="viewSubMainmenu(this.getAttribute('data-RoleId'),this.getAttribute('data-idmenu')">
+                                        <span class="ti-settings" aria-hidden="true"></span>
+                                    </button>*@
+
+                                <button type="button" class="btn btn-default" data-id="@item.Id" data-RoleId="@item.RoleId"
+                                        onclick="viewSubMainmenu(this.getAttribute('data-id'),this.getAttribute('data-RoleId'))">
+                                    <span class="ti-settings" aria-hidden="true"></span>
+                                </button>
+                            </td>
+
+                            @*<td>
+                                    <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+                                </td>*@
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+}

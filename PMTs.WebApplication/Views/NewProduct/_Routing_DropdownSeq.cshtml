@@ -1,0 +1,17 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<select class="form-control" id="id_seq">
+    @{
+        int number = 0;
+        foreach (var x in Model.modelRouting.RoutingDataList)
+        {
+            number++;
+            <option value=@x.SeqNo>@x.SeqNo | @x.Machine </option>
+        }
+    }
+</select>

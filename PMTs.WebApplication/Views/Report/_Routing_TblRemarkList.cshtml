@@ -1,0 +1,60 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.Report.SaleOrderModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<table id="tblRemark" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>List</th>
+        </tr>
+    </thead>
+    <tbody style="cursor:pointer">
+        @{
+            if (Model.modelBuildRemark != null)
+            {
+                foreach (var item in Model.modelBuildRemark)
+                {
+                    <tr>
+                        <td>@item.List</td>
+                    </tr>
+                }
+
+            }
+        }
+    </tbody>
+</table>
+
+<script>
+
+   $(document).ready(function () {
+
+        $('#tblRemark').dataTable({
+            "scrollY": "300px",
+            "scrollCollapse": true,
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            dom: "<'myfilter'f><'mylength'l>t",
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search Remark"
+            }
+        });
+
+        var tableRemark = $('#tblRemark').DataTable();
+        $('#tblRemark tbody').on('dblclick', 'tr', function () {
+            var data = tableRemark.row(this).data();
+            if ($('#modelRouting_Remark').val() === "") { $('#modelRouting_Remark').val($('#modelRouting_Remark').val() + data[0]); } else { $('#modelRouting_Remark').val($('#modelRouting_Remark').val() + '\n' + data[0]); }
+            var textarea = document.getElementById('modelRouting_Remark');
+            textarea.scrollTop = textarea.scrollHeight;
+            $('#madalRemark').modal('hide');
+        });
+
+    });
+</script>

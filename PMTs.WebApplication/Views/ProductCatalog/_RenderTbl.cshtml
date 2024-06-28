@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.ProductCatalog.ProductCatalogModel
+@using System.Linq
+
+@{
+    if (Model.holdMaterialHistories != null)
+    {
+        <div class="table-responsive text-nowrap">
+            <table id="RenderTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">@Localizer["No"]</th>
+                        <th scope="col">@Localizer["Material No"]</th>
+                        <th scope="col">@Localizer["Status"]</th>
+                        <th scope="col">@Localizer["HoldRemark"]</th>
+                        <th scope="col">@Localizer["ChangeProductNo"]</th>
+                        <th scope="col">@Localizer["CreatedBy"]</th>
+                        <th scope="col">@Localizer["CreatedDate"]</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                  @{
+                      int No = 1;
+                      if (Model.holdMaterialHistories.Count > 0)
+                      {
+
+                          foreach (var item in Model.holdMaterialHistories)
+                          {
+                                    <tr>
+                                        <th scope="row">@No</th>
+                                        <td>@item.MaterialNo</td>
+                                        <td>@item.IsLocked</td>
+                                        <td>@item.HoldRemark</td>
+                                        <td>@item.ChangeProductNo</td>
+                                        <td>@item.CreatedBy</td>
+                                        <td>@item.CreatedDate</td>
+                                    </tr>
+                              }
+                          }
+                          No++;
+                      }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+        @section Scripts {
+            <script>
+                $(document).ready(function () {
+                    $('#RenderTable').DataTable({
+                        "scrollY": 400,
+                        "scrollX": true,
+                        "autoWidth": true
+                    });
+                });
+            </script>
+        }

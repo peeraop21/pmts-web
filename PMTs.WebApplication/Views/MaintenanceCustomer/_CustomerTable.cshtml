@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceCustomer.MaintenanceCustomerViewModel
+
+<div class="box-header">
+
+    @*<div class="row justify-content-between">
+            <div class="col-xs-6 col-md-6">
+                <h3 class="box-title"><i class="mdi mdi-account-circle"></i> Customer</h3>
+            </div>
+            <div class="col-md-6 text-right">
+
+                @ViewBag.ErrorMessage
+                <form>
+                    <div class="controls">
+                        <div class="input-group">
+                            <select class="form-control custom-select col-md-4 text-sm-left" name="ddlSearch">
+                                <option value="Customer_Name">Customer Name</option>
+                                <option value="Customer_Code">Customer Code</option>
+                                <option value="Customer_Id">Customer Id</option>
+                            </select>
+
+                            <input type="text" class="form-control col-md-7"  placeholder="Search" required="" aria-invalid="false" name="Txtsearch">
+                            <span class="input-group-btn" style="width:0px;"></span>
+
+                            <div class="input-group-append">
+                                <button asp-action="Index" style="padding: 0 5px;" class="btn btn-info"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </form>
+            </div>
+        </div>*@
+</div>
+
+<div class="box-body">
+    <table id="Customer-data-table" class="table table-bordered table-striped text-center">
+        <thead>
+            <tr>
+                <th width="50">@Localizer["No."]</th>
+                <th width="180">@Localizer["Customer Name"]</th>
+                <th width="80">@Localizer["Sold to Code"]</th>
+                <th width="80">@Localizer["Customer Code"]</th>
+                <th width="80">@Localizer["Customer ID"]</th>
+                <th width="30">@Localizer["View"]</th>
+                <th width="30">@Localizer["Edit"]</th>
+                <th width="30">@Localizer["Delete"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOftable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,55 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.OutsourcingViewModel
+@{
+    ViewData["Title"] = "_OutsourcingTable";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@*<form id="formCreateOs" method="post" asp-action="NextOutsourcing">
+    <input id="fieldplant" type="hidden" asp-for="@Model.Plant" />
+    <input id="fieldMaterialNo" type="hidden" asp-for="@Model.MaterialNo" />
+    <input id="fieldIsCreateOs" type="hidden" asp-for="@Model.IsCreateOs" />
+    <input id="fieldSaleOrg" type="hidden" asp-for="@Model.SaleOrg" />
+    <div class="table-responsive-md">
+        <table id="OsTable" class="table table-bordered table-hover color-table display nowrap">
+            <thead>
+                <tr class="color-table">
+                    <th class="text-center" width="5%" style="min-width:70px">Option</th>
+                    <th width="4%" style="min-width:80px">Plant</th>
+                    <th width="4%" style="min-width:80px">SaleOrg</th>
+                    <th width="5%" style="min-width:110px">Material No</th>
+                    <th width="10%" style="min-width:110px">PC</th>
+                    <th width="10%" style="min-width:300px">Customer Name</th>
+                    <th width="10%" style="min-width:120px">Description</th>
+                    <th width="10%" style="min-width:250px">Board</th>
+                    <th width="7%" style="min-width:300px">BoxType</th>
+                    <th width="10%" style="min-width:150px">Machine</th>
+                    <th width="5%" style="min-width:120px">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.MasterDataRoutingModels)
+                {
+                <tr>
+                    <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" type="button" style="vertical-align:sub" onclick="CopyOutsourcing('@item.MaterialNo','@item.Plant')">
+                            select
+                        </button>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Plant)</td>
+                    <td>@Html.DisplayFor(modelItem => item.SaleOrg)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PC)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CustName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Board)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BoxType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Machine)sadsadasdsadsadas</td>
+                    <td>@Html.DisplayFor(modelItem => item.LastUpdate)</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>*@

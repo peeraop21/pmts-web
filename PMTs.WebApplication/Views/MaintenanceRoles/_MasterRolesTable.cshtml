@@ -1,0 +1,64 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceRoles.MaintenanceRolesViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<div class="box-header">
+    <h3 class="box-title"><i class="mdi mdi-account-settings-variant"></i> Roles</h3>
+</div>*@
+
+<div class="box-body">
+    <table id="Roles-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Roles id"]</th>
+                <th scope="col">@Localizer["Role Name"]</th>
+                <th scope="col">@Localizer["Roles Description"]</th>
+                <th scope="col" align="center">@Localizer["Edit"]</th>
+                <th scope="col" align="center">@Localizer["Config"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+
+                $('#btnSubmit').click(function () {
+                    var form = $('#create-Roles-form').serialize();
+                   $.ajax({
+                    url: '@Url.Action("SaveRole", "MaintenanceRoles")',
+                       type: "POST",
+                       async: false,
+                       data: form,
+                    dataType: "json",
+                       success: function (data) {
+                           UpdateAllowanceTableNew(data);
+                          // $("#idboardcode").val(data);
+                    }
+                 });
+        });
+
+        $('.btnupdateallow').click(function () {
+          // alert("U")
+            debugger;
+            var form = $('#update_form_Role').serialize();
+                   $.ajax({
+                    url: '@Url.Action("UpdateRole", "MaintenanceRoles")',
+                       type: "POST",
+                       async: false,
+                       data: form,
+                    dataType: "json",
+                       success: function (data) {
+                           UpdateAllowanceTableNew(data);
+                          // $("#idboardcode").val(data);
+                    }
+                 });
+       });
+    </script>
+}

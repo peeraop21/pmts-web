@@ -1,0 +1,99 @@
+﻿@model PMTs.DataAccess.ModelView.ManageMO.ManageMOViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = null;
+}
+<style>
+    table {
+        table-layout: fixed;
+        width: 100%;
+        border: 1px solid red;
+    }
+
+    td {
+        border: 1px solid blue;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<table id="AttachFileMoTable" class="table table-bordered color-table">
+    <thead>
+        <tr class="color-table text-center">
+            <th class="text-center" width="7%">@Localizer["Options"]</th>
+            <th class="text-center" width="13%">@Localizer["SeqNo"]</th>
+            <th class="text-center" width="50%">@Localizer["File Path"]</th>
+            <th class="text-center" width="15%">@Localizer["Created Date"]</th>
+            <th class="text-center" width="15%">@Localizer["Created By"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.AttachFileMOs)
+        {
+            <tr>
+                <td class="text-center">
+                    <a class="btn btn-default" title="Delete File @item.PathNew"
+                       data-OrderItem="@item.OrderItem"
+                       data-SeqNo="@item.SeqNo"
+                       data-FactoryCode="@item.FactoryCode"
+                       data-FileName="@item.PathNew"
+                       onclick="DeleteExistMOFile(this)">
+                        <i class="fa fa-trash text-danger"
+                           data-OrderItem="@item.OrderItem"
+                           data-SeqNo="@item.SeqNo"
+                           data-FactoryCode="@item.FactoryCode"
+                           data-FileName="@item.PathNew"
+                           onclick="DeleteExistMOFile(this)"
+                           aria-hidden="true"></i>
+                    </a>
+
+                    @*<button type="button" class="btn btn-default" title="Print"
+                                data-OrderItem="@item.OrderItem"
+                                onclick="PrintMOData('ViewList',this)">
+                            <span class="fa fa-print text-dark" aria-hidden="true"></span>
+                        </button>*@
+                </td>
+                <td class="text-center">@Html.DisplayFor(modelItem => item.SeqNo)</td>
+                <td>@Html.DisplayFor(modelItem => item.PathNew)</td>
+                <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+            </tr>
+
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="9">
+                <div id="tableMOInfo"></div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+            $('#AttachFileMoTable').DataTable({
+                'bFilter': false,
+                "paging": false,
+                "info": false,
+                "scrollX": true,
+                'columnDefs': [{
+                    'targets': [-1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }],
+                "order": [[1, "desc"]]
+            });
+        });
+    </script>
+}

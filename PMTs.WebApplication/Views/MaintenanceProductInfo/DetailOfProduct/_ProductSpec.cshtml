@@ -1,0 +1,821 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<style>
+
+    /* เส้นด้านข้างทั้งหมด */
+    .vl1 {
+        border-left: 2px solid gray;
+        height: 178px;
+        position: absolute;
+        left: 417px;
+        top: 86px;
+    }
+
+    .vl5 {
+        border-left: 2px solid gray;
+        height: 178px;
+        position: absolute;
+        left: 450px;
+        top: 86px;
+    }
+
+    .vt1 {
+        border-left: 2px solid gray;
+        height: 100px;
+        position: absolute;
+        left: 259px;
+        top: 41px;
+    }
+
+    .vt2 {
+        border-left: 2px solid gray;
+        height: 200px;
+        position: absolute;
+        left: 283px;
+        top: 41px;
+    }
+
+    .vt3 {
+        border-left: 2px solid gray;
+        height: 20px;
+        position: absolute;
+        left: 21px;
+        top: 1px;
+    }
+
+    .vt4 {
+        border-left: 2px solid gray;
+        height: 20px;
+        position: absolute;
+        left: 122px;
+        top: 1px;
+    }
+
+    .vt5 {
+        border-left: 2px solid gray;
+        height: 20px;
+        position: absolute;
+        left: 21px;
+        top: 250px;
+    }
+
+    .vt6 {
+        border-left: 2px solid gray;
+        height: 20px;
+        position: absolute;
+        left: 243px;
+        top: 250px;
+    }
+
+    .vt7 {
+        border-left: 2px solid gray;
+        height: 20px;
+        position: absolute;
+        left: 91px;
+        top: 1px;
+    }
+
+    .vt8 {
+        border-left: 2px solid gray;
+        height: 20px;
+        position: absolute;
+        left: 173px;
+        top: 1px;
+    }
+
+    .ht1 {
+        width: 100px;
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 22px;
+        top: 10px;
+    }
+
+    .ht2 {
+        width: 221px;
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 22px;
+        top: 259px;
+    }
+
+    .ht3 {
+        width: 40px;
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 252px;
+        top: 39px;
+    }
+
+    .ht4 {
+        width: 16px;
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 252px;
+        top: 139px;
+    }
+
+    .ht5 {
+        width: 17px;
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 275px;
+        top: 239px;
+    }
+
+    .ht6 {
+        width: 82px;
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 91px;
+        top: 10px;
+    }
+
+    .hl1 {
+        width: 57px; /*11%*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 405px; /*440px*/
+        top: 85px;
+    }
+
+    .hl2 {
+        width: 57px; /*11%*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 405px; /*440px*/
+        top: 263px;
+    }
+
+    /* เส้นด้านบนทั้งหมด */
+    .bigLeftV {
+        border-left: 2px solid gray;
+        height: 56px;
+        position: absolute;
+        left: 18px; /*4.2%*/
+        top: 23px;
+    }
+
+    .bigLeftH1 {
+        width: 375px; /*399px*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 19px; /*4.2%*/
+        top: 30px;
+    }
+
+    .LeftV {
+        border-left: 2px solid gray;
+        height: 35px;
+        position: absolute;
+        left: 34px; /*6.9%*/
+        top: 44px;
+    }
+
+    .LeftH1 {
+        width: 344px; /*66.4*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 35px; /*6.9%*/
+        top: 51px;
+    }
+
+    .lHl {
+        width: 344px; /*66.4*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 35px; /*6.9%*/
+        top: 72px;
+    }
+
+    .bigMidV {
+        border-left: 2px solid gray;
+        height: 56px;
+        position: absolute;
+        left: 205px; /*40.1%*/
+        top: 23px;
+    }
+
+    .RightV {
+        border-left: 2px solid gray;
+        height: 35px;
+        position: absolute;
+        left: 377px; /*73.3%*/
+        top: 44px;
+    }
+
+    .bigRightV {
+        border-left: 2px solid gray;
+        height: 56px;
+        position: absolute;
+        left: 393px; /*76%*/
+        top: 23px;
+    }
+
+    /* เส้นด้านล่าง */
+    .sheetLenL {
+        width: 375px; /*71.8*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 19px; /*4.2%*/
+        top: 280px;
+    }
+
+    .shL1 {
+        border-left: 2px solid gray;
+        height: 16px;
+        position: absolute;
+        left: 18px; /*4.2%*/
+        top: 273px;
+    }
+
+    .shL2 {
+        border-left: 2px solid gray;
+        height: 16px;
+        position: absolute;
+        left: 393px; /*75.9*/
+        top: 273px;
+    }
+</style>
+<div class="card card-solid">
+    <div class="card-header with-border">
+        <h3 class="text-themecolor">
+            New Product > 4.Product Spec
+        </h3>
+        <hr />
+    </div>
+    <div class="card-body">
+
+        <form asp-action="SaveProductSpec" id="Spec" method="post" class="form-material">
+
+            <!-- /.Board Combine -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header with-border">
+                            <h4 class="card-title">
+                                Board Combination Properties:
+                            </h4>
+                        </div>
+                        <div class="card-body">
+
+                            @*<div class="form-group row">
+                                    <label class="control-label text-right col-md-3">Search :</label>
+                                    <div class="col-md-4">
+                                        <input type="text" id="inpSearch" placeholder="Search by Code or Name" class="form-control">
+                                    </div>
+                                    <div class="col-sm-5">
+                                    </div>
+                                </div>*@
+
+                            <div class="form-group row">
+                                <div class="col-sm-3" style="text-align: right;">
+                                    <label> Board Code :</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" asp-for="modelProductSpec.Code" class="form-control" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                </div>
+                                <div class="col-sm-2" style="text-align: right;">
+                                    <label> Flute :</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" asp-for="modelProductSpec.Flute" class="form-control" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                    <input type="hidden" asp-for="modelProductSpec.A" />
+                                    <input type="hidden" asp-for="modelProductSpec.B" />
+                                    <input type="hidden" asp-for="modelProductSpec.C" />
+                                    <input type="hidden" asp-for="modelProductSpec.D1" />
+                                    <input type="hidden" asp-for="modelProductSpec.D2" />
+                                    <input type="hidden" asp-for="modelProductSpec.JoinSize" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-3" style="text-align: right;">
+                                    <label> Board Description :</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" asp-for="modelProductSpec.Board" class="form-control" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                </div>
+                                <div class="col-sm-2" style="text-align: right;">
+                                    <label>Basis Weight (g.):</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+
+                                        <input type="text" asp-for="modelProductSpec.Weight" class="form-control" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">g.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-3" style="text-align: right;">
+                                    <label> KIWIPlan Board :</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" asp-for="modelProductSpec.BoardKIWI" class="form-control" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                </div>
+                                <div class="col-sm-2" style="text-align: right;">
+                                    <label> Cost per Ton. :</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" asp-for="modelProductSpec.CostPerTon" class="mytextboxNumber form-control" required style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-3" style="text-align: right;">
+                                    <label> Hierarchy :</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="text" asp-for="modelProductSpec.Hierarchy" class="form-control" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                </div>
+                                <div class="col-sm-2" style="text-align: right;">
+                                    <label>
+                                        Don't Upgrade :
+                                    </label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input class="filled-in" type="checkbox" value="" id="chkUpg" disabled>
+                                    <label class="form-check-label" for="chkUpg">
+                                    </label>
+                                    <input type="hidden" asp-for="modelProductSpec.UnUpgradBoard" value="false" />
+                                    @*<input type="checkbox" id="chkUpg">
+                                        <input type="hidden" asp-for="modelProductSpec.UnUpgradBoard" value="false" />*@
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-5">
+                                    <button id="btBoardAlt" type="button" class="btn btn-info waves-effect waves-light" disabled> <span class="btn-label"><i class="mdi mdi-vector-intersection"></i></span>Alternative Board </button>
+                                </div>
+                                <div class="col-sm-10">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="card-body" id="alt" style="display:none">
+
+                                    <div class="card card-outline-inverse">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <h4 class="m-b-0 text-white"> Alternative board combination</h4>
+                                                </div>
+                                                <div class="col-sm-6 text-right">
+                                                    <button class="btn btn-danger waves-effect waves-light" type="button" onclick=" closeALT()"><i class="fa fa-times" style="width:100%"></i></button>
+                                                    @*<button type="button" class="btn btn-dark" onclick=" closeALT()"> Close </button>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="form-group row">
+                                                <label class="control-label col-md-2">Search :</label>
+                                                <div class="col-md-2">
+                                                    <input type="text" id="BoardCodeAlt" placeholder="" class="form-control">
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <button id="btOK" type="button" class="btn btn-success waves-effect waves-light"><i class="fa fa-check" style="width:100%"></i> </button>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="control-label col-md-2">Flute :</label>
+                                                <div class="col-md-2"><input type="text" id="FluteAlt" name="Flute" class="form-control" style="width: 30px; border: 0px;" readonly></div>
+                                                <label class="control-label col-md-1">Name :</label>
+                                                <label class="control-label col-md-5" id="BoardNameAlt"></label>
+
+                                                @*<div class="col-sm-11">
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;<label>Flute :</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="FluteAlt" name="Flute" style="width: 30px; border: 0px;" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>Name :</label>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="BoardNameAlt"></label>
+                                                    </div>*@
+                                                <div class="col-sm-2 text-right">
+                                                    <div id="updown">
+                                                        <div class="row">
+                                                            <button type="button" class="btn btn-danger waves-effect waves-light" id="btnMoveUp" value="Up"><i class="fa fa-arrow-up"></i></button>&nbsp;&nbsp;
+                                                            <button type="button" class="btn btn-danger waves-effect waves-light" id="btnMoveDown" value="Down"><i class="fa fa-arrow-down"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <input type="text" asp-for="modelProductSpec.stt1" class="form-control font-weight-bold" style="border: 0px;">
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" id="GL" asp-for="modelProductSpec.GL" placeholder="" class="form-control">@*style="width: 80px; height: 25px; border: 1px solid #ccc; padding: 6px 10px;"*@
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <input type="text" asp-for="modelProductSpec.stt2" class="form-control font-weight-bold" style="border: 0px;">
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" id="BM" asp-for="modelProductSpec.BM" placeholder="" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <input type="text" asp-for="modelProductSpec.stt3" class="form-control font-weight-bold" style="border: 0px;">
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" id="BL" asp-for="modelProductSpec.BL" placeholder="" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <input type="text" asp-for="modelProductSpec.stt4" class="form-control font-weight-bold" style="border: 0px;">
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" id="CM" asp-for="modelProductSpec.CM" placeholder="" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <input type="text" asp-for="modelProductSpec.stt5" class="form-control font-weight-bold" style="border: 0px;">
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" id="CL" asp-for="modelProductSpec.CL" placeholder="" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <input type="text" asp-for="modelProductSpec.stt6" class="form-control font-weight-bold" style="border: 0px;">
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" id="DM" asp-for="modelProductSpec.DM" placeholder="" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-4">
+                                                            <input type="text" asp-for="modelProductSpec.stt7" class="form-control font-weight-bold" style="border: 0px;">
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" id="DL" asp-for="modelProductSpec.DL" placeholder="" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <div class="row">
+                                                        <label>Priority</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <input type="text" asp-for="modelProductSpec.Priority" class="form-control text-center">
+                                                    </div>
+                                                    <br />
+                                                    <div class="form-group row">
+                                                        <button id="btAdd" type="button" class="btn btn-success waves-effect waves-light"><i class="fa fa-plus"></i>  </button>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <button id="btRemove" type="button" class="btn btn-danger waves-effect waves-light" disabled><i class="fa fa-trash"></i>  </button>
+                                                    </div>
+                                                    <br />
+                                                    <div class="row">
+                                                        @*<input type="checkbox" id="chkAct">*@
+                                                        <input class="filled-in" type="checkbox" value="" id="chkAct">
+                                                        <label class="form-check-label" for="chkAct">
+                                                        </label>
+                                                        <input type="hidden" asp-for="modelProductSpec.Active" value="false">
+                                                        Active
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div id="tbBoardAlt" style="height: 150px; overflow-x:scroll; overflow-y:scroll;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header with-border">
+                            <h4 class="card-title">
+                                Dimension Properties:
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div id="Partial">
+                                        @Html.Partial("~/Views/MaintenanceProductInfo/DetailOfProduct/_Render.cshtml", Model)
+                                    </div>
+
+                                    <div id="FilePic">
+                                        <center>
+                                            <br />
+                                            @Html.TextBoxFor(m => m.modelProductSpec.PrintMasterPath, new { @id = "iDrawingPath", @style = "display:none;" })
+                                            @if (Model.modelProductSpec.PrintMasterPath == null)
+                                            {
+                                                <img id="Pic_Drawing" style="width: auto; height: 281px;" />
+                                            }
+                                            else
+                                            {
+                                                <img id="Pic_Drawing" src="@Url.Content(@Model.modelProductSpec.PrintMasterPath)" style="width: auto; height: 281px;" />
+                                            }
+                                        </center>
+                                    </div>
+                                    @*<div class="row">
+                                            <div class="col-sm-11">
+                                                <input id="PrintMaster" name="PrintMaster" type="file" title="search image" accept="image/*" onchange="show_Drawing(this)" />
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <i id="RM_Drawing" class="mdi mdi-close" style="color:red; display:none;" onclick="ClosePic()"></i>
+                                            </div>
+                                        </div>*@
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <div class="col-sm-5">
+                                            Inside Length (mm):
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" asp-for="modelProductSpec.Leg" class="form-control mytextboxNumber" required style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                        </div>
+                                        @*<div class="col-sm-4">
+                                                <button id="btProcess" class="btn btn-info waves-effect waves-light" type="button" disabled><span class="btn-label"><i class="mdi mdi-calculator"></i></span>OK</button>
+                                            </div>*@
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-5">
+                                            Inside Width (mm):
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" min="0" asp-for="modelProductSpec.Wid" class="form-control mytextboxNumber" required style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                        </div>
+                                        @*<div class="col-sm-4">
+
+                                                <button id="btDefault" class="btn btn-info waves-effect waves-light" disabled><span class="btn-label"><i class="mdi mdi-redo-variant"></i></span>Default</button>
+                                            </div>*@
+                                    </div>
+                                    <div class="form-group row" id="tbHig">
+                                        <div class="col-sm-5">
+                                            Inside Height (mm):
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="number" asp-for="modelProductSpec.Hig" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                        </div>
+                                        <div class="col-sm-4">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-12">
+                                            <div id="chkRSC">
+                                                <div style="line-height: 40px;">
+                                                    <input type="text" id="l" hidden>
+                                                    <input type="text" id="w" hidden>
+                                                    <input type="text" id="h" hidden>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input class="filled-in" type="checkbox" value="" id="chkTwoP" disabled>
+                                                    <label class="form-check-label" for="chkTwoP">
+                                                        Two Pieces
+                                                    </label>
+                                                    <input type="hidden" asp-for="modelProductSpec.TwoPiece" disabled />
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input class="filled-in" type="checkbox" value="" id="chkGLwid" disabled>
+                                                    <label class="form-check-label" for="chkGLwid">
+                                                        ลิ้นกาวด้านกว้าง
+                                                    </label>
+                                                    <input type="hidden" asp-for="modelProductSpec.GLWid" disabled />
+                                                </div>
+                                            </div>
+                                            <div id="xTeeth">
+                                                <div style="line-height: 40px;">
+                                                    &nbsp;&nbsp;&nbsp;
+
+                                                    จำนวนร่องฟัน &nbsp;<input type="text" asp-for="modelProductSpec.No_Slot" class="form-control mytextboxNumber" style="text-align: center; width:30px; height: 25px;background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+
+                                                    &nbsp;&nbsp; ความกว้างร่องฟัน (mm) &nbsp;<input type="text" asp-for="modelProductSpec.Slit" class="form-control mytextboxNumber" style="text-align: center; width:30px; height: 25px;background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                                </div>
+                                            </div>
+                                            <div id="tabDC">
+                                                <div style="line-height: 40px;">
+                                                    &nbsp;&nbsp;&nbsp;
+                                                    W' &nbsp;<input type="text" id="SheetWid" style="width:40px; height: 25px; text-align: center;" class="mytextboxNumber form-control" disabled />&nbsp;&nbsp;&nbsp;
+                                                    L' &nbsp;<input type="text" id="SheetLeng" style="width:40px; height: 25px; text-align: center;" class="mytextboxNumber form-control" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-4">
+                                        </div>
+                                        <div class="col-sm-4" style="text-align:center;">
+                                            Sheet Board
+                                        </div>
+                                        <div class="col-sm-4" style="text-align:center;">
+                                            Finished goods
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-4">
+                                            Area (sqmm.):
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input asp-for="modelProductSpec.SheetArea" type="text" class="form-control text-right" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input asp-for="modelProductSpec.BoxArea" type="text" class="form-control text-right" readonly required style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            Weight (kg.):
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input asp-for="modelProductSpec.WeightSh" type="text" class="form-control text-right" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input asp-for="modelProductSpec.WeightBox" type="text" class="form-control text-right" readonly style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <button id="btScoreW" type="button" class="btn btn-info" data-toggle="modal" data-target="#modal-default" disabled>
+                                                <span class="btn-label">
+                                                    <i class="mdi mdi-grease-pencil"></i>
+                                                </span>Score Width
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="modal fade" id="modal-default">
+
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title"><i class="mdi mdi-grease-pencil"></i>Score Line Width</h4>
+                                                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+
+                                                                <i class="mdi mdi-close"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 1
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input id="ScoreW1" type="text" class="form-control" readonly>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 9
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew9" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 2
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input id="Scorew2" type="text" class="form-control" readonly>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 10
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew10" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 3
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input id="Scorew3" type="text" class="form-control" readonly>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 11
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew11" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 4
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew4" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 12
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew12" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 5
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew5" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 13
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew13" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 6
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew6" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 14
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew14" type="text" class="form-control mytextboxNumber">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 7
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew7" type="text" class="form-control">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 15
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew15" type="text" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-1">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 8
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew8" type="text" class="form-control">
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    Line 16
+                                                                </div>
+                                                                <div class="col-sm-3">
+                                                                    <input asp-for="modelProductSpec.Scorew16" type="text" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        @*<div class="modal-footer">
+                                                                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                                    <span class="btn-label">
+                                                                        <i class="mdi mdi-close"></i>
+                                                                    </span>Close
+                                                                </button>
+                                                            </div>*@
+                                                        @*<button type="button" class="btn btn-primary">Save changes</button>*@
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-sm-12  text-right">
+                    <!-- general form elements -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success btn-fixsize" onclick="return CheckValidate()"><i class="fa fa-save"></i> Save &amp; Next <i class="fa fa-arrow-circle-right"></i></button>
+                    </div>
+                    <!-- /.box -->
+                </div>*@
+        </form>
+    </div>
+</div>

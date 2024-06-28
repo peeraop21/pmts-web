@@ -1,0 +1,24 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenancePMTsConfig.MaintenancePMTsConfigViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body">
+    <table id="PMTsConfig-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col"> @Localizer["No."]</th>
+                <th scope="col"> @Localizer["FucName"]</th>
+                <th scope="col"> @Localizer["FucValue"]</th>
+                <th scope="col"> @Localizer["Description"]</th>
+                <th scope="col"> @Localizer["View"]</th>
+                <th scope="col"> @Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

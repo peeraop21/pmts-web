@@ -1,0 +1,129 @@
+﻿@*@model IEnumerable<PMTs.DataAccess.Models.BoardAlternative>*@
+@model PMTs.DataAccess.ModelView.ProductSpecViewModel
+@{
+    ViewData["Title"] = "BoardAlternative";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    tr:hover {
+        background-color: lightblue;
+    }
+
+    tbody tr.selected td {
+        background-color: turquoise;
+    }
+
+    #table-add-board td {
+        padding: 5px;
+    }
+
+    #table-add-board th {
+        text-align: center;
+    }
+
+    #table-add-board tr td:last-child {
+        width: 1%;
+        white-space: nowrap;
+    }
+</style>
+@*@Model.BoardAlt.Count*@
+@if (Model.BoardAlt.Count > 0)
+{
+
+    <table id="table-add-board" cellspacing="0" style="display:table-row; font-size: small; width:100%;">
+        <thead>
+            <tr>
+                <th>@Localizer["MatNo"]</th>
+                <th width="200px">@Localizer["Board"]</th>
+                <th>@Localizer["Board KIWI"]</th>
+                <th>@Localizer["Priority"]</th>
+                <th>@Localizer["Active"]</th>
+                <th>@Localizer["Flute"]</th>
+                <th>@Localizer["GL"]</th>
+                <th>@Localizer["BM"]</th>
+                <th>@Localizer["BL"]</th>
+                <th>@Localizer["CM"]</th>
+                <th>@Localizer["CL"]</th>
+                <th>@Localizer["DM"]</th>
+                <th>@Localizer["DL"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.BoardAlt)
+            {
+
+                string boardKiwi = item.BoardKiwi.Replace(" ", string.Empty);
+
+                <tr>
+                    <td>@Html.DisplayFor(m => item.MaterialNo) </td>
+                    <td>@Html.DisplayFor(m => item.BoardName) </td>
+                    <td>@Html.DisplayFor(m => boardKiwi) </td>
+                    <td align="center">@Html.DisplayFor(m => item.Priority) </td>
+                    @*<td align="center">@Html.CheckBoxFor(m => item.Active, new { @disabled = "disabled" })</td>*@
+                    <td align="center">
+
+                        @if (item.Active)
+                        {
+                            <input class="filled-in" type="checkbox" checked>
+
+                        }
+                        else
+                        {
+                            <input class="filled-in" type="checkbox">
+                        }
+
+                        <label class="form-check-label" for="item_Active">
+                        </label>
+                    </td>
+                    <td>@Html.DisplayFor(m => item.Flute) </td>
+                    <td>@Html.DisplayFor(m => item.GL) </td>
+                    <td>@Html.DisplayFor(m => item.BM) </td>
+                    <td>@Html.DisplayFor(m => item.BL) </td>
+                    <td>@Html.DisplayFor(m => item.CM) </td>
+                    <td>@Html.DisplayFor(m => item.CL) </td>
+                    <td>@Html.DisplayFor(m => item.DM) </td>
+                    <td>@Html.DisplayFor(m => item.DL) </td>
+                </tr>
+            }
+        </tbody>
+        @*<tfoot class="bg-info">
+                <tr>
+                    <td></td>
+                    <td class="text-right"></td>
+                </tr>
+            </tfoot>*@
+    </table>
+
+}
+
+<input asp-for="chkPrior" type="hidden" />
+<script>
+    $("tbody").on("click", "tr", function (e) {
+        $(this)
+            .toggleClass("selected")
+            .siblings(".selected")
+            .removeClass("selected");
+
+        priorx = $(this).closest("tr").find('td:eq(3)').text();
+        sel = $(this).closest("tr").find('td:eq(1)').text();
+        //alert("555");
+        document.getElementById("btRemove").disabled = false;
+    });
+
+    $(document).ready(function () {
+        if ($('#chkPrior').val() == "" || $('#chkPrior').val() == 0) {
+            $('#modelProductSpec_Priority').val(1);
+            $('#updown').hide();
+        }
+        else {
+            $('#modelProductSpec_Priority').val($('#chkPrior').val());
+            if ($('#chkPrior').val() != "1") {
+                $('#updown').show();
+            }
+            else
+                $('#updown').hide();
+        }
+    });
+</script>

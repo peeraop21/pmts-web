@@ -1,0 +1,279 @@
+﻿@model PMTs.DataAccess.ModelView.ProductPictureView
+@{
+    ViewData["Title"] = "Upload Picture";
+
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="card">
+    <div class="card-body">
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-md-12">
+                    <h3 class="text-themecolor"><i class="mdi mdi-upload"></i>@Localizer["Upload Picture"]</h3>
+                </div>
+            </div>
+                <div class="col-xs-12 col-md-12">
+
+                    @*<div class="form-group mb-1 mx-md-1">
+                        <label class="form-control-label">@Localizer["Material No"]</label>
+                    </div>*@
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control input-sm  pull-right" name="txtSearch" id="txtSearch" placeholder="@Localizer["Search Material No"]">
+                        </div>
+                        <div class="col-md-3">
+                            @*<button class="btn btn-info"><i class="fa fa-search"></i>@Localizer["Search"]</button>*@
+                            <button id="btnSearchMaterial" class="btn btn-info"><i class="fa fa-search"></i> @Localizer["Search"]</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-12"><hr /></div>
+
+            <div id="divUploadPicture">
+                @Html.Partial("_UploadPictureForm", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+  //Search By mat
+        $("#btnSearchMaterial").click(function () {
+        var txtSearch = $("#txtSearch").val();
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SearchMaterial", "UploadPicture")',
+            data: { txtSearch: txtSearch },
+            success: function (res) {
+                console.log(res);
+                if (res !== false) {
+                    $("#divUploadPicture").html(res);
+
+                }
+                else {
+                    swal("Can not find Data", "", "warning");
+
+                }
+            },
+            error: function () { }
+        });
+    });
+        function addclick() {
+            $("#Pic_Drawing").trigger('click');
+        }
+
+        function removeclick() {
+
+            $('#iDrawing').val(null);
+            $('#Drawing').attr('src', "");
+        }
+
+        function removePrintMasterModel() {
+            debugger;
+        $.ajax({
+            url: '@Url.Action("RemovePrintMasterProductPic", "NewProduct")',
+                type: "POST",
+                async: false,
+            dataType: "json",
+                success: function (data) {
+
+             }
+            });
+        }
+
+        function show_Drawing(input) {
+            //debugger
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iDrawing').val(temp);
+                    $('#Drawing').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function addprintmasterclick() {
+            $("#Pic_Print").trigger('click');
+        }
+
+        function removeprintmasterclick() {
+            $('#iPrint').val(null);
+            $('#Print').attr('src', "");
+        }
+
+        function show_Print(input) {
+            //alert('show_Print');
+            debugger;
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iPrint').val(temp);
+                    $('#Print').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function addpalletclick() {
+            $("#Pic_Pallet").trigger('click');
+        }
+        function removepalletclick() {
+
+            $('#iPallet').val(null);
+            $('#Pallet').attr('src', "");
+        }
+
+        function show_Pallet(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iPallet').val(temp);
+                    $('#Pallet').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function addfgclick() {
+            $("#Pic_FG").trigger('click');
+        }
+        function removefgclick() {
+            $('#iFG').val(null);
+            $('#FG').attr('src', "");
+        }
+        function show_FG(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iFG').val(temp);
+                    $('#FG').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(document).ready(function () {
+
+            var path = "../Picture/";
+            var Drawing = '@Model.Pic_DrawingName'
+            if (Drawing !== "") {
+                var nameImage = path + Drawing;
+                $('#Pic_Drawing').attr("data-default-file", nameImage);
+                $('#Pic_Drawing').dropify();
+            }
+
+            var Print = '@Model.Pic_PrintName'
+            if ( Print !== "") {
+            var nameImage = path + Print;
+            $('#Pic_Print').attr("data-default-file", nameImage);
+            $('#Pic_Print').dropify();
+
+            }
+
+            var PicPallet = '@Model.Pic_PalletName'
+            if (PicPallet !== "") {
+            var nameImage = path + PicPallet;
+            $('#Pic_Pallet').attr("data-default-file", nameImage);
+            $('#Pic_Pallet').dropify();
+
+            }
+
+            var FG = '@Model.Pic_FGName'
+            if (FG !== "") {
+            var nameImage = path + FG;
+            $('#Pic_FG').attr("data-default-file", nameImage);
+            $('#Pic_FG').dropify();
+
+            }
+
+            // Basic
+            $('.dropify').dropify();
+
+            // Translated
+            $('.dropify-fr').dropify({
+                messages: {
+                    default: 'Glissez-déposez un fichier ici ou cliquez',
+                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                    remove: 'Supprimer',
+                    error: 'Désolé, le fichier trop volumineux'
+                }
+            });
+
+            // Used events
+            var drEvent = $('#input-file-events').dropify();
+
+            drEvent.on('dropify.beforeClear', function (event, element) {
+                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+            });
+
+            drEvent.on('dropify.afterClear', function (event, element) {
+                alert('File deleted');
+            });
+
+            drEvent.on('dropify.errors', function (event, element) {
+                console.log('Has Errors');
+            });
+
+            var drDestroy = $('#input-file-to-destroy').dropify();
+            drDestroy = drDestroy.data('dropify')
+            $('#toggleDropify').on('click', function (e) {
+                e.preventDefault();
+
+                if (drDestroy.isDropified()) {
+                    drDestroy.destroy();
+                } else {
+                    drDestroy.init();
+                }
+            })
+            var materialCheck = '@ViewBag.SavePic';
+            if (materialCheck !== "") {
+                 $('#myModal').modal("show");
+
+               // swal("Save success.", "", "success")
+                ViewBag.SavePic = null;
+        }
+        });
+
+         $(".inp-picture").change(function () {
+            $("body").append("<script class='script-drawing'> $('.dropify-clear').click(function () { $(this).closest('.card').find('.inp-picture').val(null); $('.script-drawing').remove(); }); <\/script>");
+        });
+
+        function SaveImg() {
+            debugger;
+            var form = $('#allData')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("ProdPicSaveImage", "UploadPicture")',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    if (res.isSuccess) {
+                        swal("Save Success", "", "success");
+                        return true;
+                    } else {
+                        swal("Save Failed", "", "warning");
+                        return false;
+                    }
+
+                },
+                error: function () {
+                    return false;
+                }
+            });
+        }
+    </script>
+}

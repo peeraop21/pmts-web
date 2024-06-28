@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ModelView.Report.CheckOrderQtyTooMuch>
+
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckOrderTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:10%">@Localizer["OrderItem"]</th>
+            <th style="width:10%">@Localizer["Material No"]</th>
+            <th style="width:10%">@Localizer["Product Code"]</th>
+            <th style="width:11%">@Localizer["Description"]</th>
+            <th style="width:13%">@Localizer["Customer"]</th>
+            <th style="width:10%">@Localizer["DueDate"]</th>
+            <th style="width:9%">@Localizer["จำนวนสั่ง(ปัจจุบัน)"]</th>
+            <th style="width:9%">@Localizer["จำนวนสั่งเฉลี่ย(ก่อนหน้า)"]</th>
+            <th style="width:9%">@Localizer["จำนวนสั่งรวม(ก่อนหน้า)"]</th>
+            <th style="width:9%">@Localizer["จำนวนสั่งครั้ง(ก่อนหน้า)"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td class="text-center">@item.OrderItem</td>
+            <td class="text-center">@item.MaterialNo</td>
+            <td class="text-center">@item.PC</td>
+            <td class="text-center">@item.Description</td>
+            <td class="text-left">@item.Name</td>
+            <td class="text-left">
+                @item.DueDate.ToString("dd/MM/yyyy")
+            </td>
+            <td class="text-center">@item.OrderQuant</td>
+            <td class="text-center">@item.AvgQty</td>
+            <td class="text-center">@item.SumQty</td>
+            <td class="text-center">@item.CountTime</td>
+        </tr>
+        }
+    </tbody>
+</table>

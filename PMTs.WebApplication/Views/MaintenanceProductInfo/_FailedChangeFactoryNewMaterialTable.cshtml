@@ -1,0 +1,42 @@
+﻿@model IEnumerable<PMTs.DataAccess.ComplexModel.ChangeBoardNewMaterial>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<table id="FailedChangeFactoryNewMaterialTable" class="table table-bordered color-table">
+    <thead>
+        <tr class="color-table text-center">
+            <th style="width:100px">@Localizer["FactoryCode"]</th>
+            <th style="width:100px">@Localizer["Material No"]</th>
+            <th style="width:90px">@Localizer["PC"]</th>
+            <th style="width:90px">@Localizer["Flute"]</th>
+            <th style="width:150px">@Localizer["Board"]</th>
+            <th style="width:100px">@Localizer["HVA"]</th>
+            <th style="width:100px">@Localizer["Cost"]</th>
+            <th style="width:500px">@Localizer["Error Message"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.CopyFactoryCode)</td>
+                <td>@Html.DisplayFor(modelItem => item.CopyMaterialNo)</td>
+                <td>@Html.DisplayFor(modelItem => item.PC)</td>
+                <td>@Html.DisplayFor(modelItem => item.Flute)</td>
+                <td>@Html.DisplayFor(modelItem => item.Board)</td>
+                <td>@Html.DisplayFor(modelItem => item.HighValue)</td>
+                @if (item.Cost == 0)
+                {
+                    <td>@Localizer["N/A"]</td>
+                }
+                else
+                {
+                    <td>@Html.DisplayFor(modelItem => item.Cost)</td>
+                }
+                <td class="text-danger" style="font-weight:400">
+                    @Html.DisplayFor(modelItem => item.ErrorMessage)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

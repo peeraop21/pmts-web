@@ -1,0 +1,188 @@
+﻿@using Microsoft.AspNetCore.Http
+@*@{
+        //Layout = null;
+        Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    }
+    @{
+        ViewData["Title"] = "index";
+    }*@
+@*@{
+    Layout = "~/Views/Shared/_LayoutError.cshtml";
+}*@
+<!-- Popup CSS -->
+<link href="../assets/plugins/Magnific-Popup-master/dist/magnific-popup.css" rel="stylesheet">
+
+@*@Context.Session.GetString("Chkname")*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+@*<form id="allData" asp-action="ProductPic" method="post" role="form" enctype="multipart/form-data">*@
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <div class="row justify-content-between">
+                <div class="col-6">
+                    <h3 class="text-themecolor">@Localizer["New Product"]</h3>
+                </div>
+                <div class="col-6">
+                    <h3 class="box-title text-right ">
+                        @Localizer["Material No"] : @Model.MaterialNo
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="row">
+
+                @*<div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Zoom gallery</h4>
+                                <h6 class="card-subtitle">just add code under class="zoom-gallery".</h6>
+                                <div class="zoom-gallery row m-t-30">
+                                    <div class="col-md-4">
+                                        <a href="../assets/images/big/img1.jpg" title="Caption. Can be aligned to any side and contain any HTML."> <img src="../assets/images/big/img4.jpg" class="img-responsive" alt="img" /> </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="../assets/images/big/img2.jpg" title="This image fits only horizontally."> <img src="../assets/images/big/img5.jpg" class="img-responsive" alt="img" /> </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="../assets/images/big/img3.jpg"> <img src="../assets/images/big/img6.jpg" class="img-responsive" alt="img" /> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="zoom-gallery row m-t-30">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card">
+                            <div class="card-body ">
+                                <div class="row">
+                                    &nbsp;&nbsp;&nbsp;<img src="~/pic/drawIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Drawing"]</h4>
+                                </div>
+
+                                <div class="row ">
+                                    <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                </div>
+                                <div class="row">
+                                    <center style="margin: 0 auto;">
+                                        <a href="@Model.modelProductPicture.Pic_DrawingPath" title="Drawing"> <img id="Drawing" src='@Model.modelProductPicture.Pic_DrawingPath' style="max-height: 400px; width: auto!important;" class="img-responsive" alt="img" /></a>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card">
+                            <div class="card-body ">
+                                <div class="row">
+                                    &nbsp;&nbsp;&nbsp;<img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Print Master"]</h4>
+                                </div>
+                                <div class="row ">
+                                    <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                </div>
+                                <div class="row">
+                                    <center style="margin: 0 auto;">
+                                        <a href="@Model.modelProductPicture.Pic_PrintPath" title="Print Master"> <img id="Print" src='@Model.modelProductPicture.Pic_PrintPath' style="max-height: 400px; width: auto!important;" class="img-responsive" alt="img" /></a>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="row">
+                                    &nbsp;&nbsp;&nbsp;<img src="~/pic/palletIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Pallet"]</h4>
+                                </div>
+
+                                <div class="row ">
+                                    <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                </div>
+                                <div class="row">
+                                    <center style="margin: 0 auto;">
+                                        <a href="@Model.modelProductPicture.Pic_PalletPath" title="Pallet"> <img id="Pallet" src='@Model.modelProductPicture.Pic_PalletPath' style="max-height: 400px; width: auto!important;" class="img-responsive" alt="img" /></a>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card">
+
+                            <div class="card-body">
+                                <div class="row">
+                                    &nbsp; &nbsp;&nbsp;<img src="~/pic/fgBoxIcon.jpg" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Packaging"]</h4>
+                                </div>
+
+                                <div class="row ">
+                                    <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                </div>
+                                <div class="row">
+                                    <center style="margin: 0 auto;">
+                                        <a href="@Model.modelProductPicture.Pic_FGPath" title="Packaging"><img id="FG" src='@Model.modelProductPicture.Pic_FGPath' style="max-height: 400px; width: auto!important;" class="img-responsive" alt="img" /></a>
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+
+        $(document).ready(function () {
+
+            var path = "../Picture/";
+
+            var Drawing = '@Model.modelProductPicture.Pic_DrawingName'
+            var Dimension = '@Model.modelProductPicture.Pic_DrawingName'
+
+            if (Drawing !== "") {
+                var nameImage = path + Drawing;
+                $('#Pic_Drawing').attr("data-default-file", nameImage);
+                $('#Pic_Drawing').dropify();
+            } else if (Dimension !== "") {
+                //mook
+                var nameImage = path + Dimension;
+                $('#Pic_Drawing').attr("value", Dimension);
+                $('#Pic_Drawing').dropify();
+            }
+
+            var Print = '@Model.modelProductPicture.Pic_PrintName'
+            if ( Print !== "") {
+            var nameImage = path + Print;
+            $('#Pic_Print').attr("data-default-file", nameImage);
+            $('#Pic_Print').dropify();
+
+            }
+
+            var PicPallet = '@Model.modelProductPicture.Pic_PalletName'
+            if (PicPallet !== "") {
+            var nameImage = path + PicPallet;
+            $('#Pic_Pallet').attr("data-default-file", nameImage);
+            $('#Pic_Pallet').dropify();
+
+            }
+
+            var FG = '@Model.modelProductPicture.Pic_FGName'
+            if (FG !== "") {
+            var nameImage = path + FG;
+            $('#Pic_FG').attr("data-default-file", nameImage);
+            $('#Pic_FG').dropify();
+
+            }
+        </script>
+        <!-- Magnific popup JavaScript -->
+        <script src="../assets/plugins/Magnific-Popup-master/dist/jquery.magnific-popup.min.js"></script>
+        <script src="../assets/plugins/Magnific-Popup-master/dist/jquery.magnific-popup-init.js"></script>
+    }

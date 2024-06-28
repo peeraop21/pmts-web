@@ -1,0 +1,106 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    ViewBag.Title = "";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-coating_">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Special Coating"]</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <select class="form-control" id="Station" onchange=""></select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <button id="AddStation" type="button" class="btn btn-info waves-effect waves-light" onclick="addStation()">Add Station</button>
+                            </div>
+                        </div>
+
+                    <table id="STA" border="1" style="text-align: center;margin: 0 auto;">
+
+                        <thead>
+                            <tr>
+                                <td width="100">@Localizer["Station"]</td>
+                                <td width="100">@Localizer["Layer"]</td>
+                                <td width="100">@Localizer["Type"]</td>
+                                <td width="200">@Localizer["Name"]</td>
+                            </tr>
+                        </thead>
+                        <tbody id="p_scents">
+                            @if (Model.EventFlag == "Edit")
+                            {
+                                @foreach (var x in Model.modelProductSpec.Coating)
+                                {
+
+                                    @*<tr class="@x.Station">*@
+
+                                        @*<input type="hidden" class="Station" asp-for="@item.Station" value="@item.Station">
+                                        <td>@item.Station</td>
+                                        <td>@item.Slide + @item.Layer</td>*@
+                                        @*<td><select class="form-control @item.Station+ty" onchange=selectType("@item.Station+T3")  style="width: 100px; border: 0px;" name="modelProductSpec.CoatingTable.' + Station + 'T3Type" asp-for="modelProductSpec.CoatingTable.@item.Station+T3Type"></select></td>
+                    <td><select class="form-control name" style="width: 200px; border: 0px;" asp-for="modelProductSpec.CoatingTable.@item.Station+T3Name" name="modelProductSpec.CoatingTable.@item.Station+T3Name"></select></td>*@
+                                    @*</tr>*@
+
+                                }
+
+                            }
+                            @*<tr>
+            <td>Top 2</td>
+
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLT2Type"></td>
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLT2Name"></td>
+        </tr>
+
+        <tr>
+
+            <td>Top 1</td>
+
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLT1Type"></td>
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLT1Name"></td>
+        </tr>
+
+        <tr>
+            <td>Botton 1</td>
+
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLB1Type"></td>
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLB1Name"></td>
+        </tr>
+
+        <tr>
+            <td>Botton 2</td>
+
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLB2Type"></td>
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLB2Name"></td>
+        </tr>
+
+        <tr>
+            <td>Botton 3</td>
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLB3Type"></td>
+            <td><input type="text" class="form-control" style="width: 100px; border: 0px;" asp-for="modelProductSpec.CoatingTable.GLB3Name"></td>
+        </tr>*@
+                        </tbody>
+                    </table>
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="SaveCoating()">Save</button>
+            </div>
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->

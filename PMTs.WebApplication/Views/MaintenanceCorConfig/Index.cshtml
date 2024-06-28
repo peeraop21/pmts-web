@@ -1,0 +1,322 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceCorConfig.MaintenanceCorConfigViewModel
+
+@{
+    ViewData["Title"] = "CorConfig";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-comment-text-outline"></i> @Localizer["CorConfig Process"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalCreateCoreConfig">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["Create"]
+                            </button>
+                            <partial name="_CreateModal" model="Model" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+
+                    <div class="box" id="CorConfig-table">
+                        <partial name="_CorConfigTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        function viewShow(Id, EName, EMinOut, EMaxOut, ECutOff, EMintrim, ETearTape, ETearTapeMax) {
+            $('#Id').val(Id);
+            $('#Name').val(EName);
+            $('#MinOut').val(EMinOut);
+            $('#MaxOut').val(EMaxOut);
+            $('#CutOff').val(ECutOff);
+
+            if (EMintrim === "True") {
+                $('#XMintrim').prop('checked', true);
+            } else {
+                $('#XMintrim').prop('checked', false);
+            }
+            $('#TearTape').val(ETearTape);
+            $('#TearTapeMax').val(ETearTapeMax);
+
+            $('#modal-view').modal('show');
+        }
+
+        function viewEdit(Id, EName, EMinOut, EMaxOut, ECutOff, EMintrim, ETearTape, ETearTapeMax, createdDate, createdBy) {
+            $('#EId').val(Id);
+            $('#EName').val(EName);
+            $('#EMinOut').val(EMinOut);
+            $('#EMaxOut').val(EMaxOut);
+            $('#ECutOff').val(ECutOff);
+            $('#ECreatedDate').val(ChangeDateTimeFormat(createdDate));
+            $('#ECreatedBy').val(createdBy);
+
+            if (EMintrim === "True") {
+                $('#EMintrim').prop('checked', true);
+            } else {
+                $('#EMintrim').prop('checked', false);
+            }
+            $('#ETearTape').val(ETearTape);
+            $('#ETearTapeMax').val(ETearTapeMax);
+
+            $('#modal-edit').modal('show');
+          //  $('.modal-backdrop').show();
+
+        }
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+
+            }
+
+            return datetimeStr;
+        }
+
+        function getData() {
+            let req = {
+                "Id": $("#EId").val(),
+                "Name": $("#EName").val(),
+                "MinOut": $("#EMinOut").val(),
+                "MaxOut": $("#EMaxOut").val(),
+                "CutOff": $("#ECutOff").val(),
+                "CreatedDate": $("#ECreatedDate").val(),
+                "CreatedBy": $("#ECreatedBy").val(),
+                "TearTape": $("#ETearTape").val(),
+                "TearTapeMax": $("#ETearTapeMax").val(),
+            };
+            return req;
+        }
+
+       $(function () {
+            $("#Mintrim").click(function () {
+                if ($('#Mintrim').is(":checked")) {
+                    $('#CorConfigViewModel_Mintrim').val(true);
+                }
+                else {
+                    $('#CorConfigViewModel_Mintrim').val(false);
+                }
+            })
+        });
+
+        $('#btnSubmitCorconfig').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#CorConfigViewModel_Name').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                var form = $('#create-CorConfig-form').serialize();
+                $.ajax({
+                    url: '@Url.Action("SaveCorConfig", "MaintenanceCorConfig")',
+                    type: "POST",
+                    async: false,
+                    data: form,
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateCorConfigTableNew(data);
+                        swal("Save Success!", { icon: "success", });
+                        $('#modal-create').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        $('.btnupdatemaintaincorconfig').click(function () {
+            DisabledSubmitButton(this);
+            // var form = $('#edit-maintain-corconfig').serialize();
+            if ($('#EName').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                var tmp = getData();
+                if ($('#EMintrim').prop('checked')) {
+                    Object.assign(tmp, { Mintrim: 1 });
+                } else {
+                    Object.assign(tmp, { Mintrim: 0 });
+                }
+                var form = JSON.stringify(tmp);// $('#edit-maintain-color').serialize();
+                $.ajax({
+                    url: '@Url.Action("UpdateCorConfig", "MaintenanceCorConfig")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateCorConfigTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        function UpdateCorConfigTableNew(res) {
+            $('#CorConfig-table').html(res.View);
+            $('#CorConfig-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#CorConfig-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModalCreateCoreConfig').click(function () {
+           // $(".field-validation-error span").hide();
+            $('#modal-create').modal('show');
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+                @*function UpdateCorConfigTable() {
+            $.ajax({
+                url: '@Url.Action("UpdateCorConfigTable", "MaintenanceCorConfig")',
+                success: function (res) {
+                    $('#CorConfig-table').html(res);
+                    $('#CorConfig-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+                },
+                error: function () {  }
+            });
+        }*@
+
+        @*function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeleteCorConfig", "MaintenanceCorConfig")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                swal("Deleted!", {
+                                    icon: "success",
+                                });
+                                UpdateCorConfigTable();
+                                window.location.reload(true);
+                            }
+                        }
+                    });
+                    } else {
+                    }
+                });
+        }
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+               // modalDialog(success, SaveSuccess);
+                swal("Success!", {
+                    icon: "success",
+                });
+               // UpdateCorConfigTable();
+                UpdateCorConfigTableNew(res);
+            }
+            else {
+              //  modalDialog(error, SaveFailed);
+                swal("Save Fail!", { icon: "warning", });
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+              //  $('.modal').modal('hide');
+               // modalDialog(success, UpdateSuccess);
+
+               // UpdateCorConfigTable();
+                swal("Success!", {
+                    icon: "success",
+                });
+                UpdateCorConfigTableNew(res);
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+            }
+            else {
+                //modalDialog(error, UpdateFailed);
+                swal("Save Fail!", { icon: "warning", });
+            }
+        };
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+               // modalDialog(success, UpdateSuccess);
+                swal("Success!", {
+                    icon: "success",
+                });
+               // UpdateCorConfigTable();
+                UpdateCorConfigTableNew(res);
+            }
+            else {
+              //  modalDialog(error, UpdateFailed);
+                swal("Save Fail!", { icon: "warning", });
+            }
+        };*@
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

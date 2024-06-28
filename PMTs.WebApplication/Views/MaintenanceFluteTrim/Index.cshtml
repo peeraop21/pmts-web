@@ -1,0 +1,218 @@
+﻿@{
+    ViewData["Title"] = "View";
+}
+
+@model PMTs.DataAccess.ModelView.MaintenanceFluteTrim.MaintenanceFluteTrimModel
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.DataAccess.Models
+@inject IViewLocalizer Localizer
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-file-document-box"></i> @Localizer["Machine Flute Trim"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModal">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Create"]
+                    </button>
+                    <div id="modal">
+                        <partial name="_CreateModal" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="flute-table">
+                @Html.Partial("_FluteTrimTable", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            // $('.form-group').css('display', 'block');
+            // $('.form-inline').css('width', '100%');
+            // $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#machine-flute-trim-data-table').DataTable();
+        });
+
+        function getData(flag) {
+            let req;
+            if (flag == 'add') {
+                req = {
+                    "Machine": $("#idMachine").val(),
+                    "Flute": $("#idFlute").val(),
+                    "Trim": $("#idTrim").val(),
+                };
+            }else {
+                req = {
+                    "Id": $("#idParam").val(),
+                    "Machine": $("#idMachine").val(),
+                    "Flute": $("#idFlute").val(),
+                    "Trim": $("#idTrim").val(),
+                };
+            }
+            return req;
+        }
+
+        function BindMachineFluteTrim(data) {
+            $("#idParam").val(data.Id)
+            $("#idMachine").val(data.Machine);
+            $("#idFlute").val(data.Flute);
+            $("#idTrim").val(data.Trim);
+        
+        }
+
+        $('#btnShowCreateModal').click(function () {
+            $("#idMachine").val(null);
+            $('#idMachine-error').css('display', 'none');
+            $("#idFlute").val(null)
+            $('#idFlute-error').css('display', 'none');
+            $("#idTrim").val(null)
+            $('#idTrim-error').css('display', 'none');
+            $.ajax({
+                url: '@Url.Action("OpenAddModal", "MaintenanceFluteTrim")',
+                type: "POST",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $('#modal').html(data.view);
+                    $("#modal_ViewMachineFluteTrim").modal({ backdrop: 'static', keyboard: false });
+                    $('#modal_ViewMachineFluteTrim').modal("show");
+                    $('#idupdatemodal').css('display', 'none');
+                    $('#idcancelmodal').css('display', 'block');
+                    $('#idaddmodal').css('display', 'block');
+                    setReadOnlyView("0")
+                }
+            });
+        });
+
+        function setReadOnlyView(param) {
+            if (param === "1") {
+                $("#idMachine").attr("disabled", true);
+                $("#idFlute").attr("disabled", true);
+                $("#idTrim").attr("disabled", true);
+
+            } else {
+                $("#idMachine").attr("disabled", false);
+                $("#idFlute").attr("disabled", false);
+                $("#idTrim").attr("disabled", false);
+            }
+        }
+
+        function setReadOnlyEdit(param) {
+            if (param === "1") {
+                $("#idMachine").attr("disabled", true);
+                $("#idFlute").attr("disabled", true);
+            } else {
+                $("#idMachine").attr("disabled", false);
+                $("#idFlute").attr("disabled", false);
+            }
+        }
+
+        function viewEditDataView(param) {
+            console.log('param', param)
+            $.ajax({
+                url: '@Url.Action("OpenViewModal", "MaintenanceFluteTrim")',
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: { id: param },
+                success: function (data) {
+                    $('#modal').html(data.view);
+                    BindMachineFluteTrim(data.data);
+                    $("#modal_ViewMachineFluteTrim").modal({ backdrop: 'static', keyboard: false });
+                    $('#modal_ViewMachineFluteTrim').modal("show");
+                    $('#idupdatemodal').css('display', 'none');
+                    $('#idcancelmodal').css('display', 'block');
+                    $('#idaddmodal').css('display', 'none');
+                    setReadOnlyView("1");
+                }
+            });
+        }
+
+        function viewEditData(param) {
+            $.ajax({
+                url: '@Url.Action("OpenEditModal", "MaintenanceFluteTrim")',
+                type: "POST",
+                dataType: "json",
+                async: false,
+                data: { id: param },
+                success: function (data) {
+                    $('#modal').html(data.view);
+                    BindMachineFluteTrim(data.data);
+                    $("#modal_ViewMachineFluteTrim").modal({ backdrop: 'static', keyboard: false });
+                    $('#modal_ViewMachineFluteTrim').modal("show");
+                    $('#idupdatemodal').css('display', 'block');
+                    $('#idcancelmodal').css('display', 'block');
+                    $('#idaddmodal').css('display', 'none');
+                    setReadOnlyEdit("1");
+                }
+            });
+        }
+
+        function subAddData() {
+            var req = JSON.stringify(getData('add'));
+
+
+            $.ajax({
+                url: '@Url.Action("ManageData", "MaintenanceFluteTrim")',
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { req: req,  flag: "Add" },
+                success: function (data) {
+                    if (data == false) {
+                        swal("Add new machine flute trim failed", "", "warning");
+                    } else {
+                        $('#modal_ViewMachineFluteTrim').modal("hide");
+                        swal("Add new machine flute trim successfully", "", "success")
+                            .then((willDelete) => {
+                                window.location.reload()
+                            });
+                    }             
+                }
+            });
+        }
+
+        function subUpdateData() {
+            var req = JSON.stringify(getData('update'));
+
+            $.ajax({
+                url: '@Url.Action("ManageData", "MaintenanceFluteTrim")',
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { req: req, flag: "Update" },
+                success: function (data) {
+                    if (data == false) {
+                        swal("Update machine flute trim failed", "", "warning");
+                    } else {
+                        $('#modal_ViewMachineFluteTrim').modal("hide");
+                        swal("Update machine flute trim successfully", "", "success")
+                            .then((willDelete) => {
+                                window.location.reload()
+                            });                    
+                    }
+                }
+            });
+        }
+
+        
+
+      
+
+
+       
+    </script>
+
+}

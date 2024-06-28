@@ -1,0 +1,367 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenancePaperGrade.MaintenancePaperGradeViewModel
+
+@{
+    ViewData["Title"] = "PaperGrade";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-file-document-box"></i> @Localizer["PaperGrade"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalCreatePaperGrade">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["Create"]
+                    </button>
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="PaperGrade-table">
+                <partial name="_PaperGradeTable" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        function getData() {
+            let req = {
+                "Id": $("#EId").val(),
+                "Paper": $("#EPaper").val(),
+                "BasicWeight": $("#EBasicWeight").val(),
+                "MaxPaperWidth": $("#EMaxPaperWidth").val(),
+                "Cost": $("#ECost").val(),
+                "Group": $("#EGroup").val(),
+                "Kiwi": $("#EKiwi").val(),
+                "Bsh": $("#EBsh").val(),
+                "Grade": $("#EGrade").val(),
+                "PaperId": $("#EPaperId").val(),
+                "PaperDes": $("#EPaperDes").val(),
+                "Length": $("#ELength").val(),
+                "Layer": $("#ELayer").val(),
+                "Stang": $("#EStang").val(),
+                "CreatedDate": $("#ECreatedDate").val(),
+                "CreatedBy": $("#ECreatedBy").val(),
+                "GradeCodeMachine": $("#EGradeCodeMachine").val(),
+            };
+            return req;
+        }
+
+        function viewShow(Id, Paper, BasicWeight, Liners, Medium, MaxPaperWidth, Cost, Group, Kiwi, Bsh, Grade, PaperId, PaperDes, Layer, Stang, Length, Active, gradeCodeMachine) {
+            $('#Id').val(Id);
+            $('#Paper').val(Paper);
+            $('#BasicWeight').val(BasicWeight);
+            debugger;
+            if (Liners === "True") {
+                $('#XLiners').prop('checked', true);
+            } else {
+                $('#XLiners').prop('checked', false);
+            }
+            if (Medium === "True") {
+                $('#XMedium').prop('checked', true);
+            } else {
+                $('#XMedium').prop('checked', false);
+            }
+            $('#MaxPaperWidth').val(MaxPaperWidth);
+            $('#Cost').val(Cost);
+            $('#Group').val(Group);
+            $('#Kiwi').val(Kiwi);
+            $('#Bsh').val(Bsh);
+            $('#Grade').val(Grade);
+            $('#PaperId').val(PaperId);
+            $('#PaperDes').val(PaperDes);
+            $('#Layer').val(Layer);
+            $('#Stang').val(Stang);
+            $('#Length').val(Length);
+            $('#GradeCodeMachine').val(gradeCodeMachine);
+            if (Active === "True") {
+                $('#XActive').prop('checked', true);
+            } else {
+                $('#XActive').prop('checked', false);
+            }
+            $('#modal-view').modal('show');
+        }
+
+        function viewEdit(Id, Paper, BasicWeight, Liners, Medium, MaxPaperWidth, Cost, Group, Kiwi, Bsh, Grade, PaperId, PaperDes, Layer, Stang, Length, Active, createdDate, createdBy, gradeCodeMachine) {
+            $('#EId').val(Id);
+            $('#EPaper').val(Paper);
+            $('#EBasicWeight').val(BasicWeight);
+            if (Liners === "True") {
+                $('#ELiners').prop('checked', true);
+            } else {
+                $('#ELiners').prop('checked', false);
+            }
+            if (Medium === "True")
+            {
+                $('#EMedium').prop('checked', true);
+            } else {
+                $('#EMedium').prop('checked', false);
+            }
+            $('#EMaxPaperWidth').val(MaxPaperWidth);
+            $('#ECost').val(Cost);
+            $('#EGroup').val(Group);
+            $('#EKiwi').val(Kiwi);
+            $('#EBsh').val(Bsh);
+            $('#EGrade').val(Grade);
+            $('#EPaperId').val(PaperId);
+            $('#EPaperDes').val(PaperDes);
+            $('#ELayer').val(Layer);
+            $('#EStang').val(Stang);
+            $('#ELength').val(Length);
+            $('#ECreatedDate').val(ChangeDateTimeFormat(createdDate));
+            $('#ECreatedBy').val(createdBy);
+            $('#EGradeCodeMachine').val(gradeCodeMachine);
+
+            if (Active === "True") {
+                $('#EActive').prop('checked', true);
+            } else {
+                $('#EActive').prop('checked', false);
+            }
+
+            $('#modal-edit').modal('show');
+        }
+
+        $('#btnSubmitMaintainPaperGrade').click(function () {
+            DisabledSubmitButton(this);
+            var form = $('#create-PaperGrade-form').serialize();
+            let paper = $('#c-paper').val();
+            let basicWeight = $('#c-basic-weight').val();
+            let group = $('#PaperGradeViewModel_Group').val();
+            let grade = $('#c-grade').val();
+            let length = $('#c-length').val();
+            let isValid = true;
+            debugger;
+            if (paper == null || paper == "") {
+                isValid = false;
+                $('#PaperGradeViewModel_Paper').focus();
+            }
+            else if (basicWeight == null || basicWeight == "") {
+                isValid = false;
+                $('#PaperGradeViewModel_BasicWeight').focus();
+            }
+            else if (group == null || group == "") {
+                isValid = false;
+                $('#PaperGradeViewModel_Group').focus();
+            }
+            else if (grade == null || grade == "") {
+                isValid = false;
+                $('#PaperGradeViewModel_Grade').focus();
+            }
+            else if (length == null || length == "") {
+                isValid = false;
+                $('#PaperGradeViewModel_Length').focus();
+            }
+
+            if (isValid) {
+                $.ajax({
+                    url: '@Url.Action("SavePaperGrade", "MaintenancePaperGrade")',
+                    type: "POST",
+                    async: false,
+                    data: form,
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            UpdatePaperGradeTableNew(res);
+                            swal("Save Success!", { icon: "success", });
+                        }
+                        else {
+                            swal("Save Failed!", res.ExceptionMessage, { icon: "warning" });
+                        }
+                        $('#modal-create').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                }
+                });
+            }
+       });
+
+        $('.btneditmaintainpapergrade').click(function () {
+            DisabledSubmitButton(this);
+            // var form = $('#edit-maintain-papergrade').serialize();
+
+            var tmp = getData();
+            debugger;
+            if ($('#ELiners').prop('checked')) {
+                Object.assign(tmp, { Liners: 1 });
+            } else {
+                Object.assign(tmp, { Liners: 0 });
+            }
+            if ($('#EMedium').prop('checked')) {
+                Object.assign(tmp, { Medium: 1 });
+            } else {
+                Object.assign(tmp, { Medium: 0 });
+            }
+            if ($('#EActive').prop('checked')) {
+                Object.assign(tmp, { Active: 1 });
+            } else {
+                Object.assign(tmp, { Active: 0 });
+            }
+            var form = JSON.stringify(tmp);
+            let paper = $('#EPaper').val();
+            let basicWeight = $('#EBasicWeight').val();
+            let group = $('#EGroup').val();
+            let grade = $('#EGrade').val();
+            let length = $('#ELength').val();
+            let isValid = true;
+
+            if (paper == null || paper == "") {
+                isValid = false;
+                $('#EPaper').focus();
+            }
+            else if (basicWeight == null || basicWeight == "") {
+                isValid = false;
+                $('#EBasicWeight').focus();
+            }
+            else if (group == null || group == "") {
+                isValid = false;
+                $('#EGroup').focus();
+            }
+            else if (grade == null || grade == "") {
+                isValid = false;
+                $('#EGrade').focus();
+            } else if (length == null || length == "") {
+                isValid = false;
+                $('#ELength').focus();
+            }
+            if (isValid) {
+                $.ajax({
+                    url: '@Url.Action("UpdatePaperGrade", "MaintenancePaperGrade")',
+                    type: "POST",
+                    async: false,
+                    data: {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            swal("Save Successfully!", "", { icon: "success", });
+                            UpdatePaperGradeTableNew(res);
+                        }
+                        else {
+                            swal("Save Failed!", res.ExceptionMessage, { icon: "warning", });
+                        }
+
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+       });
+
+        function UpdatePaperGradeTableNew(res) {
+            $('#PaperGrade-table').html(res.View);
+            $('#PaperGrade-data-table').DataTable();
+            $('body').css('padding', '0px');
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#PaperGrade-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModalCreatePaperGrade').click(function () {
+           // $(".field-validation-error span").hide();
+            $('#modal-create').modal('show');
+            $('#Active').prop('checked', true);
+            $('#PaperGradeViewModel_Active').val(true);
+            $('#PaperGradeViewModel_Layer').val(1);
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+        $('#c-paper').keyup(function () {
+            let paper = this.value;
+            let basicWeight = $('#c-basic-weight').val();
+            $('#c-grade').val(paper + basicWeight);
+            $('#c-paper-des').val(paper + basicWeight);
+        });
+
+        $('#c-basic-weight').keyup(function () {
+            let paper = $('#c-paper').val();
+            let basicWeight = this.value;
+            $('#c-grade').val(paper + basicWeight);
+            $('#c-paper-des').val(paper + basicWeight);
+        });
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        $(function () {
+            $("#Liners").click(function () {
+                if ($('#Liners').is(":checked")) {
+                    $('#PaperGradeViewModel_Liners').val(true);
+                }
+                else {
+                    $('#PaperGradeViewModel_Liners').val(false);
+                }
+            });
+            $("#Medium").click(function () {
+                if ($('#Medium').is(":checked")) {
+                    $('#PaperGradeViewModel_Medium').val(true);
+                }
+                else {
+                    $('#PaperGradeViewModel_Medium').val(false);
+                }
+            });
+            $("#Active").click(function () {
+                if ($('#Active').is(":checked")) {
+                    $('#PaperGradeViewModel_Active').val(true);
+                }
+                else {
+                    $('#PaperGradeViewModel_Active').val(false);
+                }
+            });
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

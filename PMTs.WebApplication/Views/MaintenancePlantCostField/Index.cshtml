@@ -1,0 +1,268 @@
+﻿@model IEnumerable<PMTs.DataAccess.ModelView.MaintenancePlantCostField.PlantCostFieldViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Maintenance Plant Cost Field";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="fa fa-cog"></i> @Localizer["Plant Cost Field"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="box">
+                <div class="box-body row">
+                    <div class="col-md-5">
+                        <table id="plantCostFieldTable" class="table table-striped table-hover dt-responsive display nowrap" cellspacing="0" style="border:solid" cellpadding="20">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center">@Localizer["Plant Cost Field Selected"]</th>
+                                </tr>
+                            </thead>
+                            <tbody id="plantCostFieldBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-7">
+                        <table id="plantCostFieldSelectedTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="text-center">
+                                    <th width="100%" scope="col">@Localizer["Cost Field"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var plantCostField in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (plantCostField.SelectStatus)
+                                            {
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="SelectStatusCheck filled-in" id="@plantCostField.Id" name="SelectStatus" checked />
+                                                    <label class="form-check-label" for="@plantCostField.Id">@plantCostField.CostField</label>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="SelectStatusCheck filled-in" id="@plantCostField.Id" name="SelectStatus" />
+                                                    <label class="form-check-label" for="@plantCostField.Id">@plantCostField.CostField</label>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <br />
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <button type="button" class="btn btn-info col-md-3" id="btnSubmit">@Localizer["Save Change"]</button>
+                    <div class="mr-3"></div>
+                    <button type="button" class="btn btn-success col-md-3" id="btnClear">@Localizer["Clear"]</button>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+
+        var plantCostFieldSelectArr = [];
+        var mapCostArr = [];
+        var SelectedDefualtArr = [];
+        const plantCostFields = @Html.Raw(Json.Serialize(Model));
+
+        $(document).ready(function () {
+            mapCostArr = [];
+            SelectedDefualtArr = [];
+            plantCostFieldSelectArr = [];
+
+            var plantCostFieldSelectedTable = $('#plantCostFieldSelectedTable').DataTable({
+                "retrieve": true,
+                "scrollY": "300px",
+                "scrollCollapse": true,
+                "paging": false,
+                "info": false
+            });
+            var plantCostFieldArr = $('#plantCostFieldTable').DataTable({
+                "retrieve": true,
+                "scrollY": "300px",
+                "scrollCollapse": true,
+                "paging": false,
+                "info": false,
+                "ordering": false
+            });
+
+            $.each(plantCostFields, function (pcfKey, pcfObject) {
+                if (pcfObject.SelectStatus) {
+                    SelectedDefualtArr.push({ "SeqNo": pcfObject.Id, "Id": pcfObject.Id, "CostField": pcfObject.CostField, "SelectStatus": pcfObject.SelectStatus });
+                    plantCostFieldSelectArr.push({ "SeqNo": pcfObject.Id, "Id": pcfObject.Id, "CostField": pcfObject.CostField, "SelectStatus": pcfObject.SelectStatus });
+                }
+                mapCostArr.push({ "Id": pcfObject.Id, "CostField": pcfObject.CostField, "SelectStatus": pcfObject.SelectStatus});
+            });
+
+            SetPlantCostField(SelectedDefualtArr, "Original");
+
+            //alert("Plant Cost Field have "+SelectedDefualtArr.length + " items of " + mapCostArr.length);
+
+            $('#plantCostFieldSelectedTable tbody').on('click', 'tr', function () {
+                var $row = $(this).closest("tr");
+                var id = $row.find("input:eq(0)").attr('id');
+                var elementById = "#" + id;
+
+                plantCostFieldSelectArr.sort(function (a, b) { return (a.SeqNo > b.SeqNo) ? 1 : ((b.SeqNo > a.SeqNo) ? -1 : 0); });
+
+                let nextSeqNoOfArr = 1;
+                if (plantCostFieldSelectArr.length > 0) {
+                    nextSeqNoOfArr = plantCostFieldSelectArr[plantCostFieldSelectArr.length - 1].SeqNo + 1;
+                }
+
+                if (id != "") {
+                    if ($row.find("input:eq(0)").is(':checked')) {
+                        //uncheck
+
+                        var defaultSelected = SelectedDefualtArr.filter(s => s.Id == id);
+                        if (defaultSelected.length > 0) {
+                            plantCostFieldSelectArr = plantCostFieldSelectArr.filter(p => { return p.Id != id });
+                            plantCostFieldSelectArr.push({ "SeqNo": nextSeqNoOfArr, "Id": defaultSelected[0].Id, "CostField": defaultSelected[0].CostField, "SelectStatus": false });
+                        } else {
+                            plantCostFieldSelectArr = plantCostFieldSelectArr.filter(p => { return p.Id != id });
+                        }
+
+                        $(elementById).prop('checked', false);
+
+                        SetPlantCostField(plantCostFieldSelectArr,"");
+
+                        return false;
+                    }
+                    else
+                    {
+                        //check
+                        var defaultSelected = SelectedDefualtArr.filter(s => s.Id == id);
+                        if (defaultSelected.length > 0) {
+                            plantCostFieldSelectArr = plantCostFieldSelectArr.filter(p => { return p.Id != id });
+                            plantCostFieldSelectArr.push({ "SeqNo": nextSeqNoOfArr, "Id": defaultSelected[0].Id, "CostField": defaultSelected[0].CostField, "SelectStatus": true });
+                        } else {
+                            var selectPlantCostField = mapCostArr.filter(p => p.Id == id);
+                            plantCostFieldSelectArr.push({ "SeqNo": nextSeqNoOfArr, "Id": selectPlantCostField[0].Id, "CostField": selectPlantCostField[0].CostField, "SelectStatus": true });
+                        }
+
+                        $(elementById).prop('checked', true);
+
+                        SetPlantCostField(plantCostFieldSelectArr,"");
+
+                        return false;
+                    }
+                }
+            });
+
+        });
+
+        function SetPlantCostField(plantCostFieldArr , action)
+        {
+            var tablePlantCostFieldSelected = $('#plantCostFieldTable').DataTable({
+                "retrieve": true,
+                "scrollY": "300px",
+                "scrollCollapse": true,
+                "paging": false,
+                "info": false,
+                "ordering": false
+            });
+
+            tablePlantCostFieldSelected.clear().draw();
+            if (action == "Original" && plantCostFieldArr.length > 0) {
+                plantCostFieldArr.sort(function (a, b) { return (a.Id > b.Id) ? 1 : ((b.Id > a.Id) ? -1 : 0); });
+            }
+
+            $.each(plantCostFieldArr, function (key, object) {
+                if (action == "Original") {
+                    if (object.SelectStatus) {
+                        tablePlantCostFieldSelected.row.add(["<td style=\"height:5px; padding-left:100px;font-size:14px;color:gray;font-family:serif;\"><font>" + object.CostField + "</font></td>"]).draw();
+                    }
+                }
+                else
+                {
+                    let isDefualtArr = SelectedDefualtArr.filter(p => { return p.Id == object.Id });
+
+                    if (isDefualtArr.length > 0) {
+                        if (object.SelectStatus) {
+                            tablePlantCostFieldSelected.row.add(["<td style=\"height:5px; padding-left:100px;font-size:14px;color:gray;font-family:serif;\"><font>" + object.CostField + "</font></td>"]).draw();
+                        }
+                    }
+                    else {
+                        if (object.SelectStatus) {
+                            tablePlantCostFieldSelected.row.add(["<td style=\"height:5px; padding-left:100px;font-size:14px;color:gray;font-family:serif;\"><font style=\"color:limegreen;font-weight:400;\">" + object.CostField + "</font></td>"]).draw();
+                        }
+                    }
+                }
+
+            });
+        }
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdatePlantCostField", "MaintenancePlantCostField")',
+                data: { PlantCostFieldArr: JSON.stringify(plantCostFieldSelectArr) },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Save!", res.ExeptionMessage, { icon: "success" })
+                            .then(() => {
+                                window.location.reload(true);
+                            });
+                    } else {
+                        swal("Failed to saved!", res.ExeptionMessage, { icon: "warning" })
+                            .then(() => {
+                            });
+                    }
+                },
+                error: function () {
+                }
+            });
+        });
+
+        $('#btnClear').click(function () {
+            plantCostFieldSelectArr = [];
+
+            let tablePlantCostFieldSelected = $('#plantCostFieldTable').DataTable({
+                "retrieve": true,
+                "scrollY": "300px",
+                "scrollCollapse": true,
+                "paging": false,
+                "info": false,
+                "ordering": false
+            });
+
+            tablePlantCostFieldSelected.clear().draw();
+            $('.SelectStatusCheck').prop('checked', false);
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+}

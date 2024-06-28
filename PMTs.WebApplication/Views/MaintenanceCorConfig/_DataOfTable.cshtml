@@ -1,0 +1,290 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceCorConfig.MaintenanceCorConfigViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.CorConfigViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Name</td>
+        <td>@item.MinOut</td>
+        <td>@item.MaxOut</td>
+        <td>@item.CutOff</td>
+        <td>@item.Mintrim</td>
+        <td>@item.TearTape</td>
+        <td>@item.TearTapeMax</td>
+        <td>
+            <button type="button" class="btn btn-default"
+                    data-id="@item.Id" data-Name="@item.Name"
+                    data-MinOut="@item.MinOut" data-MaxOut="@item.MaxOut"
+                    data-CutOff="@item.CutOff" data-Mintrim="@item.Mintrim"
+                    data-TearTape="@item.TearTape" data-TearTapeMax="@item.TearTapeMax"
+                    onclick="viewShow(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-Name')
+                    , this.getAttribute('data-MinOut')
+                    , this.getAttribute('data-MaxOut')
+                    , this.getAttribute('data-CutOff')
+                    , this.getAttribute('data-Mintrim')
+                    , this.getAttribute('data-TearTape')
+                    , this.getAttribute('data-TearTapeMax')
+                    )">
+                <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-default"
+                    data-id="@item.Id" data-Name="@item.Name"
+                    data-MinOut="@item.MinOut" data-MaxOut="@item.MaxOut"
+                    data-CutOff="@item.CutOff" data-Mintrim="@item.Mintrim"
+                    data-TearTape="@item.TearTape" data-TearTapeMax="@item.TearTapeMax"
+                    data-CreatedDate="@item.CreatedDate" data-CreatedBy="@item.CreatedBy"
+                    onclick="viewEdit(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-Name')
+                    , this.getAttribute('data-MinOut')
+                    , this.getAttribute('data-MaxOut')
+                    , this.getAttribute('data-CutOff')
+                    , this.getAttribute('data-Mintrim')
+                    , this.getAttribute('data-TearTape')
+                    , this.getAttribute('data-TearTapeMax')
+                    , this.getAttribute('data-CreatedDate')
+                    , this.getAttribute('data-CreatedBy')
+                    )">
+                <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+            </button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal fade bs-example-modal-lg" id="modal-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View CorConfig"]</h4>
+                <button type="button" class="close" data-dismiss="modal"  data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Id" />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Name"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Name" id="Name" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["MinOut"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="MinOut" id="MinOut" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["MaxOut"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="MaxOut" id="MaxOut" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["CutOff"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="CutOff" id="CutOff" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Mintrim"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        @*<input type="text" class="form-control" name="Mintrim" id="Mintrim" readonly />*@
+                        <div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                            <input type="checkbox" class="form-check-input" id="XMintrim">
+                            <label class="form-check-label" for="XMintrim"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["TearTape"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="TearTape" id="TearTape" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["TearTapeMax"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="TearTapeMax" id="TearTapeMax" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-backdrop="false"@Localizer["Close"]></button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-maintain-corconfig">
+            <input type="hidden" id="ECreatedDate" />
+            <input type="hidden" id="ECreatedBy" />
+            @*asp-controller="MaintenanceCorConfig" asp-action="UpdateCorConfig" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">*@
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit CorConfig"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="EId" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Name"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EName" name="Name" maxlength="50" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="List">@Localizer["MinOut"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EMinOut" name="MinOut" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["MaxOut"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EMaxOut" name="MaxOut" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="List">@Localizer["CutOff"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="ECutOff" name="CutOff" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Mintrim"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            @*<input type="text" class="form-control" id="Mintrim" name="Mintrim" asp-for="@item.Mintrim" />*@
+
+                            @*@if (item.Mintrim)
+                                {
+
+                                    <input type="checkbox" class="filled-in" id="Mintrim-@No" name="Mintrim" asp-for="@item.Mintrim" checked />
+                                    <label for="Mintrim-@No"></label>
+
+                                }
+                                else
+                                {
+                                    <input type="checkbox" class="filled-in" id="Mintrim-@No" name="Mintrim" asp-for="@item.Mintrim" />
+                                    <label for="Mintrim-@No"></label>
+                                }*@
+
+                            <div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                                <input type="checkbox" class="form-check-input" id="EMintrim">
+                                <label class="form-check-label" for="EMintrim"></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="List">@Localizer["TearTape"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="ETearTape" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["TearTapeMax"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="ETearTapeMax" name="TearTapeMax" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btnupdatemaintaincorconfig">@Localizer["Update"]</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+    <script>
+            $('.btnupdatemaintaincorconfig').click(function () {
+            // var form = $('#edit-maintain-corconfig').serialize();
+            if ($('#EName').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                var tmp = getData();
+                if ($('#EMintrim').prop('checked')) {
+                    Object.assign(tmp, { Mintrim: 1 });
+                } else {
+                    Object.assign(tmp, { Mintrim: 0 });
+                }
+                var form = JSON.stringify(tmp);// $('#edit-maintain-color').serialize();
+                $.ajax({
+                    url: '@Url.Action("UpdateCorConfig", "MaintenanceCorConfig")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateCorConfigTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        function UpdateCorConfigTableNew(res) {
+            $('#CorConfig-table').html(res.View);
+            $('#CorConfig-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }
+    </script>

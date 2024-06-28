@@ -1,0 +1,136 @@
+﻿@model PMTs.DataAccess.ModelView.MasterCardMO
+@{ Layout = "~/Views/Shared/_MainLayout.cshtml"; }
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.DataAccess.ModelView.Report
+@inject IViewLocalizer Localizer
+
+@Model.Material_No
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-xs-6 col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-airplay"></i>@Localizer["Detail Material Data"]</h3>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 offset-lg-12">
+
+                    <div id="categories">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapsecategories" aria-expanded="true" aria-controls="collapsecategories">
+                                    <h5 class="m-b-0">@Localizer["Categories"]</h5>
+                                </button>
+                            </a>
+                            <div id="collapsecategories" class="collapse show" aria-labelledby="heading11" data-parent="#categories">
+                                <div class="card-body">
+                                    @Model.KindofProductGroup
+                                    @Model.KindofProduct
+                                    @Model.ProcessCost
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="customer">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapsecustomer" aria-expanded="true" aria-controls="collapsecustomer">
+                                    <h5 class="m-b-0">@Localizer["customer"]</h5>
+                                </button>
+                            </a>
+                            <div id="collapsecustomer" class="collapse show" aria-labelledby="heading11" data-parent="#customer">
+                                <div class="card-body">
+                                    @Model.Cust_Name
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="productInfo">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseproductInfo" aria-expanded="true" aria-controls="collapseproductInfo">
+                                    <h5 class="m-b-0">@Localizer["productInfo"]</h5>
+                                </button>
+                            </a>
+                            <div id="collapseproductInfo" class="collapse show" aria-labelledby="heading11" data-parent="#productInfo">
+                                <div class="card-body">@Localizer["productInfo"]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="productspec">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#productspec" aria-expanded="true" aria-controls="productspec">
+                                    <h5 class="m-b-0">@Localizer["productspec"]</h5>
+                                </button>
+                            </a>
+                            <div id="productspec" class="collapse show" aria-labelledby="heading11" data-parent="#productspec">
+                                <div class="card-body">@Localizer["productspec"]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="productprop">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseproductprop" aria-expanded="true" aria-controls="collapseproductprop">
+                                    <h5 class="m-b-0">@Localizer["productprop"]</h5>
+                                </button>
+                            </a>
+                            <div id="collapseproductprop" class="collapse show" aria-labelledby="heading11" data-parent="#productprop">
+                                <div class="card-body">@Localizer["productprop"]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="routing">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapserouting" aria-expanded="true" aria-controls="collapserouting">
+                                    <h5 class="m-b-0">@Localizer["routing"]</h5>
+                                </button>
+                            </a>
+                            <div id="collapserouting" class="collapse show" aria-labelledby="heading11" data-parent="#routing">
+                                <div class="card-body">@Localizer["routing"]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="erp">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseerp" aria-expanded="true" aria-controls="collapseerp">
+                                    <h5 class="m-b-0">@Localizer["erp"]</h5>
+                                </button>
+                            </a>
+                            <div id="collapseerp" class="collapse show" aria-labelledby="heading11" data-parent="#erp">
+                                <div class="card-body">@Localizer["erp"]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="picture">
+                        <div class="card m-b-0">
+                            <a class="card-header text-decoration-none" id="heading11">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapsepicture" aria-expanded="true" aria-controls="collapsepicture">
+                                    <h5 class="m-b-0">@Localizer["picture"]</h5>
+                                </button>
+                            </a>
+                            <div id="collapsepicture" class="collapse show" aria-labelledby="heading11" data-parent="#picture">
+                                <div class="card-body">@Localizer["picture"]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

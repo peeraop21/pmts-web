@@ -1,0 +1,447 @@
+﻿@model IEnumerable<PMTs.DataAccess.ComplexModel.MasterDataRoutingModel>
+
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+
+@{
+    ViewData["Title"] = "Change Factory New Material";
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+    var saleOrg = userSession.SaleOrg.ToString();
+    var factoryCode = userSession.FactoryCode.ToString();
+}
+
+<style>
+    .center {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-content-copy"></i> &nbsp;@Localizer["Change Factory New Material"] </h3>
+                    </div>
+
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <input type="text" name="fileDownload" id="fileDownload" style="display:none;" value="">
+                            <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:170px;float:right" onclick="thisFileDownload()">@Localizer["Load Template"]&ensp;<i class="fa fa-download"></i></a>
+                            <label for="fileDownload"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-body">
+                        <div style="background-color:white;padding:20px 0px;" class="text-center">@Localizer["Copy material and Change Factory to new material"]</div>
+                        <div style="background-color:white;height:14vh" class="text-center">
+                            <form id="fromChangeFactoryNewMaterial">
+                                <div id="textFieled" class="form-group row">
+                                    <div class="col-md-12">
+                                        <input type="file" name="fileUpload" id="fileUpload" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                        <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:170px;" onclick="thisFileUpload();">@Localizer["Change Factory New Material From File"]&ensp;<i class="fa fa-upload"></i></a>
+                                        <label for="fileUpload"></label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="divCheckImport" hidden>
+                            <div id="divDisplayFailedItem">
+                                <div style="background-color:white;padding:20px 0px;" class="text-center font-bold text-danger">@Localizer["Failed Change Factory New Material"]</div>
+
+                                <div id="divFailedChangeFactoryNewMaterialTable" class="table-responsive">
+                                    <partial name="_FailedChangeFactoryNewMaterialTable" model="Model" />
+                                </div>
+                            </div>
+
+                            <div id="textAlready"></div>
+
+                            <div style="background-color:white;padding:20px 0px;" class="text-center font-bold text-success">@Localizer["Success Change Factory New Material"]</div>
+                            <div id="divAlreadyChangeFactoryNewMaterialTable" class="table-responsive">
+                                <partial name="_AlreadyChangeFactoryNewMaterialTable" model="Model" />
+                            </div>
+                            <div class="form-inline" style="flex-flow:row-reverse;padding-top:20px">
+                                <div>
+                                    <input class="btn btn-info" style="min-width:100px" hidden type="button" id="btn-ConfirmFactoryBoardNewMat" value="@Localizer["Next"]">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div hidden id="divChangeFactoryNewMaterialTable" class="table-responsive">
+                            <div style="background-color:white;padding:20px 0px;" class="text-center font-bold text-info">@Localizer["Change Factory New Material List"]</div>
+
+                            <partial name="_ChangeFactoryNewMaterialTable" model="Model" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/buttons.dataTables.min.css" />
+    <script type="text/javascript" src="~/DataTable/js/datatables.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/buttons.colVis.min.js"></script>
+    <script src="~/lib/DataTables/pdfmake.min.js"></script>
+    <script src="~/lib/DataTables/vfs_fonts.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/jszip.min.js"></script>
+
+    <script>
+        let failedCount = 0;
+        window.pdfMake.fonts = {
+            THSarabunNew: {
+                normal: 'THSarabunNew.ttf',
+                bold: 'THSarabunNew.ttf',
+                italics: 'THSarabunNew.ttf"',
+                bolditalics: 'THSarabunNew.ttf',
+            }
+        };
+
+        $(document).ready(function () {
+            failedCount = 0;
+            $("#fileDownload").val("");
+            $("#btn-ConfirmFactoryBoardNewMat").attr("hidden", true);
+            $("#divCheckImport").attr("hidden", true);
+            $("#divChangeFactoryNewMaterialTable").attr("hidden", true);
+            $("#divDisplayFailedItem").attr("hidden", true);
+            $("#btn-ConfirmFactoryBoardNewMat").attr('disabled', true);
+
+            $('#ChangeFactoryNewMaterialTable').DataTable({
+                'bFilter': true,
+                "paging": true,
+                "scrollX": true,
+                "dom": '<"float-left"l><"float-right"f>rt<"float-left"i><"float-right"p>'
+            });
+
+            $('#FailedChangeFactoryNewMaterialTable').DataTable({
+                'bFilter': true,
+                "paging": true,
+                "scrollX": true,
+                "dom": '<"float-left"l><"float-right"f>rt<"float-left"i><"float-right"p>'
+            });
+
+            $('#AlreadyChangeFactoryNewMaterialTable').DataTable({
+                'bFilter': true,
+                "paging": true,
+                "scrollX": true,
+                "dom": '<"float-left"l><"float-right"f>rt<"float-left"i><"float-right"p>'
+            });
+        });
+
+        function thisFileUpload() {
+            document.getElementById("fileUpload").click();
+        };
+
+        function thisFileDownload() {
+            $("#fileDownload").val("download");
+
+            swal({
+                title: "Are you sure?",
+                text: "Export change factory new material template.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        document.location.href = '@Url.Action("ExportChangeFactoryNewMaterialTemplate", "MaintenanceProductInfo")';
+                    }
+                });
+        };
+
+        $('#fileUpload').click(function () {
+            document.getElementById("fileUpload").value = null;
+        });
+
+        $('#fileUpload').change(function () {
+            swal({
+                title: "Are you sure?",
+                text: "Import excel data to change factory new material",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let form = $('#fromChangeFactoryNewMaterial')[0];
+                        let data = new FormData(form);
+                        data.append('checkImport', true);
+                        //alert("chenge :"+ $("#divChangeFactoryNewMaterialTable").is(":hidden"));
+                        //alert("failed :" + $("#divFailedChangeFactoryNewMaterialTable").is(":hidden"));
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ImportChangeFactoryNewMaterialFromExcel", "MaintenanceProductInfo")',
+                            data: data,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess)
+                                {
+                                    $("#divCheckImport").attr("hidden", false);
+
+                                    if (!isNaN(parseInt(res.FailedCount)) && parseInt(res.FailedCount) > 0)
+                                    {
+                                        failedCount = parseInt(res.FailedCount);
+                                        $("#divDisplayFailedItem").attr("hidden", false);
+                                        $('#divFailedChangeFactoryNewMaterialTable').html(res.ViewFaileds);
+                                        $('#FailedChangeFactoryNewMaterialTable').DataTable({
+                                            "scrollX": true,
+                                            "order": [],
+                                            "dom": 'Bfrt<"float-left"i>p',
+                                            "paging": true,
+                                            "autoWidth": true,
+                                            "buttons": [
+
+                                                {
+                                                    extend: 'excelHtml5',
+                                                    messageTop: "รายการสร้างMaterialใหม่จากMaterialของโรงงานอื่น",
+                                                    text: 'ดาวน์โหลด Excel',
+                                                    createEmptyCells: true,
+                                                    exportOptions: {
+                                                        title: null,
+                                                        orthogonal: 'export'
+                                                    },
+                                                    customize: function (xlsx) {
+                                                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                                        // Loop over the cells
+                                                        $('row c', sheet).each(function () {
+                                                            //select the index of the row
+                                                            var numero = $(this).parent().index();
+                                                            var residuo = numero % 2;
+                                                            if (numero == 1) {
+                                                                $(this).attr('s', '51');
+                                                            } else if (numero == 2) {
+                                                                $(this).attr('s', '47');
+                                                            } else if (numero > 1) {
+                                                                if (residuo == 0) {//'is t',
+                                                                    $(this).attr('s', '25');
+                                                                } else {
+                                                                    $(this).attr('s', '30');
+                                                                }
+                                                            }
+                                                        });
+                                                    },
+                                                }
+                                            ],
+                                            "oLanguage": {
+                                                "sSearch": "ค้นหา:"
+                                            }
+                                        });
+                                        document.getElementById("textFieled").scrollIntoView();
+                                    }
+                                    else
+                                    {
+                                        $("#divDisplayFailedItem").attr("hidden", true);
+                                        document.getElementById("textFieled").scrollIntoView();
+                                        //document.getElementById("textAlready").scrollIntoView();
+                                    }
+
+                                    $('#divAlreadyChangeFactoryNewMaterialTable').html(res.ViewAlreadys);
+
+                                    $('#AlreadyChangeFactoryNewMaterialTable').DataTable({
+                                        'bFilter': true,
+                                        "paging": true,
+                                        "order": [],
+                                        "scrollX": true,
+                                        "dom": '<"float-left"l><"float-right"f>rt<"float-left"i><"float-right"p>'
+                                    });
+
+                                    $('.modal-backdrop').css('display', 'none');
+                                    $("#btn-ConfirmFactoryBoardNewMat").attr("hidden", false);
+
+                                    if (!isNaN(parseInt(res.AlreadyCount)) && parseInt(res.AlreadyCount) > 0) {
+                                        $("#btn-ConfirmFactoryBoardNewMat").attr('disabled', false);
+                                    }
+                                    else
+                                    {
+                                        $("#btn-ConfirmFactoryBoardNewMat").attr('disabled', true);
+                                    }
+
+                                    $("#divChangeFactoryNewMaterialTable").attr("hidden", true);
+
+                                    if (!isNaN(parseInt(res.FailedCount)) && parseInt(res.FailedCount) > 0) {
+
+                                        $("#file-upload").val("");
+                                        swal({
+                                            title: "Found invalid data",
+                                            text: "Do you want to download invalid data?",
+                                            icon: "warning",
+                                            buttons: {
+                                                confirm: "Ok",
+                                                cancel: true,
+                                            },
+                                            dangerMode: false,
+                                        })
+                                            .then((willDelete) => {
+                                                //#region Download Filed Check Factory
+                                                if (failedCount > 0 && willDelete) {
+                                                    setTimeout(function () {
+                                                        document.location.href = '@Url.Action("ExportInvalidChangeFactoryNewMaterialDataTemplate", "MaintenanceProductInfo")';
+
+                                                        //$("#FailedChangeFactoryNewMaterialTable_wrapper .buttons-excel").click();
+                                                    }, 1000);
+
+                                                }
+                                                //#endregion
+                                            });
+                                    }
+                                }
+                                else
+                                {
+                                    swal("PMTs Failed!", res.ExceptionMessage , {icon:"warning"})
+                                        .then(()=> {
+                                            window.location.href = "@Url.Action("ChangeFactoryNewMaterial", "MaintenanceProductInfo")";
+                                    });
+                                }
+                            },
+                            error: function () {
+                            // return false;
+                            }
+                        });
+                    }
+                });
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+
+        $("#btn-ConfirmFactoryBoardNewMat").click(function () {
+            let alreadyBtnDisabled = $("#btn-ConfirmFactoryBoardNewMat").is(":disabled");
+
+            if (!alreadyBtnDisabled) {
+                swal({
+                    title: "Change Factory New Mat",
+                    text: "DO you want to continue creating new mat?",
+                    icon: "warning",
+                    buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                    },
+                    dangerMode: false,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            //#region Confirm to Change Factory new mat
+                        let data = new FormData();
+                        data.append('checkImport', false);
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ImportChangeFactoryNewMaterialFromExcel", "MaintenanceProductInfo")',
+                            data: data,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess)
+                                {
+                                    $("#divCheckImport").attr("hidden", true);
+                                    $("#divChangeFactoryNewMaterialTable").attr("hidden", false);
+
+                                    $('#divChangeFactoryNewMaterialTable').html(res.View);
+                                    $('.modal-backdrop').css('display', 'none');
+                                    $('#ChangeFactoryNewMaterialTable').DataTable({
+                                        "scrollX": true,
+                                        "order": [[0, "asc"]],
+                                        "dom": 'Bfrt<"float-left"i>p',
+                                        "paging": true,
+                                        "autoWidth": true,
+                                        "buttons": [
+
+                                            {
+                                                extend: 'excelHtml5',
+                                                messageTop: "รายการสร้างMaterialใหม่จากMaterialของโรงงานอื่น",
+                                                text: 'ดาวน์โหลด Excel',
+                                                createEmptyCells: true,
+                                                exportOptions: {
+                                                    title: null,
+                                                    orthogonal: 'export'
+                                                },
+                                                customize: function (xlsx) {
+                                                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                                    // Loop over the cells
+                                                    $('row c', sheet).each(function () {
+                                                        //select the index of the row
+                                                        var numero = $(this).parent().index();
+                                                        var residuo = numero % 2;
+                                                        if (numero == 1) {
+                                                            $(this).attr('s', '51');
+                                                        } else if (numero == 2) {
+                                                            $(this).attr('s', '47');
+                                                        } else if (numero > 1) {
+                                                            if (residuo == 0) {//'is t',
+                                                                $(this).attr('s', '25');
+                                                            } else {
+                                                                $(this).attr('s', '30');
+                                                            }
+                                                        }
+                                                    });
+                                                },
+                                            }
+                                        ],
+                                        "oLanguage": {
+                                            "sSearch": "ค้นหา:"
+                                        }
+                                    });
+
+                                    swal("PMTs Change Factory New Mat!", "Save success.", { icon: "info" });
+                                }
+                                else
+                                {
+                                    swal("PMTs Failed!", res.ExceptionMessage , {icon:"warning"})
+                                        .then(()=> {
+                                            window.location.href = "@Url.Action("ChangeFactoryNewMaterial", "MaintenanceProductInfo")";
+                                    });
+                                }
+                            },
+                            error: function () {
+
+                            }
+                        });
+
+                        //#endregion
+                        }
+                    });
+            }
+
+        });
+    </script>
+}

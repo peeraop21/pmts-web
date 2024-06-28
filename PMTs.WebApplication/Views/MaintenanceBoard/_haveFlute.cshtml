@@ -1,0 +1,85 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+
+@{
+    ViewData["Title"] = "MainTain BoardCombind";
+}
+
+<div class="containerflute" style="margin-top:30px">
+    <div class='elementflut1' id='divflut_1'>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label class="control-label" for="Code">@Localizer["Station"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <label class="control-label" for="Code">@Localizer["Grade"]</label>
+            </div>
+            <div class="form-group col-md-4">
+                <label class="control-label" for="Code">@Localizer["Item"]</label>
+            </div>
+        </div>
+    </div>
+
+    @{
+            int yx = 1;
+            foreach (var item in Model.BoardSpect)
+            {
+                yx++;
+                <div class='elementflut1' id='divflut_@yx'>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <input type="text"  id='fs_@yx' value="@item.Station" class="form-control" autocomplete="off" readonly />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" id='fc_@yx' value="@item.Grade" class="form-control" autocomplete="off" readonly />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="number" id='fi_@yx' value="@item.Item" class="form-control" autocomplete="off"  readonly />
+                        </div>
+                    </div>
+                 </div>
+                }
+
+                }
+ </div>
+
+            @*<div class="row">
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>*@

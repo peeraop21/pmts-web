@@ -1,0 +1,36 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceFluteTrim.MaintenanceFluteTrimModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="box-header">
+    <h3 class="box-title">Machine Flute Trim</h3>
+</div>
+
+<div class="box-body">
+    <table id="machine-flute-trim-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Machine"]</th>
+                <th scope="col">@Localizer["Flute"]</th>
+                <th scope="col">@Localizer["Trim"]</th>
+                <th scope="col">@Localizer["View"]</th>
+                <th scope="col">@Localizer["Edit"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_DataOfTable", Model)
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    // $(document).ready(function () {
+    //     $('.form-group').css('display', 'block');
+    //     $('.form-inline').css('width', '100%');
+    //     $('.form-control').css('width', '100%');
+    //     $('input[type=search]').css('width', 'auto');
+    //     $('#machine-flute-trim-data-table').DataTable();
+    // });
+</script>

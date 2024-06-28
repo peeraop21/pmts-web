@@ -1,0 +1,565 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceAccount.AccountViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<br />
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-outline-info">
+            <div class="card-header">
+                <h4 class="m-b-0 text-white"><i class="fa fa-info"></i><span class="pull-right"> PMTs Application</span></h4>
+            </div>
+            <div class="card-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-body">
+                        <h3 class="box-title">@Localizer["PersonInfo"] : @Model.UserName</h3>
+                        <hr class="m-t-0 m-b-40">
+                        <div class="row">
+                            <div class="col-md-3 col-xs-6">
+                                <center><img src="@Model.PictureUser" style="width: 300px; height: auto;" /></center>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row" style="vertical-align:middle">
+
+                                    <input type="hidden" name="Id" value="@Model.Id" />
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5><b>@Localizer["Username"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5>@Model.UserName</h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5><b>@Localizer["UserDomain"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5>@Model.UserDomain</h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["SaleOrg"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.SaleOrg</h5>
+                                    </div>
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["Plant"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.FactoryCode</h5>
+                                    </div>
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["FirstNameTh"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+
+                                        <h5 class="p-t-20 db">@Model.FirstNameTh</h5>
+                                    </div>
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["LastNameTh"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.LastNameTh</h5>
+                                    </div>
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["FirstNameEn"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.FirstNameEn</h5>
+                                    </div>
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["LastNameEn"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.LastNameEn</h5>
+                                    </div>
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["Email"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.Email</h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["Telephone"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.Telephone</h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["MobileNo"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db">@Model.MobileNo</h5>
+                                    </div>
+
+                                    <div class="form-group col-md-3 setLeft">
+                                        <h5 class="p-t-20 db"><b>@Localizer["Role"]:</b></h5>
+                                    </div>
+                                    <div class="form-group col-md-3 setLeft">
+                                        @foreach (var itemRoleName in Model.RoleList.Where(w => w.Id == Model.DefaultRoleId))
+                                        {
+                                            <h5 class="p-t-20 db">@itemRoleName.RoleName</h5>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <button class="btn btn-warning waves-effect waves-light" type="button" id="btnShowEditModal">
+                    <span class="btn-label"><i class="mdi mdi-lead-pencil"></i></span>
+                    @Localizer["EditAccount"]
+                </button>
+            </div>
+            <div class="modal" id="modal-edit">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <form id="create-account-form" asp-controller="MaintenanceAccount" asp-action="UpdateAccount"
+                              data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="CreatedDate" asp-for="CreatedDate" />
+                            <input type="hidden" name="CreatedBy" asp-for="CreatedBy" />
+                            <input type="hidden" name="LastPasswordChangeDate" asp-for="LastPasswordChangeDate" />
+                            <input type="hidden" name="NumberOfLogins" asp-for="NumberOfLogins" />
+                            <input type="hidden" id="IschangePassword" name="IsChangePassword" asp-for="IsChangePassword" />
+
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="myLargeModalLabel">@Localizer["EditAccount"]</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="Id" asp-for="Id" />
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="UserName">@Localizer["Username"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+
+                                        <input type="text" class="form-control" id="UserName" name="UserName" asp-for="UserName" required />
+                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                    </div>
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="UserDomain">@Localizer["UserDomain"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+
+                                        <select asp-for="UserDomain" id="UserDomain" name="UserDomain" class="form-control"
+                                                asp-items="ViewBag.UserDomain" onchange="disPass();"></select>
+                                    </div>
+                                </div>
+                                <div class="row" style="padding-left:10px" id="divpassword">
+                                    <label class="mr-md-5 setLeft"></label>
+                                    <label for="changePassword" style="cursor: pointer;color:dodgerblue">
+                                        <font size="2"><u>@Localizer["ChangePassword"]</u></font>
+                                        <input style="max-height:20px;max-width:20px" onclick="ChangePassword('changePassword')" type="checkbox" class="filled-in" id="changePassword" />
+                                    </label>
+                               </div>
+
+                                <div id="div-changePassword" class="row changePwd" hidden>
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="Password">@Localizer["OldPassword"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="Password" id="Password" value="@Model.Password" type="password" readonly />
+                                    </div>
+
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="NewPassword">@Localizer["NewPassword"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="NewPassword" id="NewPassword" asp-for="NewPassword" type="password" />
+                                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                                    </div>
+                                    <a onclick="ShowCasePassword()" title="password policy" class="fa fa-question-circle text-gray btn" style="font-size:14px;padding-top:6px"></a>
+                                </div>
+
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="SaleOrg">@Localizer["SaleOrg"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+
+                                        <input class="form-control" name="SaleOrg" asp-for="SaleOrg" required readonly />
+                                    </div>
+
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="FactoryCode">@Localizer["Plant"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="FactoryCode" asp-for="FactoryCode" required readonly />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft" style="padding-right:0;">
+                                        <label class="control-label" asp-for="FirstNameTh">@Localizer["FirstNameTh"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="FirstNameTh" id="FirstNameTh" asp-for="FirstNameTh" required />
+                                    </div>
+
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="LastNameTh">@Localizer["LastNameTh"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="LastNameTh" id="LastNameTh" asp-for="LastNameTh" required />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="FirstNameEn">@Localizer["FirstNameEn"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="FirstNameEn" id="FirstNameEn" asp-for="FirstNameEn" />
+                                    </div>
+
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="LastNameEn">@Localizer["LastNameEn"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="LastNameEn" id="LastNameEn" asp-for="LastNameEn" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="Email">@Localizer["Email"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="Email" id="Email" asp-for="Email" required type="email" />
+                                    </div>
+
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="Telephone">@Localizer["Telephone"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="Telephone" id="Telephone" asp-for="Telephone" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="MobileNo">@Localizer["MobileNo"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="MobileNo" id="MobileNo" asp-for="MobileNo" />
+                                    </div>
+
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="PasswordHint">@Localizer["PasswordHint"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="PasswordHint" id="PasswordHint" asp-for="PasswordHint" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="Comment">@Localizer["Comment"]</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" name="Comment" id="Comment" asp-for="Comment" />
+                                    </div>
+
+                                    <label class="mr-md-4"></label>
+                                    <div class="form-group col-md-2 setLeft">
+                                        <label class="control-label" asp-for="RoleList">@Localizer["Role"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+
+                                        <select class="form-control" name="DefaultRoleId" asp-for="DefaultRoleId" asp-items="@(new SelectList(Model.RoleList,"RoleId","RoleName"))" required readonly>
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <label class="mr-md-5"></label>
+                                    <div class="form-group col-md-2 setLeft">
+
+                                        <label class="control-label">@Localizer["PictureUser"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        @if (string.IsNullOrEmpty(@Model.PictureUser))
+                                        {
+                                        <input id="PictureUser" name="PictureUser" type="file" title="search image" accept="image/*" onchange="show_User(this)" />
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row justify-content-end">
+                                                        @*<i id="RM_FG" class="fa fa-times pull-right  " style="color:red; display:none;" onclick="RMFG()"></i>*@
+                                                        <div class="row justify-content-end">
+                                                            <i id="RM_User" class="fas fa-times" style="color:red; display:none;" onclick="RMUser()"></i>
+                                                        </div>
+                                                    </div>
+                                                    <center>
+                                                      @Html.TextBoxFor(m => m.PictureUser, new { @id = "iUserPath", @style = "display:none;" })
+                                                        <img id="PicUser" style="width: 100px; height: auto;display:none;" />
+                                                    </center>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <input id="PictureUser" name="PictureUser" type="file" title="search image" accept="image/*" onchange="show_FG2(this)" />
+
+                                            <input class="form-control" name="PictureUser" type="hidden" id="PictureUser" asp-for="PictureUser" />
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row justify-content-end">
+                                                        <i id="RM_FGO" class="fa fa-times pull-right " style="color:red; " onclick="RMUserO()"></i>
+                                                    </div>
+                                                    <center>
+                                                        <img id="PicFGo" src="@Model.PictureUser" style="width:  200px; height: auto" />
+                                                        <img id="PicUser" style="width: 100px; height: auto;" />
+                                                        <input class="form-control" name="iUserPath" type="hidden" id="iUserPath" />
+                                                    </center>
+                                                </div>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="btnSubmit" class="btn btn-primary">@Localizer["Update"]</button>
+                                <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">@Localizer["Close"]</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="span12">
+                    <div class="inner">
+                        <h4 class="text-themecolor"><i class="mdi mdi-file-document-box"></i> @Localizer["DocPMTs"] </h4>
+                    </div>
+                </div>
+                <table class="table table-bordered cols-3">
+                    <thead class="thead-light">
+                        <tr>
+                            <th width="80%" style="padding-left:5px"> @Localizer["NameDoc"]</th>
+                            <th width="20%" class="text-center"> @Localizer["UpdateDT"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="file">
+                                    <a href="~/Documents/คู่มือPMTs.docx" title="Document" download="คู่มือPMTs.docx">คู่มือการใช้งานPMTs.docx</a>
+                                </span>
+                            </td>
+                            <td class="text-center">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            // Basic
+            $('.dropify').dropify();
+
+            // Translated
+            $('.dropify-fr').dropify({
+                messages: {
+                    default: 'Glissez-déposez un fichier ici ou cliquez',
+                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                    remove: 'Supprimer',
+                    error: 'Désolé, le fichier trop volumineux'
+                }
+            });
+
+            // Used events
+            var drEvent = $('#input-file-events').dropify();
+
+            drEvent.on('dropify.beforeClear', function (event, element) {
+                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+            });
+
+            drEvent.on('dropify.afterClear', function (event, element) {
+                alert('File deleted');
+            });
+
+            drEvent.on('dropify.errors', function (event, element) {
+                console.log('Has Errors');
+            });
+
+            var drDestroy = $('#input-file-to-destroy').dropify();
+            drDestroy = drDestroy.data('dropify')
+            $('#toggleDropify').on('click', function (e) {
+                e.preventDefault();
+                if (drDestroy.isDropified()) {
+                    drDestroy.destroy();
+                } else {
+                    drDestroy.init();
+                }
+            })
+
+            if ($('#UserDomain').val() != '') {
+
+                $('#divpassword').hide() = true;
+                $('#AccountViewModel_Password').prop('disabled', true);
+            } else {
+
+                $('#divpassword').show() = true;
+                $('#AccountViewModel_Password').prop('disabled', false)
+            }
+
+        });
+        $('#btnShowEditModal').click(function () {
+
+            $('#modal-edit').modal('show');
+        });
+
+        function disPass() {
+            if ($('#UserDomain').val() != '') {
+
+                $('#divpassword').hide() = true;
+                $('#AccountViewModel_Password').prop('disabled', true);
+            } else {
+
+                $('#divpassword').show() = true;
+                $('#AccountViewModel_Password').prop('disabled', false)
+            }
+
+        }
+        function ChangePassword(id) {
+            if ($("#" + id).prop("checked") == true) {
+
+                $("#div-" + id).removeAttr("hidden");
+                $("#Is" + id).val(true);
+            }
+            else if ($("#" + id).prop("checked") == false) {
+
+                $("#div-" + id).attr("hidden", "");
+                $("#Is" + id).val(false);
+            }
+        }
+
+        function ShowCasePassword() {
+            swal("Password policy", "Passwords must contain: \n - Passwords must be between 8-32 characters.\n- a minimum of 1 lower case letter [a-z]\n- a minimum of 1 upper case letter [A-Z]\n- a minimum of 1 numeric character [0-9]\n- a minimum of 1 special character: ( ~`!#$%^&*()-_+={}[]|\;:\"<>,./? ) \n Example : ( !30iLc789 , R0m!!o123 )", "info");
+        }
+
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                swal("Save Success", "", "success");
+
+                location.reload(true);
+            }
+            else {
+                swal("Save Failed", res.ExceptionMessage, "warning");
+
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                swal("Update Success", "", "success");
+                location.reload(true);
+            }
+            else {
+                swal("Update Failed", res.ExceptionMessage, "warning");
+            }
+        };
+
+        function show_User(input) {
+            debugger;
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    $('#PicUser').attr('src', e.target.result);
+                    $('#PicUser').show();
+                    $('#RM_User').show();
+                    var temp = e.target.result;
+                    $('#iUserPath').val(temp);
+                };
+
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function RMUser() {
+            $('#iUserPath').val(null);
+            $('#PicUser').hide();
+            $('#RM_User').hide();
+            const file = document.getElementById('PictureUser');
+            file.value = '';
+        }
+
+        function show_FG2(input, id) {
+            debugger;
+            console.log(input);
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+
+                    $('#RM_User').show();
+                    $('#PicFGo').hide();
+                    $('#PicUser').attr('src', e.target.result);
+                    $('#PicUser').show();
+                    var temp = e.target.result;
+                    $('#iUserPath').val(temp);
+
+                };
+
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function RMUserO(id) {
+
+            debugger;
+            $('#iUserPath').val('Remove');
+            $('#PicUser').removeAttr('src');
+
+            $('#PicFGo').hide();
+            $('#RM_FGO').hide();
+
+            const file = document.getElementById('PictureUser');
+            file.value = '';
+
+        }
+
+        function DownloadDocumentFile() {
+
+        }
+    </script>
+
+}

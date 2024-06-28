@@ -1,0 +1,208 @@
+﻿*, *:after, *:before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* Form Progress */
+.progressTrans {
+    /*width: 1000px;*/
+    width:auto;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.progressTrans .progressCircle,
+.progressTrans .bar {
+    display: inline-block;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    border: 1px solid #d5d5da;
+}
+
+
+    
+.progressTrans .bar {
+    position: relative;
+    width: 95px;
+    height: 6px;
+    top: -33px;
+    margin-left: -5px;
+    margin-right: -5px;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+}
+
+
+
+.progressTrans .progressCircle .progressLabel {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 32px;
+    margin-top: 3px;
+    color: #b5b5ba;
+    font-size: 17px;
+}
+
+.progressTrans .progressCircle .progressTitle {
+    color: #b5b5ba;
+    font-size: 13px;
+    line-height: 30px;
+    margin-left: -5px;
+}
+
+/* Done / Active */
+.progressTrans .bar.done,
+.progressTrans .progressCircle.done {
+    background: #eee;
+}
+
+.progressTrans .bar.active {
+    background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+}
+
+.progressTrans .progressCircle.done .progressLabel {
+    color: #FFF;
+    background: #8bc435;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+
+.progressTrans .progressCircle.done .progressTitle {
+    color: #444;
+}
+
+.progressTrans .progressCircle.active .progressLabel {
+    color: #FFF;
+    background: red;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+
+.progressTrans .progressCircle.active .progressTitle {
+    color: #0c95be;
+}
+
+.card > .progressTrans {
+    word-wrap: initial;
+}
+
+
+
+
+/*uppppppppppppppppppppppppp*/
+
+
+
+
+.progressTrans .progressCircle2,
+.progressTrans .bar2 {
+    display: inline-block;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    border: 1px solid #d5d5da;
+}
+
+
+
+/*.progressTrans .bar2 {
+    position: relative;
+    width: 95px;
+    height: 6px;
+    top: -33px;
+    margin-left: -5px;
+    margin-right: -5px;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+}*/
+
+
+.progressTrans .progressCircle2,
+.progressTrans .bar3 {
+    display: inline-block;
+    background: #007bff;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    /*border: 1px solid #d5d5da;*/
+}
+
+
+.progressTrans .bar3 {
+    background: #fff;
+    position: relative;
+    width: 95px;
+    height: 6px;
+    top: -33px;
+    /*margin-left: -5px;*/
+    margin-right: 5px;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+}
+
+
+
+
+
+
+.progressTrans .progressCircle2 .progressLabel {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 32px;
+    margin-top: 3px;
+    color: #b5b5ba;
+    font-size: 17px;
+}
+
+.progressTrans .progressCircle2 .progressTitle2 {
+    color: #000;
+    font-size: 13px;
+    line-height: 30px;
+    margin-left: -5px;
+}
+
+/* Done / Active */
+.progressTrans .bar2.done,
+.progressTrans .progressCircle2.done {
+    background: #eee;
+}
+
+.progressTrans .bar2.active {
+    background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+}
+
+.progressTrans .progressCircle2.done .progressLabel {
+    color: #FFF;
+    background: #8bc435;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+
+.progressTrans .progressCircle2.done .progressTitle {
+    color: #444;
+}
+
+.progressTrans .progressCircle2.active .progressLabel {
+    color: #FFF;
+    background: red;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+
+.progressTrans .progressCircle2.active .progressTitle {
+    color: #0c95be;
+}
+
+.card > .progressTrans {
+    word-wrap: initial;
+}
+
+

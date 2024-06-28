@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Alternative 1" xml:space="preserve">
+    <value>Alternative 1</value>
+  </data>
+  <data name="Alternative 2" xml:space="preserve">
+    <value>Alternative 2</value>
+  </data>
+  <data name="Alternative 3" xml:space="preserve">
+    <value>Alternative 3</value>
+  </data>
+  <data name="Alternative 4" xml:space="preserve">
+    <value>Alternative 4</value>
+  </data>
+  <data name="Alternative 5" xml:space="preserve">
+    <value>Alternative 5</value>
+  </data>
+  <data name="Alternative 6" xml:space="preserve">
+    <value>Alternative 6</value>
+  </data>
+  <data name="Alternative 7" xml:space="preserve">
+    <value>Alternative 7</value>
+  </data>
+  <data name="Alternative 8" xml:space="preserve">
+    <value>Alternative 8</value>
+  </data>
+  <data name="Bt-Add" xml:space="preserve">
+    <value>Add Machine</value>
+  </data>
+  <data name="Bt-Insert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="Bt-Update" xml:space="preserve">
+    <value>Update Machine</value>
+  </data>
+  <data name="Choose here" xml:space="preserve">
+    <value>--- Choose here ---</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Cor properties 1" xml:space="preserve">
+    <value>Paper roll width</value>
+  </data>
+  <data name="Cor properties 2" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="Cor properties 3" xml:space="preserve">
+    <value>Trim</value>
+  </data>
+  <data name="Cor properties 4" xml:space="preserve">
+    <value>% Trim</value>
+  </data>
+  <data name="Cor properties 5" xml:space="preserve">
+    <value>Tear tape</value>
+  </data>
+  <data name="Cor properties 6" xml:space="preserve">
+    <value>จำนวนเส้น/กล่อง</value>
+  </data>
+  <data name="Cor properties 7" xml:space="preserve">
+    <value>ระบุระยะจากขอบกระดาษ</value>
+  </data>
+  <data name="Corrugator properties" xml:space="preserve">
+    <value>Corrugator properties</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Group Machine" xml:space="preserve">
+    <value>Group Machine</value>
+  </data>
+  <data name="In/Out properties" xml:space="preserve">
+    <value>In/Out properties</value>
+  </data>
+  <data name="Insert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="IO prop1" xml:space="preserve">
+    <value>No. Open</value>
+  </data>
+  <data name="IO prop2" xml:space="preserve">
+    <value>Weight</value>
+  </data>
+  <data name="IO prop3" xml:space="preserve">
+    <value>W </value>
+    <comment>old = Sheet width (mm)</comment>
+  </data>
+  <data name="IO prop4" xml:space="preserve">
+    <value>L </value>
+    <comment>old = Sheet length (mm)</comment>
+  </data>
+  <data name="IO prop5" xml:space="preserve">
+    <value>Coating</value>
+  </data>
+  <data name="IO prop6" xml:space="preserve">
+    <value>Join to/ Sperate to</value>
+  </data>
+  <data name="IO prop7" xml:space="preserve">
+    <value>Join to material No.</value>
+  </data>
+  <data name="IO prop8" xml:space="preserve">
+    <value>Sperate to material No.</value>
+  </data>
+  <data name="IO Title1" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="IO Title2" xml:space="preserve">
+    <value>In</value>
+  </data>
+  <data name="IO Title3" xml:space="preserve">
+    <value>Out</value>
+  </data>
+  <data name="Machine" xml:space="preserve">
+    <value>Machine</value>
+  </data>
+  <data name="Machine Move" xml:space="preserve">
+    <value>Machine Move</value>
+  </data>
+  <data name="Material No" xml:space="preserve">
+    <value>Material No</value>
+  </data>
+  <data name="More Alternative" xml:space="preserve">
+    <value>More Alternative</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="New Product" xml:space="preserve">
+    <value>New Product &gt; 6.Routing</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>ถัดไป</value>
+  </data>
+  <data name="Printing prop" xml:space="preserve">
+    <value>More Color</value>
+  </data>
+  <data name="Printing prop1" xml:space="preserve">
+    <value>Color 1</value>
+  </data>
+  <data name="Printing prop10" xml:space="preserve">
+    <value>Myla No.</value>
+  </data>
+  <data name="Printing prop11" xml:space="preserve">
+    <value>Printing Plate type</value>
+  </data>
+  <data name="Printing prop11.1" xml:space="preserve">
+    <value>Non-Print</value>
+  </data>
+  <data name="Printing prop11.2" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Printing prop11.3" xml:space="preserve">
+    <value>Semi</value>
+  </data>
+  <data name="Printing prop11.4" xml:space="preserve">
+    <value>Shipping Mark</value>
+  </data>
+  <data name="Printing prop2" xml:space="preserve">
+    <value>Color 2</value>
+  </data>
+  <data name="Printing prop3" xml:space="preserve">
+    <value>Color 3</value>
+  </data>
+  <data name="Printing prop4" xml:space="preserve">
+    <value>Color 4</value>
+  </data>
+  <data name="Printing prop5" xml:space="preserve">
+    <value>Color 5</value>
+  </data>
+  <data name="Printing prop6" xml:space="preserve">
+    <value>Color 6</value>
+  </data>
+  <data name="Printing prop7" xml:space="preserve">
+    <value>Color 7</value>
+  </data>
+  <data name="Printing prop8" xml:space="preserve">
+    <value>Printing plate No.</value>
+  </data>
+  <data name="Printing prop8.2" xml:space="preserve">
+    <value>Color 8</value>
+  </data>
+  <data name="Printing prop9" xml:space="preserve">
+    <value>Cutting die No.</value>
+  </data>
+  <data name="Printing properties" xml:space="preserve">
+    <value>Printing properties</value>
+  </data>
+  <data name="Properties printing" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>Remark</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Machine</value>
+  </data>
+  <data name="Title Printing prop1" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="Title Printing prop2" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Title Printing prop3" xml:space="preserve">
+    <value>Shade</value>
+  </data>
+  <data name="Title Printing prop4" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="Title Printing prop5" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="Title Printing prop6" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Title Printing prop7" xml:space="preserve">
+    <value>Shade</value>
+  </data>
+  <data name="Title Printing prop8" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="value printing" xml:space="preserve">
+    <value>Value</value>
+  </data>
+</root>

@@ -1,0 +1,97 @@
+﻿@*@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title text-themecolor">
+            New Product > 1.Categories
+        </h3>
+        <hr />
+    </div>
+
+    <div class="card-body form-material">
+        <form asp-action="Categories" method="post">
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="col-sm-3 control-label">
+                                Kinds Of Product Group :
+                            </label>
+                            <div class="col-sm-3">
+                                @Html.HiddenFor(m => m.modelCategories.Id_kProdGrp)
+                                @Html.TextBoxFor(m => m.modelCategories.KpgName, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                            </div>
+                            <label class="col-sm-2 control-label">
+                                HierarchyLV2 :
+                            </label>
+                            <div class="col-sm-2">
+                                @Html.TextBoxFor(m => m.modelCategories.HierarchyLV2, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row" id="pcc">
+                            <label class="col-sm-3 control-label">
+                                Process cost [PC] :
+                            </label>
+                            <div class="col-sm-5">
+                                @Html.DropDownListFor(m => m.modelCategories.Id_ProcCost, Model.modelCategories.PCCList, "--- Please Select Item ---", new { @class = "form-control no-border text-red", @disabled = "disabled" , @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row" id="kop">
+                            <label class="col-sm-3 control-label">
+                                Kinds Of Product :
+                            </label>
+                            <div class="col-sm-5">
+                                @Html.DropDownListFor(m => m.modelCategories.Id_kProd, Model.modelCategories.KOPList, "--- Please Select Item ---", new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row" id="pdt">
+                            <label class="col-sm-3 control-label">
+                                Product Type :
+                            </label>
+                            <div class="col-sm-5">
+                                @Html.DropDownListFor(m => m.modelCategories.Id_ProdType, Model.modelCategories.PDTList, "--- Please Select Item ---", new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row" id="mtt">
+                            <label class="col-sm-3 control-label">
+                                Material Type :
+                            </label>
+                            <div class="col-sm-5">
+                                @Html.DropDownListFor(m => m.modelCategories.Id_MatType, Model.modelCategories.MATList, "--- Please Select Item ---", new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row" id="pu">
+                            <label class="col-sm-3 control-label">
+                                Production Unit :
+                            </label>
+                            <div class="col-sm-5">
+                                @Html.DropDownListFor(m => m.modelCategories.Id_PU, Model.modelCategories.PUList, "--- Please Select Item ---", new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" id="su">
+                        <div class="row">
+                            <label class="col-sm-3 control-label">
+                                Sales Unit :
+                            </label>
+                            <div class="col-sm-5">
+                                @Html.DropDownListFor(m => m.modelCategories.Id_SU, Model.modelCategories.SUList, "--- Please Select Item ---", new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>*@

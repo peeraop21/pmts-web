@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+
+@{
+    ViewData["Title"] = "MainTain BoardCombind";
+}
+
+@{ int No = 1; }
+
+@foreach (var item in Model.BoardCombind)
+{
+    <tr>
+        <th style="text-align: center;" scope="row">@No</th>
+        <td align="center">@item.Code</td>
+        <td align="center">@item.Flute</td>
+        <td>@item.Board</td>
+        @*<td>@item.Board_Combine</td>
+        <td align="center">@item.Weight</td>
+        @{
+            if (item.Status == true)
+            {
+                <td align="center">
+                    Active
+                </td>
+            }
+            else
+            {
+                <td align="center">
+                    No  Active
+                </td>
+            }
+
+        }*@
+
+        <td align="center">
+            <a>  <i class="fas fa-file text-info" data-id="@item.Code" onclick="viewEditDataView(this.getAttribute('data-id'))"></i></a>
+        </td>
+        <td align="center">
+            <a>  <i class="fas fa-pencil-alt text-warning" data-id="@item.Code" onclick="viewEditData(this.getAttribute('data-id'))"></i></a>
+        </td>
+    </tr>
+    No++;
+}

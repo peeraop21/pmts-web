@@ -1,0 +1,216 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*@model IEnumerable<PMTs.DataAccess.ModelView.Report.ReportCheckOrderModel>*@
+@model PMTs.DataAccess.ComplexModel.ReportCheckOrderItem
+@using System.Linq
+
+@{
+    ViewData["Title"] = "ReportCheckOrderItem";
+}
+
+<style>
+    .LockScreen {
+        display: block;
+        visibility: visible;
+        position: absolute;
+        z-index: 999;
+        top: 0px;
+        left: 0px;
+        width: 105%;
+        height: 105%;
+        background-color: transparent;
+        vertical-align: bottom;
+        padding-top: 20%;
+        filter: alpha(opacity=75);
+        opacity: 0.70;
+        font-size: large;
+        color: blue;
+        font-style: italic;
+        font-weight: 400;
+        background-image: url("/images/report-preloading.gif");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+</style>
+
+<div id="preLoadingScreen" class="LockScreen"></div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-top-bar">
+            <div class="card-header">
+                <div class="row box">
+                    <div class="col-md-12">
+                        <h3 class="text-themecolor"><i class="mdi mdi-checkbox-multiple-marked-circle-outline"></i>@Localizer["Headerreport"]  </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body tab-criteria">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row line-space">
+
+                            @*<div class="form-group col-md-5" style="padding: 0px;">
+                                    <div class="row line-space">
+                                        <div class="form-group col-md-4 title-label">
+                                            <label class=" vertical-sub-text mt-1" style="float: right;">@Localizer["กำหนดส่งเริ่มต้น"]</label>
+                                        </div>
+                                        <div class='col-sm-8'>
+                                            <div class="form-group">
+                                                <div class='input-group date'>
+                                                    <input type='text' id="input-datetimepicker-start" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" onchange="ChangeDate(this,'StartDueDateReq')" placeholder="-- Please Select Strat Date --" />
+                                                </div>
+                                            </div>
+
+                                            <span class="text-danger" id="StartDueDateReq" hidden>The Start Due Date field is requried.</span>
+                                        </div>
+
+                                        <div class="form-group col-md-4 title-label">
+                                            <label class=" vertical-sub-text mt-1" style="float: right;">@Localizer["กำหนดส่งสุดท้าย"]</label>
+                                        </div>
+                                        <div class='col-sm-8'>
+                                            <div class="form-group">
+                                                <div class='input-group date'>
+                                                    <input type='text' id="input-datetimepicker-end" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" onchange="ChangeDate(this,'EndDueDateReq')" placeholder="-- Please Select End Date --" />
+                                                </div>
+                                            </div>
+
+                                            <span class="text-danger" id="EndDueDateReq" hidden>The End Due Date field is requried.</span>
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="form-group col-md-5" style="padding: 0px;">
+                                <div class="row line-space">
+                                    <div class="form-group col-md-4 title-label">
+                                        <label class=" vertical-sub-text mt-1" style="float: right;">@Localizer["duedatestart"]</label>
+                                    </div>
+                                    <div class='col-sm-8'>
+                                        <div class="form-group">
+                                            <div class='input-group date' style="padding-right:10%">
+                                                <input type="date" id="datepickerDueDateStart" onchange="chageCaptionRemarkByDueDate()" class="form-control" />
+                                                @* <input type='date' id="input-datetimepicker-start" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" onchange="ChangeDate(this,'StartDueDateReq')" placeholder="-- Please Select Strat Date --" />*@
+                                            </div>
+                                        </div>
+
+                                        <span class="text-danger" id="StartDueDateReq" hidden>@Localizer["The Start Due Date field is requried."]</span>
+                                    </div>
+
+                                    <div class="form-group col-md-4 title-label">
+                                        <label class=" vertical-sub-text mt-1" style="float: right;">@Localizer["duedateend"]</label>
+                                    </div>
+                                    <div class='col-sm-8'>
+                                        <div class="form-group">
+                                            <div class='input-group date' style="padding-right:10%">
+                                                <input type="date" id="datepickerDueDateEnd" onchange="chageCaptionRemarkByDueDate()" class="form-control" />
+                                                @*<input type='date' id="input-datetimepicker-end" class="form-control text-center datepicker-dropdown col-md-9" style="min-width:253px;max-width: 253px;" onchange="ChangeDate(this,'EndDueDateReq')" placeholder="-- Please Select End Date --" />*@
+                                            </div>
+                                        </div>
+
+                                        <span class="text-danger" id="EndDueDateReq" hidden>@Localizer["The End Due Date field is requried."]</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-5" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" onclick="SearchData()"><i class="fa fa-search"></i>@Localizer["Search"]</button>
+                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;margin-left:3%" onclick="ExportExcel()">@Localizer["Export Report"]</button>
+                            </div>
+                        </div>
+
+                        <hr />
+                    </div>
+
+                    <div id="divReportCheckOrderTable" class="card-body" style="padding:2px 2px 10px 2px;">
+                        <partial name="_ReportCheckOrderItem" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/buttons.dataTables.min.css" />
+    <script type="text/javascript" src="~/DataTable/js/datatables.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/dataTables.buttons.min.js"></script>
+    <script src="~/lib/DataTables/pdfmake.min.js"></script>
+    <script src="~/lib/DataTables/vfs_fonts.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/jszip.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#preLoadingScreen").hide();
+            document.getElementById("datepickerDueDateStart").valueAsDate = new Date()
+            document.getElementById("datepickerDueDateEnd").valueAsDate = new Date()
+            $('#reportOrderItem').DataTable();
+        });
+
+        function ExportExcel() {
+            var start = $("#datepickerDueDateStart").val()
+            var end = $("#datepickerDueDateEnd").val()
+            document.location.href = '@Url.Action("ReportCheckOrderItemExportExcel", "Report")' + "?startdate=" + start.toString() + "&enddate=" + end.toString();
+        }
+
+        function SearchData() {
+            //preLoadingScreen
+            $("#preLoadingScreen").show();
+
+            var start = $("#datepickerDueDateStart").val()
+            var end = $("#datepickerDueDateEnd").val()
+            $.ajax({
+                url: '@Url.Action("SearchData", "Report")',
+                data: { startdate: start, enddate:end },
+                type: "POST",
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+
+                        setTimeout(function () {
+                            //hide loading
+                            $("#preLoadingScreen").hide();
+                        }, 1000);
+
+                        $("#divReportCheckOrderTable").html(res.View);
+                        $('#reportOrderItem').DataTable();
+                    }
+                    else {
+                        $("#preLoadingScreen").hide();
+                        swal("Search Failed!", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () {
+                    $("#preLoadingScreen").hide();
+                    console.log('error in scope');
+                }
+            });
+        }
+    </script>
+}

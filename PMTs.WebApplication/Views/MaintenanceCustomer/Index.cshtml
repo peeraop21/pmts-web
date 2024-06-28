@@ -1,0 +1,1362 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceCustomer.MaintenanceCustomerViewModel
+
+@{
+    ViewData["Title"] = "Customer";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .form-control-sm {
+        min-height: 30px;
+    }
+
+    .setLeft {
+        text-align: left;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-account-circle"></i>&nbsp;@Localizer["Maintenance Customer"]</h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalCustomer">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Create"]
+                    </button>
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="text-right" style="padding-top:10px">
+                @ViewBag.ErrorMessage
+                <form>
+                    <div class="controls">
+                        <div class="input-group">
+                            <select class="form-control custom-select col-md-4 text-sm-left" name="ddlSearch">
+                                <option value="Customer_Name">@Localizer["Customer Name"]</option>
+                                <option value="Customer_Code">@Localizer["Customer Code"]</option>
+                                <option value="Customer_Id">@Localizer["Customer Id"]</option>
+                            </select>
+
+                            <input type="text" class="form-control col-md-5" placeholder="Search" aria-invalid="false" name="Txtsearch">
+                            <span class="input-group-btn" style="width:0px;"></span>
+
+                            <div class="input-group-append">
+                                <button asp-action="Index" style="padding: 0 5px;" class="btn btn-info"><i class="fa fa-search"></i> @Localizer["Search"]</button>
+                            </div>
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="box" id="customer-table">
+                <div id="">
+                    <partial name="_CustomerTable" model="Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        const qualityItems = @Html.Raw(Json.Serialize(Model.QaItems));
+        console.log(qualityItems);
+
+        const TagPrintItemsBundle = @Html.Raw(Json.Serialize(Model.TagPrintSO));
+
+        const TagPrintItemsPallet = @Html.Raw(Json.Serialize(Model.TagPrintSO));
+
+        //debugger;
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#Customer-data-table').DataTable({
+                'bFilter': false,
+            });
+        });
+
+        $('#btnShowCreateModalCustomer').click(function () {
+            // $(".field-validation-error span").hide();
+
+            $('#CustStatus-create').prop('checked',true);
+            $('#modal-create').modal('show');
+        });
+
+        function openTagbundle() {
+
+            $("#tagbundle-create").css('display', 'block')
+            $("#tagpallet-create").css('display', 'none')
+        }
+
+        function openTagPallet() {
+            $("#tagbundle-create").css('display', 'none')
+            $("#tagpallet-create").css('display', 'block')
+        }
+
+        function OpenModalView(id) {
+            $('#'+id).modal('show');
+        }
+
+        $('#btnSubmit').click(function () {
+            $('.add-row').remove();
+        });
+
+        function AddMoreCustShipToForEdit(custShipToParentIdElement, custShipToIdElement, custChipToArrayListIdElement, custCode) {
+            var custShipToValue = $("#" + custShipToIdElement).val();
+            $("#" + custShipToIdElement).val(null);
+
+            var custShipToList = JSON.parse($("#" + custChipToArrayListIdElement).val());
+            custShipToList.push({ "Seq": null, "ShipTo": custShipToValue, "Description": custCode, "TransportZone": null, "DeliveryDistance": null, "DeliveryTime": null, "CustPreWait": null, "CustPostWait": null, "CustRecvTime": null });
+            $("#" + custChipToArrayListIdElement).val(JSON.stringify(custShipToList));
+
+            var elementNo = custShipToParentIdElement.substring(custShipToParentIdElement.lastIndexOf("-"));
+            elementNo = elementNo.replace("-", "");
+            var inputElementId = "CustShipTo-edit-" + elementNo;
+            $("#" + custShipToParentIdElement).append('<div class="add-row" style="display: flex;"><input class="form-control" id="' + inputElementId + '" type="text" value="' + custShipToValue + '" style="width: 100%; margin-top: 10px;" disabled><button type="button" class="btn btn-danger" style="margin-top: 10px; margin-left: 5px;" onclick="RemoveCustShipToItem(this, \'' + inputElementId + '\')">-</button></div>');
+        }
+
+        function RemoveCustShipToItem(e, elementId, custChipToArrayListIdElement, elementItemId) {
+            var custShipToList = JSON.parse($("#" + custChipToArrayListIdElement).val());
+            var itemToRemove = $("#" + elementItemId).val();
+
+            var custShipToListNew = custShipToList.filter(function (object) {
+                return object.ShipTo !== itemToRemove;
+            });
+
+            $("#" + custChipToArrayListIdElement).val(JSON.stringify(custShipToListNew));
+
+            e.parentNode.remove();
+        }
+
+        const ProductGroupList = @Html.Raw(Json.Serialize(@Model.ProductGroupList));
+
+        function GetProductGroup(PGCode, CustCode) {
+            var list = document.getElementById("IndGrp-customer-edit");
+
+            for (var i = 0; i < ProductGroupList.length; i++) {
+                list.options[i] = new Option(ProductGroupList[i].Description, ProductGroupList[i].Code);
+            }
+
+            $("#IndGrp-customer-edit").val(PGCode);
+
+            GetShipTo(CustCode);
+
+            //open modal edit
+            $('#modal-customer-edit').modal('show');
+        }
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        function BindingCustomerEdit(e)
+        {
+
+            debugger;
+            $('#Id-customer-edit').val($(e).attr("data-Id"));
+            $('#SaleOrg-customer-edit').val($(e).attr("data-SaleOrg"));
+            $('#PlantCode-customer-edit').val($(e).attr("data-PlantCode"));
+            $('#CustName-customer-edit').val($(e).attr("data-CustName"));
+            $('#SoldToCode-customer-edit').val($(e).attr("data-SoldToCode"));
+            $('#CustCode-customer-edit').val($(e).attr("data-CustCode"));
+            $('#CusId-customer-edit').val($(e).attr("data-CusId"));
+            if ($(e).attr("data-CustStatus") == "True")
+            {
+                $('#CustStatus-edit').prop("checked", $(e).attr("data-CustStatus"));
+            }
+
+            var list = document.getElementById("IndGrp-customer-edit");
+
+            for (var i = 0; i < ProductGroupList.length; i++) {
+                list.options[i] = new Option(ProductGroupList[i].Description, ProductGroupList[i].Code);
+            }
+
+            $('#IndGrp-customer-edit').val($(e).attr("data-IndGrp"));
+            $('#Zone-customer-edit').val($(e).attr("data-Zone"));
+            $('#Route-customer-edit').val($(e).attr("data-Route"));
+            $('#CustShipTo-customer-edit').val($(e).attr("data-CustShipTo"));
+            $('#CustDeliveryTime-customer-edit').val($(e).attr("data-CustDeliveryTime"));
+            $('#CustClass-customer-edit').val($(e).attr("data-CustClass"));
+            $('#CustReq-customer-edit').val($(e).attr("data-CustReq"));
+            $('#CustAlert-customer-edit').val($(e).attr("data-CustAlert"));
+            $('#CustStatus-customer-edit').val($(e).attr("data-CustStatus"));
+            $('#PalletOverhang-customer-edit').val($(e).attr("data-PalletOverhang"));
+            $('#CreatedDate-customer-edit').val(ChangeDateTimeFormat($(e).attr("data-CreatedDate")));
+            $('#CreatedBy-customer-edit').val($(e).attr("data-CreatedBy"));
+            $('#QASpec-customer-edit').val($(e).attr("data-QASpec"));
+            $('#Accgroup-customer-edit').val($(e).attr("data-Accgroup"));
+            $('#Cust-customer-edit').val($(e).attr("data-Cust"));
+            $('#PriorityFlag-customer-edit').val($(e).attr("data-PriorityFlag"));
+
+            $('#COA-customer-edit').val($(e).attr("data-COA"));
+            $('#Film-customer-edit').val($(e).attr("data-Film"));
+
+            if ($(e).attr("data-COA") == "True") {
+                $('#CustCOA-edit').prop("checked", $(e).attr("data-COA"));
+            } else {
+                $('#CustCOA-edit').prop("checked", false);
+            }
+            if ($(e).attr("data-Film") == "True") {
+                $('#CustFilm-edit').prop("checked", $(e).attr("data-Film"));
+            } else {
+                $('#CustFilm-edit').prop("checked", false);
+            }
+
+            AppendQASpecCheckBox($(e).attr("data-QASpec").split(','));
+           // debugger;
+
+            if ($(e).attr("data-notagbundle") == "9tag") {
+                $('#9tag-edit').prop("checked", true);
+            } else if ($(e).attr("data-notagbundle") == "6tag") {
+                $('#6tag-edit').prop("checked", true);
+            } else if ($(e).attr("data-notagbundle") == "4tag") {
+                $('#4tag-edit').prop("checked", true);
+            } else {
+                $('#9tag-edit').prop("checked", false);
+                $('#6tag-edit').prop("checked", false);
+                $('#4tag-edit').prop("checked", false);
+            }
+
+            AppendTagbundleCheckBox($(e).attr("data-tagbundle").split('$'), $(e).attr("data-HeadTagBundle"), $(e).attr("data-FootTagBundle"), $(e).attr("data-Freetext1TagBundle"), $(e).attr("data-Freetext2TagBundle"), $(e).attr("data-Freetext3TagBundle"));
+            console.log($(e).attr("data-tagbundle").split('$'));
+            AppendTagpalletCheckBox($(e).attr("data-tagPallet").split('$'), $(e).attr("data-HeadTagPallet"), $(e).attr("data-FootTagPallet"), $(e).attr("data-Freetext1TagPallet"), $(e).attr("data-Freetext2TagPallet"), $(e).attr("data-Freetext3TagPallet"));
+
+            //open modal edit
+            $('#modal-customer-edit').modal('show');
+        }
+
+        function AppendQASpecCheckBox(arrayOfQASpec) {
+
+            var container1 = $('#DivQaSpecColumn1-customer-edit');
+            var container2 = $('#DivQaSpecColumn2-customer-edit');
+            container1.html("");
+            container2.html("");
+            var QaItemsNo1 = parseInt(qualityItems.length / 2);
+            var i = 0;
+           // debugger;
+            $.each(qualityItems, function (qa_key, qa_obj) {
+                var existQASpec = arrayOfQASpec.filter(q => { return q == qa_obj });
+                let checkboxId = "checkbox-" + qa_obj.replace(' ', '-');
+                if (i < QaItemsNo1) {
+                    if (existQASpec.length > 0) {
+                        $('<input />', { type: 'checkbox', id: checkboxId, value: qa_obj, 'checked':true }).appendTo(container1);
+                    } else {
+                        $('<input />', { type: 'checkbox', id: checkboxId, value: qa_obj }).appendTo(container1);
+                    }
+                    $('<label />', { 'for': checkboxId, text: qa_obj, 'class': 'mycheckbox-label text-left col-12', 'style':'min-width:100px'}).appendTo(container1);
+                }
+                else
+                {
+                    if (existQASpec.length > 0) {
+                        $('<input />', { type: 'checkbox', id: checkboxId, value: qa_obj, 'checked': true }).appendTo(container2);
+                    } else
+                    {
+                        $('<input />', { type: 'checkbox', id: checkboxId, value: qa_obj }).appendTo(container2);
+                    }
+                    $('<label />', { 'for': checkboxId, text: qa_obj, 'class': 'mycheckbox-label text-left col-12', 'style': 'min-width:100px' }).appendTo(container2);
+                }
+
+                i++;
+            });
+        }
+
+        //Tassanai
+        function AppendTagbundleCheckBox(arrayofTagBundle, headTagBundle, footTagBundle, freetext1TagBundle,freetext2TagBundle,freetext3TagBundle) {
+
+            var container1 = $('#Divtagbundle-customer-edit');
+           // debugger;
+            container1.html("");
+            debugger;
+            //var TagSoItemBundle = parseInt(TagPrintItemsBundle);
+            var i = 0;
+
+            $('<label />', { text: 'No.', 'class': 'text-left col-2 font-weight-bold' }).appendTo(container1);
+
+            $('<label />', { text: 'Column.', 'class': 'text-left col-6 font-weight-bold'}).appendTo(container1);
+            $('<label />', { text: 'UOM.', 'class': 'text-left col-4 font-weight-bold' }).appendTo(container1);
+
+            var taghead = headTagBundle;
+
+            let objtagheadvalue = taghead.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagheadEditNo',
+                value: objtagheadvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagheadEditColumn',
+                value: objtagheadvalue[1]
+            }).appendTo(container1);
+
+            $.each(TagPrintItemsBundle, function (key, bundle_obj) {
+
+                debugger;
+
+                var existTagBundle = arrayofTagBundle.filter(q => { return q.substring(q.indexOf(":")+1, q.lastIndexOf(":")) == bundle_obj });
+                let textboxNoId = "textboxNo-" + bundle_obj;
+
+                let textboxUomId = "textboxUom-" + bundle_obj;
+
+                if (existTagBundle.length > 0) {
+                    let tagsplit = existTagBundle[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: objvalue[0]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: ""
+                    }).appendTo(container1);
+                }
+                //$('<label />', { 'for': checkboxId, text: bundle_obj, 'class': 'mycheckbox-label text-left col-6', 'style': 'min-width:100px' }).appendTo(container1);
+                $('<label />', { 'for': textboxNoId, text: bundle_obj, 'class': 'mycheckbox-label text-left col-6', 'style': 'min-width:100px' }).appendTo(container1);
+
+                if (existTagBundle.length > 0) {
+                    let tagsplit = existTagBundle[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'textbox', 'class': 'form-control col-4', id: textboxUomId,
+                        value: objvalue[2]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', { type: 'textbox', 'class': 'form-control col-4', id: textboxUomId, value: "" }).appendTo(container1);
+                }
+
+                i++;
+            });
+
+            var tagfoot = footTagBundle;
+
+            let objtagfootvalue = tagfoot.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfootEditNo',
+                value: objtagfootvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfootEditColumn',
+                value: objtagfootvalue[1]
+            }).appendTo(container1);
+
+            var freetext1tagbundle = freetext1TagBundle;
+
+            let objtagfree1value = freetext1tagbundle.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfree1EditNo',
+                value: objtagfree1value[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfree1EditColumn',
+                value: objtagfree1value[1]
+            }).appendTo(container1);
+
+            var freetext2tagbundle = freetext2TagBundle;
+
+            let objtagfree2value = freetext2tagbundle.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfree2EditNo',
+                value: objtagfree2value[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfree2EditColumn',
+                value: objtagfree2value[1]
+            }).appendTo(container1);
+
+            var freetext3tagbundle = freetext3TagBundle;
+
+            let objtagfree3value = freetext3tagbundle.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfree3EditNo',
+                value: objtagfree3value[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfree3EditColumn',
+                value: objtagfree3value[1]
+            }).appendTo(container1);
+
+        }
+
+        function AppendTagpalletCheckBox(arrayofTagpallet, headTagPallet, footTagPallet, freetext1TagPallet,freetext2TagPallet,freetext3TagPallet) {
+
+            var container1 = $('#Divtagpallet-customer-edit');
+           // debugger;
+            container1.html("");
+            debugger;
+
+            var i = 0;
+
+            $('<label />', { text: 'No.', 'class': 'text-left col-2 font-weight-bold' }).appendTo(container1);
+
+            $('<label />', { text: 'Column.', 'class': 'text-left col-6 font-weight-bold' }).appendTo(container1);
+            $('<label />', { text: 'UOM.', 'class': 'text-left col-4 font-weight-bold' }).appendTo(container1);
+
+            var tagheadPallet = headTagPallet;
+
+            let objtagheadPalletvalue = tagheadPallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagheadPalletEditNo',
+                value: objtagheadPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagheadPalletEditColumn',
+                value: objtagheadPalletvalue[1]
+            }).appendTo(container1);
+
+            $.each(TagPrintItemsPallet, function (key, pallet_obj) {
+
+                //var existTagBundle = arrayofTagBundle.filter(q => { return q.substring(q.indexOf(":") + 1, q.lastIndexOf(":")) == bundle_obj });
+
+                var existTagPallet = arrayofTagpallet.filter(q => { return q.substring(q.indexOf(":") + 1, q.lastIndexOf(":")) == pallet_obj });
+                //let checkboxId = "checkbox-pallet-" + pallet_obj.replace(' ', '-');
+                //let textboxId = "textbox-pallet-" + pallet_obj.replace(' ', '-');
+
+                let textboxNoId = "textboxNo-pallet-" + pallet_obj.replace(' ', '-');
+
+                let textboxUomId = "textboxUom-pallet-" + pallet_obj.replace(' ', '-');
+
+                if (existTagPallet.length > 0) {
+                    let tagsplit = existTagPallet[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: objvalue[0]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', {
+                        type: 'number', 'class': 'form-control col-2', id: textboxNoId,
+                        value: ""
+                    }).appendTo(container1);
+                }
+
+                //////debugger;
+                //////$('<div class=col-md-6').appendTo(container1);
+                ////if (existTagPallet.length > 0) {
+                ////    $('<input />', { type: 'checkbox', id: textboxNoId, value: pallet_obj, 'checked': true }).appendTo(container1);
+                ////} else {
+                ////    $('<input />', { type: 'checkbox', id: textboxNoId, value: pallet_obj }).appendTo(container1);
+                ////}
+                $('<label />', { 'for': textboxNoId, text: pallet_obj, 'class': 'mycheckbox-label text-left col-6', 'style': 'min-width:100px' }).appendTo(container1);
+                //if (existTagPallet.length > 0) {
+                //    let starttxt = existTagPallet.toString().lastIndexOf(":");
+                //    let endtxt = existTagPallet.toString().length ;
+                //    $('<input />', {
+                //        type: 'textbox', 'class': 'form-control col-6', id: textboxId,
+                //        value: existTagPallet.toString().substring(starttxt, endtxt).replace(":", '')
+                //    }).appendTo(container1);
+
+                //} else {
+                //    $('<input />', { type: 'textbox', 'class': 'form-control col-6', id: textboxId, value: "" }).appendTo(container1);
+                //}
+
+                if (existTagPallet.length > 0) {
+                    let tagsplit = existTagPallet[0];
+                    let objvalue = tagsplit.split(":");
+
+                    $('<input />', {
+                        type: 'textbox', 'class': 'form-control col-4', id: textboxUomId,
+                        value: objvalue[2]
+                    }).appendTo(container1);
+
+                } else {
+                    $('<input />', { type: 'textbox', 'class': 'form-control col-4', id: textboxUomId, value: "" }).appendTo(container1);
+                }
+
+                i++;
+            });
+
+            var tagfootPallet = footTagPallet;
+
+            let objtagfootPalletvalue = tagfootPallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfootPalletEditNo',
+                value: objtagfootPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfootPalletEditColumn',
+                value: objtagfootPalletvalue[1]
+            }).appendTo(container1);
+
+            var freetext1tagpallet = freetext1TagPallet;
+
+            let objfreetext1tagPalletvalue = freetext1tagpallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfreePallet1EditNo',
+                value: objfreetext1tagPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfreePallet1EditColumn',
+                value: objfreetext1tagPalletvalue[1]
+            }).appendTo(container1);
+
+            var freetext2tagpallet = freetext2TagPallet;
+
+            let objfreetext2tagPalletvalue = freetext2tagpallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfreePallet2EditNo',
+                value: objfreetext2tagPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfreePallet2EditColumn',
+                value: objfreetext2tagPalletvalue[1]
+            }).appendTo(container1);
+
+            var freetext3tagpallet = freetext3TagPallet;
+
+            let objfreetext3tagPalletvalue = freetext3tagpallet.split(":");
+            $('<input />', {
+                type: 'number', 'class': 'form-control col-2', id: 'tagfreePallet3EditNo',
+                value: objfreetext3tagPalletvalue[0]
+            }).appendTo(container1);
+
+            $('<input />', {
+                type: 'text', 'class': 'form-control col-10', id: 'tagfreePallet3EditColumn',
+                value: objfreetext3tagPalletvalue[1]
+            }).appendTo(container1);
+        }
+
+        const CustShipToList = @Html.Raw(Json.Serialize(@Model.CustShipToList));
+
+        function GetShipTo(CustCode) {
+            for (var i = 0; i < CustShipToList.length; i++) {
+                if (CustShipToList[i].CustCode == CustCode) {
+                    $("#CustShipTo-customer-edit").val(CustShipToList[i].ShipTo);
+                }
+            }
+        }
+
+        function QASpecToModel(id)
+        {
+
+           debugger;
+            var QASpec = "";
+            var i = 0;
+
+            $.each(qualityItems, function (key, Object)
+            {
+
+               // alert(Object)
+                //if ($("#checkBox-"+i+"-"+id).prop("checked") == true) {
+                //    QASpec = QASpec + Object + ",";
+                //}
+               // alert(key + ": " + Object);
+                if ($("#" + Object + "-" + id + "").prop("checked") == true) {
+                    QASpec = QASpec + Object + ",";
+                }
+                i++;
+            });
+
+            QASpec = QASpec.substring(0, QASpec.length - 1);
+
+            $("#QASpec").val(QASpec);
+
+            var TagBundle = "";
+            var TagBundleUom = "";
+            var i2 = 0;
+            let Adjust1Create = "";
+            let Adjust1Createuom = ""
+
+            debugger;
+            if ($('#9tag').prop("checked") == true) {
+                    NoTagBundle = "9tag";
+                    NumberOfTag = 9;
+                }
+                if ($('#6tag').prop("checked") == true) {
+                    NoTagBundle = "6tag";
+                    NumberOfTag = 6;
+                }
+                if ($('#4tag').prop("checked") == true) {
+                    NoTagBundle = "4tag";
+                    NumberOfTag = 4;
+                }
+
+            var Adjust1 = $("#Adjust1-No").val();
+
+            if ($("#Adjust1-No").length > 0 && Adjust1 !=0) {
+                Adjust1Create = $("#Adjust1-No").val() + ":" + $("#Adjust1-Create").val()  + "$";
+               // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            $.each(TagPrintItemsBundle, function (key, Object) {
+
+                var ObjectValue = $("#" + Object + "-" + id + "-No").val();
+
+                if (ObjectValue != "" && ObjectValue !=0 ) {
+
+                    TagBundleUom = $("#" + Object + "-" + id + "-uom").val();
+                    TagBundle = TagBundle + ObjectValue + ":"+Object + ":" + TagBundleUom + "$";
+                }
+                i++;
+            });
+            var Adjust2Create = "";
+            var Adjust2 = $("#Adjust2-No").val();
+            debugger;
+            if ($("#Adjust2-No").length > 0 && Adjust2 != 0) {
+                Adjust2Create = $("#Adjust2-No").val() + ":" + $("#Adjust2-Create").val()  + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            var Adjust3Create = "";
+            var Adjust3 = $("#Adjust3-No").val();
+            debugger;
+            if ($("#Adjust3-No").length > 0 && Adjust3 != 0) {
+                Adjust3Create = $("#Adjust3-No").val() + ":" + $("#Adjust3-Create").val()  + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            var Adjust4Create = "";
+            var Adjust4 = $("#Adjust4-No").val();
+            debugger;
+            if ($("#Adjust4-No").length > 0 && Adjust4 != 0) {
+                Adjust4Create = $("#Adjust4-No").val() + ":" + $("#Adjust4-Create").val()  + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            var Adjust5Create = "";
+            var Adjust5 = $("#Adjust5-No").val();
+            debugger;
+            if ($("#Adjust5-No").length > 0 && Adjust5 != 0) {
+                Adjust5Create = $("#Adjust5-No").val() + ":" + $("#Adjust5-Create").val()  + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            debugger;
+            TagBundle = Adjust1Create + TagBundle + Adjust2Create + Adjust3Create + Adjust4Create + Adjust5Create;
+            TagBundle = TagBundle.substring(0, TagBundle.length - 1);
+            $("#TagBundle").val(TagBundle);
+            console.log("TagBundle:" + TagBundle);
+
+            var TagPallet = "";
+            var i3 = 0;
+            var TagPalletUom = "";
+            debugger;
+
+            if ($("#Adjust1-No").length > 0 && Adjust1 != 0) {
+                Adjust1Create = $("#Adjust1-No").val() + ":" + $("#Adjust1-Create").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            var AdjustPallet1 = $("#AdjustPallet1-No").val();
+            let Adjust1PalletCreate = "";
+            if ($("#AdjustPallet1-No").length > 0 && AdjustPallet1 != 0) {
+                Adjust1PalletCreate = $("#AdjustPallet1-No").val() + ":" + $("#AdjustPallet1-Create").val()  + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            $.each(TagPrintItemsPallet, function (key, Object) {
+                var ObjectPalletValue = $("#" + Object + "-Pallet-"+ id + "-No").val();
+                //if ($("#" + Object + "-Pallet-" + id + "").prop("checked") == true) {
+                if (ObjectPalletValue != "" && ObjectPalletValue != 0) {
+
+                    TagPalletUom = $("#" + Object + "-Pallet-" + id + "-uom").val();
+                    TagPallet = TagPallet + ObjectPalletValue + ":" +Object + ":" + TagPalletUom + "$";
+
+                }
+                i++;
+            });
+            var AdjustPallet2 = $("#AdjustPallet2-No").val();
+            var Adjust2PalletCreate = "";
+            if ($("#AdjustPallet2-No").length > 0 && AdjustPallet2 != 0) {
+                Adjust2PalletCreate = $("#AdjustPallet2-No").val() + ":" + $("#AdjustPallet2-Create").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            var AdjustPallet3 = $("#AdjustPallet3-No").val();
+            var Adjust3PalletCreate = "";
+            if ($("#AdjustPallet3-No").length > 0 && AdjustPallet3 != 0) {
+                Adjust3PalletCreate = $("#AdjustPallet3-No").val() + ":" + $("#AdjustPallet3-Create").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+            var AdjustPallet4 = $("#AdjustPallet4-No").val();
+            var Adjust4PalletCreate = "";
+            if ($("#AdjustPallet4-No").length > 0 && AdjustPallet4 != 0) {
+                Adjust4PalletCreate = $("#AdjustPallet4-No").val() + ":" + $("#AdjustPallet4-Create").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+            var AdjustPallet5 = $("#AdjustPallet5-No").val();
+            var Adjust5PalletCreate = "";
+            if ($("#AdjustPallet5-No").length > 0 && AdjustPallet5 != 0) {
+                Adjust5PalletCreate = $("#AdjustPallet5-No").val() + ":" + $("#AdjustPallet5-Create").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+            TagPallet = Adjust1PalletCreate + TagPallet + Adjust2PalletCreate + Adjust3PalletCreate + Adjust4PalletCreate + Adjust5PalletCreate;
+            TagPallet = TagPallet.substring(0, TagPallet.length - 1);
+            $("#TagPallet").val(TagPallet);
+            console.log("Tagpallet:" + TagPallet);
+
+            if (Adjust1.length > 0) {
+                Adjust1Create = Adjust1Create.substring(0, Adjust1Create.length - 1);
+            }
+
+            if (Adjust2.length > 0) {
+                Adjust2Create = Adjust2Create.substring(0, Adjust2Create.length - 1);
+            }
+
+             if (Adjust3.length > 0) {
+                Adjust3Create = Adjust3Create.substring(0, Adjust3Create.length - 1);
+            }
+
+             if (Adjust4.length > 0) {
+                Adjust4Create = Adjust4Create.substring(0, Adjust4Create.length - 1);
+            }
+
+             if (Adjust5.length > 0) {
+                Adjust5Create = Adjust5Create.substring(0, Adjust5Create.length - 1);
+            }
+
+            if (AdjustPallet1.length > 0) {
+                Adjust1PalletCreate = Adjust1PalletCreate.substring(0, Adjust1PalletCreate.length - 1);
+            }
+            if (AdjustPallet2.length > 0) {
+                Adjust2PalletCreate = Adjust2PalletCreate.substring(0, Adjust2PalletCreate.length - 1);
+            }
+            if (AdjustPallet3.length > 0) {
+                Adjust3PalletCreate = Adjust3PalletCreate.substring(0, Adjust3PalletCreate.length - 1);
+            }
+            if (AdjustPallet4.length > 0) {
+                Adjust4PalletCreate = Adjust4PalletCreate.substring(0, Adjust4PalletCreate.length - 1);
+            }
+            if (AdjustPallet5.length > 0) {
+                Adjust5PalletCreate = Adjust5PalletCreate.substring(0, Adjust5PalletCreate.length - 1);
+            }
+
+            $("#NoTagBundle").val(NoTagBundle);
+            $("#HeadTagBundle").val(Adjust1Create);
+            $("#FootTagBundle").val(Adjust2Create);
+            $("#Freetext1TagBundle").val(Adjust3Create);
+            $("#Freetext2TagBundle").val(Adjust4Create);
+            $("#Freetext3TagBundle").val(Adjust5Create);
+
+            $("#HeadTagPallet").val(Adjust1PalletCreate);
+            $("#FootTagPallet").val(Adjust2PalletCreate);
+            $("#Freetext1TagPallet").val(Adjust3PalletCreate);
+            $("#Freetext2TagPallet").val(Adjust4PalletCreate);
+            $("#Freetext3TagPallet").val(Adjust5PalletCreate);
+
+            SaveAs();
+        }
+
+        function UpdateCustomerTableNew(res) {
+            $('#customer-table').html(res.View);
+            $('#Customer-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+            $('.body').css('padding', '0px');
+        }
+
+        function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+
+                    $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeleteCustomer", "MaintenanceCustomer")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                //modalDialog(success, SaveSuccess);
+                                swal("Deleted Success", {
+                                    icon: "success",
+                                });
+                                // UpdateCustomerTable();
+                                UpdateCustomerTableNew(res);
+                                location.reload();
+                            }
+                            else {
+                                swal("Deleted! Failed ", { icon: "warning",});
+                                //modalDialog(error, SaveFailed);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function SaveAs() {
+            if ($('#CustomerViewModel_CustName').val() === "" || $('#CustomerViewModel_CustCode').val() === "" || $('#CustomerViewModel_CusId').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+
+                $.ajax({
+                url: '@Url.Action("CheckDuplicateCusID", "MaintenanceCustomer")',
+                    type: "POST",
+                    async: false,
+                    data: {
+                        cusId: $('#CustomerViewModel_CusId').val().toString(),
+                        CusCode: $('#CustomerViewModel_CustCode').val().toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data === "1") {
+                            swal("CusId and CusCode Is Duplicate!", { icon: "warning", });
+                        } else
+                        {
+                            let cust_status = document.getElementById("CustStatus-create").checked == true ? "True" : "False";//$('#CustStatus-create').prop("checked");
+                            $('#custStatusCreate').val(cust_status);
+                            let COA = document.getElementById("COA-create").checked == true ? "True" : "False";//$('#CustStatus-create').prop("checked");
+                            $('#COACreate').val(COA);
+                            let Film = document.getElementById("Film-create").checked == true ? "True" : "False";//$('#CustStatus-create').prop("checked");
+                            $('#FilmCreate').val(Film);
+                            var form = $('#create-customer-form').serialize();
+                            //form.append("CustStatus", cust_status)
+
+                            $.ajax({
+                                url: '@Url.Action("SaveCustomer", "MaintenanceCustomer")',
+                                type: "POST",
+                                //  async: false,
+                                data: form,
+                                dataType: "json",
+                                success: function (data) {
+                                    //UpdateCustomerTableNew(data);
+                                    // // swal("Save!", { icon: "success", });
+                                    $('.modal').modal('hide');
+                                    $('.modal-backdrop').hide();
+                                    $("body").removeClass("modal-open");
+                                    swal("Saved!",{icon: "success",})
+                                        .then((willDelete) => {
+                                            if (willDelete) {
+                                                UpdateCustomerTable();
+                                            }
+                                        });
+                                }
+
+                            });
+
+                        }
+                    }
+                });
+            }
+        }
+
+        function SubmitMaintainCustomerEdit(no, id) {
+            if ($('#CustName').val() === "" || $('#CustCode').val() === "" || $('#CusId').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                //debugger;
+                let QASpec = "";
+                let i = 0;
+
+                $.each(qualityItems, function (key, Object) {
+                    if ($("#checkBox-"+i+"-"+no).prop("checked") == true) {
+                        QASpec = QASpec + Object + ",";
+                    }
+                    i++;
+                });
+
+                QASpec = QASpec.substring(0, QASpec.length - 1);
+
+                $("#QASpec-"+no).val(QASpec);
+                    @*$.ajax({
+                    url: '@Url.Action("CheckDuplicateCusID", "MaintenanceCustomer")',
+                        type: "POST",
+                        async: false,
+                        data: {
+                            cusId: $('#CusId').val().toString()
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data === "1") {
+                                swal("CusId Is Duplicate!", { icon: "warning", });
+                            } else
+                            {*@
+
+                //var form2 = $('#formUpdateCustomerEdit'+no)[0];
+                ////console.log(form2);
+                //var form = $('#formUpdateCustomerEdit' + no).serialize();
+
+                let formData = {
+                    "Id": id,
+                    "SaleOrg": $("#SaleOrg-" + no).val(),
+                    "PlantCode": $("#PlantCode-" + no).val(),
+                    "CustName": $("#CustName-" + no).val(),
+                    "SoldToCode": $("#SoldToCode-" + no).val(),
+                    "CustCode": $("#CustCode-" + no).val(),
+                    "CusId": $("#CusId-" + no).val(),
+                    "IndGrp": $("#IndGrp-" + no).val(),
+                    "Zone": $("#Zone-" + no).val(),
+                    "Route": $("#Route-" + no).val(),
+                    "CustShipTo": $("#CustShipTo-" + no).val(),
+                    "CustDeliveryTime": $("#CustDeliveryTime-" + no).val(),
+                    "CustClass": $("#CustClass-" + no).val(),
+                    "CustReq": $("#CustReq-" + no).val(),
+                    "CustAlert": $("#CustAlert-" + no).val(),
+                    "CustStatus": $("#CustStatus-" + no).val(),
+                    "PalletOverhang": $("#PalletOverhang-" + no).val(),
+                    "CreatedDate": $("#CreatedDate-" + no).val(),
+                    "CreatedBy": $("#CreatedBy-" + no).val(),
+                    "CustShipToJsonList": $("#CustShipToJsonList-" + no).val(),
+                    "QASpec": QASpec,
+                    "Accgroup": $("#Accgroup-" + no).val(),
+                    "Cust": $("#Cust-" + no).val(),
+                    "PriorityFlag": $("#PriorityFlag-" + no).val(),
+                    "TagBundle": TagBundle,
+
+                    "TagPallet ": TagPallet,
+                   // "NoTagBundle ": No,
+                };
+
+                var form = JSON.stringify(formData);
+                debugger;
+                //console.log(form);
+                $.ajax({
+                    url: '@Url.Action("UpdateCustomer", "MaintenanceCustomer")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        //UpdateCustomerTableNew(data);
+                        //swal("Update!", { icon: "success", });
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                        swal("Update!",
+                            {
+                                icon: "success",
+                            }
+                        ).then((willDelete) => {
+                            if (willDelete) {
+                                //location.reload();
+                                UpdateCustomerTable();
+                            }
+                        });
+
+                    }
+                });
+                    //        }
+                    //   }
+                    //});
+
+            }
+        };
+
+        function UpdateCustomer() {
+            debugger;
+            if ($('#CustName').val() === "" || $('#CustCode').val() === "" || $('#CusId').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                let QASpec = "";
+                let i = 0;
+               // debugger;
+                $.each(qualityItems, function (key, Object) {
+                    let chkboxId = "#checkbox-" + Object.replace(' ', '-');
+                    if ($(chkboxId).prop("checked") == true) {
+                        QASpec = QASpec + Object + ",";
+                    }
+                });
+
+                QASpec = QASpec.substring(0, QASpec.length - 1);
+                var checkBox = document.getElementById("CustStatus-edit");
+                let checkStatus = checkBox.checked == true ? "True" : "False";
+
+                //tassanai
+                var checkBoxCOA = document.getElementById("CustCOA-edit");
+                let checkStatusCOA = checkBoxCOA.checked == true ? "True" : "False";
+                var checkBoxFilm = document.getElementById("CustFilm-edit");
+                let checkStatusFilm = checkBoxFilm.checked == true ? "True" : "False";
+
+                var NoTagBundle = "";
+                var NumberOfTag = 0
+                if ($('#9tag-edit').prop("checked") == true) {
+                    NoTagBundle = "9tag";
+                    NumberOfTag = 9;
+                }
+                if ($('#6tag-edit').prop("checked") == true) {
+                    NoTagBundle = "6tag";
+                    NumberOfTag = 6;
+                }
+                if ($('#4tag-edit').prop("checked") == true) {
+                    NoTagBundle = "4tag";
+                    NumberOfTag = 4;
+                }
+
+                var TagBundle = "";
+                var TagBundleUom = "";
+                var i2 = 0;
+
+                var tagheadEditNo = $("#tagheadEditNo").val();
+                var tagfootEditNo = $("#tagfootEditNo").val();
+                var Adjust1Edit = "";
+                var Adjust2Edit = "";
+
+                debugger;
+                if ($("#tagheadEditNo").length > 0 && tagheadEditNo != 0) {
+                    Adjust1Edit = $("#tagheadEditNo").val() + ":" + $("#tagheadEditColumn").val()  + "$";
+                    // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+                }
+
+                if ($("#tagfootEditNo").length > 0 && tagfootEditNo != 0) {
+                    Adjust2Edit = $("#tagfootEditNo").val() + ":" + $("#tagfootEditColumn").val()  +  "$";
+                    // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+                }
+
+                //Freetext
+
+                var tagfree1EditNo = $("#tagfree1EditNo").val();
+                var tagfree2EditNo = $("#tagfree2EditNo").val();
+                var tagfree3EditNo = $("#tagfree3EditNo").val();
+                var Adjusttagfree1Edit = "";
+                var Adjusttagfree2Edit = "";
+                var Adjusttagfree3Edit = "";
+
+                if ($("#tagfree1EditNo").length > 0 && tagfree1EditNo != 0) {
+                    Adjusttagfree1Edit = $("#tagfree1EditNo").val() + ":" + $("#tagfree1EditColumn").val() + "$";
+                    // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+                }
+
+                if ($("#tagfree2EditNo").length > 0 && tagfree2EditNo != 0) {
+                    Adjusttagfree2Edit = $("#tagfree2EditNo").val() + ":" + $("#tagfree2EditColumn").val() + "$";
+                    // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+                }
+
+                if ($("#tagfree3EditNo").length > 0 && tagfree3EditNo != 0) {
+                    Adjusttagfree3Edit = $("#tagfree3EditNo").val() + ":" + $("#tagfree3EditColumn").val() + "$";
+                    // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+                }
+
+                $.each(TagPrintItemsBundle, function (key, Object) {
+
+                    let textboxNo = $("#textboxNo-" + Object).val();
+                    //var a = textboxNo.val();
+                    //console.log(a);
+                    if (textboxNo > 0 && textboxNo.length > 0) {
+                        textboxNo = $("#textboxNo-" + Object).val();
+                        TagBundleUom = $("#textboxUom-" + Object).val();
+                        //TagBundle = TagBundle + Object + ",";
+                        TagBundle = TagBundle + textboxNo + ":" + Object + ":" + TagBundleUom + "$";
+                        i2++;
+                    }
+
+                });
+
+                if (i2 > 9) {
+                 //   alert('123');
+                    swal("Exceed the limit ("+ NumberOfTag+ " Tag/Page)", { icon: "warning", });
+                    return false;
+                }
+              //  swal('จำนวนที่เลือกเกิน Tag', Error);
+
+              //  TagBundle = TagBundle.substring(0, TagBundle.length - 1);
+
+                //TagBundle = Adjust1Edit + TagBundle + Adjust2Edit;
+                TagBundle = Adjust1Edit + TagBundle + Adjust2Edit + Adjusttagfree1Edit + Adjusttagfree2Edit + Adjusttagfree3Edit;
+
+                TagBundle = TagBundle.substring(0, TagBundle.length - 1);
+                $("#TagBundle").val(TagBundle);
+                console.log("TagBundle:" + TagBundle);
+
+              //  debugger;
+                var TagPallet = "";
+                var TagPalletUom = "";
+                var i3 = 0;
+
+                var tagheadPalletEditNo = $("#tagheadPalletEditNo").val();
+                var tagfootPalletEditNo = $("#tagfootPalletEditNo").val();
+                var Adjust1PalletEdit = "";
+                var Adjust2PalletEdit = "";
+
+                if ($("#tagheadPalletEditNo").length > 0 && tagheadPalletEditNo != 0) {
+                    Adjust1PalletEdit = $("#tagheadPalletEditNo").val() + ":" + $("#tagheadPalletEditColumn").val() + "$";
+                    // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+                }
+
+                if ($("#tagheadPalletEditNo").length > 0 && tagfootPalletEditNo != 0) {
+                    Adjust2PalletEdit = $("#tagfootPalletEditNo").val() + ":" + $("#tagfootPalletEditColumn").val() + "$";
+                    // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+
+                }
+
+                   //Freetext
+            debugger;
+            var tagfreePallet1EditNo = $("#tagfreePallet1EditNo").val();
+            var tagfreePallet2EditNo = $("#tagfreePallet2EditNo").val();
+            var tagfreePallet3EditNo = $("#tagfreePallet3EditNo").val();
+            var AdjusttagfreePallet1Edit = "";
+            var AdjusttagfreePallet2Edit = "";
+            var AdjusttagfreePallet3Edit = "";
+
+            if ($("#tagfreePallet1EditNo").length > 0 && tagfreePallet1EditNo != 0) {
+                AdjusttagfreePallet1Edit = $("#tagfreePallet1EditNo").val() + ":" + $("#tagfreePallet1EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+              if ($("#tagfreePallet2EditNo").length > 0 && tagfreePallet2EditNo != 0) {
+                AdjusttagfreePallet2Edit = $("#tagfreePallet2EditNo").val() + ":" + $("#tagfreePallet2EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }  if ($("#tagfreePallet3EditNo").length > 0 && tagfreePallet3EditNo != 0) {
+                AdjusttagfreePallet3Edit = $("#tagfreePallet3EditNo").val() + ":" + $("#tagfreePallet3EditColumn").val() + "$";
+                // Adjust1Createuom = $("#Adjust1-Create-uom").val();
+            }
+
+                $.each(TagPrintItemsPallet, function (key, pObject) {
+
+                 //   let textboxNo = "#checkbox-pallet-" + pObject.replace(' ', '-');
+                    let textboxNo = $("#textboxNo-pallet-" + pObject).val();
+
+                   // if ($(chkboxId).prop("checked") == true) {
+                        if (textboxNo > 0 && textboxNo.length > 0) {
+                            textboxNo = $("#textboxNo-pallet-" + pObject).val();
+                            TagPalletUom = $("#textboxUom-pallet-" + pObject).val();
+
+                        TagPallet = TagPallet + textboxNo + ":" + pObject + ":" + TagPalletUom + "$";
+                        i3++;
+                    }
+
+                });
+                if (i3 > 9) {
+                    //   alert('123');
+                    swal("Exceed the limit (9 Tag/Page)", { icon: "warning", });
+                    return false;
+                }
+              //  TagPallet = TagPallet.substring(0, TagPallet.length - 1);
+
+                //TagPallet = Adjust1PalletEdit + TagPallet + Adjust2PalletEdit;
+            TagPallet = Adjust1PalletEdit + TagPallet + Adjust2PalletEdit + AdjusttagfreePallet1Edit + AdjusttagfreePallet2Edit + AdjusttagfreePallet3Edit;
+
+                debugger;
+
+                TagPallet = TagPallet.substring(0, TagPallet.length - 1);
+                $("#TagPallet").val(TagPallet);
+
+                debugger;
+
+                if (Adjust1Edit.length > 0) {
+                    Adjust1Edit = Adjust1Edit.substring(0, Adjust1Edit.length - 1);
+                }
+
+                if (Adjust2Edit.length > 0) {
+                    Adjust2Edit = Adjust2Edit.substring(0, Adjust2Edit.length - 1);
+                }
+
+                if (Adjust1PalletEdit.length > 0) {
+                    Adjust1PalletEdit = Adjust1PalletEdit.substring(0, Adjust1PalletEdit.length - 1);
+                }
+                if (Adjust2PalletEdit.length > 0) {
+                    Adjust2PalletEdit = Adjust2PalletEdit.substring(0, Adjust2PalletEdit.length - 1);
+                }
+
+                var TagHeadBundle = Adjust1Edit;
+                var TagFootBundle = Adjust2Edit;
+                var TagHeadPallet = Adjust1PalletEdit;
+                var TagFootPallet = Adjust2PalletEdit;
+
+                 if (Adjusttagfree1Edit.length > 0) {
+                Adjusttagfree1Edit = Adjusttagfree1Edit.substring(0, Adjusttagfree1Edit.length - 1);
+            }
+            if (Adjusttagfree2Edit.length > 0) {
+                Adjusttagfree2Edit = Adjusttagfree2Edit.substring(0, Adjusttagfree2Edit.length - 1);
+            }
+            if (Adjusttagfree3Edit.length > 0) {
+                Adjusttagfree3Edit = Adjusttagfree3Edit.substring(0, Adjusttagfree3Edit.length - 1);
+            }
+
+                if (AdjusttagfreePallet1Edit.length > 0) {
+                    AdjusttagfreePallet1Edit = AdjusttagfreePallet1Edit.substring(0, AdjusttagfreePallet1Edit.length - 1);
+                }
+                if (AdjusttagfreePallet2Edit.length > 0) {
+                    AdjusttagfreePallet2Edit = AdjusttagfreePallet2Edit.substring(0, AdjusttagfreePallet2Edit.length - 1);
+                }
+                if (AdjusttagfreePallet3Edit.length > 0) {
+                    AdjusttagfreePallet3Edit = AdjusttagfreePallet3Edit.substring(0, AdjusttagfreePallet3Edit.length - 1);
+                }
+
+                 var Freetext1TagBundle =Adjusttagfree1Edit;
+                var  Freetext2TagBundle=Adjusttagfree2Edit;
+                var Freetext3TagBundle =Adjusttagfree3Edit;
+
+                var Freetext1TagPallet =AdjusttagfreePallet1Edit;
+                var Freetext2TagPallet  =AdjusttagfreePallet2Edit;
+                var Freetext3TagPallet  =AdjusttagfreePallet3Edit;
+
+                let formData = {
+                    "Id": $("#Id-customer-edit").val(),
+                    "SaleOrg": $("#SaleOrg-customer-edit").val(),
+                    "PlantCode": $("#PlantCode-customer-edit").val(),
+                    "CustName": $("#CustName-customer-edit").val(),
+                    "SoldToCode": $("#SoldToCode-customer-edit").val(),
+                    "CustCode": $("#CustCode-customer-edit").val(),
+                    "CusId": $("#CusId-customer-edit").val(),
+                    "IndGrp": $("#IndGrp-customer-edit").val(),
+                    "Zone": $("#Zone-customer-edit").val(),
+                    "Route": $("#Route-customer-edit").val(),
+                    "CustShipTo": $("#CustShipTo-customer-edit").val(),
+                    "CustDeliveryTime": $("#CustDeliveryTime-customer-edit").val(),
+                    "CustClass": $("#CustClass-customer-edit").val(),
+                    "CustReq": $("#CustReq-customer-edit").val(),
+                    "CustAlert": $("#CustAlert-customer-edit").val(),
+                    //"CustStatus": $("#CustStatus-customer-edit").val(),
+                    "CustStatus": checkStatus,
+                    "PalletOverhang": $("#PalletOverhang-customer-edit").val(),
+                    "CreatedDate": $("#CreatedDate-customer-edit").val(),
+                    "CreatedBy": $("#CreatedBy-customer-edit").val(),
+                    "CustShipToJsonList": $("#CustShipToJsonList-customer-edit").val(),
+                    "QASpec": QASpec,
+                    "Accgroup": $("#Accgroup-customer-edit").val(),
+                    "Cust": $("#Cust-customer-edit").val(),
+                    "PriorityFlag": $("#PriorityFlag-customer-edit").val(),
+                    "TagBundle": TagBundle,
+                    "TagPallet": TagPallet,
+                    "NoTagBundle": NoTagBundle,
+                    "HeadTagBundle": TagHeadBundle,
+                    "FootTagBundle": TagFootBundle,
+                    "HeadTagPallet": TagHeadPallet,
+                    "FootTagPallet": TagFootPallet,
+                    "Freetext1TagBundle":Freetext1TagBundle,
+                    "Freetext2TagBundle":Freetext2TagBundle,
+                    "Freetext3TagBundle":Freetext3TagBundle,
+                    "Freetext1TagPallet":Freetext1TagPallet,
+                    "Freetext2TagPallet":Freetext2TagPallet,
+                    "Freetext3TagPallet":Freetext3TagPallet,
+                    "FootTagPallet": TagFootPallet,
+                    "COA": checkStatusCOA,
+                    "Film": checkStatusFilm
+
+                };
+
+                var form = JSON.stringify(formData);
+
+                //var form = $('#formUpdateCustomer').serialize();
+                //console.log($("#Id-customer-edit").val())
+
+                $.ajax({
+                url: '@Url.Action("CheckDuplicateCusIDUpdate", "MaintenanceCustomer")',
+                    type: "POST",
+                    async: false,
+                    data: {
+                        cusId: $('#CusId-customer-edit').val().toString(),
+                        CusCode: $('#CustCode-customer-edit').val().toString(),
+                        ID: $("#Id-customer-edit").val()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data === "1") {
+                            swal("CusId and CusCode Is Duplicate!", { icon: "warning", });
+                        } else
+                        {
+
+                                $.ajax({
+                                    url: '@Url.Action("UpdateCustomer", "MaintenanceCustomer")',
+                                    type: "POST",
+                                    async: false,
+                                    data: { req: form },
+                                    dataType: "json",
+                                    success: function (data) {
+                                        //swal("Update!", { icon: "success", });
+                                        if (data.IsSuccess) {
+                                            $('.modal').modal('hide');
+                                            $('.modal-backdrop').hide();
+                                            $("body").removeClass("modal-open");
+                                            UpdateCustomerTableNew(data);
+                                            swal("Updated Successfully!",
+                                                {
+                                                    icon: "success",
+                                                }
+                                            ).then((willDelete) => {
+                                                if (willDelete) {
+                                                    //location.reload();
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            swal("Update Failed!",
+                                                {
+                                                    icon: "warning",
+                                                }
+                                            ).then((willDelete) => {
+                                                if (willDelete) {
+                                                    location.reload();
+                                                }
+                                            });
+                                        }
+
+                                    }
+                                 });
+                            //===
+
+                            }
+                        }
+                    });
+
+            }
+        };
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+
+        function setTagNull() {
+            $('input[name="inlineRadioOptions"]').prop('checked', false);
+        }
+
+        function setTagNullEdit() {
+            $('input[name="tag-edit"]').prop('checked', false);
+        }
+    </script>
+}

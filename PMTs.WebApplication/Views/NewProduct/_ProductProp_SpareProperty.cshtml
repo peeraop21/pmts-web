@@ -1,0 +1,98 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="card card-outline">
+
+    <h4 class="card-header">
+        @Localizer["Spare Properties"]
+    </h4>
+
+    <div class="card-body">
+        <script language="JavaScript">
+            function validateFloatKeyPress(el, evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode;
+                var number = el.value.split('.');
+                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false;
+                }
+                //just one dot
+                if (number.length > 1 && charCode == 46) {
+                    return false;
+                }
+                //get the carat position
+                var caratPos = getSelectionStart(el);
+                var dotPos = el.value.indexOf(".");
+                if (caratPos > dotPos && dotPos > -1 && (number[1].length > 1)) {
+                    return false;
+                }
+                return true;
+            }
+
+            function getSelectionStart(o) {
+                if (o.createTextRange) {
+                    var r = document.selection.createRange().duplicate()
+                    r.moveEnd('character', o.value.length)
+                    if (r.text == '') return o.value.length
+                    return o.value.lastIndexOf(r.text)
+                } else return o.selectionStart
+            }
+        </script>
+
+        @if (ViewData["TypeOfProperty"].ToString() != "2")
+        {
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.SparePercen" class="col-sm-4 control-label"></label>*@
+            <label class="col-sm-4 control-label">@Localizer["SparePercen"]</label>
+
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.SparePercen" type="text" class="form-control" onkeypress="return validateFloatKeyPress(this,event);"> @*OnChange="JavaScript:chkNum(this)"*@
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.SpareMin" class="col-sm-4 control-label"></label>*@
+            <label class="col-sm-4 control-label">@Localizer["SpareMin"]</label>
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.SpareMin" class="form-control mytextboxNumber noscrollNodecimal">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.SpareMax" class="col-sm-4 control-label"></label>*@
+            <label class="col-sm-4 control-label">@Localizer["SpareMax"]</label>
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.SpareMax" class="form-control mytextboxNumber noscrollNodecimal">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.Hardship" class="col-sm-4 control-label">@Localizer["HardShip"]<i style="color:red"> *</i></label>*@
+            <label class="col-sm-4 control-label">@Localizer["HardShip"]<i style="color:red"> *</i></label>
+
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.Hardship" class="form-control" onkeyup="check();" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.LeadTime" class="col-sm-4 control-label">@Localizer["Lead time"]</label>*@
+            <label class="col-sm-4 control-label">@Localizer["Lead time"]</label>
+
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.LeadTime" class="form-control mytextboxNumber noscroll">
+            </div>
+        </div>
+        }
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.EANCODE" class="col-sm-4 control-label"></label>*@
+            <label class="col-sm-4 control-label">@Localizer["EANCODE"]</label>
+
+            <div class="col-sm-6">
+                <input type="text" asp-for="modelProductProp.EANCODE" class="form-control" readonly>
+            </div>
+        </div>
+    </div>
+</div>

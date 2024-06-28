@@ -1,0 +1,184 @@
+﻿@model PMTs.DataAccess.ComplexModel.EditBlockPlatenModel
+
+@{
+    ViewData["Title"] = "Bom Structure";
+
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    label.control-label {
+        padding: 5px 0;
+        text-align: center;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <!-- Box Comment -->
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-xs-6 col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-hexagon-multiple"></i>@Localizer["EditBlockPlaten"]   </h3>
+                    </div>
+                </div>
+                <div class="box-header with-border">
+                    <div class="col-md-12">
+                        <div class="box box-info">
+                            <div class="input-group input-group-sm">
+                                <label class="control-label">@Localizer["PC"]</label>
+                                <input type="text" id="txtpc" name="txtSearchpc" class="form-control input-sm  pull-right" style="margin-left:10px" placeholder="@Localizer["Search"]" autocomplete="off">
+                                <label class="control-label" style="margin-left:10px">@Localizer["MaterialNo"]</label>
+                                <input type="text" id="txtmaterial" name="txtSearchmaterial" class="form-control input-sm  pull-right" style="margin-left:10px" placeholder="@Localizer["Search"]" autocomplete="off">
+                                <div class="input-group-btn ml-4">
+                                    <button onclick="searchblocknoplaten()"  class="btn btn-info"><i class="fa fa-search" ></i> @Localizer["Search"]</button>
+                                </div>
+                            </div>
+                            <div id="divblockplaten">
+                                @Html.Partial("_EditBlockPlatenTable", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-xl" id="modaleditblockplaten">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="width:95%">
+            <div class="modal-header">
+                <h4 class="modal-title text-themecolor">@Localizer["EditBlockPlaten"]</h4>
+                <button type="button" class="close btnClose" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="form-group col-md-2">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">@Localizer["PrintingplateNo"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">@Localizer["CuttingdieNo"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label">@Localizer["MylaNo"]</label>
+                    </div>
+                </div>
+                <div id="divblockplatenrouting">
+                    @Html.Partial("_EditBlockPlatenRoutingTable", Model)
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary pull-left" data-dismiss="modal" onclick="saveeditblocknoplaten()" >@Localizer["Save"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            $('#editblockplatendatatable').DataTable()
+        });
+
+        searchblocknoplaten = () => {
+            let material =  $("#txtmaterial").val()
+            let pc = $('#txtpc').val()
+            getdataedit(material, pc)
+        }
+
+        showmodal = () => {
+            $('#modaleditblockplaten').modal('show')
+        }
+
+        getdataedit = (material, pc) => {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetBlockPlatenMasterData", "ManageMO")',
+                data: { material: material, pc: pc   },
+                async: false,
+                success: (res) => {
+                        $("#divblockplaten").html(res.view)
+                        $('#editblockplatendatatable').DataTable()
+                },
+                error:  () => { }
+            });
+        }
+
+        getdatablockplatenedit = (material, pc) => {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetBlockPlatenRouting", "ManageMO")',
+                data: { material: material, pc: pc   },
+                async: false,
+                success: (res) => {
+                    console.log('rs data',res.data)
+                    this.databinding = []
+                    this.databinding = res.data
+                    console.log('rs data after', this.databinding)
+                    $("#divblockplatenrouting").html(res.view)
+                    showmodal()
+                },
+                error:  () => { }
+            });
+        }
+
+        let databinding = []
+
+        let mockdata = {
+            factorycode: '',
+            materialno: '',
+            machine:'',
+            printingplate: '',
+            cuttingdieno: '',
+            mylano: '',
+            seq: ''
+        }
+
+        let datalist = []
+
+        mockupdata = async () => {
+            this.datalist = []
+            console.log('databind', this.databinding)
+            this.databinding.forEach((data) => {
+                this.mockdata = {}
+                this.mockdata.factorycode = $('#idfactorycode_' + data.seq).val()
+                this.mockdata.materialno = $('#idmaterial_' + data.seq).val()
+                this.mockdata.machine = $('#lbl_' + data.seq).text()
+                this.mockdata.printingplate = $('#printingplateno_' + data.seq).val()
+                this.mockdata.cuttingdieno = $('#cuttingdieno_' + data.seq).val()
+                this.mockdata.mylano = $('#mylano_' + data.seq).val()
+                this.mockdata.seq = data.seq
+                datalist.push(this.mockdata)
+            });
+
+            return datalist
+        }
+
+        saveeditblocknoplaten = async() => {
+            let datas = await mockupdata()
+            console.log(datas)
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditBlockPlatenRouting", "ManageMO")',
+                data: { datas: JSON.stringify(datas) },
+                async: false,
+                success: (res) => {
+                            swal("Save", "Data is Save", "success")
+                },
+                error:  () => { }
+            });
+        }
+    </script>
+}

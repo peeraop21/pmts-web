@@ -1,0 +1,207 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+<!-- /.box-header -->
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{ int No = 1; }
+
+<div>
+    <table class="table table-bordered color-table  info-table">
+        <thead>
+            <tr>
+                <th>@Localizer["No"]</th>
+                <th>@Localizer["MaterialNo"]</th>
+                <th>@Localizer["Plant"]</th>
+                <th>@Localizer["PurchCode"]</th>
+                <th>@Localizer["ShipBlk"]</th>
+
+                <th>@Localizer["StdTotalCost"]</th>
+
+                <th>@Localizer["StdMovingCost"]</th>
+
+                <th scope="col">@Localizer["Delete"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        <thead>
+        <tbody>
+
+            @foreach (var item in Model.modelProductERP.ModelList)
+            {
+
+            <tr>
+                <td scope="row">@No</td>
+                <td>@item.MaterialNo</td>
+                <td>@item.Plant</td>
+                <td>@item.PurchCode</td>
+                <td>@item.ShipBlk</td>
+                <td>@item.StdTotalCost</td>
+                @*<td>
+            @if (item.StdTotalCost == 0)
+            {<span class="text-danger">@item.StdTotalCost</span>
+                ViewBag.alertCost = "ต้นทุนผู้ผลิต มีค่า 0 ให้ทำการลบและเพิ่มข้อมูลใหม่ของผู้ผลิตด้วย";
+
+            }
+            else
+            {
+            @item.StdTotalCost
+                ViewBag.alertCost = "";
+            }
+        </td>*@
+
+                <td>@item.StdMovingCost</td>
+
+                <td>
+
+                    @*<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-edit-@No"> <i class="fas fa-pencil-alt text-warning" data-toggle="tooltip" data-original-title="Edit"></i></button>*@
+
+                    <!-- Start Edit Modal -->
+
+                    <div class="modal fade" id="modal-edit-@No">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form asp-controller="NewProduct" asp-action="UpdatePlantViewERP" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-update="#PlantList-data-table" data-ajax-method="POST">
+
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">@Localizer["LB_EditPlantView"]</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <div class="form-group row">
+                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["LB_Plant"]</label>
+                                            <div class="col-sm-8">
+                                                <input id="selectPlantEdit" type="text" class="form-control" asp-for="modelProductERP.Plant" value="@item.Plant" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["LB_PurchCode"]<i style="color:red"> *</i></label>
+                                            <div class="col-sm-8">
+                                                @*<input type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode">*@
+                                                <input id="PurchCodeEdit" type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode" maxlength="5">
+                                                <span asp-validation-for="modelProductERP.PurchCode" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputcost" class="col-sm-4 control-label">@Localizer["LB_Cost"]:</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="StdtotalCost" class="form-control" asp-for="modelProductERP.StdtotalCost" value="@item.StdTotalCost" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+
+                                        <button type="submit" class="btn btn-primary waves-effect waves-light" onclick="return closeEditModal()">@Localizer["LB_Save changes"]</button>
+                                        <button type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">@Localizer["Close"]</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- /.modal-dialog -->
+                    </div>
+
+                    <!-- /.modal -->
+                    <!-- End Edit Modal -->
+                    @*</td>
+            <td>*@
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-delete-@No"> <i class="fas fa-trash text-danger" data-toggle="tooltip" data-original-title="Delete"></i></button>
+                    <div class="modal fade" id="modal-delete-@No">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form asp-controller="NewProduct" asp-action="DeletePlantViewERP" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">
+
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">@Localizer["Confirmation"]</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="form-group row">
+                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["LB_Plant"]</label>
+                                            <div class="col-sm-8">
+                                                <input id="selectPlantEdit" type="text" class="form-control" asp-for="modelProductERP.Plant" value="@item.Plant" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputPlant" class="col-sm-4 control-label">@Localizer["LB_PurchCode"]</label>
+                                            <div class="col-sm-8">
+                                                @*<input type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode">*@
+                                                <input id="PurchCodeEdit" type="text" class="form-control" asp-for="modelProductERP.PurchCode" value="@item.PurchCode" maxlength="5" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="inputcost" class="col-sm-4 control-label">@Localizer["LB_Cost"]</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" asp-for="modelProductERP.StdtotalCost" value="@item.StdTotalCost" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+
+                                        <button type="submit" class="btn btn-danger" id="btnDeleteERP" name="btnDeleteERP" onclick="return closeEditModal()" value="DeletePlant">@Localizer["BT_Yes"]</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">@Localizer["BT_No"]</button>
+                                    </div>
+                                </form>
+                                <!-- /.modal-content -->
+                            </div>
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                </td>
+            </tr>
+                No++;
+            }
+        </tbody>
+    </table>
+    <h5>    <span class="text-danger">@ViewBag.alertCost</span></h5>
+    @*<input type="hidden" id="chkCost" value="@ViewBag.alertCost" />*@
+</div>
+
+<!-- /.box-body -->
+
+<script>
+
+    function closeEditModal() {
+        // alert(res);
+        var Purch = $("#PurchCodeEdit").val();
+
+        // alert(bunlayer);
+        if (Purch != "") {
+            $('.close').click();
+            return true;
+        }
+
+        return false;
+    }
+
+    var onUpdateSuccess = function (res) {
+        $('#PlantList-data-table').html(res);
+        $('.modal-backdrop').remove();
+
+    };
+</script>
+<script type="text/javascript">
+     $(document).ready(function () {
+        const Massege = '@Localizer["Duplicated PlantView"]';
+        var error = '@ViewBag.errorMassege'
+        if (error !== null && error !== "") {
+            swal("Save Failed", Massege, "warning");
+         }
+
+    });
+    var selected_tab = 0;
+    $(function () {
+        var tabs = $("#tabs").tabs({
+            select: function (e, i) {
+                selected_tab = i.index;
+            }
+        });
+        selected_tab = $("#selectedTab").val() != "" ? parseInt($("#selectedTab").val()) : 0;
+        tabs.tabs('select', selected_tab);
+        $("form").submit(function () {
+            $("#selectedTab").val(selected_tab);
+        });
+    });
+</script>

@@ -1,0 +1,597 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceCustomer.MaintenanceCustomerViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.CustomerViewModelList)
+{
+    <tr>
+        <th scope="row">@item.Id</th>
+        <td>@item.CustName</td>
+        <td>@item.SoldToCode</td>
+        <td>@item.CustCode</td>
+        <td>@item.CusId</td>
+        <td>
+            <button type="button" class="btn btn-default" onclick="OpenModalView('modal-view-@No')"><span class="fas fa-file-alt text-info btn" aria-hidden="true"></span></button>
+
+            <!-- Start View Modal -->
+            <div class="modal" id="modal-view-@No">
+                <div class="modal-dialog modal-lg" style="width: 90%">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">@Localizer["View Customer"]</h4>
+                            <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" value="@item.Id" />
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustName">@Localizer["Customer Name"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input type="text" class="form-control" value="@item.CustName" readonly />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="SoldToCode">@Localizer["Sold to Code"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.SoldToCode" readonly />
+                                </div>
+
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustCode">@Localizer["Customer Code"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.CustCode" readonly />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustId">@Localizer["Customer ID"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.CusId" readonly />
+                                </div>
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="Zone">@Localizer["Zone"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.Zone" readonly />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="Route">@Localizer["Route"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.Route" readonly />
+                                </div>
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustDeliveryTime">@Localizer["Customer DeliveryTime"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.CustDeliveryTime" readonly />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustClass">@Localizer["Customer Class"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.CustClass" readonly />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="IndGrp">@Localizer["Product Group"]</label>
+                                </div>
+                                <div class="form-group col-md-9">
+                                    <input type="text" class="form-control" value="@item.IndGrp" readonly />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustReq">@Localizer["Customer Req"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.CustReq" readonly />
+                                </div>
+
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustAlert">@Localizer["Customer Alert"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="text" class="form-control" value="@item.CustAlert" readonly />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label" for="CustShipTo">@Localizer["Customer Ship To"]</label>
+                                </div>
+                                <div class="form-group col-sm-3" id="Input_CustShipTo_Col">
+                                    <input type="text" class="form-control" asp-for="@item.CustShipTo" disabled />
+                                </div> @*@if (Model.CustShipToList.Count() > 0)
+            {
+                @foreach (var itemCustShipTo in Model.CustShipToList.Where(w => w.CustCode == @item.CustCode))
+                {
+                    <input class="addNew_CustShipTo form-control" type="text" value="@Model.CustShipToList" style="width: 100%; margin-top: 10px;" disabled>
+                }
+            }
+            else
+            {
+
+                <input type="text" class="form-control" value="No item" disabled />
+            }*@
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class="control-label">@Localizer["Pallet Overhang"]</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input class="form-control" asp-for="@item.PalletOverhang" disabled />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class=" control-label">@Localizer["COA"]</label>
+                                </div>
+                                <div class="form-group col-sm-3 setLeft">
+                                    @if (item.COA == true)
+                                    {
+                                        <input type="checkbox" class="filled-in" id="COA-view" name="COA" checked disabled />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" class="filled-in" id="COA-view" name="COA" disabled />
+                                    }
+                                    <label for="COA-view"></label>
+                                </div>
+
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class=" control-label">@Localizer["Film"]</label>
+                                </div>
+                                <div class="form-group col-sm-3 setLeft">
+                                    @if (item.Film == true)
+                                    {
+                                        <input type="checkbox" class="filled-in" id="Film-view" name="Film" checked disabled />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" class="filled-in" id="Film-view" name="Film" disabled />
+                                    }
+                                    <label for="Film-view"></label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class=" control-label">@Localizer["Active"]</label>
+                                </div>
+                                @if (item.CustStatus.HasValue && item.CustStatus.Value)
+                                {
+                                    <div class="form-group col-sm-3 setLeft">
+                                        <input type="checkbox" class="filled-in" id="CustStatus-view1" name="CustStatus" checked disabled />
+                                        <label for="CustStatus-view1"></label>
+                                        <label style="vertical-align:top;color:green">@Localizer["ใช้งานอยู่"]</label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group col-sm-3 setLeft">
+                                        <input type="checkbox" class="filled-in" id="CustStatus-view2" name="CustStatus" disabled />
+                                        <label for="CustStatus-view2"></label>
+                                        <label style="vertical-align:top;color:red">@Localizer["ไม่ได้ใช้งาน"]</label>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="row" style="padding-top:10px">
+                                <div class="form-group col-md-3 setLeft">
+                                    <label class=" control-label">@Localizer["QA Spec"]</label>
+                                </div>
+                                <div class="form-group col-md-9 row">
+
+                                    @foreach (var qaItem in Model.QaItems)
+                                    {
+                                        if (item.QASpec != null)
+                                        {
+                                            if (item.QASpec.Contains(qaItem))
+                                            {
+                                                <input type="checkbox" class="mycheckbox" checked />
+                                                <label class="mycheckbox-label text-left col-6 float-left" style="min-width:100px">@qaItem</label>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            @* Tag Print SO *@
+                            <div class="row">
+                                <div class="col-md-6 setLeft">
+                                    @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary" onclick="openTagbundle();">@Localizer["Tagbundle"]</button>*@
+                                    <h4> @Localizer["Tagbundle"]</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 setLeft">
+
+                                            <input class="form-check-input" type="radio" checked>
+                                            <label class="form-check-label" for="9tag">@item.NoTagBundle / Page</label>
+
+                                            <div id="tagbundle-create">
+                                                <div class="card-body">
+                                                    <div class="row ">
+
+                                                        @foreach (var Tagbundle in Model.TagPrintSO)
+                                                        {
+                                                            if (item.TagBundle != null)
+                                                            {
+                                                                if (item.TagBundle.Contains(Tagbundle))
+                                                                {
+                                                                    <input type="checkbox" class="mycheckbox" checked />
+
+                                                                    <label class="mycheckbox-label text-left col-6 float-left" style="min-width:100px">@Tagbundle</label>
+                                                                }
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6" style="padding-left:10px;background-color:antiquewhite">
+                                    @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary" onclick="openTagPallet();">@Localizer["Tagpallet"]</button>*@
+
+                                    <h4> @Localizer["Tagpallet"]</h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+
+                                            <br />
+
+                                            <div id="tagpallet-create">
+                                                <div class="card-body">
+                                                    <div class="row ">
+
+                                                        @foreach (var Tagpallet in Model.TagPrintSO)
+                                                        {
+                                                            if (item.TagPallet != null)
+                                                            {
+                                                                if (item.TagPallet.Contains(Tagpallet))
+                                                                {
+                                                                    <input type="checkbox" class="mycheckbox" checked />
+                                                                    <label class="mycheckbox-label text-left col-6 float-left" style="min-width:100px">@Tagpallet</label>
+                                                                }
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            </div>
+            <!-- /.modal -->
+            <!-- End View Modal -->
+        </td>
+        <td>
+            <button type="button" class="btn btn-default"
+                    data-Id='@item.Id'
+                    data-SaleOrg='@item.SaleOrg'
+                    data-PlantCode='@item.PlantCode'
+                    data-CustName='@item.CustName'
+                    data-SoldToCode='@item.SoldToCode'
+                    data-CustCode='@item.CustCode'
+                    data-CusId='@item.CusId'
+                    data-IndGrp='@item.IndGrp'
+                    data-Zone='@item.Zone'
+                    data-Route='@item.Route'
+                    data-CustShipTo='@item.CustShipTo'
+                    data-CustDeliveryTime='@item.CustDeliveryTime'
+                    data-CustClass='@item.CustClass'
+                    data-CustReq='@item.CustReq'
+                    data-CustAlert='@item.CustAlert'
+                    data-CustStatus='@item.CustStatus'
+                    data-PalletOverhang='@item.PalletOverhang'
+                    data-CreatedDate='@item.CreatedDate'
+                    data-CreatedBy='@item.CreatedBy'
+                    data-QASpec='@item.QASpec'
+                    data-Accgroup='@item.Accgroup'
+                    data-Cust='@item.Cust'
+                    data-PriorityFlag='@item.PriorityFlag'
+                    data-TagBundle='@item.TagBundle'
+                    data-TagPallet='@item.TagPallet'
+                    data-NoTagBundle='@item.NoTagBundle'
+                    data-HeadTagBundle='@item.HeadTagBundle'
+                    data-HeadTagPallet='@item.HeadTagPallet'
+                    data-FootTagBundle='@item.FootTagBundle'
+                    data-FootTagPallet='@item.FootTagPallet'
+                data-Freetext1TagBundle='@item.Freetext1TagBundle'
+                data-Freetext2TagBundle='@item.Freetext2TagBundle'
+                data-Freetext3TagBundle='@item.Freetext3TagBundle'
+                data-Freetext1TagPallet='@item.Freetext1TagPallet'
+                data-Freetext2TagPallet='@item.Freetext2TagPallet'
+                data-Freetext3TagPallet='@item.Freetext3TagPallet',
+                    data-FootTagPallet='@item.FootTagPallet'
+                    data-COA='@item.COA'
+                    data-Film='@item.Film',
+                    onclick="BindingCustomerEdit(this)">
+                <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td>
+            <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+        </td>
+    </tr>
+    No++;
+
+}
+
+<!-- Start Edit Modal -->
+<div class="modal" id="modal-customer-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="formUpdateCustomer">
+            @*asp-controller="MaintenanceCustomer" asp-action="UpdateCustomer" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST" onsubmit="QASpecToModel(@item.Id)">*@
+
+            <input type="hidden" id="QASpec-customer-edit" class="QualitySpec" />
+            <input type="hidden" id="Accgroup-customer-edit" />
+            <input type="hidden" id="Cust-customer-edit" />
+            <input type="hidden" id="PriorityFlag-customer-edit" />
+            <input type="hidden" id="CreatedDate-customer-edit" />
+            <input type="hidden" id="CreatedBy-customer-edit" />
+            <input type="hidden" id="Id-customer-edit" />
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit Customer"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Customer Name"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <input type="text" class="form-control" id="CustName-customer-edit" name="CustName" maxlength="200" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Sold to Code"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="SoldToCode-customer-edit" name="SoldToCode" readonly />
+                        </div>
+
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Customer Code"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CustCode-customer-edit" name="CustCode" maxlength="5" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Customer ID"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CusId-customer-edit" name="CusId" maxlength="50" />
+                        </div>
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Zone"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="Zone-customer-edit" name="Zone" maxlength="10" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Route"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="Route-customer-edit" name="Route" maxlength="10" />
+                        </div>
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Customer DeliveryTime"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CustDeliveryTime-customer-edit" name="CustDeliveryTime" maxlength="10" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Customer Class"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CustClass-customer-edit" name="CustClass" maxlength="10" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Product Group"]</label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            @*<input type="text" class="form-control no-border" asp-for="@item.IndGrp" id="IndDes"  onclick="GetProductGroup(@No)" />*@
+                            <select class="form-control" id="IndGrp-customer-edit" name="IndGrp"></select>
+                            @*<select class="form-control" name="IndGrp" asp-for="@item.IndGrp" asp-items="@(new SelectList(Model.ProductGroupList,"Code","Description"))">
+                <option>--- Please Select Item ---</option>
+                </select>*@
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Customer Req"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CustReq-customer-edit" name="CustReq" maxlength="255" />
+                        </div>
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Customer Alert"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CustAlert-customer-edit" name="CustAlert" maxlength="255" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class=" control-label">@Localizer["Customer Ship To"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CustShipTo-customer-edit" name="CustShipTo" maxlength="10" />
+                        </div>
+                        <div class="form-group col-md-3 setLeft">
+                            <label class="control-label">@Localizer["Pallet Overhang"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="PalletOverhang-customer-edit" name="PalletOverhang" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class=" control-label">@Localizer["COA"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="CustCOA-edit" name="COA" />
+                            <label for="CustCOA-edit"></label>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label class=" control-label">@Localizer["Film"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="CustFilm-edit" name="Film" />
+                            <label for="CustFilm-edit"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class=" control-label">@Localizer["Active"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="CustStatus-edit" name="CustStatus" />
+                            <label for="CustStatus-edit"></label>
+                        </div>
+                    </div>
+
+                    <div class="row" style="padding-top:10px">
+                        <div class="form-group col-md-3 setLeft">
+                            <label class=" control-label">@Localizer["QA Spec"]</label>
+                        </div>
+
+                        <div id="DivQaSpecColumn1-customer-edit" class="form-group col-md-4"></div>
+
+                        <div id="DivQaSpecColumn2-customer-edit" class="form-group col-md-4 row"></div>
+                    </div>
+
+                    @* Tag Print SO *@
+                    <!--<div class="col-md-4 col-xlg-3">-->
+                    <!-- Column -->
+                    <!--</div>-->
+
+                    <div class="row">
+                        <div class="col-md-6" style="padding:0">
+
+                            <div class="col-md-12">
+                                @* <button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary" onclick="openTagbundle();">@Localizer["Tagbundle"]</button>*@
+                                <div class="card earning-widget">
+                                    <div class="card-header">
+                                        <div class="card-actions">
+                                            <a class="" data-action="collapse"><i class="ti-plus"></i></a>
+                                        </div>
+                                        <h4 class="card-title m-b-0"> @Localizer["Config Tag bundle"]</h4>
+                                    </div>
+                                    <div class="card-body b-t collapse">
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                                <input class="form-check-input" type="radio" name="tag-edit" id="9tag-edit" value="9tag">
+                                                <label class="form-check-label" for="9tag-edit">@Localizer["9tag"]</label>
+
+                                                <input class="form-check-input" type="radio" name="tag-edit" id="6tag-edit" value="6tag">
+                                                <label class="form-check-label" for="6tag-edit">@Localizer["6tag"]</label>
+
+                                                <input class="form-check-input" type="radio" name="tag-edit" id="4tag-edit" value="4tag">
+                                                <label class="form-check-label" for="4tag-edit">@Localizer["4tag"]</label>
+
+                                                &nbsp; &nbsp; &nbsp;<input type="button" value="Reset NoTag" onclick="setTagNullEdit();" class="btn btn-warning" />
+                                                <div class="card-body">
+
+                                                    <div id="Divtagbundle-customer-edit" class="row"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<h4> @Localizer["Tagbundle"]</h4>*@
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" style="padding:0;">
+
+                            <div class="col-md-12">
+                                @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary" onclick="openTagPallet();">@Localizer["Tagpallet"]</button>*@
+
+                                <div class="card earning-widget" style="background-color:antiquewhite">
+                                    <div class="card-header" style="background-color:antiquewhite">
+                                        <div class="card-actions">
+                                            <a class="" data-action="collapse"><i class="ti-plus"></i></a>
+                                        </div>
+                                        <h4 class="card-title m-b-0"> @Localizer["Config Tag pallet"]</h4>
+                                    </div>
+                                    <div class="card-body b-t collapse">
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                                <br />
+
+                                                <div class="card-body">
+
+                                                    <div id="Divtagpallet-customer-edit" class="row"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btneditmaintaincustomer" onclick="UpdateCustomer()">@Localizer["Save"]</button>
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                    </div>
+                </div>
+                </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- /.modal -->
+<!-- End Edit Modal -->
+<script>
+        //function openTagbundle() {
+
+        //    $("#modal-tagbundle").toggle();
+        //}
+</script>

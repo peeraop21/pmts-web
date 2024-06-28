@@ -1,0 +1,86 @@
+﻿@model PMTs.DataAccess.ModelView.BomRawMaterial.BomRawMaterialViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!-- modal content -->
+<div id="SearchFgModal" class="modal bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myFgMoDal" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myFgMoDal">Search FG Material</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive m-t-10">
+                    <table id="SearchFgTable" class="table table-bordered color-table dataTable no-footer">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">@Localizer["Action"]</th>
+                            <th style="width: 10%;">@Localizer["Materail No"]</th>
+                            <th style="width: 15%;">@Localizer["PC"]</th>
+                            <th style="width: 20%;">@Localizer["Description"]</th>
+                            <th style="width: 20%;">@Localizer["Cust code"]</th>
+                            <th style="width: 20%;">@Localizer["Cust Name"]</th>
+                            <th style="width: 10%;">@Localizer["Part No"]</th>
+
+                            <th style="display: none;"></th>
+                            <th style="display: none;"></th>
+                            <th style="display: none;"></th>
+                            <th style="display: none;"></th>
+                            <th style="display: none;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.MasterDataList)
+                        {
+                            <tr id="@item.MaterialNo">
+                                <td class="text-center">
+                                    <a style="cursor: pointer;" data-target="@item.MaterialNo" tooltip="Select" onclick="AddDataByFg(this.getAttribute('data-target'));">
+                                        <i style="font-size:16px" class="fa fa-plus-circle text-success"></i>
+                                    </a>
+                                </td>
+                                <td>@item.MaterialNo</td>
+                                <td>@item.Pc</td>
+                                <td>@item.Description</td>
+                                <td>@item.CustCode</td>
+                                <td>@item.CustName</td>
+                                <td>@item.PartNo</td>
+                                <td style="display: none;">@item.CreateDate</td>
+                                <td style="display: none;">@item.CreatedBy</td>
+                                <td style="display: none;">@item.LastUpdate</td>
+                                <td style="display: none;">@item.UpdatedBy</td>
+                                <td style="display: none;">@item.BomUom</td>
+                            </tr>
+                        }
+
+                        @*<tr>
+                            <td class="title"><a href="javascript:void(0)">Avatar</a></td>
+                            <td>1</td>
+                            <td>2009</td>
+                            <td>83%</td>
+                            <td>$2.7B</td>
+                            </tr>*@
+                    </tbody>
+                </table>
+
+                  @*<div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#">1</a>
+                    <a class="active" href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">4</a>
+                    <a href="#">5</a>
+                    <a href="#">6</a>
+                    <a href="#">&raquo;</a>
+                </div>*@
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

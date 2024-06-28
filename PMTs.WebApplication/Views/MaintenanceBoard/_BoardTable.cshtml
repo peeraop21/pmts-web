@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+
+<div class="box-header">
+    <h3 class="box-title">Board</h3>
+</div>
+<!-- /.box-header -->
+<div class="box-body">
+    <table id="board-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col" width="20px" style="text-align: center;">@Localizer["No."]</th>
+                <th scope="col" width="40px" style="text-align: center;">@Localizer["Code"]</th>
+                <th scope="col" width="30px" style="text-align: center;"> @Localizer["Flute"]</th>
+                <th scope="col" width="150px" style="text-align: center;">@Localizer["Board"]</th>
+                <th scope="col" width="30px" style="text-align: center;"> @Localizer["View"]</th>
+                <th scope="col" width="30px" style="text-align: center;"> @Localizer["Edit"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+            <!-- Footer Content -->
+        </tfoot>
+    </table>
+</div>
+<!-- /.box-body -->
+
+<script>
+    $(document).ready(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+        $('#board-data-table').DataTable();
+
+    });
+ </script>

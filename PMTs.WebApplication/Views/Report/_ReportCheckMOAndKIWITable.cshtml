@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ComplexModel.MoDataPrintMastercard>
+@using System.Linq
+
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckMOAndKIWITable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:10%">@Localizer["OrderItem"]</th>
+            <th style="width:10%">@Localizer["Material No"]</th>
+            <th style="width:14%">@Localizer["Name"]</th>
+            <th style="width:9%">@Localizer["PC"]</th>
+            <th style="width:9%">@Localizer["Order Quant"]</th>
+            <th style="width:9%">@Localizer["Target Quant"]</th>
+            <th style="width:9%">@Localizer["Due Date"]</th>
+            <th style="width:9%">@Localizer["Batch"]</th>
+            <th style="width:11%">@Localizer["ItemNote"]</th>
+            <th style="width:10%">@Localizer["Po No"]</th>
+            <th style="width:10%">@Localizer["Created Date"]</th>
+</thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">@item.OrderItem</td>
+                <td class="text-center">@item.MaterialNo</td>
+                <td class="text-left">@item.Name</td>
+                <td class="text-center">@item.PC</td>
+                <td class="text-center">@item.OrderQuant</td>
+                <td class="text-center">@item.TargetQuant</td>
+                <td class="text-center">@item.DueDate.ToShortDateString()</td>
+                <td class="text-center">@item.Batch</td>
+                <td class="text-center">@item.ItemNote</td>
+                <td class="text-center">@item.PoNo</td>
+                <td class="text-center">@item.CreatedDate</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,255 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.ChangePasswordViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+<style>
+    .inbox-change-password {
+        width: 600px;
+        margin: 0 auto;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<!--alerts CSS -->
+@*<link href="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" type="text/css">*@
+<section id="wrapper">
+    <div class="login-register" style="background-image:url(/lib/material-pro/assets/images/background/background.jpg)">
+        <div class="container">
+            <div class="inbox-change-password card">
+                <div class="card-header">
+                    <h3>Change Password</h3>
+                </div>
+                <div class="card-body">
+                    <form id="changePassword-form">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="USER_ID" />
+
+                        <div class="form-body">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">@Localizer["Username"]<span style="color:red">*</span></label>
+                                        <div class="col-md-8">
+                                            <input id="username" asp-for="Username" maxlength="50" class="form-control" onkeyup="CheckValidateUserName()" />
+                                            <span id="username-req" class="text-danger" hidden>@Localizer["Username Validate"]</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">@Localizer["OldPassword"]<span style="color:red">*</span></label>
+                                        <div class="col-md-8">
+                                            <input id="old-password" asp-for="OldPassword" maxlength="100" class="form-control" onkeyup="CheckValidateOldPassword()" />
+                                            <span id="old-password-req" class="text-danger" hidden>@Localizer["OldPassword Validate"]</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">@Localizer["NewPassword"]<span style="color:red">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input id="new-password" type="password" asp-for="NewPassword" maxlength="100" class="form-control" onkeyup="ValidateMatchPassword(this)" />
+                                            <span id="new-password-req" class="text-danger" hidden>@Localizer["NewPassword Validate"]</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="control-label text-right col-md-3">@Localizer["ConfirmPassword"]<span style="color:red">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input id="confirm-password" type="password" asp-for="ConfirmPassword" maxlength="100" class="form-control" onkeyup="ValidateMatchPassword(this)" />
+                                            <span id="confirm-password-req" class="text-danger" hidden>@Localizer["ConfirmPassword Validate"]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <!--/span-->
+                            </div>
+                            <hr />
+                            <div class="box-footer text-center">
+                                <button type="button" class="btn btn-success pull-right" onclick="ChangePassword()"><i class="fa fa-check"></i>@Localizer["Change Password"]</button>
+                                <a class="btn btn-info pull-right" style="color:white" asp-action="Index" asp-controller="Login">@Localizer["Back"]</a>
+                            </div>
+                        </div>
+
+                        <!-- /.box-body -->
+                        <!-- /.box-footer -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+
+        });
+
+        function ChangePassword()
+        {
+            let regExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!\@@#\$%\^&\*])(?=.{8,})");
+            let isFillAll = true;
+            if ($("#username").val() == "" || $("#username").val() == null) {
+                $("#username-req").removeAttr("hidden");
+                isFillAll = false;
+            } else {
+                $("#username-req").attr("hidden", true);
+            }
+
+            if ($("#old-password").val() == "" || $("#old-password").val() == null) {
+                $("#old-password-req").removeAttr("hidden");
+                isFillAll = false;
+            } else {
+                $("#old-password-req").attr("hidden", true);
+            }
+
+            if ($("#new-password").val() == "" || $("#new-password").val() == null) {
+                $("#new-password-req").removeAttr("hidden");
+                $("#new-password-req").html("The New Password field is a required.");
+                isFillAll = false;
+            } else {
+                if (!regExp.test($("#new-password").val())) {
+                    isFillAll = false;
+                    $("#new-password-req").removeAttr("hidden");
+                    $("#new-password-req").html("Passwords must be at least 8 characters and contain at 3 of 4 of the following: upper case (A-Z), lower case (a-z), number (0-9) and special character (e.g. !@@#$%^&*)");
+                }
+                else {
+                    $("#new-password-req").attr("hidden", true);
+                }
+            }
+
+            if ($("#confirm-password").val() == "" || $("#confirm-password").val() == null) {
+                $("#confirm-password-req").removeAttr("hidden");
+                $("#confirm-password-req").html("The Confirm Password field is a required.");
+                isFillAll = false;
+            } else {
+                if ($("#new-password").val() == $("#confirm-password").val()) {
+                    $("#confirm-password-req").attr("hidden", true);
+                }
+                else {
+                    isFillAll = false;
+                    $("#confirm-password-req").removeAttr("hidden");
+                    $("#confirm-password-req").html("The new password and confirm password do not match");
+                }
+            }
+
+            if (isFillAll) {
+                let form = $('#changePassword-form')[0];
+                let data = new FormData(form);
+
+                $.ajax({
+	                type: 'POST',
+	                enctype: 'multipart/form-data',
+	                url: '@Url.Action("UpdatePassword", "ChangePassword")',
+	                data: data,
+	                async: false,
+	                processData: false,
+	                contentType: false,
+	                cache: false,
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            swal("Change Password Success!", "Please click Ok to try login with new password.", { icon: "success" })
+                                .then(() => {
+						                window.location.href = "@Url.Action("Index", "Login")";
+					                });
+                        }
+                        else {
+                            swal("Change Password Failed!", res.ExceptionMessage, { icon: "warning" });
+                        }
+	                },
+	                error: function () {
+		                // return false;
+	                }
+                });
+            }
+        }
+
+        function ValidateMatchPassword(e) {
+            let valueOfPassword = $(e).val();
+            let elementId = $(e).attr('id');
+            let newPassword = $("#new-password").val();
+            let confirmPassword = $("#confirm-password").val();
+            let regExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!\@@#\$%\^&\*])(?=.{8,})");
+
+            if (elementId == 'new-password')
+            {
+                if (valueOfPassword != 'undefined' && valueOfPassword != '')
+                {
+                    if (!regExp.test(valueOfPassword)) {
+                        $("#new-password-req").removeAttr("hidden");
+                        $("#new-password-req").html("Passwords must be at least 8 characters and contain at 3 of 4 of the following: upper case (A-Z), lower case (a-z), number (0-9) and special character (e.g. !@@#$%^&*)$");
+                    }
+                    else if (newPassword != "undefined" && newPassword != "" && confirmPassword != "undefined" && confirmPassword != '') {
+                        if (newPassword == confirmPassword) {
+                            $("#confirm-password-req").attr("hidden", true);
+                            $("#" + elementId + "-req").attr("hidden", true);
+                        }
+                        else
+                        {
+                            $("#" + elementId + "-req").removeAttr("hidden");
+                            $("#" + elementId + "-req").html("The new password and confirm password do not match");
+                        }
+                    }
+                    else
+                    {
+                        $("#new-password-req").attr("hidden", true);
+                    }
+                }
+            }
+
+            if (elementId == 'confirm-password') {
+                if (valueOfPassword != 'undefined' && valueOfPassword != '' && newPassword != 'undefined' && newPassword != '') {
+                    if (newPassword == confirmPassword) {
+                        $("#" + elementId + "-req").attr("hidden", true);
+                        $("#new-password-req").attr("hidden", true);
+                    }
+                    else {
+                        $("#" + elementId + "-req").removeAttr("hidden");
+                        $("#" + elementId + "-req").html("The new password and confirm password do not match");
+                    }
+                }
+                else if (newPassword == 'undefined' || newPassword == '')
+                {
+                    $("#new-password-req").removeAttr("hidden");
+                    $("#new-password-req").html("The New Password field is a required.");
+                }
+            }
+
+            //if (newPassword != "undefined" && confirmPassword != "undefined")
+            //{
+            //    $("#" + elementId + "-req").removeAttr("hidden");
+            //    $("#" + elementId + "-req").html("The new password and confirm password do not match");
+            //}
+        }
+
+        function CheckValidateUserName()
+        {
+            let username = $("#username").val();
+            if (username == '' || username == null || username == "undefined") {
+                $("#username-req").removeAttr("hidden");
+                $("#username-req").html("The Username field is a required.");
+            } else {
+                $("#username-req").attr("hidden", true);
+            }
+        }
+
+        function CheckValidateOldPassword()
+        {
+            let oldpassword = $("#old-password").val();
+            if (oldpassword == '' || oldpassword == null || oldpassword == "undefined") {
+                $("#old-password-req").removeAttr("hidden");
+                $("#old-password-req").html("The Old Password field is a required.");
+            } else {
+                $("#old-password-req").attr("hidden", true);
+            }
+        }
+    </script>
+}
+
+@*<script>
+        function CheckValidate() {
+            swal("Change Password Success!", "", "success")
+        }
+    </script>*@

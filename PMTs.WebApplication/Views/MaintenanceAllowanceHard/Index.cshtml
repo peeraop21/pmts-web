@@ -1,0 +1,286 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceAllowanceHard.MaintenanceAllowanceHardViewModel
+
+@{
+    ViewData["Title"] = "Allowance Hard";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["Allowance Hard Process"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnOpenCreateAllowanceHardModal">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Create"]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+
+                    <div class="box" id="allowance-hard-table">
+                        <partial name="_AllowanceHardTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAllowanceHard">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalAllowanceHardLabel">@Localizer["AllowanceHard"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <input type="number" class="form-control" id="Id"  hidden />
+            <div class="modal-body" id="idCardAllowanceHard">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["HandShip"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" id="HandShip" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Percen"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" id="Percen" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["SheetMin"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" id="SheetMin" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["SheetMax"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" id="SheetMax" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["GroupKiwi"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" id="GroupKiwi" />
+                    </div>
+                </div>
+                <input type="hidden" id="CreatedDate" />
+                <input type="hidden" id="CreatedBy" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSubmitAllowanceHard" class="btn btn-info">@Localizer["Save"] </button>
+                <button type="button" id="btnUpdateAllowanceHard" class="btn btn-info">@Localizer["Update"]</button>
+                <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelAllowanceHard" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+            $('#Allowance-data-table').DataTable();
+        });
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        function viewShow(Id, HandShip, Percen, SheetMin, SheetMax, GroupKiwi, flag, createdBy, createdDate) {
+            $('#Id').val(Id);
+            $('#HandShip').val(HandShip);
+            $('#Percen').val(Percen);
+            $('#SheetMin').val(SheetMin);
+            $('#SheetMax').val(SheetMax);
+            $('#GroupKiwi').val(GroupKiwi);
+            $('#CreatedDate').val(ChangeDateTimeFormat(createdDate));
+            $('#CreatedBy').val(createdBy);
+
+            $('#modalAllowanceHard').modal('show');
+            if (flag === "0") {
+               //click view
+                $('#btnSubmitAllowanceHard').css('display', 'none');
+                $('#btnUpdateAllowanceHard').css('display', 'none');
+                $('#btnCancelAllowanceHard').css('display', 'block');
+                setReadOnlyView("1");
+            } else
+            {
+                //click edit
+                $('#btnSubmitAllowanceHard').css('display', 'none');
+                $('#btnUpdateAllowanceHard').css('display', 'block');
+                $('#btnCancelAllowanceHard').css('display', 'block');
+                setReadOnlyView("0");
+            }
+        }
+
+        function ClearData()
+        {
+            $('#Id').val(0);
+            $('#HandShip').val("");
+            $('#Percen').val("");
+            $('#SheetMin').val("");
+            $('#SheetMax').val("");
+            $('#GroupKiwi').val("");
+        }
+
+        function getData() {
+            let req = {
+                "Id": $("#Id").val(),
+                "Hardship": $("#HandShip").val(),
+                "Percen": $("#Percen").val(),
+                "SheetMin": $("#SheetMin").val(),
+                "SheetMax": $("#SheetMax").val(),
+                "GroupKiwi": $("#GroupKiwi").val(),
+                "CreatedDate": $("#CreatedDate").val(),
+                "CreatedBy": $("#CreatedBy").val(),
+            };
+            return req;
+        }
+
+        function setReadOnlyView(param) {
+            if (param === "1") {
+                $("#idCardAllowanceHard :input").attr("disabled", true);
+            } else {
+                $("#idCardAllowanceHard :input").attr("disabled", false);
+            }
+        }
+
+        $('#btnSubmitAllowanceHard').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#HandShip').val() === "" || $('#Percen').val() === "" || $('#SheetMin').val() === "" || $('#SheetMax').val() === "" || $('#GroupKiwi').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                $('#Id').val(0);
+               var form = JSON.stringify(getData());
+                $.ajax({
+                    url: '@Url.Action("ManageData", "MaintenanceAllowanceHard")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString(),
+                        flag: "Add"
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAllowanceTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modalAllowanceHard').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        $('#btnUpdateAllowanceHard').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#HandShip').val() === "" || $('#Percen').val() === "" || $('#SheetMin').val() === "" || $('#SheetMax').val() === "" || $('#GroupKiwi').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                var form = JSON.stringify(getData());
+                $.ajax({
+                    url: '@Url.Action("ManageData", "MaintenanceAllowanceHard")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString(),
+                        flag: "Update"
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAllowanceTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modalAllowanceHard').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        $('#btnCancelAllowanceHard').click(function () {
+            ClearData();
+            $('#modalAllowanceHard').modal('hide');
+        });
+
+        function UpdateAllowanceTableNew(res) {
+            $('#allowance-hard-table').html(res.View);
+            $('#Allowance-data-table').DataTable();
+            //$('.form-group').css('display', 'block');
+            //$('.form-inline').css('width', '-webkit-fill-available');
+            //$('.form-control').css('width', '-webkit-fill-available');
+        }
+
+        $('#btnOpenCreateAllowanceHardModal').click(function () {
+            ClearData();
+            setReadOnlyView("0");
+            $('#btnSubmitAllowanceHard').css('display', 'block');
+            $('#btnUpdateAllowanceHard').css('display', 'none');
+            $('#btnCancelAllowanceHard').css('display', 'block');
+            $('#modalAllowanceHard').modal('show');
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

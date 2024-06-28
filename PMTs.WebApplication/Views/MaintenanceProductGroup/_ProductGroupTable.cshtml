@@ -1,0 +1,26 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceProductGroup.MaintenanceProductGroupViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<div class="box-header">
+        <h3 class="box-title"><i class="mdi mdi-package-variant-closed"></i> ProductGroup</h3>
+    </div>*@
+
+<div class="box-body">
+    <table id="ProductGroup-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Code"]</th>
+                <th scope="col">@Localizer["Description"]</th>
+                <th scope="col">@Localizer["View"]</th>
+                <th scope="col">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

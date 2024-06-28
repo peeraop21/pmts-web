@@ -1,0 +1,254 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.ChangePalletSizeViewModel
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Change Pallet Size";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .option-btn {
+        max-width: 30px;
+        max-height: 40px;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-top-bar">
+            <div class="card-header">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="fa fa-cog"></i> @Localizer["Pallet Size Change"] </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body tab-criteria">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row line-space" style=" margin-bottom:15px">
+
+                            <div class="form-group col-md-2"></div>
+                            <div class="form-group col-md-3" style="padding: 0px;text-align: right;">
+                                <label class=" vertical-sub-text  ml-5 mt-1">@Localizer["Material NO"] : </label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control text-left" id="inputMaterialNo" style="font-weight:bolder;" type="text" />
+                            </div>
+
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" onclick="SearchChangePalletSize('')">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divChangePalletSizeTable" class="card-body col-md-12" style="padding:2px 2px 10px 2px;">
+                        <partial name="_ChangePalletSizeTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        var formDataObj = new FormData();
+
+        $(document).ready(function () {
+            $('#change-palletsize-table').DataTable({
+                "paging": true,
+                "scrollX": true,
+                "dom": 'Bfrt<"float-left"i>p',
+            });
+
+            ClearData();
+        });
+
+        $('#inputMaterialNo').on('keypress', function (e) {
+            if (e.which === 13) {
+                //$("#btn-search-mo").click();
+                SearchChangePalletSize("");
+            }
+        });
+
+        function SearchChangePalletSize(materialNoParam)
+        {
+            let materialNO = $("#inputMaterialNo").val();
+            if (materialNoParam != "" && materialNoParam != null)
+            {
+                materialNO = materialNoParam;
+            }
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                dataType: "json",
+                url: '@Url.Action("SearchChangePalletSize", "ChangePalletSize")',
+                data: { materialNO: materialNO},
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('#divChangePalletSizeTable').html(res.View);
+                        $('#change-palletsize-table').DataTable({
+                            "paging": true,
+                            "scrollX": true,
+                            "dom": 'Bfrt<"float-left"i>p',
+                            "order": [[1, "desc"]]
+                        });
+                        $(".modal-backdrop").attr("hidden", true);
+                        if (materialNoParam != "" && materialNoParam != null) {
+                            $("#inputMaterialNo").val(materialNoParam);
+                        }
+                    }
+                    else {
+                        swal("Search Failed!", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () { }
+            });
+
+        }
+
+        function ChangePalletSize() {
+            $("#btn-save").attr("disabled", true);
+            var form = $('#edit-changepalletsize')[0];
+            var data = new FormData(form);
+            debugger;
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("ChangePalletSize", "ChangePalletSize")',
+                data: data,
+                async: false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Updated successfully", "", "success")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    let matParam = "";
+                                    if ($("#edit_MaterialNo").val() != "" && $("#edit_MaterialNo").val() != null)
+                                    {
+                                        matParam = $("#edit_MaterialNo").val();
+                                    }
+                                    $(".modal-backdrop").attr("hidden", true);
+                                    SearchChangePalletSize(matParam);
+                                }
+                            });
+                    }
+                    else
+                    {
+                        swal("Updated Fail", res.ExceptionMessage, "warning")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    ClearData();
+                                    CloseChangePalletSize();
+                                }
+                            });
+                    }
+                }
+            });
+        }
+
+        function CloseChangePalletSize() {
+            $("#modal-create-edit").modal('hide');
+            $(".modal-backdrop").attr("hidden", true);
+        }
+
+        function ClearData() {
+            $("#edit_MaterialNo").val("");
+            $("#edit_Pc").val("");
+            $("#edit_Bun").val("");
+            $("#edit_BunLayer").val("");
+            $("#edit_LayerPalet").val("");
+            $("#edit_BoxPalet").val("");
+            $("#edit_PalletizationPath").val("");
+
+            $("#edit_Id").val("");
+            $("#edit_FactoryCode").val("");
+
+            $("#edit_MaterialNo").attr("readonly", true);
+            $("#edit_Pc").attr("readonly", false);
+            $("#edit_Bun").attr("readonly", false);
+            $("#edit_BunLayer").attr("readonly", false);
+            $("#edit_LayerPalet").attr("readonly", false);
+            $("#edit_BoxPalet").attr("readonly", false);
+            $("#edit_PalletizationPath").attr("readonly", false);
+            $("#edit_Id").attr("readonly", false);
+            $("#edit_FactoryCode").attr("readonly", false);
+
+            $("#btn-save").attr("disabled", true);
+        }
+
+        function CalculateBoxPallet() {
+            let bun = parseInt($("#edit_Bun").val());
+            let bunLayer = parseInt($("#edit_BunLayer").val());
+            let layerPalet = parseInt($("#edit_LayerPalet").val());
+            if (!isNaN(bun) && !isNaN(bunLayer) && !isNaN(layerPalet)) {
+                $("#edit_BoxPalet").val(bun * bunLayer * layerPalet);
+            }
+        }
+
+        function BindChangePalletSizeEdit(item) {
+            let bun = parseInt($(item).attr("data-Bun"));
+            let bunLayer = parseInt($(item).attr("data-BunLayer"));
+            let layerPalet = parseInt($(item).attr("data-LayerPalet"));
+            let boxPalet = !isNaN(bun) && !isNaN(bunLayer) && !isNaN(layerPalet) ? bun * bunLayer * layerPalet : $(item).attr("data-BoxPalet");
+            $("#edit_MaterialNo").val($(item).attr("data-MaterialNo"));
+            $("#edit_Pc").val($(item).attr("data-Pc"));
+            $("#edit_Bun").val($(item).attr("data-Bun"));
+            $("#edit_BunLayer").val($(item).attr("data-BunLayer"));
+            $("#edit_LayerPalet").val($(item).attr("data-LayerPalet"));
+            $("#edit_BoxPalet").val(boxPalet);
+            $("#edit_PalletizationPath").val($(item).attr("data-PalletizationPath"));
+
+            $("#edit_Id").val($(item).attr("data-Id"));
+            $("#edit_FactoryCode").val($(item).attr("data-FactoryCode"));
+
+            $("#edit_MaterialNo").attr("readonly", true);
+            $("#edit_Pc").attr("readonly", false);
+            $("#edit_Bun").attr("readonly", false);
+            $("#edit_BunLayer").attr("readonly", false);
+            $("#edit_LayerPalet").attr("readonly", false);
+            $("#edit_BoxPalet").attr("readonly", false);
+            $("#edit_PalletizationPath").attr("readonly", false);
+            $("#edit_Id").attr("readonly", false);
+            $("#edit_FactoryCode").attr("readonly", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Change Pallet Size';
+
+            $("#btn-save").attr("hidden", false);
+            $("#btn-save").attr("disabled", false);
+
+            $("#modal-create-edit").modal('show');
+        }
+    </script>
+}

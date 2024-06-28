@@ -1,0 +1,25 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceScoreGap.MaintenanceScoreGapViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body">
+    <table id="ScoreGap-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Flute"]</th>
+                <th scope="col">@Localizer["CustCode"]</th>
+                <th scope="col">@Localizer["ScoreType"]</th>
+                <th scope="col">@Localizer["ScoreGap1"]</th>
+                <th scope="col">@Localizer["View"]</th>
+                <th scope="col">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

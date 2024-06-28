@@ -1,0 +1,451 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceCustomer.MaintenanceCustomerViewModel
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+<div class="modal" id="modal-create">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        @*<div class="modal fade bs-example-modal-lg" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lg">*@
+        <div class="modal-content">
+            <form id="create-customer-form">
+                @*asp-controller="MaintenanceCustomer" asp-action="SaveCustomer" data-ajax="true" data-ajax-method="post" data-ajax-success="onSaveSuccess">*@
+                <input type="hidden" id="QASpec" asp-for="CustomerViewModel.QASpec" />
+                <input type="hidden" id="custStatusCreate" asp-for="CustomerViewModel.CustStatus" />
+                <input type="hidden" id="TagBundle" asp-for="CustomerViewModel.TagBundle" />
+                <input type="hidden" id="TagPallet" asp-for="CustomerViewModel.TagPallet" />
+                <input type="hidden" id="HeadTagBundle" asp-for="CustomerViewModel.HeadTagBundle" />
+                <input type="hidden" id="FootTagBundle" asp-for="CustomerViewModel.FootTagBundle" />
+                <input type="hidden" id="HeadTagPallet" asp-for="CustomerViewModel.HeadTagPallet" />
+                <input type="hidden" id="FootTagPallet" asp-for="CustomerViewModel.FootTagPallet" />
+                <input type="hidden" asp-for="CustomerViewModel.Freetext1TagBundle" id="Freetext1TagBundle" />
+                <input type="hidden" asp-for="CustomerViewModel.Freetext2TagBundle" id="Freetext2TagBundle" />
+                <input type="hidden" asp-for="CustomerViewModel.Freetext3TagBundle" id="Freetext3TagBundle" />
+
+                <input type="hidden" asp-for="CustomerViewModel.Freetext1TagPallet" id="Freetext1TagPallet" />
+                <input type="hidden" asp-for="CustomerViewModel.Freetext2TagPallet" id="Freetext2TagPallet" />
+                <input type="hidden" asp-for="CustomerViewModel.Freetext3TagPallet" id="Freetext3TagPallet" />
+                <input type="hidden" id="NoTagBundle" asp-for="CustomerViewModel.NoTagBundle" />
+                <input type="hidden" id="COACreate" asp-for="CustomerViewModel.COA" />
+                <input type="hidden" id="FilmCreate" asp-for="CustomerViewModel.Film" />
+
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">@Localizer["Create Customer"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Customer Name"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <input class="form-control" asp-for="CustomerViewModel.CustName" maxlength="200" />
+                            <span asp-validation-for="CustomerViewModel.CustName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Sold to Code"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.SoldToCode" maxlength="50" />
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Customer Code"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.CustCode" maxlength="5" />
+                            <span asp-validation-for="CustomerViewModel.CustCode" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Customer ID"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.CusId" maxlength="50" />
+                            <span asp-validation-for="CustomerViewModel.CusId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Zone"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input class="form-control" asp-for="CustomerViewModel.Zone" maxlength="10" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Route"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.Route" maxlength="50" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Customer DeliveryTime"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.CustDeliveryTime" maxlength="10" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Customer Class"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.CustClass" maxlength="10" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Product Group"]</label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <select asp-for="CustomerViewModel.IndGrp" class="form-control" style="width: 100%" asp-items="@(new SelectList(Model.ProductGroupList, "Code", "Description"))"><option value="" selected>--- Please Select Item ---</option></select>
+                            @*maintenanceCustomerViewModel.ProductGroupList*@
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Customer Req"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.CustReq" maxlength="255" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Customer Alert"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="CustomerViewModel.CustAlert" maxlength="255" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class=" control-label">@Localizer["Customer Ship To"]</label>
+                        </div>
+                        <div class="form-group col-sm-3" id="Input_CustShipTo_Col">
+                            <input type="hidden" id="CustShipToArrayList" name="CustShipToArrayList" />
+                            <input class="form-control" asp-for="CustomerViewModel.CustShipTo" maxlength="10" />
+                            <span class="field-validation-valid text-danger" id="Validate_For_CustShipTo" style="display: none;">@Localizer["Please Enter Cust Ship To"]</span>
+                        </div>
+                        @*<div class="form-group col-sm-2" id="Input_CustShipTo_Col">
+                    <button type="button" id="btnAddCustShipTo" class="btn btn-primary add-more">+</button>
+                </div>*@
+                        <div class="form-group col-md-3">
+                            <label class="control-label">@Localizer["Pallet Overhang"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="CustomerViewModel.PalletOverhang" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class=" control-label">@Localizer["COA"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="COA-create" />
+                            <label for="COA-create"></label>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label class=" control-label">@Localizer["Film"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="Film-create" />
+                            <label for="Film-create"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class=" control-label">@Localizer["Active"]</label>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <input type="checkbox" class="filled-in" id="CustStatus-create" />
+                            <label for="CustStatus-create"></label>
+                        </div>
+                    </div>
+
+                    <div class="row" style="padding-top:10px">
+                        <div class="form-group col-md-3">
+                            <label class=" control-label" for="CustShipTo">@Localizer["QA Spec"]</label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="float-left">
+                                <div>
+                                    <input type="checkbox" id="BCT-Create" class="mycheckbox" />
+                                    <label for="BCT-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["BCT"]</label>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" id="Gross-Create" class="mycheckbox" />
+                                    <label for="Gross-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["Gross"]</label>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" id="Rub-Test-Create" class="mycheckbox" />
+                                    <label for="Rub-Test-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["Rub Test"]</label>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" id="Slide-Angle-Create" class="mycheckbox" />
+                                    <label for="Slide-Angle-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["Slide Angle"]</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4 row">
+                            <div>
+                                <input type="checkbox" id="Bending-Test-Create" class="mycheckbox" />
+                                <label for="Bending-Test-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["Bending Test"]</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="ECT-Create" class="mycheckbox" />
+                                <label for="ECT-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["ECT"]</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="FCT-Create" class="mycheckbox text-left" />
+                                <label for="FCT-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["FCT"]</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" id="Burst-Create" class="mycheckbox text-left" />
+                                <label for="Burst-Create" class="mycheckbox-label text-left col-12" style="min-width:100px">@Localizer["Burst"]</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Tag Print SO *@
+
+                    <div class="row">
+                        <div class="col-md-6" style="padding:0">
+
+                            <div class="col-md-12">
+
+                                <div class="card earning-widget">
+                                    <div class="card-header">
+                                        <div class="card-actions">
+                                            <a class="" data-action="collapse"><i class="ti-plus"></i></a>
+                                        </div>
+                                        <h4 class="card-title m-b-0"> @Localizer["Tagbundle"]</h4>
+                                    </div>
+                                    <div class="card-body b-t collapse">
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                                <b>Tag No.:</b>
+                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" asp-for="CustomerViewModel.NoTagBundle" id="9tag" value="9tag">
+                                                <label class="form-check-label" for="9tag">@Localizer["9tag"]</label>
+
+                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" asp-for="CustomerViewModel.NoTagBundle" id="6tag" value="6tag">
+                                                <label class="form-check-label" for="6tag">@Localizer["6tag"]</label>
+
+                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" asp-for="CustomerViewModel.NoTagBundle" id="4tag" value="4tag">
+                                                <label class="form-check-label" for="4tag">@Localizer["4tag"]</label>
+
+                                                &nbsp; &nbsp; &nbsp;<input type="button" value="Reset NoTag" onclick="setTagNull();" class="btn btn-warning" />
+                                                <div id="tagbundle-create">
+                                                    <div class="card-body">
+                                                        <div class="row ">
+                                                            <table>
+                                                                <tr>
+                                                                    <td width="20%"><b>No.</b></td>
+                                                                    <td width="50%"><b>Column Name</b></td>
+                                                                    <td width="30%"><b>Unit</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="Adjust1-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="Adjust1-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                @foreach (var items in Model.TagPrintSO)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            <input type="number" class="form-control" id="@items-Create-No">
+                                                                        </td>
+                                                                        <td align="left">
+                                                                            @*<input type="checkbox" class="material-inputs" id="@items-Create">*@
+                                                                            <span style="justify-content:left"><label for="@items-Create"> @items</label></span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" id="@items-Create-uom">
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="Adjust2-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="Adjust2-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="Adjust3-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="Adjust3-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="Adjust4-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="Adjust4-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="Adjust5-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="Adjust5-Create">
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary" onclick="openTagbundle();">@Localizer["Tagbundle"]</button>*@
+                                <!--<h4> @Localizer["Config Tag bundle"]</h4>
+                    <div class="row">
+                    </div>-->
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="col-md-12">
+                                @*<button type="button" id="Tag" class="btn waves-effect waves-light btn-secondary" onclick="openTagPallet();">@Localizer["Tagpallet"]</button>*@
+
+                                <div class="card earning-widget" style="background-color:antiquewhite">
+                                    <div class="card-header" style="background-color:antiquewhite">
+                                        <div class="card-actions">
+                                            <a class="" data-action="collapse"><i class="ti-plus"></i></a>
+                                        </div>
+                                        <h4 class="card-title m-b-0"> @Localizer["Config Tag pallet"]</h4>
+                                    </div>
+                                    <div class="card-body b-t collapse">
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                                <br />
+
+                                                <div id="tagpallet-create">
+                                                    <div class="card-body">
+                                                        <div class="row ">
+                                                            <table>
+                                                                <tr>
+                                                                    <td width="20%"><b>No.</b></td>
+                                                                    <td width="50%"><b>Column Name</b></td>
+                                                                    <td width="30%"><b>Unit</b></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="AdjustPallet1-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="AdjustPallet1-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                @foreach (var items in Model.TagPrintSO)
+                                                                {
+                                                                    <tr>
+
+                                                                        <td>
+                                                                            <input type="number" class="form-control" id="@items-Pallet-Create-No">
+                                                                        </td>
+                                                                        <td align="left">
+                                                                            @*<input type="checkbox" class="material-inputs" id="@items-Create">*@
+                                                                            <span style="justify-content:left"><label for="@items-Pallet-Create"> @items</label></span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" id="@items-Pallet-Create-uom">
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="AdjustPallet2-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="AdjustPallet2-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="AdjustPallet3-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="AdjustPallet3-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="AdjustPallet4-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="AdjustPallet4-Create">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type="number" class="form-control" id="AdjustPallet5-No">
+                                                                    </td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="form-control" id="AdjustPallet5-Create">
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+
+                                                            @*@foreach (var items in Model.TagPrintSO)
+                                                    {
+                                                    <div class="col-md-6">
+                                                        <input type="checkbox" class="material-inputs" id="@items-Pallet-Create">
+                                                        <label for="@items-Pallet-Create"> @items</label>
+                                                    </div>
+                                                    }*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" onclick="QASpecToModel('Create')" id="btnSubmitMaintainCustomer" class="btn btn-info">@Localizer["Save"]</button>
+                        <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,406 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.LogisticAndWarehouse.TruckOptimizeMainModel
+@using System.Linq
+
+@{
+    ViewData["Title"] = "LogisticAndWarehouse";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .option-btn {
+        max-width: 30px;
+        max-height: 40px;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-top-bar">
+            <div class="card-header">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-home-variant"></i> @Localizer["Logistic & Warehouse"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div style="margin-right:5px">
+                            <input type="file" name="importFile" id="importFile" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onchange="javascript:ImportList()">
+                            <a href="#0" class="btn btn-primary" style="min-height:35px;min-width:100px;float:left" onclick="ImportTruckOptimize();"><i class="fa fa-paperclip"></i> @Localizer["เลือกไฟล์ Excel"]</a>
+                            <label for="importFile"></label>
+                        </div>
+                        <div style="margin-right:5px">
+                            <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:100px;float:left" onclick="ExportTruckOptimizeTemplate();"><i class="fa fa-download mr-1"></i>@Localizer["Load Template"]</a>
+                        </div>
+                        <div style="background-color:white;padding-right: 10px;">@Localizer["expains"]</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body tab-criteria">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row line-space" style=" margin-bottom:15px">
+
+                            <div class="form-group col-md-2"></div>
+                            <div class="form-group col-md-3" style="padding: 0px;text-align: right;">
+                                <label class=" vertical-sub-text  ml-5 mt-1">@Localizer["Material NO"] : </label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control text-left" id="inputMaterialNo" style="font-weight:bolder;" type="text" />  @*placeholder="Ex. Z123456789" onchange="CheckMaterialNO(this)"*@
+                            </div>
+
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" onclick="SearchMasterData('')">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divManageTruck" class="card-body col-md-12" style="padding:2px 2px 10px 2px;">
+                        <partial name="_TruckOptimizeTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        var formDataObj = new FormData();
+
+        $(document).ready(function () {
+            $('#truck-optimize-table').DataTable({
+                "paging": true,
+                "scrollX": true,
+                "dom": 'Bfrt<"float-left"i>p',
+            });
+
+            ClearTruckOptimize();
+        });
+
+        $('#inputMaterialNo').on('keypress', function (e) {
+            if (e.which === 13) {
+                //$("#btn-search-mo").click();
+                SearchMasterData("");
+            }
+        });
+
+        function SearchMasterData(materialNoParam)
+        {
+            let materialNO = $("#inputMaterialNo").val();
+            if (materialNoParam != "" && materialNoParam != null)
+            {
+                materialNO = materialNoParam;
+            }
+
+            if (materialNO != "" && materialNO != null) {
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("SearchTruckOptimize", "LogisticAndWarehouse")',
+                    data: { materialNO: materialNO},
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            $('#divManageTruck').html(res.View);
+                            $('#truck-optimize-table').DataTable({
+                                "paging": true,
+                                "scrollX": true,
+                                "dom": 'Bfrt<"float-left"i>p',
+                                "order": [[1, "desc"]]
+                            });
+                            $(".modal-backdrop").attr("hidden", true);
+                            if (materialNoParam != "" && materialNoParam != null) {
+                                $("#inputMaterialNo").val(materialNoParam);
+                            }
+                        }
+                        else {
+                            swal("Search Failed!", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+            else {
+                $("#inputMaterialNo").focus();
+            }
+
+        }
+
+        function SaveTruckOptimize() {
+            $("#TW_SaveBtn").attr("disabled", true);
+            var form = $('#edit-truckWarehouse')[0];
+            var data = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("SaveAndEditTruckOptimize", "LogisticAndWarehouse")',
+                data: data,
+                async: false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Updated successfully", "", "success")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    let matParam = "";
+                                    if ($("#TW_MaterialNo").val() != "" && $("#TW_MaterialNo").val() != null)
+                                    {
+                                        matParam = $("#TW_MaterialNo").val();
+                                    }
+                                    $(".modal-backdrop").attr("hidden", true);
+                                    SearchMasterData(matParam);
+                                }
+                            });
+                    }
+                    else
+                    {
+                        swal("Updated Fail", res.ExceptionMessage, "warning")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    ClearTruckOptimize();
+                                }
+                            });
+                    }
+                }
+            });
+        }
+
+        function CloseTruckOptimize() {
+            $("#modal-create-edit").modal('hide');
+            $(".modal-backdrop").attr("hidden", true);
+        }
+
+        function ClearTruckOptimize() {
+            $("#TW_MaterialNo").val("");
+            $("#TW_FGPalletW").val("");
+            $("#TW_FGPalletL").val("");
+            $("#TW_FGPalletH").val("");
+            $("#TW_FGBundleW").val("");
+            $("#TW_FGBundleL").val("");
+            $("#TW_FGBundleH").val("");
+            $("#TW_PalletSizeW").val("");
+            $("#TW_PalletSizeL").val("");
+            $("#TW_PalletSizeH").val("");
+
+            $("#TW_FGPalletW").attr("readonly", true);
+            $("#TW_FGPalletL").attr("readonly", true);
+            $("#TW_FGPalletH").attr("readonly", true);
+            $("#TW_FGBundleW").attr("readonly", true);
+            $("#TW_FGBundleL").attr("readonly", true);
+            $("#TW_FGBundleH").attr("readonly", true);
+            $("#TW_PalletSizeW").attr("readonly", true);
+            $("#TW_PalletSizeL").attr("readonly", true);
+            $("#TW_PalletSizeH").attr("readonly", true);
+
+            $("#TW_SaveBtn").attr("disabled", true);
+            //$("#TW_ClearBtn").attr("disabled", true);
+        }
+
+        function ImportTruckOptimize() {
+            $("#importFile").click();
+        }
+
+        ImportList = function () {
+            var input = document.getElementById('importFile');
+            var filesName = "";
+            var tempFile = $('#importFile')[0].files[0];
+            for (var i = 0; i < input.files.length; ++i) {
+                tempFile = $('#importFile')[0].files[i];
+                filesName = filesName +input.files[i].name +" \n";
+            }
+
+            swal({
+                title: "Do you want to create new Truck Optimize from file " + filesName + "?",
+                text: "",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+                }).then((willDelete) => {
+                    if (willDelete)
+                    {
+                        formDataObj = new FormData();
+                        formDataObj.append("file", tempFile);
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ImportTruckOptimizeFile", "LogisticAndWarehouse")',
+                            data: formDataObj,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    $('#divManageTruck').html(res.View);
+                                    $('#truck-optimize-table').DataTable({
+                                        "paging": true,
+                                        "scrollX": true,
+                                        "dom": 'Bfrt<"float-left"i>p',
+                                    });
+
+                                    if (res.ExceptionMessage != "" && res.ExceptionMessage != null) {
+                                        swal({
+                                            title: "Truck Optimize Message!",
+                                            text: res.ExceptionMessage,
+                                            icon: "warning"
+                                        });
+                                    }
+                                } else
+                                {
+
+                                    $('#divManageTruck').html(res.View);
+                                    $('#truck-optimize-table').DataTable({
+                                        "paging": true,
+                                        "scrollX": true,
+                                        "dom": 'Bfrt<"float-left"i>p',
+                                    });
+
+                                    if (res.ExceptionMessage != "" && res.ExceptionMessage != null) {
+                                        swal({
+                                            title: "Truck Optimize Message!",
+                                            text: res.ExceptionMessage,
+                                            icon: "warning"
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+            });
+        }
+
+        function ExportTruckOptimizeTemplate() {
+            swal({
+                title: "Are you sure?",
+                text: "Export template with PMTs_TruckOptimizeTemplate.xlsx",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        document.location.href = '@Url.Action("TruckOptimizeExportTemplate", "LogisticAndWarehouse")';
+
+                    }
+                });
+        };
+
+        function BindTruckOptimizesView(item)
+        {
+            $("#TW_MaterialNo").val($(item).attr("data-MaterialNo"));
+            $("#TW_FGPalletW").val($(item).attr("data-FGPalletW"));
+            $("#TW_FGPalletL").val($(item).attr("data-FGPalletL"));
+            $("#TW_FGPalletH").val($(item).attr("data-FGPalletH"));
+            $("#TW_FGBundleW").val($(item).attr("data-FGBundleW"));
+            $("#TW_FGBundleL").val($(item).attr("data-FGBundleL"));
+            $("#TW_FGBundleH").val($(item).attr("data-FGBundleH"));
+            $("#TW_PalletSizeW").val($(item).attr("data-PalletSizeW"));
+            $("#TW_PalletSizeL").val($(item).attr("data-PalletSizeL"));
+            $("#TW_PalletSizeH").val($(item).attr("data-PalletSizeH"));
+
+            $("#TW_FGPalletW").attr("readonly", true);
+            $("#TW_FGPalletL").attr("readonly", true);
+            $("#TW_FGPalletH").attr("readonly", true);
+            $("#TW_FGBundleW").attr("readonly", true);
+            $("#TW_FGBundleL").attr("readonly", true);
+            $("#TW_FGBundleH").attr("readonly", true);
+            $("#TW_PalletSizeW").attr("readonly", true);
+            $("#TW_PalletSizeL").attr("readonly", true);
+            $("#TW_PalletSizeH").attr("readonly", true);
+
+            document.getElementById('modelHeader').innerHTML = 'Truck Optimize Details';
+            $("#TW_SaveBtn").attr("hidden", true);
+
+            $("#modal-create-edit").modal('show');
+        }
+
+        function BindTruckOptimizesEdit(item) {
+            $("#TW_MaterialNo").val($(item).attr("data-MaterialNo"));
+            $("#TW_FGPalletW").val($(item).attr("data-FGPalletW"));
+            $("#TW_FGPalletL").val($(item).attr("data-FGPalletL"));
+            $("#TW_FGPalletH").val($(item).attr("data-FGPalletH"));
+            $("#TW_FGBundleW").val($(item).attr("data-FGBundleW"));
+            $("#TW_FGBundleL").val($(item).attr("data-FGBundleL"));
+            $("#TW_FGBundleH").val($(item).attr("data-FGBundleH"));
+            $("#TW_PalletSizeW").val($(item).attr("data-PalletSizeW"));
+            $("#TW_PalletSizeL").val($(item).attr("data-PalletSizeL"));
+            $("#TW_PalletSizeH").val($(item).attr("data-PalletSizeH"));
+
+            $("#TW_CreatedDate").val($(item).attr("data-CreatedDate"));
+            $("#TW_CreatedBy").val($(item).attr("data-CreatedBy"));
+            $("#TW_Id").val($(item).attr("data-Id"));
+            $("#TW_FactoryCode").val($(item).attr("data-FactoryCode"));
+
+            $("#TW_FGPalletW").attr("readonly", false);
+            $("#TW_FGPalletL").attr("readonly", false);
+            $("#TW_FGPalletH").attr("readonly", false);
+            $("#TW_FGBundleW").attr("readonly", false);
+            $("#TW_FGBundleL").attr("readonly", false);
+            $("#TW_FGBundleH").attr("readonly", false);
+            $("#TW_PalletSizeW").attr("readonly", false);
+            $("#TW_PalletSizeL").attr("readonly", false);
+            $("#TW_PalletSizeH").attr("readonly", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Edit Truck Optimize';
+
+            $("#TW_SaveBtn").attr("hidden", false);
+            $("#TW_SaveBtn").attr("disabled", false);
+
+            $("#modal-create-edit").modal('show');
+        }
+
+        function CreateNewTruckOptimize(item) {
+
+            $("#TW_MaterialNo").val($(item).attr("data-MaterialNo"));
+            $("#TW_FGPalletW").attr("readonly", false);
+            $("#TW_FGPalletL").attr("readonly", false);
+            $("#TW_FGPalletH").attr("readonly", false);
+            $("#TW_FGBundleW").attr("readonly", false);
+            $("#TW_FGBundleL").attr("readonly", false);
+            $("#TW_FGBundleH").attr("readonly", false);
+            $("#TW_PalletSizeW").attr("readonly", false);
+            $("#TW_PalletSizeL").attr("readonly", false);
+            $("#TW_PalletSizeH").attr("readonly", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Create Truck Optimize';
+
+            $("#TW_SaveBtn").attr("disabled", false);
+            $("#modal-create-edit").modal('show');
+        }
+    </script>
+}

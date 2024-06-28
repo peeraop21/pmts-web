@@ -1,0 +1,706 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            <div class="row justify-content-between">
+                <div class="col-sm-6">
+                    <h3 class="text-themecolor">New Product > 6.Routing</h3>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <h3>Material No: @Model.MaterialNo</h3>
+                </div>
+            </div> <hr />
+        </div>
+    </div>
+    <div class="card-body form-material">
+
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Machine</h4>
+                        <input type="hidden" asp-for="modelRouting.SeqNo" />
+
+                        <div class="form-group row">
+                            <label class="col-sm-5 control-label">Group Machine</label>
+                            <div class="col-sm-7">
+
+                                <select class="form-control" asp-for="modelRouting.MachineGroupSelect" asp-items="@Model.modelRouting.MachineGroupSelectList"  disabled>
+                                    <option value="">--- Choose here ---</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-5 control-label">Machine</label>
+                            <div class="col-sm-7">
+
+                                <input class="form-control" asp-for="modelRouting.Machine" disabled />
+                                <span asp-validation-for="modelRouting.Machine" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-5 control-label">Machine Move</label>
+                            <div class="col-sm-7">
+
+                                <input type="checkbox" class="filled-in" asp-for="modelRouting.MachineMove" disabled>
+                                <label for="modelRouting_MachineMove"></label>
+                            </div>
+                        </div>
+                        <!--<button type="submit" class="btn btn-primary center-block"><i class="fa fa-arrow-circle-o-left"></i>Submit</button>-->
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-5 control-label">Alternative1</label>
+                                <div class="col-sm-7">
+
+                                    <input class="form-control" asp-for="modelRouting.Alternative1" disabled />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-5 control-label">Alternative2</label>
+                                <div class="col-sm-7">
+                                    <input class="form-control" asp-for="modelRouting.Alternative2" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="box box-default collapsed-box">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">
+                                            @*<button id="btBoardAlt" type="button" class="btn btn-info waves-effect waves-light">*@
+                                            <button type="button" class="btn btn-info waves-effect waves-light"
+                                                    data-toggle="collapse" data-target="#Alternative-Collapse"
+                                                    aria-expanded="false" aria-controls="Alternative-Collapse">
+
+                                                <span class="btn-label"><i class="fas fa-ellipsis-h"></i></span>More Alternative
+                                            </button>
+                                        </h3>
+                                        <br />
+
+                                        @*<div class="box-tools pull-right">
+                                                <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#Alternative-Collapse" aria-expanded="false" aria-controls="Alternative-Collapse">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>*@
+                                        <!-- /.box-tools -->
+                                    </div>
+
+                                    <!-- /.box-header -->
+                                    <div class="collapse" id="Alternative-Collapse">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-5">Alternative 3</div>
+                                                <div class="col-sm-7">
+
+                                                    <input class="form-control" asp-for="modelRouting.Alternative3" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-5">Alternative 4</div>
+                                                <div class="col-sm-7">
+
+                                                    <input class="form-control" asp-for="modelRouting.Alternative4" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-5">Alternative 5</div>
+                                                <div class="col-sm-7">
+
+                                                    <input class="form-control" asp-for="modelRouting.Alternative5" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-5">Alternative 6</div>
+                                                <div class="col-sm-7">
+
+                                                    <input class="form-control" asp-for="modelRouting.Alternative6" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-5">Alternative 7</div>
+                                                <div class="col-sm-7">
+
+                                                    <input class="form-control" asp-for="modelRouting.Alternative7" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-5">Alternative 8</div>
+                                                <div class="col-sm-7">
+
+                                                    <input class="form-control" asp-for="modelRouting.Alternative8" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">In/Out properties</h4>
+
+                        <div class="box-body">
+                            <table class="table table-striped">
+
+                                <thead>
+                                    <tr>
+                                        <th>Properties</th>
+                                        <th><center>In</center></th>
+                                        <th><center>Out</center></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>No. Open<i style="color:red"> *</i></td>
+
+                                        <td>
+                                            <input class="form-control input-number-only" asp-for="modelRouting.NoOpenIn" disabled>
+                                            <span asp-validation-for="modelRouting.NoOpenIn" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input class="form-control input-number-only" asp-for="modelRouting.NoOpenOut" disabled>
+                                            <span asp-validation-for="modelRouting.NoOpenOut" class="text-danger"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        @*Old
+                                            <td>Weight </td>
+                                            <td>
+                                                <input type="text" class="form-control" asp-for="modelRouting.WeightIn">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" asp-for="modelRouting.WeightOut">
+                                            </td>*@
+
+                                        <td>Weight<i style="color:red"> *</i></td>
+                                        <td>
+
+                                            @*<select class="form-control" asp-for="modelRouting.WeightIn" asp-items="@Model.modelRouting.WeightSelectList">
+                                                    <option value=""></option>
+                                                </select>*@
+
+                                            <input class="form-control" asp-for="modelRouting.WeightIn" disabled />
+                                            <span asp-validation-for="modelRouting.WeightIn" class="text-danger"></span>
+                                        </td>
+                                        <td>
+
+                                            @*<select class="form-control" asp-for="modelRouting.WeightOut" asp-items="@Model.modelRouting.WeightSelectList">
+                                                    <option value=""></option>
+                                                </select>*@
+
+                                            <input class="form-control" asp-for="modelRouting.WeightOut" disabled />
+                                            <span asp-validation-for="modelRouting.WeightOut" class="text-danger"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sheet width (mm)<i style="color:red"> *</i></td>
+                                        <td>
+                                            <input class="form-control input-number-only" asp-for="modelRouting.SheetWidthIn" disabled>
+                                            <span asp-validation-for="modelRouting.SheetWidthIn" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input class="form-control input-number-only" asp-for="modelRouting.SheetWidthOut" disabled>
+                                            <span asp-validation-for="modelRouting.SheetWidthOut" class="text-danger"></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Sheet length (mm)<i style="color:red"> *</i></td>
+                                        <td>
+                                            <input class="form-control input-number-only" asp-for="modelRouting.SheetLengthIn" disabled>
+                                            <span asp-validation-for="modelRouting.SheetLengthIn" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input class="form-control input-number-only" asp-for="modelRouting.SheetLengthOut" disabled>
+                                            <span asp-validation-for="modelRouting.SheetLengthOut" class="text-danger"></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Coating : </td>
+                                        <td>
+                                            <input class="form-control" asp-for="modelRouting.Coat" disabled>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End of In/Out Propertie -->
+
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="RoutingBox">
+
+                            <partial name="~/Views/MaintenanceProductInfo/DetailOfProduct/_RoutingDataList.cshtml" model="Model" />
+                        </div>
+                        @*<button type="button" class="btn btn-danger waves-effect waves-light" id="btnDelete">
+                                <i class="fa fa-trash"></i>
+                            </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Join to/ Sperate to</h3>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-striped table-bordered">
+
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Join to material No.</td>
+
+                                                <td>
+                                                    <input class="form-control" asp-for="modelRouting.JoinToMaterialNo" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Sperate to material No.</td>
+                                                <td>
+                                                    <input class="form-control" asp-for="modelRouting.SperateToMaterialNo" disabled>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>Remark</h3>
+                        <textarea class="form-control center" asp-for="modelRouting.Remark" rows="4"></textarea>
+
+                        <div id="remarkAttachFileBox" style="display: flex;">
+                            <input type="hidden" asp-for="modelRouting.RemarkAttachFileStatus" />
+                            <input type="file" id="remarkAttachFile" name="remarkAttachFile" style="display: none;">
+                            <button type="button" id="btnRemarkAttachFileUpload">Choose File</button>
+                            <label for="remarkAttachFile" id="lblRemarkAttachFileName" style="width: auto; margin-top: 5px; margin-left: 5px; color: #555;">No File Choose</label>
+                            <button type="button" class="btn btn-danger remove-me" id="btnRemoveAttachFile" style="display: none; margin-left: 5px;">x</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="card" id="MachineTypeCor" style="display: none;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Corrugator properties</h3>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-striped table-bordered">
+
+                                        <!--<thead>
+                                            <tr>
+                                                <th>Properties 1</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>-->
+                                        <tbody>
+                                            <tr>
+                                                <td>Paper roll width</td>
+
+                                                <td>
+                                                    <input class="form-control" asp-for="modelRouting.PaperRollWidth" disabled>
+                                                </td>
+                                                <td>Cut</td>
+                                                <td>
+                                                    <input class="form-control" asp-for="modelRouting.Cut" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Trim</td>
+                                                <td>
+                                                    <input class="form-control" asp-for="modelRouting.Trim" disabled>
+                                                </td>
+                                                <td>% Trim</td>
+                                                <td>
+                                                    <input class="form-control" asp-for="modelRouting.PercentTrim" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td> Tear tape</td>
+                                                <td colspan="3">
+
+                                                    <input type="checkbox" asp-for="modelRouting.TearTape" class="filled-in">
+                                                    <label class="form-check-label" asp-for="modelRouting.TearTape"></label>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table table-striped table-bordered" style="display: none;" id="TeartapeBox">
+                                        <tr>
+                                            <td> จำนวนเส้น/กล่อง </td>
+                                            <td>
+                                                <input class="form-control" asp-for="modelRouting.LineQtyPerBox" disabled>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td> ระบุระยะจากขอบกระดาษ </td>
+                                            <td>
+                                                <input class="form-control" asp-for="modelRouting.MarginForPaper" disabled>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <div id="sample-tearTape" style="display: none;">
+                                        <img src="data:image/jpeg;base64,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AAAACgABAAAAAAAAAAE4QklNA/UAAAAAAEgAL2ZmAAEAbGZmAAYAAAAAAAEAL2ZmAAEAoZmaAAYAAAAAAAEAMgAAAAEAWgAAAAYAAAAAAAEANQAAAAEALQAAAAYAAAAAAAE4QklNA/gAAAAAAHAAAP////////////////////////////8D6AAAAAD/////////////////////////////A+gAAAAA/////////////////////////////wPoAAAAAP////////////////////////////8D6AAAOEJJTQQAAAAAAAACAAM4QklNBAIAAAAAAAgAAAAAAAAAADhCSU0EMAAAAAAABAEBAQE4QklNBC0AAAAAAAYAAQAAAAo4QklNBAgAAAAAABAAAAABAAACQAAAAkAAAAAAOEJJTQQeAAAAAAAEAAAAADhCSU0EGgAAAAADOwAAAAYAAAAAAAAAAAAAAc4AAAPoAAAAAwBhAGIAYwAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAD6AAAAc4AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAQAAAAAAAG51bGwAAAACAAAABmJvdW5kc09iamMAAAABAAAAAAAAUmN0MQAAAAQAAAAAVG9wIGxvbmcAAAAAAAAAAExlZnRsb25nAAAAAAAAAABCdG9tbG9uZwAAAc4AAAAAUmdodGxvbmcAAAPoAAAABnNsaWNlc1ZsTHMAAAABT2JqYwAAAAEAAAAAAAVzbGljZQAAABIAAAAHc2xpY2VJRGxvbmcAAAAAAAAAB2dyb3VwSURsb25nAAAAAAAAAAZvcmlnaW5lbnVtAAAADEVTbGljZU9yaWdpbgAAAA1hdXRvR2VuZXJhdGVkAAAAAFR5cGVlbnVtAAAACkVTbGljZVR5cGUAAAAASW1nIAAAAAZib3VuZHNPYmpjAAAAAQAAAAAAAFJjdDEAAAAEAAAAAFRvcCBsb25nAAAAAAAAAABMZWZ0bG9uZwAAAAAAAAAAQnRvbWxvbmcAAAHOAAAAAFJnaHRsb25nAAAD6AAAAAN1cmxURVhUAAAAAQAAAAAAAG51bGxURVhUAAAAAQAAAAAAAE1zZ2VURVhUAAAAAQAAAAAABmFsdFRhZ1RFWFQAAAABAAAAAAAO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ADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDE5LTAxLTA4VDExOjQwOjUzKzA3OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTAxLTI4VDE1OjI4OjI4KzA3OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAxOS0wMS0yOFQxNToyODoyOCswNzowMCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGQTkwMjBCMEQ2MjJFOTExQTVFMDk4QTU5REI1NzI5OSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpBQTIwMUNBMkZCMTJFOTExOEE0N0Q3RDFFRjA3OTlGRSIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOkFBMjAxQ0EyRkIxMkU5MTE4QTQ3RDdEMUVGMDc5OUZFIiBwaG90b3Nob3A6TGVnYWN5SVBUQ0RpZ2VzdD0iMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDEiIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIGRjOmZvcm1hdD0iaW1hZ2UvanBlZyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6QUEyMDFDQTJGQjEyRTkxMThBNDdEN0QxRUYwNzk5RkUiIHN0RXZ0OndoZW49IjIwMTktMDEtMDhUMTE6NDA6NTMrMDc6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpBQjIwMUNBMkZCMTJFOTExOEE0N0Q3RDFFRjA3OTlGRSIgc3RFdnQ6d2hlbj0iMjAxOS0wMS0wOFQxMTo0MDo1MyswNzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOkZBOTAyMEIwRDYyMkU5MTFBNUUwOThBNTlEQjU3Mjk5IiBzdEV2dDp3aGVuPSIyMDE5LTAxLTI4VDE1OjI4OjI4KzA3OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPHJkZjpCYWc+IDxyZGY6bGk+MUE4QzgwRjE1QjQ4NzYzNkVEQzgwQjBCQjQ1MThCOEI8L3JkZjpsaT4gPHJkZjpsaT4xQUVDOEJFOTRGQTI0QTMxNDYzNDAzMTk4QTg4RUE3QjwvcmRmOmxpPiA8L3JkZjpCYWc+IDwvcGhvdG9zaG9wOkRvY3VtZW50QW5jZXN0b3JzPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8P3hwYWNrZXQgZW5kPSJ3Ij8+/+4ADkFkb2JlAGRAAAAAAf/bAIQAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQICAgICAgICAgICAwMDAwMDAwMDAwEBAQEBAQEBAQEBAgIBAgIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMD/8AAEQgBzgPoAwERAAIRAQMRAf/dAAQAff/EAaIAAAAGAgMBAAAAAAAAAAAAAAcIBgUECQMKAgEACwEAAAYDAQEBAAAAAAAAAAAABgUEAwcCCAEJAAoLEAACAQMEAQMDAgMDAwIGCXUBAgMEEQUSBiEHEyIACDEUQTIjFQlRQhZhJDMXUnGBGGKRJUOhsfAmNHIKGcHRNSfhUzaC8ZKiRFRzRUY3R2MoVVZXGrLC0uLyZIN0k4Rlo7PD0+MpOGbzdSo5OkhJSlhZWmdoaWp2d3h5eoWGh4iJipSVlpeYmZqkpaanqKmqtLW2t7i5usTFxsfIycrU1dbX2Nna5OXm5+jp6vT19vf4+foRAAIBAwIEBAMFBAQEBgYFbQECAxEEIRIFMQYAIhNBUQcyYRRxCEKBI5EVUqFiFjMJsSTB0UNy8BfhgjQlklMYY0TxorImNRlUNkVkJwpzg5NGdMLS4vJVZXVWN4SFo7PD0+PzKRqUpLTE1OT0laW1xdXl9ShHV2Y4doaWprbG1ub2Z3eHl6e3x9fn90hYaHiImKi4yNjo+DlJWWl5iZmpucnZ6fkqOkpaanqKmqq6ytrq+v/aAAwDAQACEQMRAD8A3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//0N/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//09/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Tf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691TN/Mb/mSdjfCv5LfEXq7F4brbG9Rd0ZvHntzsrsfA7qyn91tqjf+29u7lyO1qrbu9NuUtNW7U2zkaivqxV0lao8tMQpGtG91sAnh0elfnn8G2AcfMz4pWIBGr5D9RKbEXF1bd4YH/AgEe/deofTrl/s+Xwb/wC8zfij/wClE9Q//Zh7916h9OjUQzQ1MMVRTyxVEFRFHNBPDIksM0Mqa4pYpU1JJFIjAqwJBBuPfutdZvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690Bnyg/7Jo+RH/iDO2//AHgdwe/dbHEdUz/8JuP+yG+1P/Frt8/++h6L9+623xHrYL9+6r1737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//1d/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690Vv5C/Nb4q/FMUqd/8AduzevMjXUhyFFt6qkyGd3fWUAk8X39JsvatBnd21NC0t1WZKJo2ZWAYlWt7rYBPDoLq3cn8vj+Y51Dksxlsr018gurdjSS5jL1+dl/htZ1vLJjHqqnKZObLjb+7+uHnxULtLPL9gXhhcMxEbBfda6qh2X0N/wm/7C7ATq/ac/W9fvCoyFDiaClq+7PlDgsJmMpk5TBj8dgN4Z/sDF7O3BW1tRaKOKhr6h3mdIwNbore6t3fPo+//AAyD/K+/7xi/9jT8hf8A7bPv3Vehx7O/mN/An4/SSbY338m+rsRX7cp4KCq27t7L1/YeexKU0PjhoK/D7Do92ZunrYoIheKaMT2Kkj1qT7rdD6de6c/mZfA/vvMY7bvWPyY6+ym4cxUNR4jAbhOd68zmVqwzqtHi8R2Lh9qZHI1kpjJjihjeSReUDAgn3Wuj1+/de6Se8997H64wNXujsLeW1Nh7YoEeSv3FvPcWI2xgaKNI3lkery+crKHH0yJFGzEvIoCqT9AffuvdEE3h/N+/lt7HnNPmvlZsmtkE/wBvq2fgd/8AYUHk0yNqFTsHaO5qcwWiP7ofx3IGq7Lf3Xuhi6U/mBfC75EZTH4HqD5Hda7p3Jl1hbFbUqstPtTd+TaoRJEhx+0t40u39yVtWFkGuGOlaaI3DqpBA917o4vv3XukX2B2LsLqfaWX352ZvLbWwtmYGAT5jc+7czQ4LC0KMQkSS1+QmggNRUykRwxKTLNKwSNWdgp917og2M/nDfy2MtuOXatL8qdoRZOHl6rJ7Y7Iwu3DzAP2t45nZdBtGfmoX9Fc3AY/RH0+691YfujbWF3ntrcWz9y0X8S25uvBZfbefx33NXR/f4XO4+oxeVovu6CalrqX7qhqpE8kMscqatSMrAEe690Sn4BY34G7T673rsb4CZnaGQ69oN6Ddm9aHaO+N5b+p6LeW58HjMOlXWZbe2d3Fk6WbIYTZtMi00VQsCrTaxGru7P7rZr59CF3X87Ph98dsjPhO5PkR1lsvcVLEZqvasueTN7vpIhIYg9VtHbUeZ3JTCSRWVNdKvkKNpvoa3utdBN1d/Nb/l6dxZyh23sf5Q7GbN5PIQYrG0G8MbvHrN8hkapoo6SioJey9s7Rp6yorJp0jhWN2MsrCNNT+n37r3VhKsrKGUhlYBlZSCGBFwQRwQR7917oDOr/AJNdA907q3jsfqvtjZ2+N5dezSQb32vg8kJc7teaDI1OHqIszjJo4auikpsrSyU8qst4pl0NZiAfde6Zvkb8tvjt8ScDhdzfIfs3GdbYfclXX0OAmrcTuTO1eYq8ZBBVV9PjsVtXC53LVUlLBUxswSA/rA+pA9+690iOgP5gPw1+UWUjwHR3yA2TvLc08dVNS7Rqf4zs7eVbDQmT7uag2fvrFbZ3NXw0yRl3eGkdVis5Oghj7r3Rxffuvde9+691737r3Qf9rdl7V6a60352xviuXG7Q662nnd4bhqzbWmMwOPnyFRFToTeetqhB4oIlu8szqigswHv3Xuqi/wCXn/OZ2785e5p+lNydFVXRG4MrsfKb167rqzsn+/VD2Cm38k9FuHEY0S9e7FeGsoKWnqqmN4jVxSx46tVjE9PZ/dbIIND1dp791rr3v3Xuve/de697917oJ++Oz/8AQl0d3N3P/Azub/RF1R2J2f8A3b/iX8F/vB/cHaGY3X/A/wCMfw/K/wAJ/i38J8H3P2tT4PJr8UmnQfde6oT68/nq/Jftzb/97eqP5TXenZ+1fvqrF/3m683zv7eu3/4nRrC9Zjv4ztv4x5LG/f0iVEZlh8nkjDqWA1C/ut0+fS3l/nUfJbalPU57t3+Uh8q+udj46Iz5Tdkr7+qafHRxukk8lT/eboHY+IihhoEnlLyV8YvEFNlZpE916nz6s3+FXz5+Pvzx2XmN1dLZbL0uW2tU0lJvTr/eFHR4ne+05chHK+Oqchj6HI5WgrMPlPt5RS11JU1FNK0MkZZJo5Ik914gg0PR1vfutde9+691737r3XvfuvdVIfNj+cH8f/iTuyXp3aWB3B8ifkMaimxw6q66qEWlw2YrnaKiwu7N1x0OaGNztTKAoxtDQ5TJxl081PEskbN7r3RQv9nn/nmb7p6TcHWX8t7rza23K6nSpp8b2dHn4tyrHMAYfuqTOdw9UZOjkAVtUc2LjkFxcLxq91ai/wAXQ8/Gr+ZT8tc78het/jj8v/gpuvozKdp1+Wxe1+z8TWZwbFOUxu3M/upMa65fF5HEZGWfG4GRGNJnpp4pBdqfSx0e60aeR6uz9+611737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r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/dbHEdVu/wDCeb/t32//AInPsn/3XbR9+623xHq8qZ4YYZZKhoo6eOKR55JmRIUhRC0rzM50LEEBLE8AfX37qvWq5/KBw9JuP+a78+eyejaU03xtpIe1MLFWYkxLs6trNzdw4TJbGgwkFLUTUJpa+l27l67FPELU+MVowIVmEZ91Y/CvW1T791Xr3v3Xuve/de6Id/Mt+T+Q+Inw07f7g27LFFvlMdQbN67eVBIIN670r4cDjMosbERyttqlqajK+N/RIKEoQdVj7r3RBP5G/wAI9sdcdD4j5e9j4yHdfyB+QZye8KDeG4mObzm1thZasqlxseNyOQFRUQZzfA8uVylckhqKuGsghkb9pw/uvdX2e/de6xyRRyhRLEkoR0lQOquEkjOqORdQNnRhcEcg/T37r3WT37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691/9ff49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3VO38+GvraP+Wv29BSpO0GV3b1HQZJoWlWOOij7K23k43qhGCjwHI46BQJLJ5WQ/qC+/de6OX/L8gx9N8FPhtHjPD9s3xg6Lnk8EnmT+IVXWu26nLan8klpv4rNN5Ev+3JqWy2sPdbPE9G+9+611VH/O+/7dffJ3/wAot/8ABC9Te/de6Gr+V7/272+Iv/iFdqf9aZffutniej5e/da697917rWG6nBxn/Ckrvik2zDGcVkNgSnPmmTyxRfefHzq7M5aaV1NoZJN5pGJCf8Adzlfqffurfh/Po6380r+Yj8gviL2f8YulPjH151n2L2Z8gMjlsbHiOx6LcFcs+RrNw7V2lsPDYJcJvnYdPRVe4NwZqpiknrapqdBEn6Brce60BXocvg/2h/M/wB9743jQfOv459NdMbEotqxVey811pm8Rlcnl92nL0UM2LyEWO737YkioVw7zyhmpKVfIgHmJ9De68aeXVmPv3WutYnqZpMF/wpK77x+24r4rNdeOu4jSq8sMcdf8fuqtz5KWpemKxRa95QQhzKConYKf3CpHurfh/PoXP5+mI6CzOzOhqHKSdhN8xavddVjvizQdU/Z/3kyOUyORwdNUU+6WnlgqINrHcZx32MtI4yqZcx/Zgxmtt7qvSa66+N/wDwokg2Xt/V80uhtrSTY6mnl232JT7W3lvTCSPEqnHbg3FH8ZewaXJZGAIBI8OZyETNciZiSffurVX+Hq9L454PvLbXSfX2D+Sm8tt9g95Y7E1EPYm8toUtPRbbz2XfKZCamqsTS0m1dkU8NPHipKeIhcVRDXGx0E+tvdV617v+EzH/ADLL5Yf+H51j/wC8/uz37qzfh+zrZ+9+6r1737r3WsD/AMJmP+ZZfLD/AMPzrH/3n92e/dWb8P2dHY/nufHOXur4Q5nsTAUsz74+Nu4aLtfEVNEAuR/uoAML2DSRT+NpIKOjwtZHmpijRtfCRkNxpb3VQaGvR4fgH8jIflZ8Quju63q4arP7h2dSYnfQjdy0HYO05ZNsb1EkUqRzU61m4MTPVQo4JNNURMrOjLI3uvdMf8yvfGD6/wDgJ8vc1n6mClpMn0H2PsekaoqYqVZc52Ttut6+29TRPKdMk9TnNzU6JGPVKx0ryffutjiOiefyC9oZTbH8unZOTyMcsUW++x+zd34pJYfC38MjzqbQSRbyO0sU9XtOaRHKx6lYWBWzt7rx4nq6T37rXULI5CixGPrstk6unoMbjKOqyGRrquVYaWioqKB6mrq6maQqkVPTU8TO7EgKqkn37r3Wp18GPkD0H8l/5mvyJ+ffyL7x6h6y2x1+s2zvjXt7tfs/Y+xK+px9fS121MHnMRht3ZrBZE02C6/o6mWrH2Yj/i24jIJPPBJ791uuKdXe/Ij5Cfy8/kf0d2j0bvP5k/FFtvdl7Pyu2qmpHyF6flmxVbURCfCZ+kR93shyG3M5T01fTEggT0yEg29+611XZ/wn7+SbZbrbtv4Wbr3Jg89ur447rzeY2Jk8Bm6LO4HcfWmd3FWUmck2nlqSWRM9gNv79aWpSvS1PLSbhohFdRx7qzfEetij37qvXvfuvde9+690VH55f9kN/M3/AMVR+RP/AL6HeHv3WxxHWsF/Kw/l+fJf5LfF1uyOqP5jnenxb2qOyN27f/0YdeU+/wCTb5yeKpMFLWbjLba7068xv32WStjSX/cf5LQLqlfgL7rxNfLqwHdf8mD5rbk23m9v5P8AnEfI7duNzONqsZkNs7rx/bE2287Q1kZhq8Zm4aj5M5qCfG1cDskqPSVCOp0lCCffut1X+Hpi/lgd4b1+FPyOq/5T3yH64612zuOSOq3D1Z2t1fiZcdR9mVr7cqN0fxDeWQmgpZd0VO4ds4qVaLK1ENLWU1TjzjJ43cRCH3WiamvWyP791rr3v3Xuve/de6oa/wCFFOHzmT+BG367ETSRUO3fkR15mNzIk1TElRg59o9kbfp4Z0gjaKojXcmdx8gSYrEHRXB8ixg+62OI6se/l5ZXFZj4H/Dmrw7wvSRfGrpjFzGERBRlcHsHBYTOowhYp5Y83j6hZL+oyA6gGuPfuvHiejj+/da697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r/0N/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFE+ePxyf5ZfEju/oaj+1XP7z2l9xs2aslFNTQb62tkqDduyzUVn6qKjqNyYOmgqZBe1LLICGUsp917qmj+Uf/Mu626r60pfg38xM/S9Ddu9C5bNbJ29l+zJ6fbO3MzgqbM1ssO2M1n637bEb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/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv//R3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RMvkv/L5+IHy6rIcz3t0tt/c+6qengpIN8YqrzGz97/aUoK0lHWbo2lkMLlczQUaMwhpq6SqpodbFI1Jv7917oBekv5OPwL6B7J2t2zsXrPcs2+dkZajz20cpuDsje+Up8Dm6Eu1Lk4cWmZpMZXzxF7hKyKphBAIQMAffuvdHl786I61+TPU26+ke4MNV7g653q2AO4sPRZfJ4GprBtrc+F3filjy2GqqLJ0oizmAppG8UqF0QofSxB917p+6y6p2F0/1ptPqDr/AAK4frzZO3qbau3dvVVdks4lHgqWJoY6Gors9WZPJZFWjdg7VE0rOCQSRx7917qrXuT+RN/L17byuQzeP2HvHpzJZRxLVHpzd/8AAcWk91vLj9sboxe8dp4ZGRAvho6GnpgLkRhyWPuvdN/T38hf+Xz1PmaPO5XavYXc9Zj6laujp+4d5UuVwyzIzsgrNvbLwGxcDmaZdQBgrqapp3CjWjc3917q4/GYzG4XHUGHw2PocRicXR0+PxmLxlJBQY7HUFHElPS0NBQ0scVNR0dNBGqRxRqqIigKAB7917qFuTbW3d44HMbV3bgcPujbOfoKjF53bu4MbR5nCZnGVkZiqqDKYrIQ1FDX0VRGSrxSoyMPqPfuvdU59rfyDf5fHZmXr8xhtu9mdO1GRq3raik6o31BSYmOaVxJOtBh994DfuNxVJK97U9LFDTwq2mJI1CqvuvdO3Tv8iL+Xt1Lk8bmslsne3cuSxVQ1VSt3HvBc3jJJjK7xjJbZ2niNl7UzNPCj6BBWUM9O6qDIjtdj7r3VweMxmNwuOoMPhsfQ4jE4ujp8fjMXjKSCgx2OoKOJKeloaChpY4qajo6aCNUjijVURFAUAD37r3QedxdK9UfIHYmW6y7n2JgOw9jZrxNXYDc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r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r//S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//09/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Tf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//V3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//1t/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuv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rT+AH/pG/wAdf/tc+/de69/w07/Ky/71p/AD/wBI3+Ov/wBrn37r3Xv+Gnf5WX/etP4Af+kb/HX/AO1z7917r3/DTv8AKy/71p/AD/0jf46//a59+6917/hp3+Vl/wB60/gB/wCkb/HX/wC1z7917r3/AA07/Ky/71p/AD/0jf46/wD2uffuvde/4ad/lZf960/gB/6Rv8df/tc+/de69/w07/Ky/wC9afwA/wDSN/jr/wDa59+6917/AIad/lZf960/gB/6Rv8AHX/7XPv3Xuvf8NO/ysv+9afwA/8ASN/jr/8Aa59+6917/hp3+Vl/3rT+AH/pG/x1/wDtc+/de69/w07/ACsv+9afwA/9I3+Ov/2uffuvdAZjviH8TfjB/MN+ImS+NXxf+O/x5yO8eiPmVjd3V/RvSnW3UtburHYrI/GSsxdBuOq2DtnAT5uixtXPJLTxVTSxwyOzIAST7917q3L37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Df49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690Tn4pf8f184f8AxcbKf/A5fG/37r3Rxvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690VL5Ef8ze+B//AItbvD/4B35l+/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6Kl8d/+ZvfPD/xa3Z//wAA78NPfuvdGt9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RXuH/ALeA/CH/AMQr82v/AHI+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r//R3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdE5+KX/H9fOH/AMXGyn/wOXxv9+690cb37r3XvfuvdFE+Tfzv+KPw6yG0cV8ju2afrvI76o8vkNr0K7Q7A3jVZGhwc9BTZKrmh2FtTdD4unjqMlEkbVggFQwkEPk8Uuj3XujPbY3Lgd6ba29vHa2VpM7tfdmDxO5dt5ugcy0GYwOdoKfKYfK0UpCmSkyGPqo5o2sLo4Pv3Xun337r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RUvkR/zN74H/APi1u8P/AIB35l+/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6Kl8d/8Amb3zw/8AFrdn/wDwDvw09+690a337r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f+3gPwh/8Qr82v/cj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdE5+KX/H9fOH/AMXGyn/wOXxv9+690cb37r3XB3SNHkkdY441Z5JHYKiIoLM7sxCoqKLkngD37r3Wpjsjpqg/nRfN75udvbgrDP0j1L1jn+ivj7mXEk+JpN15OizuC6+3bQCGsko8nSUdXHlt0zRan0zZOkIEZ8ZX3WyMA9H5/kRfIfObt6A338Tey2qKLt34f7zyWxq3E5GR3yCbGyGXzCYelkllP7820dz4zK4d44iyUlHTUKkgSIPfutdXse/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6Kl8iP8Amb3wP/8AFrd4f/AO/Mv37r3Rrffuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RUvjv8A8ze+eH/i1uz/AP4B34ae/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oivcP/AG8B+EP/AIhX5tf+5Hxe9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Pf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690Tn4pf8f184f8AxcbKf/A5fG/37r3RxvfuvdVN/wA5z5Xv8W/hRvaLAZF6Dsfux5OoNjSU8ssVbQRbhoal957hppIUaSCTDbQiqkhmDRmGuqaZg17A+62ASaDoU/5WnxRHxA+GXV/XmVoI6LsHdVK3Z/atkRagb63rS0dXNiKtkZ43qNo4GCgwrMjNHI2OMimz+/deJqa9VPfLhH/lsfzden/mDRGTD9AfLmKo2R3VUr5IsLicxXSYbD72rsrUsrQUlLR1iYPeAu4lqp6OuWNdCMPfuvAE8OtnBWVlDKQysAyspBDAi4II4II9+611y9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFS+RH/M3vgf8A+LW7w/8AgHfmX7917o1vv3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oqXx3/wCZvfPD/wAWt2f/APAO/DT37r3Rrffuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV7h/7eA/CH/xCvza/9yPi97917o9Xv3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6/9Tf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690Tn4pf8f184f8AxcbKf/A5fG/37r3RxvfuvdakPy92p2H/ADdv5ouY+PvUPYP9wetviBtLN0K9mw46tzlBt7d+LymL/vfmscuHyeMJ3Fl+wDQ4emUZCmcU2Carju0Lxn3W6GlejXf8NCfzFP8Avcd8if8A0IO8v/t9e/dbqv8AD0Xr5Q/yUvmrujpveeb31/MJ7N+TL9c7f3B2BtbqnfkfY+4YM9uPb+ByU1PQ4Jt39t7jxmI3DlaRpqOnqRTFgagoTodvfuvVX+Hq1r+TZ8r3+VHwn2K+4Mocj2T0wydPb/eolaWvrm2zQ0p2duOqaZ3qqt8/syej+4q5CfucnT1huSrW91oihp1a3791rr3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6Kl8iP+ZvfA/8A8Wt3h/8AAO/Mv37r3Rrffuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RUvjv/wAze+eH/i1uz/8A4B34ae/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oivcP/bwH4Q/+IV+bX/uR8XvfuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X/1d/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691U/8AzmPk38r/AIafC7cPya+J1DsDMZzq3de3Kzs7Ddg7Uym6qBurs1USYHKZ3Gw4ncW3amkrduZ3IY+ondnkiGPNQ7AeMH37r3Wpp8C/57H8zvvL5X7Z6F6w278c23D8tfkZh9zbxranq/d9amC+/wBs7J2nvDNY9Iux1Whwm3uvuuhVhZRMVqFkd5CjKqe6919AndOP3Bk9q7hxe2M9S7a3TX4DK0G39z1uGbP0eBztVj5qfGZ2q2/FlcG+Yp8ZXyJO9ItbSGdUMYmj1ax7r3Vef8uD+XHg/wCX7t7tVans6q7r7G7e3XQ53dPZOS2nLtDIT4nE0k/8KwUmPqd373nqZYczlsnXVFY1aHq5a0B0vCrN7rZJJqerLvfutde9+691Vh8Of5aJ+Fvyb7/7n647pWo6j75kyVRWdAt1suOptr1f94qjcO1ZsbvuLfdUauPZgy2ToqSNsNEr0OQZG/cRZPfutkkmp6tP9+611737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFS+RH/ADN74H/+LW7w/wDgHfmX7917o1vv3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oqXx3/AOZvfPD/AMWt2f8A/AO/DT37r3Rrffuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV7h/7eA/CH/wAQr82v/cj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv//W3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3QcdvdXbT7v6q7H6d33Qx5LZvaGydzbD3NRSxRTCbDboxFXh64xxzK8Rnhhqy8RIOmRVP1Hv3XutPr/AITffyxN2dDfM/5pdsdx4SQZX4n7u3P8Vetq+tglMWT3bkJ467eG+MPUSxIKiCTrs4yGmqEOmWmz0/Fip9+691ume/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oqPyIYf6XvgeP/AAK3d5/2/wAHfmZ/vPv3XujXe/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuio/HYg9u/O+1+flbs/8AH0/5wd+Gn19+690a737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f8At4D8If8AxCvza/8Acj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/9ff49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3VNvSfx77b7Q7q+fe5tk/Oj5UfHPCD5pZrGHrzpraPwlzez2raL46/HD7ncBrvkJ8O+9+wP4vl/Kv3CDOigXxL4KaG76/de6Mn/sm/yK/wC9sXz/AP8A0XP8rL/72n7917r3+yb/ACK/72xfP/8A9Fz/ACsv/vafv3Xuvf7Jv8iv+9sXz/8A/Rc/ysv/AL2n7917r3+yb/Ir/vbF8/8A/wBFz/Ky/wDvafv3Xuvf7Jv8iv8AvbF8/wD/ANFz/Ky/+9p+/de69/sm/wAiv+9sXz//APRc/wArL/72n7917r3+yb/Ir/vbF8//AP0XP8rL/wC9p+/de69/sm/yK/72xfP/AP8ARc/ysv8A72n7917r3+yb/Ir/AL2xfP8A/wDRc/ysv/vafv3Xuvf7Jv8AIr/vbF8//wD0XP8AKy/+9p+/de69/sm/yK/72xfP/wD9Fz/Ky/8Avafv3Xuvf7Jv8iv+9sXz/wD/AEXP8rL/AO9p+/de69/sm/yK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Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690VL5Ef8ze+B//AItbvD/4B35l+/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6Kl8d/+ZvfPD/xa3Z//wAA78NP+K+/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oivcP8A28B+EP8A4hX5tf8AuR8XvfuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X/9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690VL5Ef8ze+B//AItbvD/4B35l+/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6Kl8d/+ZvfPD/xa3Z//wAA78NPfuvdGt9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RXuH/ALeA/CH/AMQr82v/AHI+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r//S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFS+RH/M3vgf/wCLW7w/+Ad+Zfv3XujW+/de6Kj88v8Ashv5m/8AiqPyJ/8AfQ7w9+62OI61gv5WH8nv40/OD4ut3Z2vvjvTb26h2Ru3Z5x/Xm5tg4nb/wDDMBSYKejm+03J1luzJffSPk5BK33fjIC6UWxv7rXVjs//AAnY+NW26aqyHUHyN+VXXm+VgZMTuafdmwcjTUcqslTTmqodsdebDzFVTxZCngmKRZOnJMQsQ2ll91bU3r0mf5Pnyr+R+O+TPyN/l4/J3fuU7Wz3Sce7shsrsDcFdV5zOldhbxxOzs/hajcuRqqjM5rB5umztJlMV995KmjijnieUK0MEfuqn162NPfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFS+O/8AzN754f8Ai1uz/wD4B34ae/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oivcP/bwH4Q/+IV+bX/uR8XvfuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//09/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RUvkR/zN74H/8Ai1u8P/gHfmX7917o1vv3Xuio/PL/ALIb+Zv/AIqj8if/AH0O8PfutjiOtYL+Vh/OE+NPwf8Ai63Sfa+x+9Nw7qPZG7d4HIdebZ2Dltv/AMMz9JgoKOH7vcnZu08l99G+MkMq/aeMArpdrm3utdWEbi/4UmfDyDA5ibanTvyVye548bWPgMfuLbfV+CwNZl1gdqCnzGZxvbW4chjMbLU6RNNDQ1csaXKxObA+6tpb06gfyNOqsJ2Fuz5C/P3enanX/YHfHe2WzVPmtlbLzdRkch0/hN6boO9Mxi934yuZazDZLceXxNKmPp9M1PSYzGIkNTIZJ4oPdVPp1sZe/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6Kl8d/+ZvfPD/xa3Z//wAA78NPfuvdGt9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RXuH/ALeA/CH/AMQr82v/AHI+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r//U3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFS+RH/M3vgf/wCLW7w/+Ad+Zfv3XujW+/de6Kj88v8Ashv5m/8AiqPyJ/8AfQ7w9+62OI6rd/4Tzf8Abvt//E59k/8Auu2j791tviPV4ldQUGUpJ8fkqKkyNDVRmKqoq6mhq6SpiJBMVRTVCSQzRkj6MpHv3VetW/KbW278Q/5//VOz/j1TUextjd8bNx8/ZXXO2Ep8dtFX3ZtnfEWSxkOBoFWlxdHHmNpUG4YadEjWCse8YSncRn3Xutpz37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RUvjv/wAze+eH/i1uz/8A4B34ae/de6Nb7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oivcP/bwH4Q/+IV+bX/uR8XvfuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X/1d/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691hneSOGZ4ojUSpFI0cCukZmkVCyRCSQhIy5AGpiAL3Pv3XutQD5Cf8KbfjBB3T09is78aPk3trP/ABh+Ru+s12FgczTdZQZJ6jHdG/IPoavwmPjTfrquUpN09l01QwqDCn2lNMdXk8aN7r3Wwv8Ay8PnftP+Yt0APkZsDq7sjrDY1ZvDcG0dvU/Zibdgy25f7smmp8nnsVFtzNZymbBrk5ZKSOR5VZ56aUabLc+690Nfy12Pujs34q/JnrbY+L/je9Owfj53NsfaGF+9x2NGX3RuzrjcmBwGL/iOXq8fiaD7/LV8MXnqp4KeLXqkkRAzD3Xutcz4bbG/nsfB/p49J9UfCrovcO1TuvN7w+/7C7D65y24P4nnocdBWQfd7c+U208b9jGuMjMS/aeQEtqdri3uttSuD0av/TT/AMKJdz/7hf8AZRfil1192HX+9o3Lteu/hZ8b6ZPtj8nd9+RtRBX/AHGVA1AXGm4Put0X+LoT/gX/ACwO1+tvkLuD5wfN3tXF9y/KPPQZFcDTbfaoqtsbFlzOOnwddkhkqnF4KOsysG1pv4XQ0VDQUeKxFJJNHCKgGCSD3WieIBx1d5791rr3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oqXx3/5m988P/Frdn//AADvw09+690a337r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f8At4D8If8AxCvza/8Acj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/9bf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691853/AIUZfAHdOyP5ney9xdR7YlqqD5/Ve36nalFRUkppD3xJlcVsre2MZoYreTM1Fbjs7Pp1uXrqqQ8D37r3W+v8R/jvtb4mfGbpD437NjjXB9Qddbe2gKlESM5bMUtKKjc24ahUCqazcu5qqsyE5AGqepc/n37r3Ri/fuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690VH47kHt3538/X5W7Pt/wCkOfDM/wC9e/de6Nd7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917oivcP/bwH4Q/+IV+bX/uR8XvfuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//19/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdU29J7R+bec7q+flb8e/kJ8V+sOv/APZ0s1C22e5fh1233vvE5+P46/HD+K5Ib52T86PjlhVxFaGi+3of7umal0Nrq6jWNHuvdGT/ANHP803/ALzI+AH/AKbT+RX/AN9i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r3X/0N/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFA+L/8AzMz52/8Ai39J/wDAj/FD37r3Rv8A37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f+3gPwh/8Qr82v8A3I+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r/9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RQPi//AMzM+dv/AIt/Sf8AwI/xQ9+690b/AN+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RXuH/t4D8If/EK/Nr/ANyPi97917o9Xv3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6//S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690UD4v/wDMzPnb/wCLf0n/AMCP8UPfuvdG/wDfuvdFc+X3y76j+FXTOY7m7eyFQMdTVEWH2ztjE/bS7n3zuqsimlx+2dt0lVPTQzVksNPJPPK7rDS0kMs0hCpY+62ASaDqjXr7f/8AOe/maRwdkdabp2t8F/jRmGaTa1aKdzuXc+HlWSOPK4TJz4DI793XKiuNFdG22cJVK2un1vH6fda6EeH+Vj/ND2zJLuDan83HtLMblKtJHit41/atbtVqgyJWiNqbMdg7zxkMH3sCR3XEm1OzqE0Fon91aq/w9Wc/AjHfOLA9c712p8781tTd/Yu2t9NQ7K33s9MCuL3l1/JtzBVFJlHbA4rbqvV02eeupmNXi8dXERBpI3DJNJ7rRp5dHt9+611737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f+3gPwh/8AEK/Nr/3I+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r//09/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdFA+L/8AzMz52/8Ai39J/wDAj/FD37r3Rv8A37r3Wqr/ADHI/wDZ1v5yXxf+Em4MhUz9WdeUmAq917boaxn+6rMpt3I9ydgvURwSH7GszfW+DxtCruvlp4B5l9MnPutio7utp7H4+hxNDRYrFUVJjcZjaSmx+Ox2PpoaOgx9BRwpTUdFRUdMkVPS0lLTxLHHHGqoiKFUAAD37rXUz37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f+3gPwh/8Qr82v8A3I+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r/9Tf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RQPi//AMzM+dv/AIt/Sf8AwI/xQ9+690b/AN+691ql/IuWg+Ov/CizpPtjd0r47bfcFHsZ6PKZAhcbHPvfpzO/GSjaOoWOnjpqWn3BjIjM0sjiAuZXYRkKPdW/D+fW1p791Xr3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3XuiK9w/9vAfhD/4hX5tf+5Hxe9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/V3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdAl3l8kehPjLtvF7x+Qfb2wem9qZrMpt7E7i7E3Hj9sYbIZ2Wlqa6LEU2RycsFNJkJaOjllWLVrZInIBCm3uvdVhfHH+Z3/AC8cT2P8vpsn80PjjRR7/wDlXj83skz9qbVVt1Yib40/GbaNPksEn8QL5Gjn3Rga3HxyRhlerpJYlu6MB7r3V00UiTRpNG2uOVFkjaxAZHAZGFwDYqR7917qrD+ar/Lrg+enUWEk2ZkqDa/fvU9Tkc11ZuOvkkpMflocglM2Z2PnshTRyVNFj8zLj6eelq1V2oK6nRgBFLUB/dbBINR1XX0B/Ol7F+LsWI+PP8zvpDtnZfYu1lTAwdt47b0FU+6MbjwKePNbmwc1Tj6fNfbweLXmtu1OUgygkWVYFJMkvuvUNK9HMzX8+/8Alw4rEy5Kh7F3/uOsji8iYDDdUbygy07eJpPBFNuGiwOCEutQl3rUTUw9Wm7D3WujC/y+vnnVfPfGdtb7xHTe6erOsNoZ7bWC68zG7nknym/hW0OVqtxZR5qWkj2/T/wmogp4DSUNVkPAW1S1BMqxx+62QQaHqxb37rXXvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV7h/7eA/CH/xCvza/wDcj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/1t/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Vbn82z4fwfOH4Cd/9H0tBDV73G15OwOp5pYzJLRdo9fLJuLai0xVJHjbPNTTYiYqNRpcjKo/Vf37r3Xz/AD+Qj8M5fmD/ADIuqcVujBzzdefH6abvbtWkr6QPBG2wchTwbR2tlIZV8QnzfYs9FBLAxV/tqaqZbmIj37r3X1Jvfuvde9+690mt07M2hvjHfwfeu1Nt7wxHkMv8L3TgsXuDHeQxtGZPsctS1dNrMblb6L2JH0Pv3XugX2/8PfiRtLJHM7W+Lfxz2zmGIZsrt/pHrPDZJiJVnBNdjdsU1USJ1D/q/WAfr7917ow8MMNNDFT08UVPBTxRwwQQxpFDDDEmiKKKJNKRxRooCqAAALD37r3Wb37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV7h/7eA/CH/wAQr82v/cj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv//X3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691TZ0n8hO2+sO6vn5tnZHwW+VHyMwp+aeZyZ7D6a3d8JcJs5a2t+Ovxw+528aL5CfMXojsD+MYjxL9w4wRoG8q+Cpms+j3XujKf7OR8iv8AvU78/wD/ANGN/Ky/++We/de69/s5HyK/71O/P/8A9GN/Ky/++We/de69/s5HyK/71O/P/wD9GN/Ky/8Avlnv3Xuvf7OR8iv+9Tvz/wD/AEY38rL/AO+We/de69/s5HyK/wC9Tvz/AP8A0Y38rL/75Z7917r3+zkfIr/v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Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f+3gPwh/8Qr82v8A3I+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r/9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RXuH/t4D8If/EK/Nr/ANyPi97917o9Xv3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6//S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV7h/7eA/CH/xCvza/wDcj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/09/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f+3gPwh/8Qr82v8A3I+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r/9Tf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFfhd/x/Pz9/wDF6t1f/A6/Gn37r3R6vfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RXuH/t4D8If/EK/Nr/ANyPi97917o9Xv3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de6//V3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+690RX4Xf8fz8/f8AxerdX/wOvxp9+690er37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV7h/7eA/CH/xCvza/wDcj4ve/de6PV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/1t/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3XvfuvdEV+F3/H8/P3/AMXq3V/8Dr8affuvdHq9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3RFe4f+3gPwh/8Qr82v8A3I+L3v3Xuj1e/de697917r3v3Xuve/de697917r3v3Xuve/de697917r/9ff49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3VNnSfzp+Enxz7q+fnXnyE+YvxX6I3+3zTzO4V2N3L8hOpOsN4tgMv8AHX44DFZwbY3vu/B5s4jJmll+3qfB4ZvG2hm0m3uvdGU/4di/lZf97LPgB/6WR8df/tje/de69/w7F/Ky/wC9lnwA/wDSyPjr/wDbG9+6917/AIdi/lZf97LPgB/6WR8df/tje/de69/w7F/Ky/72WfAD/wBLI+Ov/wBsb37r3Xv+HYv5WX/eyz4Af+lkfHX/AO2N7917r3/DsX8rL/vZZ8AP/SyPjr/9sb37r3Xv+HYv5WX/AHss+AH/AKWR8df/ALY3v3Xuvf8ADsX8rL/vZZ8AP/SyPjr/APbG9+6917/h2L+Vl/3ss+AH/pZHx1/+2N7917r3/DsX8rL/AL2WfAD/ANLI+Ov/ANsb37r3Xv8Ah2L+Vl/3ss+AH/pZHx1/+2N7917r3/DsX8rL/vZZ8AP/AEsj46//AGxvfuvde/4di/lZf97LPgB/6WR8df8A7Y3v3Xuvf8Oxfysv+9lnwA/9LI+Ov/2xvfuvde/4di/lZf8Aeyz4Af8ApZHx1/8Atje/de69/wAOxfysv+9lnwA/9LI+Ov8A9sb37r3Xv+HYv5WX/eyz4Af+lkfHX/7Y3v3Xuvf8Oxfysv8AvZZ8AP8A0sj46/8A2xvfuvde/wCHYv5WX/eyz4Af+lkf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L+Vl/wB7LPgB/wClkfHX/wC2N7917r3/AA7F/Ky/72WfAD/0sj46/wD2xvfuvde/4di/lZf97LPgB/6WR8df/tje/de69/w7F/Ky/wC9lnwA/wDSyPjr/wDbG9+6917/AIdi/lZf97LPgB/6WR8df/tje/de69/w7F/Ky/72WfAD/wBLI+Ov/wBsb37r3Xv+HYv5WX/eyz4Af+lkfHX/AO2N7917r3/DsX8rL/vZZ8AP/SyPjr/9sb37r3Xv+HYv5WX/AHss+AH/AKWR8df/ALY3v3Xuvf8ADsX8rL/vZZ8AP/SyPjr/APbG9+6917/h2L+Vl/3ss+AH/pZHx1/+2N7917r3/DsX8rL/AL2WfAD/ANLI+Ov/ANsb37r3Xv8Ah2L+Vl/3ss+AH/pZHx1/+2N7917oC8d8vPib8n/5hvxFxvxr+T/x3+Q2R2d0R8yslu6g6N7r617ardq47K5H4yUeLr9x0uwdy5+fB0WSq6eSKnlqliSaRGVCWBA917q3P37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/Q3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//0d/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Lf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//T3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//1N/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Xf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//W3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//19/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf/9Df49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//Z" style="width: 100%;" />
+                                    </div>
+                                </div>
+
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" id="MachineTypePrinting" style="display: none;">
+                    <div class="card-body">
+                        <div class="row" id="MachineTypePrinting">
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Printing properties</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <table class="table table-striped table-bordered">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Properties</th>
+                                                    <th>Color</th>
+                                                    <th>Shade</th>
+                                                    <th>Area</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td>Color 1</td>
+
+                                                    <td>
+
+                                                        <select class="form-control" asp-for="modelRouting.Ink1" asp-items="@Model.modelRouting.InkSelectList" disabled>
+                                                            <option value="">--- Choose here ---</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+
+                                                        <select class="form-control" asp-for="modelRouting.Shade1" asp-items="@Model.modelRouting.ShadeSelectList" disabled>
+                                                            <option value="">--- Choose here ---</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+
+                                                        <input class="form-control" asp-for="modelRouting.Area1" disabled>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Color 2</td>
+
+                                                    <td>
+
+                                                        <select class="form-control" asp-for="modelRouting.Ink2" asp-items="@Model.modelRouting.InkSelectList" disabled>
+                                                            <option value="">--- Choose here ---</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+
+                                                        <select class="form-control" asp-for="modelRouting.Shade2" asp-items="@Model.modelRouting.ShadeSelectList" disabled>
+                                                            <option value="">--- Choose here ---</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+
+                                                        <input class="form-control" asp-for="modelRouting.Area2" disabled>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Color 3</td>
+
+                                                    <td>
+
+                                                        <select class="form-control" asp-for="modelRouting.Ink3" asp-items="@Model.modelRouting.InkSelectList" disabled>
+                                                            <option value="">--- Choose here ---</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+
+                                                        <select class="form-control" asp-for="modelRouting.Shade3" asp-items="@Model.modelRouting.ShadeSelectList" disabled>
+                                                            <option value="">--- Choose here ---</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+
+                                                        <input class="form-control" asp-for="modelRouting.Area3" disabled>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="box box-default collapsed-box">
+                                            <div class="box-header with-border">
+                                                @*<h3 class="box-title">More Color</h3>*@
+
+                                                <div class="box-tools pull-right">
+                                                    <button type="button" class="btn btn-info waves-effect waves-light" data-toggle="collapse" data-target="#Color-Collapse" aria-expanded="false" aria-controls="Color-Collapse">
+                                                        <span class="btn-label"><i class="fas fa-ellipsis-h"></i></span>More Color
+                                                    </button>
+                                                </div>
+                                                <!-- /.box-tools -->
+                                            </div>
+
+                                            <!-- /.box-header -->
+                                            <div class="collapse" id="Color-Collapse">
+
+                                                <div class="form-group">
+                                                    <table class="table table-striped table-bordered">
+
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Properties</th>
+                                                                <th><center>Color</center></th>
+                                                                <th><center>Shade</center></th>
+                                                                <th><center>Area</center></th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Color 4</td>
+
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Ink4" asp-items="@Model.modelRouting.InkSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Shade4" asp-items="@Model.modelRouting.ShadeSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+
+                                                                    <input class="form-control" asp-for="modelRouting.Area4" disabled>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Color 5</td>
+
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Ink5" asp-items="@Model.modelRouting.InkSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Shade5" asp-items="@Model.modelRouting.ShadeSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+
+                                                                    <input class="form-control" asp-for="modelRouting.Area5" disabled>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Color 6</td>
+
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Ink6" asp-items="@Model.modelRouting.InkSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Shade6" asp-items="@Model.modelRouting.ShadeSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+
+                                                                    <input class="form-control" asp-for="modelRouting.Area6" disabled>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Color 7</td>
+
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Ink7" asp-items="@Model.modelRouting.InkSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                    Fp
+                                                                </td>
+                                                                <td>
+
+                                                                    <select class="form-control" asp-for="modelRouting.Shade7" asp-items="@Model.modelRouting.ShadeSelectList" disabled>
+                                                                        <option value="">--- Choose here ---</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+
+                                                                    <input class="form-control" asp-for="modelRouting.Area7" disabled>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <!-- /.box-body -->
+                                        </div>
+                                        <!-- /.box -->
+                                    </div>
+
+                                    <table class="table table-striped table-bordered">
+
+                                        <thead>
+                                            <tr>
+                                                <th>Properties </th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    Printing plate No.
+                                                </td>
+
+                                                <td>
+
+                                                    <input class="form-control" asp-for="modelRouting.PrintingPlateNo" disabled>
+                                                    <span id="modelRouting_PrintingPlateNo-error" class="text-danger" style="display: none;">The PrintingPlateNo field is required.</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Cutting die No.</td>
+                                                <td>
+
+                                                    <input class="form-control" asp-for="modelRouting.CuttingDieNo" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Myla No.</td>
+                                                <td>
+
+                                                    <input class="form-control" asp-for="modelRouting.MylaNo" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Printing Plate type
+                                                </td>
+                                                <td>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-5">
+
+                                                            <input type="radio" class="with-gap" id="Non-Print" asp-for="modelRouting.PrintingPlateType" value="Non-Print" checked="checked" disabled>
+                                                            <label for="Non-Print" class="control-label">Non-Print</label>
+                                                        </div>
+                                                        <div class="col-sm-5">
+
+                                                            <input type="radio" class="with-gap" id="Standard" asp-for="modelRouting.PrintingPlateType" value="Standard" disabled>
+                                                            <label for="Standard" class="control-label">Standard</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-5">
+                                                        </div>
+                                                        <div class="col-sm-5">
+
+                                                            <input type="radio" class="with-gap" id="Semi" asp-for="modelRouting.PrintingPlateType" value="Semi" disabled>
+                                                            <label for="Semi" class="control-label">Semi</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-5">
+                                                        </div>
+                                                        <div class="col-sm-6">
+
+                                                            <input type="radio" class="with-gap" id="Shipping-Mark" asp-for="modelRouting.PrintingPlateType" value="Shipping Mark" disabled>
+                                                            <label for="Shipping-Mark" class="control-label">Shipping Mark</label>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="card" id="MachineTypeCor" style="display: none;">
+                        <div class="card-body">
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+
+    @*<section class="card-footer">
+        <div class="row col-sm-12 ">
+            <div class="col-sm-6">
+                <button type="button" class="btn btn-primary" id="btnAddMachine"><span class="btn-label"> <i class="fa fa-check"></i> </span>Add Machine</button>
+                <button type="button" class="btn btn-primary" id="btnUpdateMachine" style="display: none;">Update Machine</button>
+                <button type="button" class="btn btn-primary" id="btnInsertMachine" style="display: none;">Insert</button>
+            </div>
+            <div class="col-sm-6 text-right">
+                <button type="button" id="btnSubmit" class="btn btn-success btn-fixsize"><i class="fa fa-save"></i> Save &amp; Next <i class="fa fa-arrow-circle-right"></i></button>
+            </div>
+        </div>
+    </section>*@
+</div>

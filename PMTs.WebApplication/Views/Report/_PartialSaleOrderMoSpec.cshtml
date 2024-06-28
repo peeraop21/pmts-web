@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.Report.SaleOrderModel
+@using System.Linq
+
+@*<div class="box-header">
+    <h3 class="box-title"><i class="mdi mdi-clipboard-outline"></i> Edit M/O</h3>
+</div>*@
+
+<div class="box-body">
+    <table id="SalOrderMOSpecTbl" class="table table-bordered color-table">
+        @*<thead>
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">OrderItem</th>
+                <th scope="col">MaterialNo</th>
+                <th scope="col">PartNo</th>
+                <th scope="col">Pc</th>
+                <th scope="col">Hierarchy</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-default"
+                                        data-id="@Model.moSpec.OrderItem"
+                                        onclick="CallMoRouting(this.getAttribute('data-Id'))">
+                                    <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                            <td>@Model.moSpec.OrderItem</td>
+                            <td>@Model.moSpec.MaterialNo</td>
+                            <td>@Model.moSpec.PartNo</td>
+                            <td>@Model.moSpec.Pc</td>
+                            <td>@Model.moSpec.Hierarchy</td>
+                        </tr>
+                }
+
+            }
+        </tbody>*@
+        <thead>
+            <tr class="color-table text-center">
+                <th class="text-center" width="120px">@Localizer["Action"]</th>
+                <th class="text-center" width="100px">@Localizer["Sale Order"]</th>
+                <th class="text-center" width="100px">@Localizer["Material No"]</th>
+                <th class="text-center" width="100px">@Localizer["PC"]</th>
+                <th class="text-center" width="100px">@Localizer["Order Quant"]</th>
+                <th class="text-center" width="100px">@Localizer["DueDate"]</th>
+                <th class="text-center" width="100px">@Localizer["Batch"]</th>
+                <th class="text-center" width="200px">@Localizer["Customer Name"]</th>
+                <th class="text-center" width="100px">@Localizer["Description"]</th>
+                <th class="text-center" width="100px">@Localizer["Board"]</th>
+                <th class="text-center" width="100px">@Localizer["BoxType"]</th>
+                <th class="text-center" width="100px">@Localizer["Machine"]</th>
+                @*<th class="text-center" width="5%"></th>*@
+                @*<th class="text-center" width="5%"></th>*@
+            </tr>
+        </thead>
+        <tbody>
+
+            @{ int i = 0; }
+
+            @foreach (var item in Model.MasterRoutings)
+            {
+                <tr>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-default"
+                                data-id="@item.SaleOrder"
+                                onclick="CallMoRouting(this.getAttribute('data-Id'))">
+                            <span class="fas fa-pencil-alt text-warning" data-toggle='tooltip' title='Edit' aria-hidden="true"></span>
+                        </button>
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.SaleOrder)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PC)</td>
+                    <td>@Html.DisplayFor(modelItem => item.OrderQuant)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DueDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Batch)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CustName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Board)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BoxType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Machine)</td>
+                </tr>
+
+                i++;
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

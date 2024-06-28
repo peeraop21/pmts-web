@@ -1,0 +1,197 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceBuildRemark.MaintenanceBuildRemarkViewModel
+
+@{
+    int No = 1;
+}
+
+@foreach (var item in Model.BuildRemarkViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Machine</td>
+        <td>@item.List</td>
+        <td align="center">
+            <button type="button" class="btn btn-default" data-Id="@item.Id" data-machine="@item.Machine" data-list="@item.List" data-createdDate="@item.CreatedDate" data-createdBy="@item.CreatedBy"
+                    onclick="BindDatatoView(this)" style="cursor:pointer" title="Detail">
+                <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td align="center">
+            <button type="button" class="btn btn-default" data-Id="@item.Id" data-machine="@item.Machine" data-list="@item.List"  data-createdDate="@item.CreatedDate" data-createdBy="@item.CreatedBy"
+                    onclick="BindDatatoEdit(this)" style="cursor:pointer" title="Edit">
+                <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+            </button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal fade bs-example-modal-lg" id="modal-build-remark-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View BuildRemark"]</h4>
+                <button type="button" class="close" data-dismiss="modal"  data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="id-view" asp-for="BuildRemarkViewModel.Id" />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Machine"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" maxlength="50" id="machine-view" name="Machine" asp-for="BuildRemarkViewModel.Machine" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["List"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" maxlength="50" id="list-view" name="List" asp-for="BuildRemarkViewModel.List" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-build-remark-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-BuildRemark-form">
+            <input type="hidden" id="created-by-edit" asp-for="BuildRemarkViewModel.CreatedBy" />
+            <input type="hidden" id="created-date-edit" asp-for="BuildRemarkViewModel.CreatedDate" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit BuildRemark"]</h4>
+                    <button type="button" class="close" data-dismiss="modal"  data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="id-edit" asp-for="BuildRemarkViewModel.Id" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Machine"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="machine-edit" maxlength="50" asp-for="BuildRemarkViewModel.Machine" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="List">@Localizer["List"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="list-edit"maxlength="50" asp-for="BuildRemarkViewModel.List" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="edit-build-remark-btn" class="btn btn-info">@Localizer["Update"]</button>
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+    <script>
+
+        $(document).ready(function () {
+            $('#edit-build-remark-btn').click(function () {
+                let formData = {
+                "Id": $("#id-edit").val(),
+                "List": $("#list-edit").val(),
+                "Machine": $("#machine-edit").val(),
+                "CreatedDate": ChangeDateTimeFormat($("#created-date-edit").val()),
+                "CreatedBy": $("#created-by-edit").val(),
+            };
+
+                var form = JSON.stringify(formData);
+                $.ajax({
+                    url: '@Url.Action("UpdateBuildRemark", "MaintenanceBuildRemark")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+
+                            swal("Update Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                            UpdateBuildRemarkTable();
+                        }
+                        else {
+                            swal("Uppdate Failed", "", "warning");//modalDialog(error, SaveFailed);
+                        }
+                    },
+                    error: function () {
+                        // return false;
+                    }
+                });
+            });
+        });
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        function BindDatatoView(item){
+            $("#machine-view").val($(item).attr("data-machine"));
+            $("#list-view").val($(item).attr("data-list"));
+            $('#modal-build-remark-view').modal('show');
+        }
+
+        function BindDatatoEdit(item) {
+            $("#machine-edit").val($(item).attr("data-machine"));
+            $("#list-edit").val($(item).attr("data-list"));
+            $("#created-by-edit").val($(item).attr("data-createdBy"));
+            $("#created-date-edit").val($(item).attr("data-createdDate"));
+            $("#id-edit").val($(item).attr("data-id"));
+            $('#modal-build-remark-edit').modal('show');
+        }
+    </script>

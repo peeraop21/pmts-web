@@ -1,0 +1,114 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="card card-outline">
+    <h4 class="card-header">
+        @Localizer["Set Properties"]
+    </h4>
+
+    <div class="card-body">
+
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.PieceSet" class="col-sm-6 control-label"></label>*@
+            <label class="col-sm-6 control-label">@Localizer["Piece per set"]<i style="color:red"> *</i></label>
+            <div class="col-sm-5">
+                <input asp-for="modelProductProp.PieceSet" id="PieceSet" required class="form-control mytextboxNumber noscroll">
+                @*<span asp-validation-for="modelProductProp.PieceSet" class="text-danger"></span>*@
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-6 control-label"> @Localizer["Piece per Pack"]<i style="color:red"> *</i></label>
+            <div class="col-sm-5">
+                <input asp-for="modelProductProp.PiecePatch" id="PiecePatch" required class="form-control mytextboxNumber noscroll">
+                @*<span asp-validation-for="modelProductProp.PiecePatch" class="text-danger"></span>*@
+            </div>
+        </div>
+
+        @if (ViewData["TypeOfProperty"].ToString() == "0")
+        {
+            <div class="form-group row">
+                @*<label asp-for="modelProductProp.BoxHandle" class="col-sm-6 control-label">
+                </label>*@
+                <label @Localizer["BoxHandle"] class="col-sm-6 control-label">
+                </label>
+                <div class="col-sm-5">
+                    @*@if (Model.modelCategories.ProductTypeName.Contains("ไม่มีหูจับ"))*@
+                    @if (Model.modelCategories.BoxHandle == false)
+                    {
+                        <input data-toggle="toggle" asp-for="modelProductProp.BoxHandle" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" id="ProductTypeName">
+                        @*<label class="form-check-label" for="ProductTypeName"></label>*@
+                    }
+                    else if (Model.modelCategories.BoxHandle == true)
+                    {
+                        <input data-toggle="toggle" asp-for="modelProductProp.BoxHandle" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" checked>
+                        @*<label class="form-check-label" for="ProductTypeName"></label>*@
+                    }
+                    else
+                    {
+                        <input data-toggle="toggle" asp-for="modelProductProp.BoxHandle" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled">
+                        @*<label class="form-check-label" for="ProductTypeName"></label>*@
+                    }
+                </div>
+            </div>
+        }
+        <div class="form-group row">
+            <label class="col-sm-6 control-label"> @Localizer["Manufacturing"] <i style="color:red">*</i></label>
+            <div class="col-sm-5">
+                <select id="StatusFlag" asp-for="modelProductProp.StatusFlag" class="form-control" style="width:100%">
+                    @if (Model.modelCategories.MatCode == "82" && Model.modelProductProp.StatusFlag == null)
+                    {
+                        <option value='ผลิตปกติ'>@Localizer["Normal"] </option>
+                        <option value='จ้างผลิต' selected>@Localizer["Outsource"] </option>
+                    }
+                    else
+                    {
+                        <option value='ผลิตปกติ'>@Localizer["Normal"] </option>
+                        <option value='จ้างผลิต'>@Localizer["Outsource"] </option>
+                    }
+
+                    @*<option value='กล่องตัวอย่าง'>กล่องตัวอย่าง</option>")*@
+                </select>
+            </div>
+        </div>
+
+        @{
+            var userSessionModel = PMTs.WebApplication.Extentions.SessionExtentions.GetSession<PMTs.DataAccess.ModelView.Login.UserSessionModel>(Context.Session, "UserSessionModel");
+
+        }
+
+        @if (userSessionModel.BusinessGroup == "Offset")
+        {
+            <div class="form-group row">
+
+                <label class="col-sm-6 control-label">@Localizer["BOIStatus"] <i style="color:red"> *</i></label>
+                <div class="col-md-5">
+                    <div class="controls">
+                        <select class="form-control" id="modelProductProp_BOIStatus" required="" asp-for="modelProductProp.BOIStatus"
+                                asp-items="@(new SelectList(Model.modelProductProp.PpcBoiStatusList,"Status","Status"))">
+                            <option value=""> @Localizer["Please Select Item"] </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+
+                <label class="col-sm-6 control-label">@Localizer["WorkType"] <i style="color:red"> *</i></label>
+                <div class="col-md-5">
+                    <div class="controls">
+                        <select class="form-control" id="modelProductProp_WorkType" required="" asp-for="modelProductProp.WorkType"
+                                asp-items="@(new SelectList(Model.modelProductProp.PpcWorkTypeList,"WorkType","WorkType"))">
+                            <option value=""> @Localizer["Please Select Item"] </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+</div>

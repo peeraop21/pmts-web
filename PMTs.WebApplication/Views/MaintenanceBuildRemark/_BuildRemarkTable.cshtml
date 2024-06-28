@@ -1,0 +1,24 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceBuildRemark.MaintenanceBuildRemarkViewModel
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body">
+    <table id="BuildRemark-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col" width="10%">@Localizer["No."]</th>
+                <th scope="col" width="30%">@Localizer["Machine"]</th>
+                <th scope="col" width="40%">@Localizer["List"]</th>
+                <th scope="col" width="10%" align="center" class="text-center">@Localizer["View"]</th>
+                <th scope="col" width="10%" align="center" class="text-center">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model ErrorViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutError.cshtml";
+    ViewData["Title"] = "Error";
+}
+
+<div id="notfound" style="padding-top:100px">
+    <center>
+        <i class="far fa-frown" style="font-size:20vh;color:slategrey;padding-bottom:10px"></i>
+        <div class="notfound">
+            <div class="notfound-404">
+                <h1>@Localizer["Title"]</h1>
+            </div>
+            <h2>@Localizer["Message"]<span class="text-danger">@Model.RequestId</span></h2>
+            <br />
+            <a class="btn btn-outline-primary" href="MaintenanceProductInfo/ViewListProduct">@Localizer["BackButton"]</a>
+        </div>
+    </center>
+</div>

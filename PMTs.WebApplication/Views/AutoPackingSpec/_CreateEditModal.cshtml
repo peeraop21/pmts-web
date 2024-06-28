@@ -1,0 +1,184 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.AutoPackingSpec.AutoPackingSpecMainModel
+@using System.Linq
+
+@{
+    Layout = null;
+}
+<style>
+    .btn {
+        min-width: 80px;
+    }
+
+    select {
+        cursor: pointer;
+        width: 100%;
+        text-align: center;
+        text-align-last: center;
+    }
+
+    select option {
+        text-align: center;
+    }
+</style>
+
+@*Create Edit*@
+<div class="modal  bs-example-modal-xl" id="modal-aps-create-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <form id="edit-autopackingspec">
+                <input type="hidden" id="APS_CreatedDate" asp-for="@Model.AutoPackingSpec.CreatedDate" />
+                <input type="hidden" id="APS_Id" asp-for="@Model.AutoPackingSpec.Id" />
+                <input type="hidden" id="APS_FactoryCode" asp-for="@Model.AutoPackingSpec.FactoryCode" />
+                <input type="hidden" id="APS_CreatedBy" asp-for="@Model.AutoPackingSpec.CreatedBy" />
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modelHeader">@Localizer["Create Auto Packing Spec"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="row col-md-12 mb-2 mt-2">
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["MaterialNo"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" type="text" maxlength="10"  id="APS_MaterialNo" asp-for="AutoPackingSpec.MaterialNo" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["N PalletType"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input class="form-control" type="number" id="APS_NPalletType" asp-for="@Model.AutoPackingSpec.NPalletType" readonly tabindex=1 />*@
+                                <select class="form-control" id="APS_NPalletType" asp-for="AutoPackingSpec.NPalletType" readonly
+                                        asp-items="@(new SelectList(Model.AutoPackingConfigs.Where(a=>a.Subject == "nPalletType"),"Code","Value"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["C StrapperBottomProtection"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input class="form-control" type="number" id="APS_CStrapperBottomProtection" asp-for="@Model.AutoPackingSpec.CStrapperBottomProtection" readonly tabindex=7 />*@
+                                <select class="form-control" id="APS_CStrapperBottomProtection" asp-for="AutoPackingSpec.CStrapperBottomProtection" readonly
+                                        asp-items="@(new SelectList(Model.AutoPackingConfigs.Where(a=>a.Subject == "cStrapperBottomProtection"),"Code","Value"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["C PalletArrange"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input class="form-control" type="number" id="APS_CPalletArrange" asp-for="@Model.AutoPackingSpec.CPalletArrange" readonly tabindex=2 />*@
+                                <select class="form-control" id="APS_CPalletArrange" asp-for="AutoPackingSpec.CPalletArrange" readonly
+                                        asp-items="@(new SelectList(Model.AutoPackingConfigs.Where(a=>a.Subject == "cPalletArrange"),"Code","Value"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["C StrapperTopProtection"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input class="form-control" type="number" id="APS_CStrapperTopProtection" asp-for="@Model.AutoPackingSpec.CStrapperTopProtection" readonly tabindex=8 />*@
+                                <select class="form-control" id="APS_CStrapperTopProtection" asp-for="AutoPackingSpec.CStrapperTopProtection" readonly
+                                        asp-items="@(new SelectList(Model.AutoPackingConfigs.Where(a=>a.Subject == "cStrapperTopProtection"),"Code","Value"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["C PalletStackPos"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input class="form-control" type="number" id="APS_CPalletStackPos" asp-for="@Model.AutoPackingSpec.CPalletStackPos" readonly tabindex=3 />*@
+                                <select class="form-control" id="APS_CPalletStackPos" asp-for="AutoPackingSpec.CPalletStackPos" readonly
+                                        asp-items="@(new SelectList(Model.AutoPackingConfigs.Where(a=>a.Subject == "cPalletStackPos"),"Code","Value"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["CornerGuard"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" type="number" oninput="javascript: if (this.value.length > 3) this.value = this.value.slice(0, 3);"  id="APS_CornerGuard" asp-for="@Model.AutoPackingSpec.CornerGuard" readonly tabindex=9 />
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["N StrapCompression"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" type="number" oninput="javascript: if (this.value.length > 3) this.value = this.value.slice(0, 3);"  id="APS_NStrapCompression" asp-for="@Model.AutoPackingSpec.NStrapCompression" readonly tabindex=4 />
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["N TopBoardType"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" type="number" oninput="javascript: if (this.value.length > 3) this.value = this.value.slice(0, 3);"  id="APS_NTopBoardType" asp-for="@Model.AutoPackingSpec.NTopBoardType" readonly tabindex=10 />
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["C StrapType"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input class="form-control" type="number" id="APS_CStrapType" asp-for="@Model.AutoPackingSpec.CStrapType" readonly tabindex=5 />*@
+                                <select class="form-control" id="APS_CStrapType" asp-for="AutoPackingSpec.CStrapType" readonly
+                                        asp-items="@(new SelectList(Model.AutoPackingConfigs.Where(a=>a.Subject == "cStrapType"),"Code","Value"))">
+                                    <option value="" selected="selected">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["N BottomBoardType"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" type="number" oninput="javascript: if (this.value.length > 3) this.value = this.value.slice(0, 3);"  id="APS_NBottomBoardType" asp-for="@Model.AutoPackingSpec.NBottomBoardType" readonly tabindex=11 />
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+
+                            <div class="form-group col-md-3">
+                                <label class="control-label float-right mt-1">@Localizer["N WrapType"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                @*<input class="form-control" type="number" id="APS_NWrapType" asp-for="@Model.AutoPackingSpec.NWrapType" readonly tabindex=6 />*@
+                                <select class="form-control" id="APS_NWrapType" asp-for="AutoPackingSpec.NWrapType" readonly
+                                        asp-items="@(new SelectList(Model.AutoPackingConfigs.Where(a=>a.Subject == "nWrapType"),"Code","Value"))">
+                                    <option value="">--- @Localizer["Please Select Item"] ---</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6" style="margin-top:30px">
+                            <button type="button" class="btn btn-success float-right" id="APS_SaveBtn" disabled onclick="SaveAutoPackingSpec()">@Localizer["Save"]</button>
+                        </div>
+                        <div class="form-group col-md-6" style="margin-top:30px">
+                            <button type="button" class="btn btn-danger waves-effect text-center float-left" data-dismiss="modal" data-backdrop="false" id="APS_CloseBtn" onclick="CloseAutoPackingSpec()">@Localizer["Close"]</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

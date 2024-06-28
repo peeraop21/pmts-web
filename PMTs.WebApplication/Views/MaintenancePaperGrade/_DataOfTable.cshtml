@@ -1,0 +1,437 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenancePaperGrade.MaintenancePaperGradeViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.PaperGradeViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Paper</td>
+        <td>@item.BasicWeight</td>
+        <td>@item.Grade</td>
+        <td>@item.Group</td>
+        <td>@item.Length</td>
+        <td>
+            <button type="button" class="btn btn-default" data-Id="@item.Id" data-Paper="@item.Paper" data-BasicWeight="@item.BasicWeight" data-Liners="@item.Liners"
+                    data-Medium="@item.Medium" data-MaxPaperWidth="@item.MaxPaperWidth" data-Cost="@item.Cost" data-Group="@item.Group" data-Kiwi="@item.Kiwi"
+                    data-Bsh="@item.Bsh" data-Grade="@item.Grade" data-PaperId="@item.PaperId" data-PaperDes="@item.PaperDes" data-Layer="@item.Layer"
+                    data-Stang="@item.Stang" data-Length="@item.Length" data-Active="@item.Active" data-GradeCodeMachine="@item.GradeCodeMachine"
+                    onclick="viewShow(this.getAttribute('data-Id'), this.getAttribute('data-Paper'), this.getAttribute('data-BasicWeight'), this.getAttribute('data-Liners')
+                    , this.getAttribute('data-Medium'), this.getAttribute('data-MaxPaperWidth'), this.getAttribute('data-Cost')
+                    , this.getAttribute('data-Group'), this.getAttribute('data-Kiwi'), this.getAttribute('data-Bsh')
+                    , this.getAttribute('data-Grade'), this.getAttribute('data-PaperId'),this.getAttribute('data-PaperDes')
+                    ,this.getAttribute('data-Layer'),this.getAttribute('data-Stang'),this.getAttribute('data-Length'),this.getAttribute('data-Active'),this.getAttribute('data-GradeCodeMachine'))">
+                <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span>
+            </button>
+            @*Id, Paper, BasicWeight, Liners, Medium, MaxPaperWidth, Cost, Group, Kiwi, Bsh, Grade, PaperId, PaperDes, Layer, Stang, Length, Active*@
+        </td>
+        <td>
+            <button type="button" class="btn btn-default" data-Id="@item.Id" data-Paper="@item.Paper" data-BasicWeight="@item.BasicWeight" data-Liners="@item.Liners"
+                    data-Medium="@item.Medium" data-MaxPaperWidth="@item.MaxPaperWidth" data-Cost="@item.Cost" data-Group="@item.Group" data-Kiwi="@item.Kiwi"
+                    data-Bsh="@item.Bsh" data-Grade="@item.Grade" data-PaperId="@item.PaperId" data-PaperDes="@item.PaperDes" data-Layer="@item.Layer"
+                    data-Stang="@item.Stang" data-Length="@item.Length" data-Active="@item.Active" data-CreatedDate="@item.CreatedDate" data-CreatedBy="@item.CreatedBy" data-GradeCodeMachine="@item.GradeCodeMachine"
+                    onclick="viewEdit(this.getAttribute('data-Id'), this.getAttribute('data-Paper'), this.getAttribute('data-BasicWeight'), this.getAttribute('data-Liners')
+                    , this.getAttribute('data-Medium'), this.getAttribute('data-MaxPaperWidth'), this.getAttribute('data-Cost')
+                    , this.getAttribute('data-Group'), this.getAttribute('data-Kiwi'), this.getAttribute('data-Bsh')
+                    , this.getAttribute('data-Grade'), this.getAttribute('data-PaperId'),this.getAttribute('data-PaperDes')
+                    , this.getAttribute('data-Layer'), this.getAttribute('data-Stang'), this.getAttribute('data-Length'), this.getAttribute('data-Active')
+                    , this.getAttribute('data-CreatedDate'), this.getAttribute('data-CreatedBy'),this.getAttribute('data-GradeCodeMachine'))">
+                <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+            </button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal bs-example-modal-lg" id="modal-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View PaperGrade"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Id" />
+                <input type="hidden" class="form-control" name="PaperId" id="PaperId" readonly />
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Paper"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Paper" id="Paper" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["BasicWeight"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="BasicWeight" id="BasicWeight" readonly />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label" for="Liners">@Localizer["Liners"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+
+                        <div class="form-group col-md-12">
+                            <div class="form-check" style="padding-left: 0;">
+                                <input type="checkbox" class="form-check-input" id="XLiners">
+                                <label class="form-check-label" for="XLiners">@Localizer["Active"]</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label" for="Medium">@Localizer["Medium"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+
+                        <div class="form-group col-md-12">
+                            <div class="form-check" style="padding-left: 0;">
+                                <input type="checkbox" class="form-check-input" id="XMedium">
+                                <label class="form-check-label" for="XMedium">@Localizer["Active"]</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["MaxPaperWidth"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="MaxPaperWidth" id="MaxPaperWidth" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Cost"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Cost" id="Cost" readonly />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Group"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Group" id="Group" readonly />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Kiwi"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Kiwi" id="Kiwi" readonly />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["BSH"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="BSH" id="Bsh" readonly />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Grade"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Grade" id="Grade" readonly />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["PaperDes"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="PaperDes" id="PaperDes" readonly />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Length"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Length" id="Length" readonly />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Layer"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Layer" id="Layer" readonly />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Stang"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Stang" id="Stang" readonly />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["GradeCodeMachine"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="GradeCodeMachine" id="GradeCodeMachine" readonly />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Active"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <div class="form-group col-md-12">
+                            <div class="form-check" style="padding-left: 0;">
+                                <input type="checkbox" class="form-check-input" id="XActive">
+                                <label class="form-check-label" for="XActive">@Localizer["Active"]</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-5"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+<!-- Start Edit Modal -->
+<div class="modal" id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-maintain-papergrade">
+            <input type="hidden" id="ECreatedDate" />
+            <input type="hidden" id="ECreatedBy" />
+            @*asp-controller="MaintenancePaperGrade" asp-action="UpdatePaperGrade" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">*@
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Edit PaperGrade"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="Id" id="EId" />
+                <input type="hidden" class="form-control" name="PaperId" id="EPaperId" />
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Paper"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Paper" id="EPaper" maxlength="5" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["BasicWeight"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="BasicWeight" id="EBasicWeight" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label" for="Liners">@Localizer["Liners"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+
+                        <div class="form-group col-md-12">
+                            <div class="form-check" style="padding-left: 0;">
+                                <input type="checkbox" class="form-check-input" id="ELiners">
+                                <label class="form-check-label" for="ELiners">@Localizer["Active"]</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label" for="Medium">@Localizer["Medium"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+
+                        <div class="form-group col-md-12">
+                            <div class="form-check" style="padding-left: 0;">
+                                <input type="checkbox" class="form-check-input" id="EMedium">
+                                <label class="form-check-label" for="EMedium">@Localizer["Active"]</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["MaxPaperWidth"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="MaxPaperWidth" id="EMaxPaperWidth" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Cost"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Cost" id="ECost" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Group<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Group" id="EGroup" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Kiwi"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Kiwi" id="EKiwi" maxlength="50" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["BSH"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="BSH" id="EBsh" maxlength="5" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Grade"] <i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Grade" id="EGrade" maxlength="50" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["PaperDes"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="PaperDes" id="EPaperDes" maxlength="15" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Length"]<i style="color:red"> *</i></label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Length" id="ELength" required />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Layer"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Layer" id="ELayer" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Stang"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="number" class="form-control" name="Stang" id="EStang" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["GradeCodeMachine"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" maxlength="50" name="GradeCodeMachine" id="EGradeCodeMachine" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Active"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <div class="form-group col-md-12">
+                            <div class="form-check" style="padding-left: 0;">
+                                <input type="checkbox" class="form-check-input" id="EActive">
+                                <label class="form-check-label" for="EActive">@Localizer["Active"]</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-5"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btneditmaintainpapergrade">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+<script>
+    $('.btneditmaintainpapergrade').click(function () {
+        // var form = $('#edit-maintain-papergrade').serialize();
+        var tmp = getData();
+        if ($('#ELiners').prop('checked')) {
+            Object.assign(tmp, { Liners: 1 });
+        } else {
+            Object.assign(tmp, { Liners: 0 });
+        }
+        if ($('#EMedium').prop('checked')) {
+            Object.assign(tmp, { Medium: 1 });
+        } else {
+            Object.assign(tmp, { Medium: 0 });
+        }
+        if ($('#EActive').prop('checked')) {
+            Object.assign(tmp, { Active: 1 });
+        } else {
+            Object.assign(tmp, { Active: 0 });
+        }
+
+        var form = JSON.stringify(tmp);
+
+        $.ajax({
+            url: '@Url.Action("UpdatePaperGrade", "MaintenancePaperGrade")',
+            type: "POST",
+            async: false,
+            data: {
+                req: form.toString()
+            },
+            dataType: "json",
+            success: function (res) {
+                if (res.IsSuccess) {
+                    swal("Save Successfully!", "", { icon: "success", });
+                    UpdatePaperGradeTableNew(res);
+                }
+                else {
+                    swal("Save Failed!", res.ExceptionMessage, { icon: "warning", });
+                    //    .then((willDelete) => {
+                    //    if (willDelete) {
+                    //        window.location.reload();
+                    //    }
+                    //});
+                }
+
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+            }
+        });
+    });
+
+    function UpdatePaperGradeTableNew(res) {
+        $('#PaperGrade-table').html(res.View);
+        $('#PaperGrade-data-table').DataTable();
+        $('body').css('padding', '0px');
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '-webkit-fill-available');
+        $('.form-control').css('width', '-webkit-fill-available');
+    }
+</script>

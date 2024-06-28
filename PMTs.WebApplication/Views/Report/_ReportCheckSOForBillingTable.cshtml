@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.Models.MoData>
+@using System.Linq
+
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckSOForBillingTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:11%">@Localizer["OrderItem"]</th>
+            <th style="width:11%">@Localizer["Material No."]</th>
+            <th style="width:15%">@Localizer["Name"]</th>
+            <th style="width:12%">@Localizer["Order Quant"]</th>
+            <th style="width:12%">@Localizer["Target Quant"]</th>
+            <th style="width:10%">@Localizer["Due Date"]</th>
+            <th style="width:9%">@Localizer["Batch"]</th>
+            <th style="width:12%">@Localizer["ItemNote"]</th>
+            <th style="width:10%">@Localizer["Po No"]</th>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">@item.OrderItem</td>
+                <td class="text-center">@item.MaterialNo</td>
+                <td class="text-left">@item.Name</td>
+                <td class="text-center">@item.OrderQuant</td>
+                <td class="text-center">@item.TargetQuant</td>
+                <td class="text-center">@item.DueDate.ToShortDateString()</td>
+                <td class="text-center">@item.Batch</td>
+                <td class="text-center">@item.ItemNote</td>
+                <td class="text-center">@item.PoNo</td>
+            </tr>
+        }
+    </tbody>
+</table>

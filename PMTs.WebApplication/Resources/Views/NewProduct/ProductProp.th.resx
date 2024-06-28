@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Change history" xml:space="preserve">
+    <value>Change history</value>
+  </data>
+  <data name="Change information remark" xml:space="preserve">
+    <value>Change information remark</value>
+  </data>
+  <data name="CutSheetLeng" xml:space="preserve">
+    <value>CutSheetLeng</value>
+  </data>
+  <data name="CutSheetWid" xml:space="preserve">
+    <value>CutSheetWid</value>
+  </data>
+  <data name="HardShip" xml:space="preserve">
+    <value>HardShip</value>
+  </data>
+  <data name="JoinType" xml:space="preserve">
+    <value>JoinType</value>
+  </data>
+  <data name="Lead time" xml:space="preserve">
+    <value>Lead time</value>
+  </data>
+  <data name="Material No" xml:space="preserve">
+    <value>Material No</value>
+  </data>
+  <data name="mins" xml:space="preserve">
+    <value>mins</value>
+  </data>
+  <data name="New Product" xml:space="preserve">
+    <value>กำหนดข้อมูลสินค้า &gt;  5. Product Properties</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>ถัดไป</value>
+  </data>
+  <data name="Packing Properties" xml:space="preserve">
+    <value>Packing Properties</value>
+  </data>
+  <data name="PalletSize" xml:space="preserve">
+    <value>PalletSize</value>
+  </data>
+  <data name="pcs" xml:space="preserve">
+    <value>แผ่น</value>
+  </data>
+  <data name="Picture Packaging" xml:space="preserve">
+    <value>Picture Packaging</value>
+  </data>
+  <data name="Picture Pallet" xml:space="preserve">
+    <value>Picture Pallet</value>
+  </data>
+  <data name="pieces per bundle" xml:space="preserve">
+    <value>กล่อง / มัด</value>
+  </data>
+  <data name="pieces per suit" xml:space="preserve">
+    <value>จำนวนชิ้น/ชุด</value>
+  </data>
+  <data name="Post Time" xml:space="preserve">
+    <value>Post Time</value>
+  </data>
+  <data name="Prepare Time" xml:space="preserve">
+    <value>Prepare Time</value>
+  </data>
+  <data name="PrintMethod" xml:space="preserve">
+    <value>PrintMethod</value>
+  </data>
+  <data name="Process Properties" xml:space="preserve">
+    <value>Process Properties</value>
+  </data>
+  <data name="Rotation in" xml:space="preserve">
+    <value>Rotation in</value>
+  </data>
+  <data name="Rotation out" xml:space="preserve">
+    <value>Rotation out</value>
+  </data>
+  <data name="Run speed" xml:space="preserve">
+    <value>Run speed (units/hour)</value>
+  </data>
+  <data name="Run Waste" xml:space="preserve">
+    <value>Run Waste</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="Score gap" xml:space="preserve">
+    <value>Score gap</value>
+  </data>
+  <data name="Score type" xml:space="preserve">
+    <value>Score type</value>
+  </data>
+  <data name="Select Item" xml:space="preserve">
+    <value>--- Please Select Item ---</value>
+  </data>
+  <data name="Set Properties" xml:space="preserve">
+    <value>Set Properties</value>
+  </data>
+  <data name="Setup Time" xml:space="preserve">
+    <value>Setup Time</value>
+  </data>
+  <data name="Setup Waste" xml:space="preserve">
+    <value>Setup Waste</value>
+  </data>
+  <data name="Sheet / Stack" xml:space="preserve">
+    <value>Sheet / Stack</value>
+  </data>
+  <data name="Spacial setup Properties" xml:space="preserve">
+    <value>Spacial setup Properties</value>
+  </data>
+  <data name="Spacial stacking Properties" xml:space="preserve">
+    <value>Spacial stacking Properties</value>
+  </data>
+  <data name="Spare Properties" xml:space="preserve">
+    <value>Spare Properties</value>
+  </data>
+  <data name="stack" xml:space="preserve">
+    <value>จำนวนชิ้นปะปึก</value>
+  </data>
+  <data name="Tab Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Tab KIWI" xml:space="preserve">
+    <value>KIWI</value>
+  </data>
+  <data name="Tab Product" xml:space="preserve">
+    <value>Product</value>
+  </data>
+  <data name="FG Material No" xml:space="preserve">
+    <value>FG Material No</value>
+  </data>
+  <data name="GEN" xml:space="preserve">
+    <value>GEN</value>
+  </data>
+  <data name="JIT" xml:space="preserve">
+    <value>JIT</value>
+  </data>
+  <data name="MTO" xml:space="preserve">
+    <value>MTO</value>
+  </data>
+  <data name="MTS" xml:space="preserve">
+    <value>MTS</value>
+  </data>
+  <data name="VMI" xml:space="preserve">
+    <value>VMI</value>
+  </data>
+  <data name="Non Standard Paper" xml:space="preserve">
+    <value>Non Standard Paper</value>
+  </data>
+  <data name="TopSheet Material" xml:space="preserve">
+    <value>TopSheet Material</value>
+  </data>
+</root>

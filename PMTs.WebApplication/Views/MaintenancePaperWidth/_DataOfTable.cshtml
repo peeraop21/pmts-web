@@ -1,0 +1,198 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenancePaperWidth.MaintenancePaperWidthViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.PaperWidthViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Group1</td>
+        <td>@item.Group2</td>
+        <td>@item.Group3</td>
+        <td>@item.Group4</td>
+        <td>@item.Width</td>
+        <td>
+            <button type="button" class="btn btn-default"  data-id="@item.Id" data-group1="@item.Group1" data-group2="@item.Group2" data-group3="@item.Group3" data-group4="@item.Group4" data-width="@item.Width"
+                    onclick="viewShow(this.getAttribute('data-id'),this.getAttribute('data-group1'),this.getAttribute('data-group2'),this.getAttribute('data-group3'),this.getAttribute('data-group4'),this.getAttribute('data-width'))"><span class="fas fa-file-alt text-info btn" aria-hidden="true"></span></button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-default"  data-id="@item.Id" data-group1="@item.Group1" data-group2="@item.Group2" data-group3="@item.Group3" data-group4="@item.Group4" data-width="@item.Width" data-CreatedDate="@item.CreatedDate" data-CreatedBy="@item.CreatedBy"
+                    onclick="viewEdit(this.getAttribute('data-id'),this.getAttribute('data-group1'),this.getAttribute('data-group2'),this.getAttribute('data-group3'),this.getAttribute('data-group4'),this.getAttribute('data-width'),this.getAttribute('data-CreatedDate'),this.getAttribute('data-CreatedBy'))"><span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span></button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal fade bs-example-modal-lg" id="modal-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View PaperWidth"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Id" />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Group1"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Group1" id="Group1" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Group2"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Group2" id="Group2" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Group3"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Group3" id="Group3" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Group4"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Group4" id="Group4" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Width"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Width" id="Width" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-maintain-paperwidth">
+            <input type="hidden" id="ECreatedDate" />
+            <input type="hidden" id="ECreatedBy" />
+            @* asp-controller="MaintenancePaperWidth" asp-action="UpdatePaperWidth" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">*@
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit PaperWidth"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="EId" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Group1"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" type="text" class="form-control" id="EGroup1" name="Group1" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Group2">@Localizer["Group2"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EGroup2" name="Group2" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Group3"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EGroup3" name="Group3" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Group4">@Localizer["Group4"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EGroup4" name="Group4" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Width"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EWidth" name="Width" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btneditmaintainpaperwidth">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+<script>
+        $('.btneditmaintainpaperwidth').click(function () {
+          // var form = $('#edit-maintain-paperwidth').serialize();
+            if ($('#EGroup1').val() === "" || $('#EGroup2').val() === "" || $('#EGroup3').val() === "" || $('#EGroup4').val() === "" || $('#EWidth').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                var form = JSON.stringify(getData());
+                $.ajax({
+                    url: '@Url.Action("UpdatePaperWidth", "MaintenancePaperWidth")',
+                    type: "POST",
+                    async: false,
+                    data: {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdatePaperWidthTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        function UpdatePaperWidthTableNew(res) {
+            $('#PaperWidth-table').html(res.View);
+            $('#PaperWidth-data-table').DataTable();
+            $('body').css('padding', '0px');
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+        }
+</script>

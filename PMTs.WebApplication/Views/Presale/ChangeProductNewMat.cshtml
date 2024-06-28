@@ -1,0 +1,319 @@
+﻿@model PMTs.DataAccess.ModelView.PresaleViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Change Product New Mat";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+</style>
+
+<br />
+<div class="card">
+    <div class="card-body">
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-xs-12 col-md-12">
+                    <h3 class="text-themecolor"><i class="mdi mdi-content-duplicate"></i>@Localizer["Change Product New Mat"]</h3>
+                    <hr />
+                </div>
+            </div>
+            <form asp-controller="Presale" id="formPresale">
+                <div class="col-sm-12 col-md-9 col-lg-6">
+
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch1">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch1" class="form-control input-sm  pull-right" style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch2">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch2" class="form-control input-sm  pull-right " style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch3">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch3" class="form-control input-sm  pull-right" style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch4">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch4" class="form-control input-sm  pull-right" style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4">
+                        </div>
+                        <div class="col-8  text-right col-md-8">
+                            <div>
+                                <button type="submit" class="btn btn-info" asp-action="SearchChangeProductNewMat">
+                                    <i class="fas fa-search"></i>
+                                    @Localizer["Search"]
+                                </button>
+
+                                <button type="button" class="btn btn-danger" id="btnClearPresale">
+                                    <i class="fas fa-redo-alt"></i>
+                                    @Localizer["Clear"]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive m-t-10">
+
+                @Html.Partial("_SearchChangeProductNewMat", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                'bFilter': false,
+                'columnDefs': [{
+                    'targets': [-3, -2, -1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }],
+                "order": [[1, "desc"]]
+            });
+        });
+
+        $("#btnClearPresale").click(function () {
+            $('#formPresale')[0].reset();
+        });
+
+        function ImportPresale(PSM_ID, board, flute, flagChange) {
+            //check board pmts and presale board
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckImportPresale", "Presale") ',
+                datatype: "json",
+                data: { board: board, flute: flute, psmId: PSM_ID },
+                success: function (res) {
+                    if (res.HasBoard) {
+                        window.location.href = "@Url.Action("Categories", "NewProduct")" + "?psmId=" + PSM_ID + "&ActionTran=PresaleChangeNewProduct";
+                    }
+                    else {
+                        swal(res.Message, "", "warning");
+                    }
+                },
+                error: function (res) {
+                    swal(res.Message, "", "warning");
+                }
+            });
+        }
+        function UpdateTable() {
+            $.ajax({
+                url: '@Url.Action("SearchChangeProductNewMat", "Presale")',
+                success: function (res) {
+                    if (res) {
+                        window.location.reload(true);
+                    }
+                },
+                error: function () { }
+            });
+        }
+        function RejectPresale(PSM_ID) {
+            swal({
+                title: "Are you sure ?",
+                text: "Are you sure you want to Reject?",
+                icon: "info",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("RejectPresale", "Presale") ',
+                            datatype: "json",
+                            data: { psmId: PSM_ID },
+                            success: function (res) {
+                                UpdateTable();
+                            },
+                            error: function (res) {
+                                swal(res.Message, "", "warning");
+                            }
+                        });
+                    }
+                });
+
+        }
+        function DeletePresale(PSM_ID) {
+            swal({
+                title: "Are you sure ?",
+                text: "Are you sure you want to Delete?",
+                icon: "info",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("DeletePresale", "Presale") ',
+                            datatype: "json",
+                            data: { psmId: PSM_ID },
+                            success: function (res) {
+                                UpdateTable();
+                            },
+                            error: function (res) {
+                                swal(res.Message, "", "warning");
+                            }
+                        });
+                    }
+                });
+
+        }
+
+        async function downloadURI(blobUrl , name) {
+            let blob = await fetch(blobUrl).then((r) => r.blob());
+            var f = new FileReader();
+            f.readAsDataURL(blob);
+            f.onload = d => {
+                var uri = d.target.result;
+                var link = document.createElement('a');
+                link.download = name;
+                link.href = uri;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                delete link;
+            }
+        }
+
+        async function OpenFileByUrl(val) {
+            if (val) {
+                window.open(val);
+                let name = val.split('/').pop()
+                let type = "data:'application/pdf'";
+
+                await downloadURI(val, name);
+            }
+        }
+
+        function SentPresaleNewMatStatus(PSM_ID, action) {
+            swal({
+                title: "Presale Management",
+                text: "Do you want to " + action + "?",
+                icon: "info",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SentPresaleNewMatStatus", "Presale") ',
+                            datatype: "json",
+                            data: {
+                                status: action === 'Accept' ? "2" : "4",
+                                psmId: PSM_ID
+                            },
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    let messageAction = action == 'Accept' ? PSM_ID + " has been accepted." : PSM_ID + " has been rejected.";
+                                    swal({
+                                        title: "Presale Management",
+                                        text: messageAction,
+                                        icon: "success",
+                                        buttons: {
+                                            confirm: "Ok",
+                                        },
+                                        dangerMode: false,
+                                    }).then((willDelete) => {
+                                        location.reload();
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                swal(res.Message, "", "warning");
+                            }
+                        });
+                    }
+                });
+        }
+    </script>
+
+}

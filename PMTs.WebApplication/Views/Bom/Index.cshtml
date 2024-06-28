@@ -1,0 +1,555 @@
+﻿@model PMTs.DataAccess.ModelView.BOMViewModel
+
+@{
+    ViewData["Title"] = "Bom Structure";
+
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    label.control-label {
+        padding: 5px 0;
+        text-align: center;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <!-- Box Comment -->
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-xs-6 col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-hexagon-multiple"></i>@Localizer["BOM Structure"]   </h3>
+                    </div>
+                </div>
+                <div class="box-header with-border">
+                    <div class="col-md-12">
+                        <div class="box box-info">
+                            <div class="input-group input-group-sm" style="width: 350px;">
+                                <input type="text" id="txtSearch" name="txtSearch" class="form-control input-sm  pull-right" style="margin-left:-1px" placeholder="@Localizer["Search"]" autocomplete="off">
+                                <span class="input-group-btn" style="width:0px;"></span>
+                                <select class="form-control input-sm bg-gray  ml-2" id="ddlSearch" name="ddlSearch">
+                                    <option value="MaterialNo">@Localizer["Material_No"]</option>
+                                    <option value="PC">@Localizer["PC"]</option>
+                                </select>
+                                <div class="input-group-btn ml-4">
+                                    <button id="btnSearchBomStruct" class="btn btn-info"><i class="fa fa-search"></i> @Localizer["Search"]</button>
+                                </div>
+                            </div>
+                            <div id="parentSelectTable">
+                                @*@Html.Partial("_DataTableSelectParent", Model)*@
+                            </div>
+                            <div class="mt-10">
+                                <button id="btnAddBomChild" class="btn btn-success"><i class="fa fa-code-branch">  @Localizer["Add Bom Child"]</i></button>
+                                <input type="hidden" id="setBomParent" />
+                            </div>
+                            <div id="DataTableBom">
+                                @Html.Partial("_DataTableBom", Model)
+                            </div>
+                            <div class="mt-10">
+                                <button id="ResentBOM" class="btn btn-info" style="float: right;" onclick="ResentBOM()"><i class="fa fa-paper-plane">  @Localizer["Resent SAP"]</i></button>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 row">
+                            <div class="col-2">
+                                <input class="form-control" id="tmpparentmaterialno" hidden />
+                                <button id="btnCrateBomforPlant" style="width:-webkit-fill-available;" class="btn btn-success" onclick="copybomtonewplant()"><i class="fa fa-code-branch">  @Localizer["Create Bom"]</i></button>
+                            </div>
+                            <div class="col-3">
+                                <select class="form-control input-sm bg-gray  ml-2" id="plantid" name="plantid">
+                                    <option value="">-- Choose --</option>
+                                    @{
+                                        if (Model != null)
+                                        {
+                                            foreach (var item in Model.plants)
+                                            {
+                                                <option value="@item.Plant">@item.Desc</option>
+                                            }
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        @*<div class="modal fade bs-example-modal-xl" id="modal-Search">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content" style="width:95%">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-themecolor">@Localizer["Search TO BOM"]</h4>
+                        <button type="button" class="close btnClose" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="form-group row">
+                                <h5>@Localizer["infomation"]</h5>
+                            </div>
+                            <div class="form-group row">
+
+                                <label class="col-sm-1 control-label" asp-for="AbbservName"></label>
+                                <div class="col-sm-2">
+                                    <input class="form-control" asp-for="AbbservName" autocomplete="off" />
+                                </div>
+
+                                <label class="col-sm-1 control-label" asp-for="ProductCode"></label>
+                                <div class="col-sm-2">
+                                    <input class="form-control" asp-for="ProductCode" autocomplete="off" />
+                                </div>
+                                <label class="col-sm-1 control-label" asp-for="MaterialNo"></label>
+                                <div class="col-sm-2">
+                                    <input class="form-control" asp-for="MaterialNo" autocomplete="off" />
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="button" id="btnSubmit" onclick="SearchChildClick()" class="btn btn-info"> <i class="fa fa-search"></i> @Localizer["Search"]</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="bomlist">
+                            @Html.Partial("_DataTableBom", Model)
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnAddChild" style="float:left" class="btn btn-success">OK</button>
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+                        <div class="modal bs-example-modal-xl" id="searchChild">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content" style="width:95%">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title text-themecolor">@Localizer["Search TO BOM"]</h4>
+                                        <button type="button" class="close btnClose" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container">
+                                            <div class="form-group row">
+                                                <h5>@Localizer["infomation"]</h5>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-1 control-label" asp-for="ProductCode"></label>
+                                                <div class="col-sm-2">
+                                                    <input class="form-control" asp-for="ProductCode" autocomplete="off" />
+                                                </div>
+                                                <label class="col-sm-1 control-label" asp-for="MaterialNo"></label>
+                                                <div class="col-sm-2">
+                                                    <input class="form-control" asp-for="MaterialNo" autocomplete="off" />
+                                                </div>
+                                                <label class="col-sm-1 control-label">CustName</label>
+                                                <div class="col-sm-2">
+                                                    <input class="form-control" asp-for="AbbservName" autocomplete="off" />
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <button type="button" id="btnSubmit" onclick="SearchChildClick()" class="btn btn-info"> <i class="fa fa-search"></i> @Localizer["Search"]</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="bomlist2">
+                                            @Html.Partial("_DataTableBomParentSearch", Model)
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="btnAddChild" style="float:left" class="btn btn-success">@Localizer["OK"]</button>
+                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Localizer["Close"]</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal bs-example-modal-xl" id="modal-Search-parent">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content" style="width:95%">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title text-themecolor">@Localizer["Search TO BOM"]</h4>
+                                        <button type="button" class="close btnClose" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="DataTableBomParent">
+                                            @Html.Partial("_DataTableBomParent", Model)
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">@Localizer["Close"]</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+    $(document).ready(function () {
+        //datatable child when search by mat
+        $('#Bomdatatable').DataTable();
+
+        $('#BomdatatableParentSearch').DataTable();
+        $('#btnAddBomChild').css('display', 'none');
+       // $('#btnAddBomChild').css('display', 'block');
+    });
+
+    //for check box is check
+    $("#btnAddChild").click(function () {
+       var selectedGroups  = new Array();
+        $("input[name='form-check-input[]']:checked").each(function() {
+            selectedGroups.push($(this).val());
+        });
+        let parentmat = $('#setBomParent').val();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("AddBomStructNew", "Bom")',
+            data: { parentmat: parentmat, array: JSON.stringify(selectedGroups), mat: $("#MaterialNo").val(), app: $("#AbbservName").val(), prod: $("#ProductCode").val()   },
+            async: false,
+            success: function (res) {
+                if (res !== false) {
+                    $("#DataTableBom").html(res.view);
+                    $('#Bomdatatable').DataTable();
+                    $('#searchChild').modal('hide');
+                    if (res.datadup === "") {
+                        swal("Save", "Save is Success!", "success");
+                    } else
+                    {
+                        swal("Save", "Data is Duplicate : " + res.datadup, "success");
+                        //swal("Data is Duplicate" + res.datadup, "", "warning");
+                    }
+
+                }
+                else {
+                    swal("Can not find Data", "", "warning");
+                    $('#btnAddBomChild').css('display', 'none');
+                }
+            },
+            error: function () { }
+        });
+    });
+
+    //Search By mat or pc
+    $("#btnSearchBomStruct").click(function () {
+        var txtSearch = $("#txtSearch").val();
+        var ddlSearch = $("#ddlSearch").val();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SearchBomStruct", "Bom")',
+            data: { txtSearch: txtSearch, ddlSearch: ddlSearch },
+            success: function (res) {
+                console.log(res);
+                if (res !== false) {
+                    $("#DataTableBomParent").html(res);
+                    $('#BomdatatableParent').DataTable();
+                    $('#modal-Search-parent').modal('show');
+                }
+                else {
+                    swal("Can not find Data", "", "warning");
+                    $('#btnAddBomChild').css('display', 'none');
+                }
+            },
+            error: function () { }
+        });
+    });
+
+    //Select Mat by modal and find child mat
+     function SearchBomChildByMat(material) {
+            var txtSearch = $("#txtSearch").val();
+            var ddlSearch = $("#ddlSearch").val();
+         $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SearchBomStructChild", "Bom")',
+             data: { Mat: material, txtSearch: txtSearch, ddlSearch: ddlSearch },
+            success: function (res) {
+               // console.log(restxtSearch: txtSearch, ddlSearch: ddlSearch);
+                if (res !== false) {
+                    $("#DataTableBom").html(res.viewchild);
+                    $('#Bomdatatable').DataTable();
+                    $("#parentSelectTable").html(res.viewparent);
+                   // $('#ParentSelectTable').DataTable();
+                   // $('ParentSelectTable').dataTable({ searching: false, paging: false, info: false });
+                    $('#ParentSelectTable').DataTable({
+                        "searching": false,
+                        "paging": false,
+                        "info": false
+                    });
+                    $('#setBomParent').val(material);
+                    $('#btnAddBomChild').css('display', 'block');
+                    $('#modal-Search-parent').modal('hide');
+                    $('#tmpparentmaterialno').val(res.parentmaterialno)
+                    $('#plantid').val('')
+                }
+                else {
+                    swal("Can not find Data", "", "warning");
+                }
+            },
+            error: function () { }
+        });
+      }
+
+      function copybomtonewplant()
+        {
+          let  pmat  =   $('#tmpparentmaterialno').val()
+          let plants = $('#plantid').val()
+          if (pmat === '') {
+              swal("Please Search Data", "", "warning");
+              return
+          } else if (plants === '') {
+              swal("Please Select Plant", "", "warning");
+              return
+          }
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("CopyBomToNewPlant", "Bom")',
+            data: { parentmat: pmat, plant: plants },
+            success: function (res) {
+                if (res === 'Success') {
+                    swal("Create Bom is success", "", "success");
+                    $('#plantid').val('')
+                } else {
+                    if (res === 'NotMatch') {
+                        swal("Create Bom is fail", "Material in masterdata not found", "warning");
+                    } else
+                    {
+                        swal("Create Bom is fail", "", "warning");
+                    }
+
+                }
+            },
+            error: function () { }
+        });
+      }
+
+    //delete child mat
+    function ConfirmDelete(Id) {
+        swal({
+            title: "Are you sure ?",
+            text: "Are you sure you want to delete?",
+            icon: "info",
+                        buttons: {
+                                confirm: "Ok",
+                                cancel: true,
+                            },
+                            dangerMode: false,
+        })
+            .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                type: 'PUT',
+                url: '@Url.Action("DeleteBomStruct", "Bom")',
+                data: { Id: Id },
+                success: function (res) {
+                    $("#form-input-bomStructure").show();
+                    $("#DataTableBom").html(res);
+                    $('#Bomdatatable').DataTable();
+                }
+
+                });
+            }
+        });
+    }
+
+        function BindBOMStructToModal(item) {
+            $("#EditBOM_Id").val($(item).attr("data-Id"));
+            $("#EditBOM_FactoryCode").val($(item).attr("data-FactoryCode"));
+            $("#EditBOM_MaterialNo").val($(item).attr("data-MaterialNo"));
+            $("#EditBOM_Plant").val($(item).attr("data-Plant"));
+            $("#EditBOM_BomUsage").val($(item).attr("data-BomUsage"));
+            $("#EditBOM_WeighBom").val($(item).attr("data-WeighBom"));
+            $("#EditBOM_PreviousBom").val($(item).attr("data-PreviousBom"));
+            $("#EditBOM_Follower").val($(item).attr("data-Follower"));
+            $("#EditBOM_Amount").val($(item).attr("data-Amount"));
+            $("#EditBOM_Unit").val($(item).attr("data-Unit"));
+            $("#EditBOM_PdisStatus").val($(item).attr("data-PdisStatus"));
+            $("#EditBOM_TranStatus").val($(item).attr("data-TranStatus"));
+            $("#EditBOM_SapStatus").val($(item).attr("data-SapStatus"));
+
+            $("#modal-edit-bom").modal('show');
+        }
+
+        function EditBOMStruct()
+        {
+            let bomStructModel = {
+                "Id": $("#EditBOM_Id").val(),
+                "FactoryCode": $("#EditBOM_FactoryCode").val(),
+                "MaterialNo": $("#EditBOM_MaterialNo").val(),
+                "Plant": $("#EditBOM_Plant").val(),
+                "BomUsage": $("#EditBOM_BomUsage").val(),
+                "WeighBom": $("#EditBOM_WeighBom").val(),
+                "PreviousBom": $("#EditBOM_PreviousBom").val(),
+                "Follower": $("#EditBOM_Follower").val(),
+                "Amount": $("#EditBOM_Amount").val(),
+                "Unit": $("#EditBOM_Unit").val(),
+                "PdisStatus": $("#EditBOM_PdisStatus").val(),
+                "TranStatus": $("#EditBOM_TranStatus").val(),
+                "SapStatus": $("#EditBOM_SapStatus").val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditBomStruct", "Bom")',
+                data: { bomStructStr: JSON.stringify(bomStructModel) },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Updated successfully", "", "success")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    $("#closeBOMBtn").click();
+                                    $("#txtSearch").val($("#EditBOM_MaterialNo").val());
+                                    $("#ddlSearch").val("MaterialNo");
+                                    SearchBomChildByMat($("#EditBOM_MaterialNo").val());
+                                }
+                            });
+                    }
+                    else
+                    {
+                        swal("Updated Fail", res.ExceptionMessage, "warning")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    $("#closeBOMBtn").click();
+                                }
+                            });
+                    }
+                }
+            });
+        }
+
+    //Click Add mat child
+    $("#btnAddBomChild").click(function () {
+            if ($('#setBomParent').val() === "")
+            {
+                swal("Please Select Parent", "", "warning");
+            } else
+            {
+                $('#searchChild').modal('show');
+            }
+    });
+
+        @*function CheckValidate()
+        {
+            var checkbool = false;
+            var matnew = $('#txtMaterialNo').val();
+
+            var form = $('#frm-DataTableMat')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("CheckBeforeAddBomStruct", "Bom")',
+                data: data,
+                async: false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    //console.log(matnew)
+                    //console.log(res.lstBomStructs)
+                    for (var i = 0; i < res.lstBomStructs.length; i++) {
+
+                        if (res.lstBomStructs[i].Follower == matnew) {
+                            checkbool = true;
+                        }
+                    }
+                },
+                error: function () {
+                   // return false;
+                }
+            });
+
+            if (checkbool === true) {
+                swal("Cannot Add Because Data is Dupplicate", "", "warning");
+            }
+            else
+            {
+                $("#frm-DataTableMat").submit();
+            }
+    }*@
+
+    function SearchChildClick()
+    {
+        $.ajax({
+        type: 'POST',
+        enctype: 'multipart/form-data',
+        url: '@Url.Action("SearchMatBom", "Bom")',
+        data: { mat: $("#MaterialNo").val(), app: $("#AbbservName").val(), prod: $("#ProductCode").val() },
+        async: false,
+            success: function (res) {
+                $("#bomlist2").html(res);
+               // $('#BomdatatableParentSearch').DataTable();
+                $('#BomdatatableParentSearch').DataTable({
+                    "scrollX": true,
+                    "autoWidth": true
+                });
+        },
+        error: function () {
+            // return false;
+        }
+        });
+    }
+
+    function ResentBOM() {
+        var materialNo = $('#tmpparentmaterialno').val();
+        if(materialNo != "" && materialNo != null)
+        {
+            swal({
+                title: "Confirmation",
+                text: "ท่านต้องการส่ง BOM " + materialNo + " ไปสร้างบน SAP อีกครั้งใช่หรือไม่?",
+                icon: "warning",
+                buttons: {
+                    confirm: "Yes",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willAccect) => {
+                if (willAccect) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("ResentBOM", "Bom")',
+                        data: { materialNo: materialNo },
+                        async: false,
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                swal("Success!", res.ExceptionMessage, "success")
+                                    .then(() => {
+                                        $("#modalLoading").modal('hide');
+                                        UpdateTable();
+                                    });
+                            } else {
+                                $("#modalLoading").modal('hide');
+                                swal("Error!", res.ExceptionMessage, "error");
+                            }
+                            return false;
+                        },
+                        error: function () {
+                            $("#modalLoading").modal('hide');
+                            swal("Error!", res.ExceptionMessage, "error");
+                            return false;
+                        }
+                    });
+                }
+            });
+        }
+        else
+        {
+            swal("Warning", "Please select resent material number!", "warning");
+        }
+    }
+    </script>
+}

@@ -1,0 +1,84 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+
+@{
+    ViewData["Title"] = "MainTain BoardCombind";
+}
+
+<div class="box-body">
+    <table class="table table-bordered"    width="80%" style="margin: 0 auto; border:2px solid;text-align:center;background: whitesmoke;">
+        <thead>
+            @*<tr>
+                    <th scope="col" width="20px" style="text-align: center;">No.</th>
+                    <th scope="col" width="40px" style="text-align: center;">Code</th>
+                    <th scope="col" width="30px" style="text-align: center;">Flute</th>
+                    <th scope="col" width="150px" style="text-align: center;">Board</th>
+                    <th scope="col" width="30px" style="text-align: center;">View</th>
+                    <th scope="col" width="30px" style="text-align: center;">Edit</th>
+                </tr>*@
+        </thead>
+        <tbody>
+
+            @{
+                int i = 0;
+                foreach (var item in Model.Preview)
+                {
+                    i++;
+                    if (i == 1)
+                    {
+
+                        <tr style="height:50px">
+                            <th rowspan="2" style="border-color:black;font-size:22px;text-align:center;border:1px solid">@Html.Raw(Model.PreviewTblHeader.lon)</th>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl0)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl1)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl2)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl3)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl4)</td>
+                        </tr>
+                    }
+                    else if (i == 2)
+                    {
+                        <tr style="height:50px">
+                            @* <td align="center" style="border-color:black">@Html.Raw(item.tbl0)</td>*@
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl0)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl1)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl2)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl3)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl4)</td>
+                        </tr>
+                    }
+                    else if (i == 3)
+                    {
+                        <tr style="height:50px">
+                            <th rowspan=@Model.PreviewTblHeader.cover_row style="border-color:black;font-size:16px;text-align:center">@Html.Raw(Model.PreviewTblHeader.cover)</th>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl0)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl1)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl2)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl3)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl4)</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style="height:50px">
+                            @*<th rowspan=@Model.PreviewTblHeader.cover_row style="border-color:black;font-size:20px;text-align:center">@Html.Raw(Model.PreviewTblHeader.cover)</th>*@
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl0)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl1)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl2)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl3)</td>
+                            <td align="center" style="border-color:black">@Html.Raw(item.tbl4)</td>
+                        </tr>
+                    }
+
+                }
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

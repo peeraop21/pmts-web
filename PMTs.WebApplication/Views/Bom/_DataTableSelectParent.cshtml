@@ -1,0 +1,33 @@
+﻿@model PMTs.DataAccess.ModelView.BOMViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body table-responsive">
+    <table id="ParentSelectTable" class="table table-bordered color-table dataTable no-footer" cellspacing="0">
+        <thead>
+            <tr>
+
+                <th>@Localizer["Material No"]</th>
+                <th>@Localizer["PC"]</th>
+                <th>@Localizer["Customer Name"]</th>
+                <th>@Localizer["Description"]</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+                <tr>
+                    <td>@Model.masterData.MaterialNo</td>
+                    <td>@Model.masterData.Pc</td>
+                    <td>@Model.masterData.CustName</td>
+                    <td>@Model.masterData.Description</td>
+                </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#ParentSelectTable').DataTable();
+    });
+</script>

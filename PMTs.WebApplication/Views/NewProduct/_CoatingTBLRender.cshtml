@@ -1,0 +1,114 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using System.Linq
+
+@{
+    ViewBag.Title = "";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<table id="STA" border="1" style="text-align: center;margin: 0 auto; margin-top:10px" class="table-coating">
+
+    <thead>
+        <tr>
+            <td width="100">@Localizer["Station"]</td>
+            <td width="100">@Localizer["Layer"]</td>
+            <td width="100">@Localizer["Type"]</td>
+            <td width="200">@Localizer["Name"]</td>
+        </tr>
+    </thead>
+    <tbody id="p_scents_">
+            @{int index = 0; }
+    @foreach (var item in Model.modelProductSpec.Coating)
+    {
+        index++;
+        string id_type = "Type_" + item.Station + index;
+        string id_name = "Name_" + item.Station + index;
+
+         <tr class="@item.Station">
+                    <td>@item.Station</td>
+                    <td>@item.Slide</td>
+                    <td>
+                        <div class="col-md-12">
+                            <select class="form-control DropType" id=@id_type asp-items="@(new SelectList(Model.modelProductSpec.ListCoatingType, "Value", "Text", @item.Type))">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-md-12">
+                            <select class="form-control" id=@id_name>
+                                <option value=""></option>
+                                @*asp-items="@(new SelectList(Model.modelProductSpec.Additive.Where(x =>x.Type == @item.Name).Select(x => x.Description).Distinct().Select(sli => new SelectListItem { Value = sli, Text = sli }), "Value", "Text", @item.Name))">*@
+                                @{
+                                    foreach (var i in Model.modelProductSpec.Additive)
+                                    {
+                                        if (item.Type == i.Type)
+                                        {
+                                            if (item.Name == i.Description)
+                                            {
+                                                <option value="@i.Description" selected>@i.Description</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@i.Description">@i.Description</option>
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            }
+    </tbody>
+</table>
+
+<script>
+    $('.tblcontainer1').on('click', '.tblelement1', function () {
+        var id = this.id;
+        var split_id = id.split("_");
+        var tbsindex = split_id[1];
+        var tbsid = "tbls_" + tbsindex;
+        $('#' + tbsid).on('click', '.DropType', function () {
+            //debugger;
+            var typeid = this.id;
+            var splittype_id = typeid.split("_");
+            var nameid = "Name_" + splittype_id[1];
+            GetListDescript(typeid, nameid);
+        });
+    });
+
+    function GetListDescript(typeid, nameid) {
+        //debugger;
+        if (typeid != null) {
+            var Additivelst = [];
+            var indexcount = 0;
+            @foreach (var d in Model.modelProductSpec.Additive)
+            {
+                // @:Additivelst.push("@d");
+               @:Additivelst[indexcount] = { };
+               @:Additivelst[indexcount].Type = "@d.Type";
+               @:Additivelst[indexcount].Description = "@d.Description";
+               @:indexcount++ ;
+            }
+         //   alert(Additivelst);
+
+            var valtype = $('#' + typeid).val();
+
+            $('#'+nameid).empty();
+            $('#' + nameid).append($("<option></option>").attr("value", "").text(""));
+            for (var i = 0; i < Additivelst.length; i++) {
+
+                if (Additivelst[i].Type == valtype) {
+                    //Name.options[i + 1] = new Option(NameList[i].Code + " " + NameList[i].Description, NameList[i].Description);
+                    $('#' + nameid).append($("<option></option>").attr("value", Additivelst[i].Description).text(Additivelst[i].Description + " " + Additivelst[i].Description));
+                }
+            }
+        } else {
+        }
+    }
+</script>

@@ -1,0 +1,31 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceCorConfig.MaintenanceCorConfigViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<div class="box-header">
+        <h3 class="box-title"><i class="mdi mdi-settings"></i> CorConfig Process</h3>
+    </div>*@
+
+<div class="box-body">
+    <table id="CorConfig-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Name"]</th>
+                <th scope="col">@Localizer["MinOut"]</th>
+                <th scope="col">@Localizer["MaxOut"]</th>
+                <th scope="col">@Localizer["CutOff"]</th>
+                <th scope="col">@Localizer["Mintrim"]</th>
+                <th scope="col">@Localizer["TearTape"]</th>
+                <th scope="col">@Localizer["TearTapeMax"]</th>
+                <th scope="col">@Localizer["View"]</th>
+                <th scope="col">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

@@ -1,0 +1,149 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="card card-outline">
+
+    <h4 class="card-header">
+        @Localizer["Packing Properties"]
+    </h4>
+
+    <div class="card-body">
+
+        <div class="form-group row">
+            @*<label asp-for="modelProductProp.PalletSize" class="col-sm-4 control-label"></label>*@
+            <label class="col-sm-4 control-label">@Localizer["PalletSize"]<i style="color:red"> *</i></label>
+            <div class="col-sm-6">
+                @*<select class="form-control input-sm" asp-for="modelProductProp.PalletSize" asp-items=" ViewBag.PalletSize"></select>*@
+                @Html.DropDownListFor(m => m.modelProductProp.PalletSize, Model.modelProductProp.PalletList, "", new { @class = "form-control", @required = "true" })
+                <span asp-validation-for="modelProductProp.PalletSize" class="text-danger"></span>
+            </div>
+        </div>
+
+        @*<div class="form-group row">
+            <label asp-for="modelProductProp.Bun" class="col-sm-4 control-label">@Localizer["pieces per bundle"]</label>
+            <div class="col-sm-6">
+
+                <input class="form-control  mytextboxNumber noscroll" asp-for="modelProductProp.Bun">
+            </div>
+        </div>*@
+
+        <div class="form-group row">
+            <label asp-for="modelProductProp.BunLayer" class="col-sm-4 control-label"></label>
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.BunLayer" class="form-control  mytextboxNumber noscroll">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="modelProductProp.LayerPallet" class="col-sm-4 control-label"></label>
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.LayerPallet" class="form-control  mytextboxNumber noscroll">
+                <input asp-for="modelProductProp.LayerPerPalletNoJoint" type="hidden" />
+                <input asp-for="modelProductProp.LayerPallet" type="hidden" id="modelProductPropLayerPallet" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="modelProductProp.BoxPalet" class="col-sm-4 control-label"></label>
+            <div class="col-sm-6">
+                <input asp-for="modelProductProp.BoxPalet" class="form-control  mytextboxNumber noscroll">
+            </div>
+        </div>
+        @{
+            var userSessionModel = PMTs.WebApplication.Extentions.SessionExtentions.GetSession<PMTs.DataAccess.ModelView.Login.UserSessionModel>(Context.Session, "UserSessionModel");
+
+        }
+        @if (userSessionModel.BusinessGroup == "Offset")
+        {
+            <div class="form-group row">
+                <label class="col-sm-4 control-label">@Localizer["BoxPacking"]<i style="color:red"> *</i></label>
+
+                <div class="col-sm-6">
+                    <input asp-for="modelProductProp.BoxPacking" required class="form-control mytextboxNumber noscroll">
+                </div>
+            </div>
+        }
+        <div class="form-group row">
+            <label class="col-sm-4 control-label">@Localizer["Picture Pallet"]</label>
+            <div class="col-sm-6">
+                <input id="Pic_Pallet" name="Pic_Pallet" type="file" title="search image" accept="image/*" onchange="show_Pallet(this)" />
+                <i id="RM_Drawing" class="fa fa-remove pull-right " style="color:red; display:none;" onclick="test()"></i>
+            </div>
+        </div>
+        <center>
+            <img id="PicPallet2" style="width: 100px; height: auto;" />
+        </center>
+        <div class="form-group row">
+            @if (Model.modelProductPicture.Pic_PalletPath == null)
+            {
+                <label class="col-sm-4 control-label"></label>
+                <div class="col-sm-6">
+                    <div class="row justify-content-end">
+                        <i id="RM_Pallet" class="fas fa-times" style="color:red; display:none;" onclick="RMPallet()"></i>
+                    </div>
+
+                    <center>
+                        <img id="PicPallet" style="width: 100px; height: auto;display:none;" />
+                    </center>
+                </div>
+            }
+            else
+            {
+                <label class="col-sm-4 control-label"></label>
+                <div class="col-sm-6">
+                    <div class="row justify-content-end">
+                        <i id="RM_Pallet" class="fas fa-times pull-right " style="color:red; " onclick="RMPallet()"></i>
+                    </div>
+                    <center>
+                        <img id="PicPallet" src="@Url.Content(@Model.modelProductPicture.Pic_PalletPath)" style="width:  100px; height: auto" />
+                    </center>
+                </div>
+            }
+            @*<img id="Pic_Pallet" style="width: 100%; height: auto" />*@
+        </div>
+
+        @Html.TextBoxFor(m => m.modelProductPicture.Pic_PalletPath, new { @id = "iPalletPath", @style = "display:none;" })
+
+        <div class="form-group row">
+
+            <label class="col-sm-4 control-label">@Localizer["Picture Packaging"]</label>
+            <div class="col-sm-6">
+                @*@Html.TextBoxFor(m => m.modelProductPicture.Pic_FG, new { type = "file", accept = "image/*", id = "file", onchange = "show_FG(this)" })*@
+                @*<input asp-for="Pic_FG" type="file" title="search image" accept="image/*" onchange="show_FG(this)" />*@
+                <input id="Pic_FG" name="Pic_FG" type="file" title="search image" accept="image/*" onchange="show_FG(this)" />
+            </div>
+        </div>
+        <div class="form-group row">
+            @if (Model.modelProductPicture.Pic_FGPath == null)
+            {
+                <label class="col-sm-4 control-label"></label>
+                <div class="col-sm-6">
+                    <div class="row justify-content-end">
+                        <i id="RM_FG" class="f156mdi-close pull-right " style="color:red; display:none;" onclick="RMFG()"></i>
+                    </div>
+                    <center>
+                        <img id="PicFG" style="width:  100px; height: auto ;display:none;" />
+                    </center>
+                </div>
+
+            }
+            else
+            {
+                <label class="col-sm-4 control-label"></label>
+                <div class="col-sm-6">
+                    <div class="row justify-content-end">
+                        <i id="RM_FG" class="fa fa-times pull-right " style="color:red; " onclick="RMFG()"></i>
+                    </div>
+                    <center>
+                        <img id="PicFG" src="@Url.Content(@Model.modelProductPicture.Pic_FGPath)" style="width:  100px; height: auto" />
+                    </center>
+                </div>
+
+            }
+        </div>
+        @Html.TextBoxFor(m => m.modelProductPicture.Pic_FGPath, new { @id = "iFGPath", @style = "display:none;" })
+    </div>
+</div>

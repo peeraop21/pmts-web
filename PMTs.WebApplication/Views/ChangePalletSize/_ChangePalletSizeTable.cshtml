@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.ChangePalletSizeViewModel
+@using System.Linq
+
+@{
+    Layout = null;
+}
+
+<table id="change-palletsize-table" class="table  table-bordered  table-hover " width="100%">
+    <thead>
+        <tr class=" text-center">
+            <th width="11%">@Localizer["Material No."]</th>
+            <th width="12%">@Localizer["PC"]</th>
+            <th width="9%">@Localizer["Bun"]</th>
+            <th width="9%">@Localizer["BunLayer"]</th>
+            <th width="9%">@Localizer["LayerPalet"]</th>
+            <th width="9%">@Localizer["BoxPalet"]</th>
+            <th width="15%">@Localizer["Palletization_Path"]</th>
+            <th width="10%">@Localizer["UpdateBy"]</th>
+            <th width="10%">@Localizer["UpdateDate"]</th>
+            <th width="6%">Option</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.MasterDatas)
+        {
+            <tr>
+                <td>@item.MaterialNo</td>
+                <td>@item.Pc</td>
+                <td>@item.Bun</td>
+                <td>@item.BunLayer</td>
+                <td>@item.LayerPalet</td>
+                <td>@item.BoxPalet</td>
+                <td>@item.PalletizationPath</td>
+                <td>@item.UpdatedBy</td>
+                <td>
+                    @if (item.LastUpdate.HasValue)
+                    {
+                        @item.LastUpdate.Value.ToShortDateString()
+                    }
+                    else
+                    {
+                        @item.LastUpdate
+                    }
+                </td>
+                <td class="text-center">
+                    <a class="btn-default option-btn m1"
+                       data-Id="@item.Id"
+                       data-FactoryCode="@item.FactoryCode"
+                       data-MaterialNo="@item.MaterialNo"
+                       data-Pc="@item.Pc"
+                       data-Bun="@item.Bun"
+                       data-BunLayer="@item.BunLayer"
+                       data-LayerPalet="@item.LayerPalet"
+                       data-BoxPalet="@item.BoxPalet"
+                       data-PalletizationPath="@item.PalletizationPath"
+                       onclick="BindChangePalletSizeEdit(this)">
+                        <span class="fas fa-pencil-alt text-warning ml-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="Edit"></span>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>
+
+<partial name="_CreateEditModal" model="@Model" />

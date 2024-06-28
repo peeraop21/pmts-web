@@ -1,0 +1,301 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceMachine.MaintenanceMachineViewModel
+<style type="text/css">
+    .form-group2 {
+        margin-bottom: 5px;
+    }
+</style>
+<div class="modal bs-example-modal-lg" id="modal-create-machine">
+    <div class="modal-dialog modal-xl"  style="width:90%">
+        <div class="modal-content">
+            <form id="create-Machine-form">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">@Localizer["Create Machine"]</h4>
+                    <button type="button" class="close" data-dismiss="modal"  data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Machine Name"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input class="form-control" maxlength="50" id="machineCreate" asp-for="MachineViewModel.Machine1" />
+                            @*<span asp-validation-for="MachineViewModel.Machine1" class="text-danger"></span>*@
+                            <span id="machineCreateReq" class="text-danger" hidden>@Localizer["The Machine field is requried."]</span>
+                        </div>
+
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Machine Code"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input class="form-control" maxlength="20" id="codeCreate" asp-for="MachineViewModel.Code" />
+                            @*<span asp-validation-for="MachineViewModel.Code" class="text-danger"></span>*@
+                            <span id="codeCreateReq" class="text-danger" hidden>@Localizer["The Code field is requried"]</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Plan Code"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="text" maxlength="10" class="form-control" id="planCreate" asp-for="MachineViewModel.PlanCode" />
+                            <span asp-validation-for="MachineViewModel.PlanCode" class="text-danger"></span>
+                            <span id="planCreateReq" class="text-danger" hidden>@Localizer["The Plan field is requried"]</span>
+                        </div>
+
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Colour"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.Colour" />
+                            @*<span asp-validation-for="MachineViewModel.Colour" class="text-danger"></span>*@
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Glue"]</label>
+                        </div>
+                        <div class="form-group2 col-sm-3">
+                            <input type="checkbox" class="filled-in" id="Glue" asp-for="MachineViewModel.Glue" />
+                            <label class="form-check-label" for="Glue"></label>
+                        </div>
+
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Platen"]</label>
+                        </div>
+                        <div class="form-group2 col-sm-3">
+                            <input type="checkbox" class="filled-in" id="Platen" asp-for="MachineViewModel.Platen" />
+                            <label class="form-check-label" for="Platen"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Rotary"]</label>
+                        </div>
+                        <div class="form-group2 col-sm-3">
+                            <input type="checkbox" class="filled-in" id="Rotary" asp-for="MachineViewModel.Rotary" />
+                            <label class="form-check-label" for="Rotary"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Speed"]<label class="speedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.Speed" />
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Speed"]<label class="stdspeedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.StdSpeed" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Setup Time"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.SetupTime" />
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Setup Time"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.StdSetupTime" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Down Time"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.DownTime" />
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label" for="Speed">@Localizer["Std Down Time"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.StdDowntime" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["SpePercen"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.SpePercen" />
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["SpeMin"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.SpeMin" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["SpeMax"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.SpeMax" />
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["SpeTranf"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.SpeTranf" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Hardship"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.Hardship" />
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["MinQuantity"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.MinQuantity" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["MinSpeed"]<label class="minspeedlabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.MinSpeed" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["CAP"]<label class="caplabel" style="font-size:small;font-weight:600"></label></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.Cap" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Max Tons FG"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.MaxTonsFG" />
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Lead Time"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="number" class="form-control" asp-for="MachineViewModel.Leadtime" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["Machine Group"]</label>
+                        </div>
+                        <div class="form-group2 col-md-5">
+                            @*<input class="form-control" asp-for="MachineViewModel.MachineGroup" />*@
+                            <select class="form-control" onchange="setUnitDesc(this.value);" asp-for="MachineViewModel.MachineGroup" asp-items="@(new SelectList(Model.MachineGroupList,"GroupCode","GroupName"))">
+                                <option>--- Please Select Item ---</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["IsCalPaperwidth"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsCalPaperwidth" asp-for="MachineViewModel.IsCalPaperwidth" />
+                            <label for="IsCalPaperwidth"></label>
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["IsPropCor"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropCor" asp-for="MachineViewModel.IsPropCor" />
+                            <label for="IsPropCor"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["IsPropPrint"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropPrint" asp-for="MachineViewModel.IsPropPrint" />
+                            <label for="IsPropPrint"></label>
+                        </div>
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["IsPropDieCut"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="checkbox" class="filled-in" id="IsPropDieCut" asp-for="MachineViewModel.IsPropDieCut" />
+                            <label for="IsPropDieCut"></label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group2 col-md-2">
+                            <label class="control-label">@Localizer["ShowProcess"]</label>
+                        </div>
+                        <div class="form-group2 col-md-3">
+                            <input type="checkbox" class="filled-in" id="ShowProcess" asp-for="MachineViewModel.ShowProcess" />
+                            <label for="ShowProcess"></label>
+                        </div>
+                        <div class="form-group2 col-md-5"></div>
+                    </div>
+
+                    <hr />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["ConfigAutoRouting"]</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpePercen">@Localizer["CodeMachineType"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="CodeMachineType" asp-for="MachineViewModel.CodeMachineType" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="SpeMin">@Localizer["JointType"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <select class="form-control" id="machinegluetype" asp-for="MachineViewModel.GlueType"
+                                    asp-items="@(new SelectList(Model.JoinList,"JointName","JointName"))">
+                                <option value=""> @Localizer["Please Select Item"] </option>
+                            </select>
+
+                            @*<select class="form-control" id="machine-group-edit" name="machine-group-edit" asp-for="MachineViewModel.MachineGroup"
+                        asp-items="@(new SelectList(Model.MachineGroupList,"GroupCode","GroupName"))">
+                    <option value="">--- Please Select Item ---</option>
+                </select>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnSubmit" class="btn btn-info" onclick="CreateMachine()">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

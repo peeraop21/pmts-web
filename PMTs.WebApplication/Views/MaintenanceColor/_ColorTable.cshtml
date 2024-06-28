@@ -1,0 +1,28 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceColor.MaintenanceColorViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<div class="box-header">
+        <h3 class="box-title"><i class="mdi mdi-format-color-fill"></i> Color</h3>
+    </div>*@
+
+<div class="box-body">
+    <table id="Color-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Ink"]</th>
+                <th scope="col">@Localizer["Shade"]</th>
+                <th scope="col">@Localizer["StatusColor"]</th>
+                <th scope="col">@Localizer["MainDensity"]</th>
+                <th scope="col">@Localizer["View"]</th>
+                <th scope="col">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

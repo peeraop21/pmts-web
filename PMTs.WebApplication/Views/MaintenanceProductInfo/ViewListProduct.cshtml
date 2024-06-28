@@ -1,0 +1,974 @@
+﻿@model IList<PMTs.DataAccess.ComplexModel.MasterDataRoutingModel>
+
+@{
+    ViewData["Title"] = "ViewListAccount";
+    //Layout = null;
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<link href="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" />
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+    .bg-highlight td {
+        background-color: #F4EDAE !important;
+    }
+</style>
+
+<div id="divMyTable">
+    <br />
+    <div class="row button-group">
+        <div class="col-md-12">
+
+            <a class="btn waves-effect waves-light btn-info btn-info" asp-controller="NewProduct" asp-action="Categories" asp-route-ActionTran="Create">
+                <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span>@Localizer["CreateMaterial"]
+            </a>
+
+            <button class="btn waves-effect waves-light btn-info btn-info" type="button" onclick="Copy()">
+                <span class="btn-label"><i class="fa fa-copy"></i></span>@Localizer["Copy"]
+            </button>
+
+            <a class="btn waves-effect waves-light btn-info btn-info" asp-action="ViewListProduct">
+                <span class="btn-label"><i class="fa fa-redo"></i></span>  @Localizer["Refresh"]
+            </a>
+
+            <button class="btn waves-effect waves-light btn-info btn-info" type="button" onclick="PrintMastercard()">
+                <span class="btn-label"><i class="fa fa-print"></i></span>@Localizer["PrintMasterCard"]
+            </button>
+
+            <button type="submit" class="btn waves-effect waves-light btn-info btn-info" asp-action="ExcelExport">
+                <span class="btn-label"> <i class="fa fa-file-excel"></i> </span> @Localizer["ExportExcel"]
+            </button>
+            <a class="btn waves-effect waves-light btn-info btn-info" asp-action="Index" asp-controller="Presale">
+                <span class="btn-label"> <i class="mdi mdi-content-duplicate"></i></span>  @Localizer["ProductPresale"]
+            </a>
+            @*</div>*@
+        </div>
+    </div>
+
+    <div class="modal bs-example-modal-md" id="modal-copy-option" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left" id="myLargeModalLabel">@Localizer["TypeOfCopy"]</h4>
+                    <button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="col-12 form-group row">
+                        <div class="col-md-12 label-field">
+                            <div class="float-left col-12">
+                                <input class="form-check-input" type="radio" name="typeOfOs" id="copyOriginal" value="Copy" checked onclick="CheckRadioSelect(this)">
+                                <label class="form-check-label" for="copyOriginal" style="float:left">@Localizer["Copy"]</label>
+                            </div>
+                            <div class="float-left col-12">
+                                <input class="form-check-input" type="radio" name="typeOfOs" id="copyX" value="CopyX" onclick="CheckRadioSelect(this)">
+                                <label class="form-check-label" for="copyX" style="float:left">@Localizer["Copy and mark 'X' in PC and Material Description"]</label>
+                            </div>
+                            <div class="float-left col-12">
+                                <input class="form-check-input" type="radio" name="typeOfOs" id="copyAndDelete" value="CopyAndDelete" onclick="CheckRadioSelect(this)">
+                                <label class="form-check-label" for="copyAndDelete" style="float:left">@Localizer["Copy and Delete existing Material"]</label>
+                            </div>
+                            <div class="float-left col-12">
+                                <input class="form-check-input" type="radio" name="typeOfOs" id="copyRouting" value="CopyRouting" onclick="CheckRadioSelect(this)">
+                                <label class="form-check-label" for="copyRouting" style="float:left">@Localizer["Copy Routing and BOM Raw Material"]</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="CopyMaterial()" class="btn btn-primary">@Localizer["Next"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">@Localizer["Close"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal bs-example-modal-lg" id="modalCopyRouting" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left" id="myLargeModalLabelRouting">@Localizer["Copy Routing and BOM Raw Material"]</h4>
+                    <button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="col-12 form-group row">
+                        <div class="col-lg-12 label-field">
+
+                            <div class="card-body tab-criteria">
+                                <div class="row line-space" style=" margin-bottom:15px">
+                                    <div class="col-sm-6">
+                                        <h3>@Localizer["Material No"] : <span id="matNo"></span> </h3>
+                                    </div>
+                                </div>
+                                <div class="row line-space" style=" margin-bottom:5px">
+                                    <div class="col-md-6">
+                                        <h3>@Localizer["Routing"]</h3>
+                                    </div>
+                                     <div class="col-md-6">
+                                         <h3>@Localizer["BOM Raw Material"]</h3>
+                                    </div>
+                                </div>
+                                <div class="row line-space" style=" margin-bottom:15px">
+                                    <div class="box-body table-responsive col-md-6">
+                                        <div id="routingGrid"></div>
+                                    </div>
+                                     <div class="box-body table-responsive col-md-6">
+                                        <div id="bomRawMatGrid"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row line-space" style=" margin-bottom:15px">
+
+                                            <div class="form-group col-md-2" style="padding: 0px;text-align: right;">
+                                                <label class=" vertical-sub-text  ml-4 mt-1">@Localizer["Material No"] : </label>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <input class="form-control text-left" id="inputMaterialNo" style="font-weight:bolder;" type="text" />
+                                            </div>
+                                            <div class="form-group col-md-2" style="padding: 0px;text-align: right;max-width:180px">
+                                                <label class=" vertical-sub-text  ml-5 mt-1">@Localizer["PC"] : </label>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <input class="form-control text-left" id="inputPC" style="font-weight:bolder;" type="text" />
+                                            </div>
+
+                                            <div class="form-group col-md-1" style="padding: 0px;">
+                                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" onclick="GetMasterDataList()" id="btnSearch">@Localizer["Search"]</button>
+                                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" id="btnNextLoad" disabled>
+                                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row line-space" style=" margin-bottom:15px">
+                                    <div class="box-body table-responsive">
+                                        <div id="masterGrid"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    @*<button type="button" onclick="CopyMaterial()" class="btn btn-primary">@Localizer["Next"]</button>*@
+                    <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">@Localizer["Close"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card">
+
+                <div class="card-body">
+
+                    <div class="row justify-content-between">
+
+                        <div class="col-xs-3 col-md-3">
+                            <h3 class="text-themecolor"><i class="mdi mdi-view-list"></i> @Localizer["Material Data"] </h3>
+                        </div>
+                        <div class="col-xs-3 col-md-3" style="padding-right: 0px;">
+                            <div class="custom-file-upload btn waves-effect waves-light btn-info btn-info;" style="float:right">
+                                <form id="printmastercardfile">
+                                    <div class="controls">
+                                        <div class="input-group form-inline" style="max-height:18px">
+                                            <label for="file-upload">
+                                                <span class="btn-label"> <i class="fa fa-file"></i></span>
+                                                <i></i> @Localizer["Search From File"]
+                                            </label>
+                                            <input id="file-upload" name='fileUpload' type="file" accept=".txt" style="display:none;">
+                                        </div>
+
+                                        <div class="help-block"></div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-right" style="padding-left: 5px;">
+
+                            @ViewBag.ErrorMessage
+                            <form>
+                                <div class="controls">
+                                    <div class="input-group">
+                                        <select class="form-control custom-select col-md-4 text-sm-left" name="ddlSearch">
+                                            <option value="Material_No">Material No</option>
+                                            <option value="Description">Description</option>
+                                            <option value="PC">PC</option>
+                                            <option value="PartNo">Part No</option>
+                                            <option value="Board">Board</option>
+                                            <option value="Box_Type">Box Type</option>
+                                            <option value="Cust_Name">Customer name</option>
+                                            <option value="MatSaleOrg">MatSaleOrg</option>
+                                        </select>
+
+                                        <input type="text" class="form-control" placeholder="@Localizer["Search"]" aria-invalid="false" name="Txtsearch">
+                                        <span class="input-group-btn" style="width:0px;"></span>
+
+                                        <div class="input-group-append" style="max-height: 30px;">
+                                            <button asp-action="ViewListProduct" class="btn btn-info"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-checkbox form-check-inline" style="text-align:left;padding-left:0">
+                                        <input type="checkbox" class="form-check-input" id="flag" name="flag" value="X">
+
+                                        <label class="custom-control-label" for="flag">@Localizer["SearchWithX"]</label>
+                                    </div>
+                                    <div class="help-block"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive m-t-10">
+                        <table id="myTable" class="table table-bordered color-table">
+                            <thead>
+                                <tr class="color-table">
+                                    <th style="width:10px"><input name="select_all" value="1" id="DataTableMat-select-all" type="checkbox" /></th>
+                                    <th class="text-center" style="width:150px">@Localizer["Action"] </th>
+                                    <th style="width:80px">@Localizer["Trans Status"] </th>
+                                    <th style="width:75px">@Localizer["PDIS Status"] </th>
+                                    <th style="width:75px">@Localizer["Material No"] </th>
+                                    <th style="width:75px">@Localizer["PC"] </th>
+                                    <th style="width:75px">@Localizer["Part No"] </th>
+                                    <th style="width:75px">@Localizer["MatSaleOrg "] </th>
+                                    <th style="width:180px">@Localizer["Customer Name"]</th>
+                                    <th style="width:100px">@Localizer["Description"] </th>
+                                    <th style="width:100px">@Localizer["Board"] </th>
+                                    <th style="width:80px">@Localizer["BoxType"] </th>
+                                    <th style="width:60px">@Localizer["Machine"] </th>
+                                    <th style="width:100px">@Localizer["Create Date"] </th>
+                                    <th style="width:100px">@Localizer["LastUpdateDate"] </th>
+                                    <th style="width:75px">@Localizer["Updated By"] </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @{ int i = 0; }
+
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center chooseProductType">
+                                            <input type="checkbox" class="filled-in select-item-check" name="selectMaterialNo" id="@item.MaterialNo-@item.PdisStatus" value="@item.MaterialNo" />
+                                            <label for="@item.MaterialNo"></label>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <a id="DetailMaterial" onclick="ViewMaterial('@item.MaterialNo', '@item.PdisStatus')">  <i style="cursor:pointer" data-toggle="tooltip" title="Detail" class="fas fa-file-alt text-info btn"></i></a>
+                                            &nbsp; &nbsp;
+                                            <a id="EditMaterial" onclick="EditMaterial('@item.MaterialNo', '@item.PdisStatus')">  <i style="cursor:pointer" data-toggle="tooltip" title="Edit" class="fas fa-pencil-alt text-warning "></i></a>
+                                            &nbsp; &nbsp;
+                                            <a id="DeleteMaterial" onclick="ConfirmDelete('@item.MaterialNo', '@item.PdisStatus')">  <i style="cursor:pointer" data-toggle="tooltip" title="Delete" class="fas fa-trash text-danger"></i></a>
+                                            &nbsp; &nbsp;
+                                            <a id="ResentMat" onclick="ResentMat('@item.MaterialNo')">  <i style="cursor:pointer" data-toggle="tooltip" title="Resent SAP" class="fa fa-paper-plane text-info"></i></a>
+                                            &nbsp; &nbsp;
+                                        </td>
+
+                                        @if (item.TranStatus == false)
+                                        {
+                                            <td> <span style="color:orange">Wait</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td> <span style="color:green">Success</span></td>
+                                        }
+                                        <td id="pdis-status">@Html.DisplayFor(modelItem => item.PdisStatus)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.PC)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.PartNo)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.MatSaleOrg)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.CustName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Board)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.BoxType)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Machine)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Createdate)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.LastUpdate)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.UpdatedBy)</td>
+                                    </tr>
+
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        var matNoCopyFrom = "";
+        var materials = [];
+        var routingDataList = [];
+        var bomRawMatDataList = [];
+        var masterDataList = [];
+        var masterDataCoped = [];
+        var i = 0;
+        var actionClick = 0;
+
+        $(document).ready(function () {
+            materials = [];
+            actionClick = 0;
+
+            $('#myTable').DataTable({
+                'bFilter': false,
+                "lengthMenu": [[10, 20], [10, 20]],
+                'columnDefs': [{
+                    'targets': [1, 0], 'orderable': false,
+
+                    }, {
+                        'targets': 2, "render": function (data, type, row) {
+
+                            if (data)
+                                var data = data.split(',').join('<br>');
+                            return data;
+                        }
+                    }, {
+                        //'targets': [8],
+                        //'visible':false
+                    }]
+            });
+
+            $('#myTable tbody').on('click', 'tr #DetailMaterial', function () {
+                actionClick = 1;
+            });
+
+            $('#myTable tbody').on('click', 'tr #EditMaterial', function () {
+                actionClick = 1;
+            });
+
+            $('#myTable tbody').on('click', 'tr #DeleteMaterial', function () {
+                actionClick = 1;
+            });
+
+            $('#myTable tbody').on('click', 'tr', function () {
+                var $row = $(this).closest("tr");
+                var id = $row.find("input:eq(0)").attr('id');
+                var elementById = "#" + id;
+
+                if (id != "") {
+                    if (actionClick != 1) {
+                        if ($row.find("input:eq(0)").is(':checked')) {
+                            //uncheck
+                            var defaultSelected = materials.filter(p => p == id);
+                            if (defaultSelected.length > 0) {
+                                materials = materials.filter(p => { return p != id });
+                            }
+
+                            $(elementById).prop('checked', false);
+                            return false;
+                        }
+                        else //check
+                        {
+                            materials.push(id);
+                            $(elementById).prop('checked', true);
+                            return false;
+                        }
+                    }
+                }
+            });
+        });
+
+        function EditMaterial(Material, pdisStatus) {
+            window.location.href = "@Url.Action("Categories", "NewProduct")" + "?ActionTran=Edit&MaterialNo=" + Material;
+        }
+
+        function ViewMaterial(Material, pdisStatus) {
+            window.location.href = "@Url.Action("DetailProduct", "NewProduct")" + "?ActionTran=Detail&MaterialNo=" + Material;
+        }
+
+        function ConfirmDelete(Material, pdisStatus) {
+
+            swal({
+                title: "Are you sure Delete Material " + Material + "?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeleteViewListProduct", "MaintenanceProductInfo")',
+                                data: { Material: Material },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                swal("Deleted!", {
+                                    icon: "success",
+                                });
+                                UpdateTable();
+                            }
+                        }
+                    });
+                }
+                else{}
+            });
+        }
+
+        function UpdateTable() {
+            $.ajax({
+                url: '@Url.Action("ViewListProduct", "MaintenanceProductInfo")',
+                success: function (res) {
+                    if (res) {
+                        window.location.reload(true);
+                    }
+                },
+                error: function () {  }
+            });
+        }
+
+        function CopyAction(action) {
+            let count = 0;
+            let materialNoKey = "";
+            let pdisStatus = "";
+
+            $('.select-item-check').each(function () {
+                if ($(this).is(':checked')) {
+                    materialNoKey = $(this).val();
+                    count++;
+                }
+            });
+
+            $('#pdis-status').each(function () {
+                if ($(this).is(':checked')) {
+                    pdisStatus = $(this).val();
+                }
+            });
+
+            if (count === 1) {
+                swal({
+                    title: 'PMTs Processing',
+                    text: 'Copy and bind data...',
+                    icon: 'success',
+                    timer: 2000,
+                    buttons: false,
+                })
+                    .then(() => {
+                        if (action == "CopyOriginal") {
+                            let materialNo = materialNoKey.split("-");
+                            window.location.href = "@Url.Action("Categories", "NewProduct")" + "?ActionTran=Copy&MaterialNo=" + materialNo[0];
+                        }
+
+                    });
+            }
+            else {
+                swal("Please Select One!", "", "warning");
+            }
+
+        }
+
+        function Copy() {
+            let count = 0;
+            let materialNo= "";
+
+            $('.select-item-check').each(function () {
+                if ($(this).is(':checked')) {
+                    materialNo = $(this).val();
+                    matNoCopyFrom = $(this).val();
+                    count++;
+                }
+            });
+
+            if (count === 1) {
+                $("#modal-copy-option").modal("show");
+            }
+            else
+            {
+                swal("Please Select One!", "", "warning");
+            }
+        }
+
+        function PrintMastercard() {
+
+            let printMaterials = [];
+
+            $.each(materials, function (key, Object) {
+                printMaterials.push(Object.split("-")[0]);
+            });
+
+            if (printMaterials.length > 0) {
+                var jsonObject = {
+                    "orderitem": [],
+                    "materialno": printMaterials,
+                    "SizeOfPage": 0
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SetMasterCardMO", "Report")',
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            window.open('@Url.Action("MasterCardMO", "Report")', '_blank');
+                        }
+                        else if (!res.IsSuccess)
+                        {
+                            swal(res.ErrorMessage, "", "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+            else
+            {
+                swal("Please Select Item!", "", "warning");
+            }
+        }
+
+        function CopyMaterial()
+        {
+            let action = "";
+            let typeOfOsSelect = document.getElementsByName("typeOfOs");
+            for (var i = 0; i < typeOfOsSelect.length; i++) {
+                if (typeOfOsSelect[i].checked) {
+                    action = typeOfOsSelect[i].value;
+                }
+            }
+
+            let mat = materials[0].split('-')[0];
+            let pdis = materials[0].split('-')[1];
+            if (action === "CopyRouting") {
+                CopyRouting();
+            } else {
+                window.location.href = "@Url.Action("Categories", "NewProduct")" + "?ActionTran=" + action + "&MaterialNo=" + mat;
+            }
+
+        }
+
+        function CopyRouting() {
+            $('#modal-copy-option').modal('hide');
+            $("#modalCopyRouting").modal("show");
+            LoadingButton(false);
+            ClearDataCopyRoutingModal();
+            $("#matNo").text(matNoCopyFrom);
+            GetRoutingDataList();
+            GetBomRawMatDataList();
+            genMasterGrid();
+            genRoutingGrid();
+            genBomRawMatGrid();
+        }
+
+        $("#file-upload").change(function () {
+            //$("#file-name").text(this.files[0].name);
+            let fileInput = $('#file-upload')[0];
+            let file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append("fileUpload", file);
+
+            $.ajax({
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                type: "POST",
+                url: '@Url.Action("SearchProductFromTextFile", "MaintenanceProductInfo")',
+                data: formData,
+                success: function (res) {
+                    if (res.IsSuccess) {
+
+                        actionClick = 0;
+                        let materialNos = res.materialNos;
+                        $('#divMyTable').html(res.View);
+                        $('.modal-backdrop').css('display', 'none');
+                        let masterdatastable = $('#myTable').DataTable({
+                            'bFilter': false,
+                            "lengthMenu": [[10, 20], [10, 20]],
+                            'columnDefs': [{
+                                'targets': [1, 0], 'orderable': false,
+
+                            }, {
+                                'targets': 2, "render": function (data, type, row) {
+
+                                    if (data)
+                                        var data = data.split(',').join('<br>');
+                                    return data;
+                                }
+                            }, {
+                                //'targets': [8],
+                                //'visible':false
+                            }]
+                        });
+
+                        //$(".select-item-check").each(function () {
+                        //    this.checked = true;
+                        //});
+                        masterdatastable.$("input[type=checkbox]").prop("checked", true);
+                        $.each(materialNos, function (key, Object) {
+                            //$("#" + Object).prop('checked', true);
+                            materials.push(Object);
+                        });
+
+                        $('#myTable tbody').on('click', 'tr #DetailMaterial', function () {
+                            actionClick = 1;
+                        });
+
+                        $('#myTable tbody').on('click', 'tr #EditMaterial', function () {
+                            actionClick = 1;
+                        });
+
+                        $('#myTable tbody').on('click', 'tr #DeleteMaterial', function () {
+                            actionClick = 1;
+                        });
+
+                        $('#myTable tbody').on('click', 'tr', function () {
+                            var $row = $(this).closest("tr");
+                            var id = $row.find("input:eq(0)").attr('id');
+
+                            var elementById = "#" + id;
+
+                            if (id != "") {
+                                if (actionClick != 1) {
+                                    if ($row.find("input:eq(0)").is(':checked')) {
+                                        //uncheck
+                                        var defaultSelected = materials.filter(p => p == id);
+                                        if (defaultSelected.length > 0) {
+                                            materials = materials.filter(p => { return p != id });
+                                        }
+
+                                        $(elementById).prop('checked', false);
+                                        return false;
+                                    }
+                                    else //check
+                                    {
+                                        materials.push(id);
+                                        $(elementById).prop('checked', true);
+                                        return false;
+                                    }
+                                }
+                            }
+                        });
+
+                        $("#file-upload").val("");
+                    }
+                    else {
+
+                        swal("Search Failed!", res.ExceptionMessage, { icon: "warning" })
+                            .then(() => {
+                                window.location.href = "@Url.Action("ViewListProduct", "MaintenanceProductInfo")";
+                            });
+                    }
+                },
+                error: function () { }
+            });
+        });
+
+        function genRoutingGrid() {
+            $("#routingGrid").jsGrid({
+                data: routingDataList,
+                height: "auto",
+                width: "80%",
+                filtering: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 15,
+                pageButtonCount: 5,
+                confirmDeleting: false,
+                heading: false,
+                fields: [
+                    {
+                        name: "Machine",
+                        type: "text",
+                        editing: false,
+                        width: 80
+                    }],
+            });
+        }
+
+        function genBomRawMatGrid() {
+            $("#bomRawMatGrid").jsGrid({
+                data: bomRawMatDataList,
+                height: "auto",
+                width: "100%",
+                filtering: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 10,
+                pageButtonCount: 5,
+                confirmDeleting: false,
+                heading: false,
+                fields: [
+                    {
+                        name: "MaterialDescription",
+                        type: "text",
+                        editing: false,
+                        width: 80
+                    }],
+            });
+        }
+
+        function genMasterGrid() {
+            $("#masterGrid").jsGrid({
+                data: masterDataList,
+                height: "auto",
+                width: "100%",
+                filtering: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 5,
+                pageButtonCount: 5,
+                confirmDeleting: false,
+                controller: {
+                    loadData: function () {
+                        return masterDataList;
+                    }
+                },
+                rowClass: function (item, itemIndex) {
+                    if (masterDataCoped.includes(item.MaterialNo)) {
+                        return 'bg-highlight';
+                    }
+                },
+                fields: [
+                    {
+                        name: "control", //ชื่อ key data source
+                        title: "Replace To",
+                        type: "text",
+                        editing: false,
+                        width: 80,
+                        itemTemplate: function (value, item) {
+                            return $('<button class="btn btn-success" ></button>').text("Replace")
+                                .on("click", function () {
+                                   swal({
+                                       title: "Confirmation",
+                                       text: "Do you want copy these routing and raw material to \n material No. " + item.MaterialNo + "?",
+                                       icon: "warning",
+                                       buttons: {
+                                           confirm: "Yes",
+                                           cancel: true,
+                                       },
+                                       dangerMode: false,
+                                   })
+                                       .then((willAccect) => {
+
+                                        if (willAccect) {
+                                            $.ajax({
+                                                type: 'PUT',
+                                                url: '@Url.Action("ReplaceRoutingDataList", "MaintenanceProductInfo")',
+                                                data: { MaterialFrom: matNoCopyFrom, MaterialTo: item.MaterialNo },
+                                                success: function (res) {
+                                                    if (res.IsSuccess) {
+                                                        masterDataCoped.push(item.MaterialNo);
+                                                        swal("Replace Success!", {
+                                                           icon: "success",
+                                                        });
+                                                        GetMasterDataList();
+                                                    } else {
+                                                        swal("Replace Failed!", res.ExceptionMessage, { icon: "warning" });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else{}
+                                   });
+                                });
+                        },
+                    },{
+                        name: "MaterialNo",
+                        title: "MaterialNo",
+                        type: "text",
+                        editing: false,
+                        width: 150
+                    }, {
+                        name: "Pc",
+                        title: "PC",
+                        type: "text",
+                        editing: false,
+                        width: 100
+                    }, {
+                        name: "CustName",
+                        title: "Cust Name",
+                        type: "text",
+                        editing: false,
+                        width: 150
+                    }, {
+                        name: "SaleText1",
+                        title: "SaleText1",
+                        type: "text",
+                        editing: false,
+                        width: 200
+                    } ],
+            });
+        }
+
+        function GetRoutingDataList() {
+             $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetRoutingDataList", "MaintenanceProductInfo")',
+                 data: { MaterialNo: matNoCopyFrom },
+                success: function (res) {
+                    if (res.IsSuccess == true && res.Data.length > 0) {
+                        routingDataList = res.Data;
+                        genRoutingGrid();
+                    }
+                    else {
+                        routingDataList = [];
+                        genRoutingGrid();
+                    }
+                },
+                 error: function () {
+                     routingDataList = [];
+                     genRoutingGrid();
+                 }
+            });
+        }
+        function GetBomRawMatDataList() {
+             $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetBomRawMatDataList", "MaintenanceProductInfo")',
+                 data: { MaterialNo: matNoCopyFrom },
+                success: function (res) {
+                    if (res.IsSuccess == true && res.Data.length > 0) {
+                        bomRawMatDataList = res.Data;
+                        genBomRawMatGrid();
+                    }
+                    else {
+                        bomRawMatDataList = [];
+                        genBomRawMatGrid();
+                    }
+                },
+                 error: function () {
+                     bomRawMatDataList = [];
+                     genBomRawMatGrid();
+                 }
+            });
+        }
+        function GetMasterDataList() {
+            var inpMatNo = $('#inputMaterialNo').val();
+            var inpPC = $('#inputPC').val();
+            if (inpMatNo == "" && inpPC == "") {
+                swal("Alert", "Please Fill MaterialNo or PC", "warning");
+                masterDataList = [];
+                genMasterGrid();
+            }
+            else {
+                LoadingButton(true);
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetMasterDataList", "MaintenanceProductInfo")',
+                    data: { MaterialNo: inpMatNo, PC: inpPC },
+                    success: function (res) {
+                        if (res.IsSuccess == true && res.Data.length > 0) {
+                            masterDataList = res.Data.filter(a => a.MaterialNo != matNoCopyFrom);
+                            genMasterGrid();
+                            LoadingButton(false);
+                        }
+                        else {
+                            masterDataList = [];
+                            genMasterGrid();
+                            LoadingButton(false);
+                        }
+                    },
+                    error: function () {
+                        masterDataList = [];
+                        genMasterGrid();
+                        LoadingButton(false);
+                    }
+                });
+            }
+
+        }
+
+        function ClearDataCopyRoutingModal() {
+            $("#matNo").text("");
+            $("#inputMaterialNo").val("");
+            $("#inputPC").val("");
+            masterDataList = [];
+            routingDataList = [];
+        }
+
+        $("#inputMaterialNo").on("keydown", function(e) {
+            if (e.keyCode == 13) {
+                GetMasterDataList();
+            }
+        });
+        $("#inputPC").on("keydown", function(e) {
+            if (e.keyCode == 13) {
+                GetMasterDataList();
+            }
+        });
+
+        function LoadingButton(value) {
+            if (value) {
+                $('#btnSearch').hide();
+                $('#btnNextLoad').show();
+                $("#inputMaterialNo").prop('disabled', true);
+                $("#inputPC").prop('disabled', true);
+            } else {
+                $('#btnNextLoad').hide();
+                $('#btnSearch').show();
+                $("#inputMaterialNo").prop('disabled', false);
+                $("#inputPC").prop('disabled', false);
+            }
+        }
+
+        function CheckRadioSelect(value) {
+
+        };
+
+        function ResentMat(materialNo) {
+            swal({
+                title: "Confirmation",
+                text: "ท่านต้องการส่ง Mat " + materialNo + " ไปสร้างบน SAP อีกครั้งใช่หรือไม่?",
+                icon: "warning",
+                buttons: {
+                    confirm: "Yes",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+            .then((willAccect) => {
+                if (willAccect) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("ReSentMat", "NewProduct")',
+                        data: { materialNo: materialNo },
+                        async: false,
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                swal("Success!", res.ExceptionMessage, "success")
+                                    .then(() => {
+                                        $("#modalLoading").modal('hide');
+                                        UpdateTable();
+                                    });
+                            } else {
+                                $("#modalLoading").modal('hide');
+                                swal("Error!", res.ExceptionMessage, "error");
+                            }
+                            return false;
+                        },
+                        error: function () {
+                            $("#modalLoading").modal('hide');
+                            swal("Error!", res.ExceptionMessage, "error");
+                            return false;
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+
+}

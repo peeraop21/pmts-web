@@ -1,0 +1,417 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceCustomer.MaintenanceCustomerViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.CustomerViewModelList)
+{
+    if (item.CustStatus == true)
+    {
+        <tr>
+            <th scope="row">@item.Id</th>
+            <td>@item.CustName</td>
+            <td>@item.SoldToCode</td>
+            <td>@item.CustCode</td>
+            <td>@item.CusId</td>
+            <td>
+                <button type="button" class="btn btn-default" onclick="OpenModalView('modalDetail-view-@No')"><span class="fas fa-file-alt text-info btn" aria-hidden="true"></span></button>
+
+                <!-- Start View Modal -->
+                <div class="modal fade bs-example-modal-xl" id="modalDetail-view-@No">
+                    <div class="modal-dialog modal-lg" style="width: 90%">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">View Customer</h4>
+                                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" value="@item.Id" />
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustName">Customer Name</label>
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        <input type="text" class="form-control" value="@item.CustName" readonly />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="SoldToCode">Sold to Code</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.SoldToCode" readonly />
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustCode">Customer Code</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.CustCode" readonly />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustId">Customer ID</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.CusId" readonly />
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="Zone">Zone</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.Zone" readonly />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="Route">Route</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.Route" readonly />
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustDeliveryTime">Customer DeliveryTime</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.CustDeliveryTime" readonly />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustClass">Customer Class</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.CustClass" readonly />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="IndGrp">Product Group</label>
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        <input type="text" class="form-control" value="@item.IndGrp" readonly />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustReq">Customer Req</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.CustReq" readonly />
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustAlert">Customer Alert</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input type="text" class="form-control" value="@item.CustAlert" readonly />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="CustShipTo">Customer Ship To</label>
+                                    </div>
+                                    <div class="form-group col-sm-3" id="Input_CustShipTo_Col">
+                                        <input type="text" class="form-control" asp-for="@item.CustShipTo" disabled />
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label">Pallet Overhang</label>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <input class="form-control" asp-for="@item.PalletOverhang" disabled />
+                                    </div>
+                                </div>
+
+                                <div class="row" style="padding-top:10px">
+                                    <div class="form-group col-md-3">
+                                        <label class=" control-label">QA Spec</label>
+                                    </div>
+                                    <div class="form-group col-md-9 row">
+
+                                        @foreach (var qaItem in Model.QaItems)
+                                        {
+                                            if (item.QASpec != null)
+                                            {
+                                                if (item.QASpec.Contains(qaItem))
+                                                {
+                                                    <input type="checkbox" class="mycheckbox" checked />
+                                                    <label class="mycheckbox-label text-left col-6 float-left" style="min-width:100px">@qaItem</label>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-backdrop="false">Close</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                </div>
+                <!-- /.modal -->
+                <!-- End View Modal -->
+            </td>
+            <td>
+                <button type="button" class="btn btn-default" onclick="GetProductGroup(@No, '@item.IndGrp','@item.CustCode','modal-edit-@No')"><span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span></button>
+
+                <!-- Start Edit Modal -->
+                <div class="modal fade" id="modal-edit-@No">
+                    <div class="modal-dialog modal-lg" style="width: 90%">
+                        <form id="formUpdateCustomerEdit-@No">
+                            @*asp-controller="MaintenanceCustomer" asp-action="UpdateCustomer" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST" onsubmit="QASpecToModel(@item.Id)">*@
+
+                            <input type="hidden" name="QASpec" id="QASpec-@No" class="QualitySpec" asp-for="@item.QASpec" />
+                            <input type="hidden" name="Accgroup" id="Accgroup-@No" asp-for="@item.Accgroup" />
+                            <input type="hidden" name="Cust" id="Cust-@No" asp-for="@item.Cust" />
+                            <input type="hidden" name="PriorityFlag" id="PriorityFlag-@No" asp-for="@item.PriorityFlag" />
+                            <input type="hidden" name="CustStatus" id="CustStatus-@No" asp-for="@item.CustStatus" />
+                            <input type="hidden" name="CreatedDate" id="CreatedDate-@No" asp-for="@item.CreatedDate" />
+                            <input type="hidden" name="CreatedBy" id="CreatedBy-@No" asp-for="@item.CreatedBy" />
+
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Edit Customer</h4>
+                                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="id-@No" name="Id" value="@item.Id" />
+
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="CustName-@No">Customer Name<i style="color:red"> *</i></label>
+                                        </div>
+                                        <div class="form-group col-md-9">
+                                            <input type="text" class="form-control" id="CustName-@No" name="CustName" value="@item.CustName" maxlength="200" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="SoldToCode-@No">Sold to Code</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="SoldToCode-@No" name="SoldToCode" value="@item.SoldToCode" readonly />
+                                        </div>
+
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="CustCode-@No">Customer Code<i style="color:red"> *</i></label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="CustCode-@No" name="CustCode" value="@item.CustCode" maxlength="5" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="CusId-@No">Customer ID<i style="color:red"> *</i></label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="number" class="form-control" id="CusId-@No" name="CusId" value="@item.CusId" maxlength="50" />
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="Zone-@No">Zone</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="Zone-@No" name="Zone" value="@item.Zone" maxlength="10" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="Route-@No">Route</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="Route-@No" name="Route" value="@item.Route" maxlength="10" />
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="CustDeliveryTime-@No">Customer DeliveryTime</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="CustDeliveryTime-@No" name="CustDeliveryTime" value="@item.CustDeliveryTime" maxlength="10" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="CustClass-@No">Customer Class</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="CustClass-@No" name="CustClass" value="@item.CustClass" maxlength="10" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="IndGrp-@No">Product Group</label>
+                                        </div>
+                                        <div class="form-group col-md-9">
+                                            @*<input type="text" class="form-control no-border" asp-for="@item.IndGrp" id="IndDes"  onclick="GetProductGroup(@No)" />*@
+                                            <select class="form-control" id="IndGrp-@No" name="IndGrp" asp-for="@item.IndGrp"></select>
+                                            @*<select class="form-control" name="IndGrp" asp-for="@item.IndGrp" asp-items="@(new SelectList(Model.ProductGroupList,"Code","Description"))">
+                                    <option>--- Please Select Item ---</option>
+                                    </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="CustReq-@No">Customer Req</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="CustReq-@No" name="CustReq" value="@item.CustReq" maxlength="255" />
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="CustAlert-@No">Customer Alert</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="CustAlert-@No" name="CustAlert" value="@item.CustAlert" maxlength="255" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label class=" control-label" for="CustShipTo-@No">Customer Ship To</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control" id="CustShipTo-@No" name="CustShipTo" value="@item.CustShipTo" maxlength="10" />
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="control-label" for="PalletOverhang-@No">Pallet Overhang</label>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="number" class="form-control" id="PalletOverhang-@No" name="PalletOverhang" value="@item.PalletOverhang" />
+                                        </div>
+                                        @*<div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class=" control-label" for="CustShipTo">Customer Ship To</label>
+                                    </div>
+
+                                    @{
+                                        string custShipToParentElement = "Input_CustShipTo_Col-edit-" + @No;
+                                        string custChipToIdElement = "CustShipTo-edit-" + @No;
+                                        string custChipToArrayListIdElement = "CustShipToArrayList-edit-" + @No;
+                                    }
+
+                                    <div class="form-group col-sm-2" id="@custShipToParentElement">
+
+                                        <input type="hidden" id="@custChipToArrayListIdElement" name="CustShipToJsonList" value="@Html.Raw(Json.Serialize(Model.CustShipToList.Where(w => w.CustCode == item.CustCode))).ToString()" />
+                                        <input typpe="text" class="form-control" id="@custChipToIdElement" />
+                                        <span class="field-validation-valid text-danger" id="Validate_For_CustShipTo-edit-@No" style="display: none;">Please Enter Cust Ship To</span>
+
+                                        @if (Model.CustShipToList.Count() > 0)
+                                        {
+                                            int custShipToItemNo = 0;
+
+                                            @foreach (var itemCustShipTo in Model.CustShipToList.Where(w => w.CustCode == @item.CustCode))
+                                            {
+                                                string custChipToItemIdElement = "CustShipTo-Edit-Item-" + @custShipToItemNo;
+
+                                                <div class="add-row" style="display: flex;">
+                                                    <input class="form-control" type="text" id="@custChipToItemIdElement" value="@itemCustShipTo.ShipTo" style="width: 100%; margin-top: 10px;" readonly>
+                                                    <button type="button" class="btn btn-danger" style="margin-top: 10px; margin-left: 5px;" onclick="RemoveCustShipToItem(this, '@custChipToIdElement', '@custChipToArrayListIdElement', '@custChipToItemIdElement')">-</button>
+                                                </div>
+
+                                                custShipToItemNo++;
+                                            }
+                                        }
+                                    </div>
+                                    <div class="form-group col-sm-2" id="Input_CustShipTo_Col">
+                                        <button type="button" class="btn btn-primary" onclick="AddMoreCustShipToForEdit('@custShipToParentElement', '@custChipToIdElement', '@custChipToArrayListIdElement', '@item.CustCode')">+</button>
+                                    </div>
+                                </div>*@
+                                    </div>
+
+                                    <div class="row" style="padding-top:10px">
+                                        <div class="form-group col-md-3">
+                                            <label class=" control-label" for="CustShipTo">QA Spec</label>
+                                        </div>
+
+                                        <div id="DivQaSpecColumn1" class="form-group col-md-4">
+                                            @{
+                                                var QaItemsNo1 = Model.QaItems.Count() / 2;
+
+                                                for (int i = 0; i < QaItemsNo1; i++)
+                                                {
+                                                    if (item.QASpec != null)
+                                                    {
+                                                        if (item.QASpec.Contains(Model.QaItems[i]))
+                                                        {
+                                                            <input type="checkbox" id="checkBox-@i-@No" class="mycheckbox" checked />
+                                                            <label for="checkBox-@i-@No" class="mycheckbox-label text-left col-12" style="min-width:100px">@Model.QaItems[i]</label>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <input type="checkbox" id="checkBox-@i-@No" class="mycheckbox" />
+                                                            <label for="checkBox-@i-@No" class="mycheckbox-label text-left col-12" style="min-width:100px">@Model.QaItems[i]</label>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="checkbox" id="checkBox-@i-@No" class="mycheckbox" />
+                                                        <label for="checkBox-@i-@No" class="mycheckbox-label text-left col-12" style="min-width:100px">@Model.QaItems[i]</label>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+
+                                        <div id="DivQaSpecColumn2" class="form-group col-md-4 row">
+                                            @{
+                                                var QaItemsNo2 = Model.QaItems.Count() / 2;
+
+                                                for (int i = QaItemsNo2; i < Model.QaItems.Count(); i++)
+                                                {
+                                                    if (item.QASpec != null)
+                                                    {
+                                                        if (item.QASpec.Contains(Model.QaItems[i]))
+                                                        {
+                                                            <input type="checkbox" id="checkBox-@i-@No" class="mycheckbox" checked />
+                                                            <label for="checkBox-@i-@No" class="mycheckbox-label text-left col-12" style="min-width:100px">@Model.QaItems[i]</label>
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <input type="checkbox" id="checkBox-@i-@No" class="mycheckbox" />
+                                                            <label for="checkBox-@i-@No" class="mycheckbox-label text-left col-12" style="min-width:100px">@Model.QaItems[i]</label>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="checkbox" id="checkBox-@i-@No" class="mycheckbox" />
+                                                        <label for="checkBox-@i-@No" class="mycheckbox-label text-left col-12" style="min-width:100px">@Model.QaItems[i]</label>
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-backdrop="false">Close</button>
+                                        <button type="button" class="btn btn-primary" onclick="SubmitMaintainCustomerEdit('@No','@item.Id')">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- End Edit Modal -->
+            </td>
+            <td>
+                <button type="button" class="btn btn-default" onclick="ConfirmDelete('@item.Id')"><span class="fas fa-trash-alt text-danger btn" aria-hidden="true"></span></button>
+            </td>
+        </tr>
+        No++;
+    }
+}
+<script>
+    $(function () {
+
+    });
+</script>

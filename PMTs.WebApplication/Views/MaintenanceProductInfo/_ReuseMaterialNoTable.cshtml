@@ -1,0 +1,53 @@
+﻿@model IEnumerable<PMTs.DataAccess.ComplexModel.MasterDataRoutingModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<table id="reuseMaterialNoTable" class="table table-bordered color-table">
+    <thead>
+        <tr class="color-table text-center">
+            <th style="width:30px"><input name="select_all" value="1" id="DataTableMat-select-all" type="checkbox" /></th>
+            <th style="width:80px">@Localizer["PDIS Status"]</th>
+            <th style="width:90px">@Localizer["Material No"]</th>
+            <th style="width:90px">@Localizer["PC"]</th>
+            <th style="width:200px">@Localizer["Customer Name"]</th>
+            <th style="width:150px">@Localizer["Description"]</th>
+            <th style="width:150px">@Localizer["Board"]</th>
+            <th style="width:100px">@Localizer["BoxType"]</th>
+            <th style="width:100px">@Localizer["Machine"]</th>
+            <th style="width:100px">@Localizer["CreateDate"]</th>
+            <th style="width:100px">@Localizer["LastUpdateDate"]</th>
+            <th style="width:150px">@Localizer["Trans Status"]</th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-idreuse="@item.MaterialNo" onclick="SelectReuseTable(this)">
+                    <td class="text-center">
+                        <input type="checkbox" onclick="SetSelectReuseTable(this)" class="filled-in select-item-check  not-clickable" id="@item.MaterialNo" value="@item.MaterialNo" />
+                        <label for="@item.MaterialNo"></label>
+                    </td>
+
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.PdisStatus)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PC)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CustName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Board)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BoxType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Machine)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Createdate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.LastUpdate)</td>
+
+                    @if (item.TranStatus == false)
+                    {
+                        <td class="text-center"> <span style="color:orange">@Localizer["Wait"]</span></td>
+                    }
+                    else
+                    {
+                        <td class="text-center"> <span style="color:green">@Localizer["Success"]</span></td>
+                    }
+                </tr>
+            }
+    </tbody>
+</table>

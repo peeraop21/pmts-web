@@ -1,0 +1,47 @@
+﻿@model PMTs.DataAccess.ComplexModel.EditBlockPlatenModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body table-responsive">
+    <table id="editblockplatendatatable" class="table table-bordered color-table dataTable no-footer" cellspacing="0">
+        <thead>
+            <tr>
+                <th class="text-center">@Localizer["No"]</th>
+                <th>@Localizer["MaterialNo"]</th>
+                <th>@Localizer["PC"]</th>
+                <th>@Localizer["CustName"]</th>
+                <th>@Localizer["SaleText"]</th>
+                <th class="text-center">@Localizer["Edit"]</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @{
+                if (Model != null)
+                {
+                    int i = 0;
+
+                    foreach (var item in Model.editBlockPlatenMasters)
+                    {
+                        i++;
+                        <tr>
+                            <td class="text-center">@i</td>
+                            <td>@item.materialno</td>
+                            <td>@item.pc</td>
+                            <td>@item.custname</td>
+                            <td>@item.saletext</td>
+
+                            <td class="text-center">
+                                <a  style="cursor:pointer"  data-material="@item.materialno" data-pc="@item.pc" data-fac="@item.factorycode" onclick="getdatablockplatenedit(this.getAttribute('data-material'),this.getAttribute('data-pc'),this.getAttribute('data-fac'))">
+                                    <i class="fas fa-pencil-alt text-warning "></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            }
+        </tbody>
+    </table>
+</div>

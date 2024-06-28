@@ -1,0 +1,89 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.AutoPackingSpec.AutoPackingSpecMainModel
+
+<table id="auto-packing-customer-table" class="table table-bordered table-striped">
+    <thead>
+        <tr class="text-center">
+            <th width="40%">@Localizer["Customer Name"]</th>
+            <th width="17%">@Localizer["Sold to Code"]</th>
+            <th width="17%">@Localizer["Customer Code"]</th>
+            <th width="17%">@Localizer["Customer ID"]</th>
+            <th width="9%">@Localizer["Option"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.CustomerViewModelList)
+        {
+            <tr>
+                <td>@item.CusName</td>
+                <td>@item.SoldToCode</td>
+                <td>@item.CustCode</td>
+                <td>@item.CusId</td>
+                <td class=" text-center">
+
+                    @if (@item.HasAutoPackingCustomer)
+                    {
+                        <a class="btn-default option-btn m1"
+                           data-CusID="@item.CusId"
+                           data-CustName="@item.CusName"
+                           data-CustCode="@item.CustCode"
+                           data-CornerGuard="@item.CornerGuard"
+                           data-CPalletArrange="@item.CPalletArrange"
+                           data-CPalletStackPos="@item.CPalletStackPos"
+                           data-CStrapperBottomProtection="@item.CStrapperBottomProtection"
+                           data-CStrapperTopProtection="@item.CStrapperTopProtection"
+                           data-CStrapType="@item.CStrapType"
+                           data-NBottomBoardType="@item.NBottomBoardType"
+                           data-NPalletType="@item.NPalletType"
+                           data-NStrapCompression="@item.NStrapCompression"
+                           data-NTopBoardType="@item.NTopBoardType"
+                           data-NWrapType="@item.NWrapType"
+                           data-CreatedBy="@item.CreatedBy"
+                           data-CreatedDate="@item.CreatedDate"
+                           data-UpdatedBy="@item.UpdatedBy"
+                           data-UpdatedDate="@item.UpdatedDate"
+                           onclick="BindAutoPackingCustomerView(this)">
+                            <span class="fas fa-file-alt text-info mr-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="View"></span>
+                        </a>
+                        <a class="btn-default option-btn m1"
+                           data-CusID="@item.CusId"
+                           data-CustName="@item.CusName"
+                           data-CustCode="@item.CustCode"
+                           data-CornerGuard="@item.CornerGuard"
+                           data-CPalletArrange="@item.CPalletArrange"
+                           data-CPalletStackPos="@item.CPalletStackPos"
+                           data-CStrapperBottomProtection="@item.CStrapperBottomProtection"
+                           data-CStrapperTopProtection="@item.CStrapperTopProtection"
+                           data-CStrapType="@item.CStrapType"
+                           data-NBottomBoardType="@item.NBottomBoardType"
+                           data-NPalletType="@item.NPalletType"
+                           data-NStrapCompression="@item.NStrapCompression"
+                           data-NTopBoardType="@item.NTopBoardType"
+                           data-NWrapType="@item.NWrapType"
+                           data-CreatedBy="@item.CreatedBy"
+                           data-CreatedDate="@item.CreatedDate"
+                           data-UpdatedBy="@item.UpdatedBy"
+                           data-UpdatedDate="@item.UpdatedDate"
+                           onclick="BindAutoPackingCustomerEdit(this)">
+                            <span class="fas fa-pencil-alt text-warning ml-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="Edit"></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn-default option-btn m-1"
+                           data-CusId="@item.CusId"
+                           data-CustName="@item.CusName"
+                           onclick="CreateNewAutoPackingCustomer(this)">
+                            <span class="fas fa-plus-circle text-info btn" aria-hidden="true" style="cursor:pointer" title="Create"></span>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>
+
+<partial name="_CreateEditModal" model="@Model" />

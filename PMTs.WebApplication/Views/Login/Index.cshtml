@@ -1,0 +1,143 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.Login.LoginViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+@if (ViewBag.errorMassage != null)
+{
+    @section Scripts {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                if ('@ViewBag.titleMessage' != null && '@ViewBag.titleMessage' != "")
+                {
+                    //$("#myModal").modal('show');
+                    if ('@ViewBag.titleMessage' == "Change Password") {
+                        swal({
+                            title:'@ViewBag.titleMessage'.toString(),
+                            text: '@ViewBag.errorMassage'.toString(),
+                            icon: "warning",
+                            buttons: {
+                                confirm: "Ok",
+                                cancel: true,
+                            },
+                            dangerMode: false,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    window.location.href = '@Url.Action("Index", "ChangePassword")';
+                                }
+                            });
+                    } else
+                    {
+                        swal('@ViewBag.titleMessage'.toString(), '@ViewBag.errorMassage'.toString(), "warning");
+                    }
+                }
+            });
+        </script>
+
+        @*<div class="modal modal-title fade " id="myModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title"><i class="fa fa-warning"></i>Warning Message</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body" align="center">
+                            <div class="swal2-icon swal2-warning swal2-animate-warning-icon" style="display: flex;">
+                                <div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);"></div>
+                                <span class="swal2-icon-text">!</span>
+                            </div>
+                            <h5><span class="text-danger">@Localizer["LoginError"]</span></h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" id="btnModal" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+    }
+}
+
+<!-- Modal -->
+
+<section id="wrapper">
+    <div class="login-register" style="background-image:url(~/lib/material-pro/assets/images/background/background.jpg)">
+        <div class="login-box card">
+            <div class="card-body">
+                <form asp-action="Index" method="post" class="floating-labels" onsubmit="ShowLoading()">
+                    <div class="col-md-12 text-center">
+                        <h2 class="box-title m-b-10">
+                            <img src="~/lib/material-pro/assets/images/LogoPmts.png" width="150" />
+                            <br />
+                            <span class="text-themecolor"> <i class="mdi mdi-lock"></i>@Localizer["Login"]</span>
+                        </h2>
+                    </div>
+                    <div class="form-group  m-b-20">
+                        <div class="col-xs-12">
+                            <input class="form-control" id="USERNAME" type="text" required="" asp-for="UserName" autofocus autocomplete="off">
+                            <span class="bar"></span>
+                            <label for="USERNAME">
+                                @Localizer["USERNAME"]
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <div class="col-xs-12">
+                            <input type="password" id="PASSWORD" asp-for="Password" class="form-control" name="Password" required="">
+                            <span class="bar"></span>
+                            <label for="PASSWORD">
+                                @Localizer["PASSWORD"]
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group has-success" hidden>
+                        <label class="control-label">Domain</label>
+                        <select asp-for="UserDomain" class="form-control p-0" asp-items="ViewBag.UserDomain" placeholder="Domain" hidden></select>
+                        <small>@Localizer["SelectyourDomain"]  </small>
+                    </div>
+                    <div class="form-group text-center m-t-20">
+                        <div class="col-xs-12">
+                            <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">@Localizer["LogIn"] </button>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-0">
+                        <div class="col-sm-12 text-center">
+                            @Localizer["MessageContactAdmin"]
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    function ShowLoading(e) {
+        var div = document.createElement('div');
+        var img = document.createElement('img');
+        div.className = 'modal';
+        img.src = '/lib/Spin-1s-200px.gif';
+        img.style.height = '100px';
+        img.style.width = '100px';
+        //img.width = '50px';
+
+        div.innerHTML = "Loading...<br />";
+        //  div.style.cssText = 'position: fixed; top: 5%; left: 40%; z-index: 5000; width: 422px; text-align: center; background: #EDDBB0; border: 1px solid #000';
+        div.style.cssText = 'position: absolute; top: 20%; bottom: 0; left: 45%; margin: auto';
+        div.appendChild(img);
+        document.body.appendChild(div);
+        return true;
+        // These 2 lines cancel form submission, so only use if needed.
+        //window.event.cancelBubble = true;
+        //e.stopPropagation();
+    }
+</script>

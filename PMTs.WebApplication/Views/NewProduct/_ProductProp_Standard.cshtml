@@ -1,0 +1,724 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <form id="allData" asp-action="SaveProductProp" role="form" enctype="multipart/form-data" data-ajax="true" data-ajax-method="post" data-ajax-success="OnSaveSuccess">
+                @* *@
+                <div class="card-body">
+                    <div class="row justify-content-between">
+                        <div class="col-6">
+                            <h3 class="text-themecolor">@Localizer[""]New Product >  5. Product Properties</h3>
+                        </div>
+                        <div class="col-6">
+                            <h3 class="box-title text-right">
+                                @Localizer[""]Material No : @Model.MaterialNo
+                            </h3>
+                        </div>
+                    </div> <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div id="tabs" style="width:100%">
+                                <ul>
+                                    <li class="active"><a href="#Product" data-toggle="tab">@Localizer["Tab Product"]</a></li>
+                                    <li><a href="#kiwi" data-toggle="tab">@Localizer["Tab KIWI"]</a></li>
+                                    <li><a href="#Change" data-toggle="tab">@Localizer["Tab Change"]</a></li>
+                                </ul>
+                                <div id="Product">
+
+                                    <div class="col-md-6">
+                                        <div class="card card-outline">
+
+                                            <h4 class="card-header">@Localizer["Process Properties"] </h4>
+
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        @*<label asp-for="modelProductSpec.CutSheetWid" class="col-sm-6 control-label"></label>*@
+                                                        <label class="col-md-6 control-label ">@Localizer["CutSheetWid"]<i style="color:red"> *</i> </label>
+
+                                                        <div class="col-sm-5">
+                                                            <div class="controls">
+                                                                <input asp-for="modelProductProp.CutSheetWid" class="form-control mytextboxNumber noscroll" />
+                                                                <span asp-validation-for="modelProductProp.CutSheetWid" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="row">
+                                                        @*<label asp-for="modelProductSpec.CutSheetLeng" class="col-sm-6 control-label"></label>*@
+
+                                                        <label class="col-md-6 control-label">@Localizer["CutSheetLeng"]<i style="color:red"> *</i> </label>
+
+                                                        <div class="col-sm-5">
+                                                            <div class="controls">
+                                                                <input asp-for="modelProductProp.CutSheetLeng" class="form-control mytextboxNumber noscroll"
+                                                                       autocomplete="off" />
+                                                                <span asp-validation-for="modelProductProp.CutSheetLeng" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label class="col-sm-6 control-label">@Localizer["JoinType"] <i style="color:red"> *</i></label>
+                                                    <div class="col-sm-5">
+                                                        <div class="controls">
+                                                            <select id="JointList" asp-for="modelProductProp.JoinType" class="form-control" asp-items="@(new SelectList(Model.modelProductProp.JoinList, "Value", "Text"))">
+                                                                <option value="" selected> @Localizer["Select Item"]</option>
+                                                            </select>
+
+                                                            @*<select class="form-control" asp-for="modelProductProp.JoinType" asp-items="Model.modelProductProp.JoinList">
+                                                                    <option value="">--- Please Select Item ---</option>
+                                                                </select>*@
+                                                            <span asp-validation-for="modelProductProp.JoinType" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label asp-for="modelProductProp.Wire" class="col-sm-6 control-label">
+                                                    </label>
+                                                    <div class="col-sm-5">
+                                                        <input type="text" id="wire" asp-for="modelProductProp.Wire" class="form-control mytextboxNumber noscroll" />
+                                                        <input type="hidden" id="wiredata" asp-for="modelProductProp.Wire" />
+                                                        <span asp-validation-for="modelProductProp.Wire" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    @*<label asp-for="modelProductProp.PrintMethod" class="col-sm-6 control-label"></label>*@
+                                                    <label class="col-sm-6 control-label">@Localizer[""]PrintMethod<i style="color:red"> *</i></label>
+
+                                                    <div class="col-sm-5">
+                                                        <div class="controls">
+                                                            <select id="PrintMethodList" asp-for="modelProductProp.PrintMethod" asp-items="@(new SelectList(Model.modelProductProp.PrintMethodList, "Value", "Text"))" class="form-control">
+                                                                <option value="" selected> @Localizer["Select Item"]</option>
+                                                            </select>
+                                                            <span asp-validation-for="modelProductProp.PrintMethod" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label asp-for="modelProductProp.OuterJoin" class="col-sm-6 control-label"></label>
+                                                    <div class="col-sm-5">
+                                                        <input data-toggle="toggle" asp-for="modelProductProp.OuterJoin" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" id="OuterJoin">
+                                                        <label class="form-check-label" for="OuterJoin"></label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label asp-for="modelProductProp.EANCODE" class="col-sm-6 control-label"></label>
+                                                    <div class="col-sm-5">
+                                                        <input type="text" asp-for="modelProductProp.EANCODE" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="card card-outline">
+
+                                            <h4 class="card-header">
+                                                @Localizer["Packing Properties"]
+                                            </h4>
+
+                                            <div class="card-body">
+                                                <div class="form-group row">
+
+                                                    @*<label asp-for="modelProductProp.PalletSize" class="col-sm-4 control-label"></label>*@
+                                                    <label class="col-sm-4 control-label">@Localizer["PalletSize"]<i style="color:red"> *</i></label>
+                                                    <div class="col-sm-6">
+                                                        @*<select class="form-control input-sm" asp-for="modelProductProp.PalletSize" asp-items=" ViewBag.PalletSize"></select>*@
+                                                        @Html.DropDownListFor(m => m.modelProductProp.PalletSize, Model.modelProductProp.PalletList, "", new { @class = "form-control", @required = "true" })
+                                                        <span asp-validation-for="modelProductProp.PalletSize" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label asp-for="modelProductProp.Bun" class="col-sm-4 control-label">@Localizer["pieces per bundle"]</label>
+                                                    <div class="col-sm-6">
+
+                                                        <input class="form-control mytextboxNumber noscroll" asp-for="modelProductProp.Bun">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label asp-for="modelProductProp.BunLayer" class="col-sm-4 control-label"></label>
+                                                    <div class="col-sm-6">
+                                                        <input asp-for="modelProductProp.BunLayer" class="form-control mytextboxNumber noscroll">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label asp-for="modelProductProp.LayerPallet" class="col-sm-4 control-label"></label>
+                                                    <div class="col-sm-6">
+                                                        <input asp-for="modelProductProp.LayerPallet" class="form-control mytextboxNumber noscroll">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label asp-for="modelProductProp.BoxPalet" class="col-sm-4 control-label"></label>
+                                                    <div class="col-sm-6">
+                                                        <input asp-for="modelProductProp.BoxPalet" class="form-control mytextboxNumber noscroll">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-4 control-label">@Localizer["Picture Pallet"]</label>
+                                                    <div class="col-sm-6">
+                                                        <input id="Pic_Pallet" name="Pic_Pallet" type="file" title="search image" accept="image/*" onchange="show_Pallet(this)" />
+                                                        <i id="RM_Drawing" class="fa fa-remove pull-right " style="color:red; display:none;" onclick="test()"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    @if (Model.modelProductPicture.Pic_PalletPath == null)
+                                                    {
+                                                        <label class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row justify-content-end">
+                                                                <i id="RM_Pallet" class="fas fa-times" style="color:red; display:none;" onclick="RMPallet()"></i>
+                                                            </div>
+
+                                                            <center>
+                                                                <img id="PicPallet" style="width: 100px; height: auto;display:none;" />
+                                                            </center>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <div class="row justify-content-end">
+                                                                <i id="RM_Pallet" class="fas fa-times pull-right " style="color:red; " onclick="RMPallet()"></i>
+                                                            </div>
+                                                            <center>
+                                                                <img id="PicPallet" src="@Url.Content(@Model.modelProductPicture.Pic_PalletPath)" style="width:  100px; height: auto" />
+                                                            </center>
+                                                        </div>
+                                                    }
+                                                    @*<img id="Pic_Pallet" style="width: 100%; height: auto" />*@
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6" id="RenderProcessProp">
+                                                        @{
+                                                            if (Model.modelCategories.FormGroup == "PALLET")
+                                                            {
+                                                            }
+                                                            else if (Model.modelCategories.FormGroup == "HB")
+                                                            {<partial name="_ProductProp_ProcessProperty_NewCG_HoneyCore_HoneyComb" model="Model" /> }
+                                                            else if (Model.modelCategories.FormGroup == "HC")
+                                                            { <partial name="_ProductProp_ProcessProperty_NewCG_HoneyCore_HoneyComb" model="Model" /> }
+                                                            else if (Model.modelCategories.FormGroup == "GC")
+                                                            { <partial name="_ProductProp_ProcessProperty_NewCG_HoneyCore_HoneyComb" model="Model" /> }
+                                                            else
+                                                            {
+                                                                <partial name="_ProductProp_ProcessProperty_Digital" model="Model" />
+                                                            }
+                                                        }
+                                                    </div>
+
+                                                    <div class="col-md-6" id="RenderPackingProp">
+                                                        @{
+                                                            if (Model.modelCategories.FormGroup == "PALLET")
+                                                            {
+                                                            }
+                                                            else if (Model.modelCategories.FormGroup == "HB")
+                                                            { <partial name="_ProductProp_PackingProperty_HoneyComb" model="Model" /> }
+                                                            else if (Model.modelCategories.FormGroup == "HC")
+                                                            { <partial name="_ProductProp_PackingProperty_HoneyCore" model="Model" /> }
+                                                            else if (Model.modelCategories.FormGroup == "GC")
+                                                            { <partial name="_ProductProp_PackingProperty_NewCG" model="Model" /> }
+                                                            else if (Model.modelCategories.FormGroup == "DIGITAL")
+                                                            { <partial name="_ProductProp_PackingProperty_Digital" model="Model" />}
+                                                            else
+                                                            { <partial name="_ProductProp_PackingProperty_NewCG" model="Model" /> }
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+
+                                                    <div class="col-sm-6">
+                                                        @{
+                                                            if (Model.modelCategories.FormGroup != "HB")
+                                                            {
+                                                                <partial name="_ProductProp_SetProperty" model="Model" />
+                                                            }
+                                                        }
+                                                    </div>
+
+                                                    <div class="col-sm-6">
+                                                        @{
+                                                            if (Model.modelCategories.FormGroup == "BOM" || Model.modelCategories.FormGroup == "ROLL" || Model.modelCategories.FormGroup == "TCG")
+                                                            {
+                                                            }
+                                                            else
+                                                            { <partial name="_ProductProp_SpareProperty" model="Model" /> }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="kiwi">
+
+                                    <div class="row">
+
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-header">
+                                                        @Localizer["Spacial setup Properties"]
+                                                    </h3>
+                                                </div>
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.RunSpeed" class="col-sm-4 control-label">
+                                                            @Localizer["Run speed"] :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.RunSpeed" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SetupTime" class="col-sm-4 control-label">@Localizer["Setup Time"] :</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.SetupTime" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">@Localizer["mins"]</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.PrepareTime" class="col-sm-4 control-label">@Localizer["Prepare Time"]:</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.PrepareTime" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">@Localizer["mins"]</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.PostTime" class="col-sm-4 control-label">@Localizer["Post Time"] :</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.PostTime" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">@Localizer["mins"]</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SetupWaste" class="col-sm-4 control-label">@Localizer["Setup Waste"]:</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.SetupWaste" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">@Localizer["pcs"]</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.RunWaste" class="col-sm-4 control-label">@Localizer["Run Waste"] :</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.RunWaste" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">@Localizer[""]แผ่น</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header">
+                                                    @Localizer["Spacial stacking Properties"]
+                                                </h4>
+
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SheetStack" class="col-sm-4 control-label">
+                                                            @Localizer["Sheet / Stack"] :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.SheetStack" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.RotationIn" class="col-sm-4 control-label">
+                                                            @Localizer["Rotation in"] :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.RotationIn" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.Rotationout" class="col-sm-4 control-label">
+                                                            @Localizer["Rotation out"] :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.Rotationout" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header">
+                                                    @Localizer["Process Properties"]
+                                                </h4>
+
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.ScoreType" class="col-sm-4 control-label">
+                                                            @Localizer["Score type"] :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.ScoreType" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.ScoreGap" class="col-sm-4 control-label">
+                                                            @Localizer["Score gap"] :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.ScoreGap" class="form-control mytextboxNumber noscroll">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--<div class="col-sm-1 pull-right">
+                                            <button type="submit" class="btn btn-success pull-right btn-block btn-sm"><i class="fa fa-save"></i> SAVE</button>
+                                        </div>-->
+                                    </div>
+                                </div>
+
+                                <div id="Change">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="box box-warning">
+                                                <div class="box-body">
+                                                    <h4>
+                                                        @Localizer["Change information remark"]
+                                                    </h4>
+                                                    <textarea asp-for="modelProductProp.ChangeInfo" class="form-control center-block" rows="4" maxlength="100"></textarea>
+                                                    <h4>
+                                                        @Localizer["Change history"]
+                                                    </h4>
+                                                    <div id="ChangeHistory-data-table">
+                                                        <partial name="_ChangeHistory" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                </div>
+                <section class="card-footer">
+                    <div class="col-sm-12 text-right">
+                        <!-- general form elements -->
+                        <!--<form role="form" action="Productspec.html">-->
+
+                        <div class="form-group">
+                            @* <button type="button" onclick="SaveImg()" class="btn btn-success btn-fixsize"><i class="fa fa-save"></i> @Localizer["Save"] &amp; @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i></button>*@
+                            <button type="submit" onclick="SaveImg()" class="btn btn-success btn-fixsize"><i class="fa fa-save"></i> @Localizer["Save"] &amp; @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i></button>
+                            @*<button type="submit" onclick="validateForm(@Model.modelCategories.FormGroup)" class="btn btn-success btn-fixsize"><i class="fa fa-save"></i> @Localizer["Save"] &amp; @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i></button>*@
+                        </div>
+
+                        <!-- /.box -->
+                        <!-- /.box -->
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*@section Scripts {
+
+    <script type="text/javascript">
+        var selected_tab = 0;
+        $(function () {
+            var tabs = $("#tabs").tabs({
+                select: function (e, i) {
+                    selected_tab = i.index;
+                }
+            });
+            selected_tab = $("#selectedTab").val() !== "" ? parseInt($("#selectedTab").val()) : 0;
+            tabs.tabs('select', selected_tab);
+            $("form").submit(function () {
+                $("#selectedTab").val(selected_tab);
+            });
+        });
+
+        $(function () {
+
+            //iCheck for checkbox and radio inputs
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            })
+            //Red color scheme for iCheck
+            $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+                checkboxClass: 'icheckbox_minimal-red',
+                radioClass: 'iradio_minimal-red'
+            })
+            //Flat red color scheme for iCheck
+            $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            })
+
+        })
+
+        $(document).ready(function () {
+
+            $('.mytextboxNumber noscroll').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|\./;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+            $('.mytextboxNumber noscrollNodecimal').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|/;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+        });
+
+        function chkNum(ele) {
+            var num = parseFloat(ele.value);
+            ele.value = num.toFixed(2); required
+        }
+
+        function validateForm(chk_formgroup) {
+
+            debugger;
+            console.log(chk_formgroup);
+            //let CutSheetWid = $("#modelProductProp_CutSheetWid").val();
+            //let CutSheetLeng = $("#modelProductProp_CutSheetLeng").val();
+
+            if (chk_formgroup == "PALLET") {}
+            else if (chk_formgroup == "HB") { }
+            else if (chk_formgroup == "HC") { }
+            else {
+                let JoinType = $("#modelProductProp_JoinType").val();
+                let PrintMethodList = $("#PrintMethodList").val();
+                if (JoinType == "")
+                {
+                    modalDialog("warning", "Please Select JoinType");
+                    return false;
+                }
+
+                if (PrintMethodList == "")
+                {
+                    modalDialog("warning", "Please Select PrintMethodList");
+                    return false;
+                }
+            }
+
+            if (chk_formgroup != "PALLET") {
+                let PalletSize = $("#modelProductProp_PalletSize").val();
+                if (PalletSize == "") {
+                    modalDialog("warning", "Please Input PalletSize");
+                    return false;
+                }
+            }
+            if (chk_formgroup != "HB") {
+                let PieceSet = $("#modelProductProp_PieceSet").val();
+                let PiecePatch = $("#modelProductProp_PiecePatch").val();
+                if (PieceSet == "") {
+                    modalDialog("warning", "Please Input PieceSet");
+                    return false;
+                }
+                if (PiecePatch == "") {
+                    modalDialog("warning", "Please Input PiecePatch");
+                    return false;
+                }
+            }
+
+      //  var dataJoint = $("#JointList").val();
+      //  var PrintMethod = $("#modelProductProp_PrintMethod").val();
+      //  var PrintMethodList = $("#PrintMethodList").val();
+      //  var PalletSize = $("#modelProductProp_PalletSize").val();
+
+      //  alert(PrintMethodList);
+        //if (dataJoint == "") {
+        //    modalDialog("warning", "Please Select JointType");
+
+        //    return false;
+        //}
+
+        //if (PrintMethodList == "") {
+        //    modalDialog("warning", "Please Select PrintMethod");
+
+        //    return false;
+        //}
+        //if (PalletSize == "") {
+        //    modalDialog("warning", "Please Select PalletSize");
+
+        //    return false;
+        //}
+
+        SaveImg();
+        return true
+    }
+
+    function show_Pallet(input) {
+        if (input.files && input.files[0]) {
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+                $('#PicPallet').attr('src', e.target.result);
+                $('#PicPallet').show();
+                $('#RM_Pallet').show();
+                var temp = e.target.result;
+                $('#iPalletPath').val(temp);
+            };
+            filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+    function RMPallet() {
+        var y = $('#iPalletPath').val(null);
+        $('#PicPallet').hide();
+        $('#RM_Pallet').hide();
+        const file = document.getElementById('Pic_Pallet');
+        file.value = '';
+    }
+
+    function show_FG(input) {
+        if (input.files && input.files[0]) {
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+                $('#PicFG').attr('src', e.target.result);
+                $('#PicFG').show();
+                $('#RM_FG').show();
+                var temp = e.target.result;
+                $('#iFGPath').val(temp);
+            };
+            filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+    function RMFG() {
+        var y = $('#iFGPath').val(null);
+        $('#PicFG').hide();
+        $('#RM_FG').hide();
+        const file = document.getElementById('Pic_FG');
+        file.value = '';
+    }
+
+    function SaveImg(){
+
+            var form = $('#allData')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("ProdPicSaveImage", "NewProduct")',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                   $('#allData').submit();
+                },
+                error: function () { }
+            });
+    }
+
+        //$('input[name=Buntxt], input[name=BunLayertxt], input[name=LayerPallettxt]').keyup(function () {
+    $('#modelProductProp_Bun, #modelProductProp_BunLayer, #modelProductProp_LayerPallet').keyup(function () {
+
+            //var divParent = $(this).closest('div');
+            //var Buntxt = $('input[name=qty]', divParent).val();
+            //var BunLayertxt = $('input[name=price]', divParent).val();
+            //var LayerPallettxt = $('input[name=price]', divParent).val();
+            //if (Buntxt >= 0 && BunLayertxt >= 0 && LayerPallettxt >= 0)
+            //    $('BoxPalettxt', divParent).text(Buntxt * BunLayertxt);
+
+            var bun = $("#modelProductProp_Bun").val();
+
+            var bunlayer = $("#modelProductProp_BunLayer").val();
+            var layerpallet = $("#modelProductProp_LayerPallet").val();
+            var res = bun * bunlayer * layerpallet;
+            $("#modelProductProp_BoxPalet").val(res);
+
+        });
+
+        var dataJoint = $("#JointList").val();
+
+        if (dataJoint === "ตอก") {
+
+            var wiredata = $("#wiredata").val();
+            // $("#wire").prop('readOnly', true);
+            $("#wire").val(wiredata);
+        } else {
+            $("#wire").val(0);
+            //  $("#wire").prop('readOnly', false);
+        }
+        $("#JointList").change(function () {
+            var JointList = this.value;
+            if (JointList === "ตอก") {
+
+                var wiredata = $("#wiredata").val();
+                //     $("#wire").prop('readOnly', true);
+                $("#wire").val(wiredata);
+            } else {
+                $("#wire").val(0);
+                //     $("#wire").prop('readOnly', false);
+            }
+        });
+
+        var OnSaveSuccess = function (res) {
+            if (res.isSuccess) {
+                window.location = "Routing";
+            }
+            else {
+                modalDialog(error, SaveFailed);
+            }
+        };
+    </script>
+
+}*@

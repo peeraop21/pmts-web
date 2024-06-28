@@ -1,0 +1,174 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenancePrintMethod.MaintenancePrintMethodViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.PrintMethodViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.Code</td>
+        <td>@item.Method</td>
+        <td>@item.AmountColor</td>
+        <td>
+            <button type="button" class="btn btn-default" data-id="@item.Id" data-code="@item.Code" data-method="@item.Method" data-amount="@item.AmountColor"
+                    onclick="viewShow(this.getAttribute('data-id'),this.getAttribute('data-code'),this.getAttribute('data-method'),this.getAttribute('data-amount'))"  ><span class="fas fa-file-alt text-info btn" aria-hidden="true"></span></button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-default" data-id="@item.Id" data-code="@item.Code" data-method="@item.Method" data-amount="@item.AmountColor" data-createdDate="@item.CreatedDate" data-createdBy="@item.CreatedBy"
+                    onclick="viewEdit(this.getAttribute('data-id'),this.getAttribute('data-code'),this.getAttribute('data-method'),this.getAttribute('data-amount'),this.getAttribute('data-createdDate'),this.getAttribute('data-createdBy'))"><span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span></button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal bs-example-modal-lg" id="modal-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View PrintMethod"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Id" />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Code"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Code" id="Code" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Method"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Method" id="Method" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["AmountColor"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="AmountColor" id="AmountColor" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+
+<!-- Start Edit Modal -->
+<div class="modal" id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-mainstain-printmethod">
+            <input type="hidden" id="ECreatedDate" />
+            <input type="hidden" id="ECreatedBy" />
+            @*asp-controller="MaintenancePrintMethod" asp-action="UpdatePrintMethod" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">*@
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit PrintMethod"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="EId" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Code"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="ECode" name="Code" maxlength="12" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Method"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EMethod" name="Method" maxlength="220" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["AmountColor"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="EAmountColor" name="AmountColor" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btneditmaintainprintmethod">@Localizer["Save"]</button>
+
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+<script>
+    function UpdatePrintMethodTableNew(res) {
+        $('#PrintMethod-table').html(res.View);
+        $('#PrintMethod-data-table').DataTable();
+        $('body').css('padding', '0px');
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '-webkit-fill-available');
+        $('.form-control').css('width', '-webkit-fill-available');
+
+        //$('.modal').modal('hide');
+        //$('.modal-backdrop').hide();
+        //$("body").removeClass("modal-open");
+    }
+
+        $('.btneditmaintainprintmethod').click(function () {
+           // var form = $('#edit-mainstain-printmethod').serialize();
+            if ($('#ECode').val() === "" || $('#EMethod').val() === "" || $('#EAmountColor').val() === "") {
+                swal("Please Input Data All Fields!", { icon: "warning", });
+            }
+            else {
+                var form = JSON.stringify(getData());
+                $.ajax({
+                    url: '@Url.Action("UpdatePrintMethod", "MaintenancePrintMethod")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdatePrintMethodTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+       });
+</script>

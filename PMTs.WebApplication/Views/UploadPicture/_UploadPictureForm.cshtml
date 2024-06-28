@@ -1,0 +1,256 @@
+﻿@model PMTs.DataAccess.ModelView.ProductPictureView
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    Layout = null;
+   // Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+@if (Model.MaterialNo != null)
+{
+
+<form id="allData" asp-action="SavePicture" asp-controller="UploadPicture" data-ajax="true" data-ajax-method="post" data-ajax-success="OnSaveSuccess" onsubmit="return SaveImg()">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <div class="row justify-content-between">
+                    <div class="col-6">
+                        @*<h3 class="text-themecolor">@Localizer["New Product"]</h3>*@
+                    </div>
+                    <div class="col-6">
+                        <h3 class="box-title text-right ">
+                            @Localizer["Material No"] : @Model.MaterialNo
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        @*&nbsp;&nbsp;&nbsp;<img src="~/pic/drawIcon.png" width="20" height="20" />&nbsp;*@
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-pencil-alt"></i></span>
+
+                                            @Localizer["Drawing"]
+                                            @if (!string.IsNullOrEmpty(@Model.Pic_DrawingPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removeclick" onclick="removeclick()" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addclick" onclick="addclick()" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(@Model.Pic_DrawingPath.Trim()))
+                                {
+                                    <input type="file" id="Pic_Drawing" name="Pic_Drawing" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Drawing(this)" />
+                                    <span style="float:right"><i style="font-size:25px;color:brown" id="removeclick" onclick="removeclick()" class="fa fa-trash"></i></span>
+                                    <div class="SImg">
+
+                                        <img id="Drawing" src='@Model.Pic_DrawingPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_Drawing" name="Pic_Drawing" data-height="300" accept="image/*" onchange="show_Drawing(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Drawing" src='@Model.Pic_DrawingPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.Pic_DrawingPath, new { @id = "iDrawing", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body ">
+                                <div class="row">
+                                    @*&nbsp;&nbsp;&nbsp;<img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Print Master"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-print"></i></span>
+                                            @Localizer["Print Master"]
+                                            @if (!string.IsNullOrEmpty(@Model.Pic_PrintPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removeprintmasterclick" onclick="removeprintmasterclick()" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addprintmasterclick" onclick="addprintmasterclick()" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(Model.Pic_PrintPath))
+                                {
+                                    <input type="file" id="Pic_Print" name="Pic_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Print(this)" />
+                                    <span style="float:right"><i style="font-size:25px;color:brown" id="removeprintmasterclick" onclick="removeprintmasterclick()" class="fa fa-trash"></i></span>
+
+                                    <div class="SImg">
+
+                                        <img id="Print" src='@Model.Pic_PrintPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_Print" name="Pic_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Print(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Print" src='@Model.Pic_PrintPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.Pic_PrintPath, new { @id = "iPrint", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body">
+
+                                <div class="row">
+                                    @*&nbsp;&nbsp;&nbsp;<img src="~/pic/palletIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Pallet"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-tape"></i></span>
+                                            @Localizer["Pallet"]
+                                            @if (!string.IsNullOrEmpty(@Model.Pic_PalletPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removepalletclick" onclick="removepalletclick()" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addpalletclick" onclick="addpalletclick()" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+                                @if (string.IsNullOrEmpty(Model.Pic_PalletPath))
+                                {
+                                    <span style="float:right"><i style="font-size:25px;color:brown" id="removepalletclick" onclick="removepalletclick()" class="fa fa-trash"></i></span>
+                                    <input type="file" id="Pic_Pallet" name="Pic_Pallet" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Pallet(this)" />
+                                    <div class="SImg">
+
+                                        <img id="Pallet" src='@Model.Pic_PalletPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_Pallet" name="Pic_Pallet" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Pallet(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Pallet" src='@Model.Pic_PalletPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.Pic_PalletPath, new { @id = "iPallet", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+
+                            <div class="card-body">
+                                <div class="row">
+                                    @*&nbsp; &nbsp;&nbsp;<img src="~/pic/fgBoxIcon.jpg" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Packaging"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-box-open"></i></span>
+                                            @Localizer["Packaging"]
+                                            @if (!string.IsNullOrEmpty(@Model.Pic_FGPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removefgclick" onclick="removefgclick()" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addfgclick" onclick="addfgclick()" class="fa fa-camera"></i></span>
+
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(Model.Pic_FGPath))
+                                {
+                                    <span style="float:right"><i style="font-size:25px;color:brown" id="removefgclick" onclick="removefgclick()" class="fa fa-trash"></i></span>
+
+                                    <input type="file" id="Pic_FG" name="Pic_FG" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_FG(this)" />
+                                    <div class="SImg">
+                                        <img id="FG" src='@Model.Pic_FGPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_FG" name="Pic_FG" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_FG(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+                                        <img id="FG" src='@Model.Pic_FGPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+
+                                @Html.TextBoxFor(m => m.Pic_FGPath, new { @id = "iFG", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" asp-for="MaterialNo" />
+
+                <button type="submit" class="btn btn-primary"> <i class="fa fa-save"></i> @Localizer["Save"] </button>
+            </div>
+        </div>
+    </div>
+</form>
+        <!-- Modal -->
+        <div class="modal fade in" id="modal-show-save" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title text-themecolor">@Localizer["Save"]</h2>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="swal2-icon swal2-success swal2-animate-success-icon" style="display: flex;">
+                            <div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);">
+                            </div>
+                            <span class="swal2-success-line-tip"></span>
+                            <span class="swal2-success-line-long"></span>
+                            <div class="swal2-success-ring"></div>
+                            <div class="swal2-success-fix" style="background-color: rgb(255, 255, 255);"></div>
+                            <div class="swal2-success-circular-line-right" style="background-color: rgb(255, 255, 255);"></div>
+                        </div>
+                        <p><h3>@Localizer["Update Material"] @Model.MaterialNo @Localizer["Completed"]</h3></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success waves-effect waves-light" onclick="reponseToInforAfterSave()" type="button"><i class="fa fa-check"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+}

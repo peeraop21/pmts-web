@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.BomRawMaterial.RawMaterialMasterViewModel
+@using System.Linq
+
+@{
+    Layout = null;
+}
+
+<table id="rawmaterialmaster-table" class="table  table-bordered  table-hover " width="100%">
+    <thead>
+        <tr class=" text-center">
+            <th width="100px">@Localizer["Material No."]</th>
+            <th width="450px">@Localizer["MaterialDescription"]</th>
+            <th width="100px">@Localizer["MaterialType"]</th>
+            <th width="100px">@Localizer["MaterialGroup"]</th>
+            <th width="100px">@Localizer["NetWeight"]</th>
+            <th width="100px">@Localizer["Uom"]</th>
+            <th width="120px">@Localizer["OldMaterialNumber"]</th>
+            <th width="120px">@Localizer["Created Date"]</th>
+            <th width="120px">@Localizer["Updated Date"]</th>
+            <th width="120px">@Localizer["Updated By"]</th>
+            <th width="100px">@Localizer["Option"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PpcRawMaterialMasters)
+        {
+        <tr>
+            <td>@item.MaterialNumber</td>
+            <td>@item.MaterialDescription</td>
+            <td>@item.MaterialType</td>
+            <td>@item.MaterialGroup</td>
+            <td>@item.NetWeight</td>
+            <td>@item.Uom</td>
+            <td>@item.OldMaterialNumber</td>
+            <td>@item.DateOfCreation</td>
+            <td>@item.UpdateDate</td>
+            <td>@item.UpdateBy</td>
+            <td class="text-center">
+                <a class="btn-default option-btn m1"
+                   data-Id="@item.Id"
+                   data-MaterialNumber="@item.MaterialNumber"
+                   data-MaterialDescription="@item.MaterialDescription"
+                   data-MaterialType="@item.MaterialType"
+                   data-NetWeight="@item.NetWeight"
+                   data-MaterialGroup="@item.MaterialGroup"
+                   data-Uom="@item.Uom"
+                   data-OldMaterialNumber="@item.OldMaterialNumber"
+                   data-DateOfCreation="@item.DateOfCreation"
+                   data-Plant="@item.Plant"
+                   onclick="BindRawMaterialMasterView(this)">
+                    <span class="fas fa-file-alt text-info mr-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="View"></span>
+                </a>
+                <a class="btn-default option-btn m1"
+                   data-Id="@item.Id"
+                   data-MaterialNumber="@item.MaterialNumber"
+                   data-MaterialDescription="@item.MaterialDescription"
+                   data-MaterialType="@item.MaterialType"
+                   data-NetWeight="@item.NetWeight"
+                   data-MaterialGroup="@item.MaterialGroup"
+                   data-Uom="@item.Uom"
+                   data-OldMaterialNumber="@item.OldMaterialNumber"
+                   data-Plant="@item.Plant"
+                   data-DateOfCreation="@item.DateOfCreation"
+                   onclick="BindRawMaterialMasterEdit(this)">
+                    <span class="fas fa-pencil-alt text-warning ml-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="Edit"></span>
+                </a>
+                <a class="btn-default option-btn m1"
+                   data-Id="@item.Id"
+                   onclick="DeleteRawMaterialMaster(this)">
+                    <span class="fas fa-trash text-danger ml-2" aria-hidden="true" style="cursor:pointer;margin: 3px;" title="Delete"></span>
+                </a>
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>
+
+<partial name="_CreateEditRawMaterialMasterModal" model="@Model" />

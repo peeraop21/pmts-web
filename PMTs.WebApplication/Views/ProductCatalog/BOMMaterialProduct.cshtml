@@ -1,0 +1,377 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ModelView.ProductCatalog.BOMMaterialProductModel>
+@using System.Linq
+
+@{
+    ViewData["Title"] = "BOM Material Product";
+}
+
+<style>
+    .LockScreen {
+        display: block;
+        visibility: visible;
+        position: absolute;
+        z-index: 999;
+        top: 0px;
+        left: 0px;
+        width: 105%;
+        height: 105%;
+        background-color: transparent;
+        vertical-align: bottom;
+        padding-top: 20%;
+        filter: alpha(opacity=75);
+        opacity: 0.70;
+        font-size: large;
+        color: blue;
+        font-style: italic;
+        font-weight: 400;
+        background-image: url("/images/report-preloading.gif");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+</style>
+
+<div id="preLoadingScreen" class="LockScreen"></div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-top-bar">
+            <div class="card-header">
+                <div class="row box">
+                    <div class="col-md-12">
+                        <h3 class="text-themecolor"><i class="mdi mdi-checkbox-multiple-marked-circle-outline"></i> @Localizer["BOM Material Product"] </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body tab-criteria">
+                <div class="form-group row">
+                    <div class="col-md-1" style="max-width:50px"></div>
+                    <label class="col-md-1 col-form-label text-right" style="min-width:110px">@Localizer["Cust Code"]</label>
+                    <div class="col-md-3">
+                        <input class="form-control mt-1" id="input-cust-code">
+                    </div>
+
+                    <label class="col-md-1 col-form-label text-right">@Localizer["Cust ID"]</label>
+                    <div class="col-md-5">
+                        <input class="form-control mt-1" id="input-cust-id">
+                    </div>
+
+                    <div class="col-md-1"></div>
+                </div>
+
+                <div class="form-group row">
+
+                    <div class="col-md-1" style="max-width:50px"></div>
+                    <label class="col-md-1 col-form-label text-right" style="min-width:110px">@Localizer["Cust Name"]</label>
+                    <div class="col-md-9">
+                        <input class="form-control mt-1" id="input-cust-name">
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+
+                <div class="form-group row" style="padding-bottom:10px">
+
+                    <div class="col-md-1" style="max-width:50px"></div>
+                    <label class="col-md-1 col-form-label text-right" style="min-width:110px">@Localizer["PC"]</label>
+                    <div class="col-md-3">
+                        <input class="form-control mt-1" id="input-pc1">
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control mt-1" id="input-pc2">
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control mt-1" id="input-pc3">
+                    </div>
+
+                    <div class="col-md-1"></div>
+                </div>
+
+                <div class="form-group row" style="padding-bottom:10px">
+
+                    <div class="col-md-2"></div>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-4 form-inline">
+                        <button type="button" class="btn btn-outline-info" style="max-height:30px;min-width:100px;float: left;" onclick="SearchBOMMaterialProduct()"><i class="fas fa-search mt-1 float-left"></i>@Localizer["Search"]</button>
+                        <div style="padding-left:20px"></div>
+                        <button type="button" class="btn btn-outline-primary" style="max-height:30px;min-width:100px;float: left;" onclick="ClearAll()"><i class="fas fa-redo-alt mt-1 float-left"></i>@Localizer["Clear"]</button>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div id="divBOMMaterialProduct" class="card-body" style="padding:2px 2px 10px 2px;">
+                    <partial name="_BOMMaterialProductTable" model="Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/buttons.dataTables.min.css" />
+    <script type="text/javascript" src="~/DataTable/js/datatables.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/buttons.colVis.min.js"></script>
+    <script src="~/lib/DataTables/pdfmake.min.js"></script>
+    <script src="~/lib/DataTables/vfs_fonts.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/jszip.min.js"></script>
+
+    <script>
+        var viewAll = "";
+        window.pdfMake.fonts = {
+            THSarabunNew: {
+                normal: 'THSarabunNew.ttf',
+                bold: 'THSarabunNew.ttf',
+                italics: 'THSarabunNew.ttf"',
+                bolditalics: 'THSarabunNew.ttf',
+            }
+        };
+
+        $(document).ready(function () {
+            $("#preLoadingScreen").hide();
+            $("#input-cust-code").focus();
+        });
+
+        $('#BOMMaterialProductTable').DataTable({
+            "scrollX": true,
+            "order": [[0, "asc"]],
+            "dom": 'Bfrt<"float-left"i>p',
+            "paging": true,
+            "lengthChange": false,
+            "autoWidth": true,
+            "buttons": [
+                {
+                    extend: 'excelHtml5',
+                    text: 'ดาวน์โหลด Excel',
+                    createEmptyCells: true,
+                    messageTop: "Pricing Scale Mat Product",
+                },
+            ],
+            "oLanguage": {
+                "sSearch": "ค้นหา:"
+            }
+        });
+
+        $('#input-cust-id').on('keypress', function (e) {
+            if (e.which === 13 && NoEmptyFill()) {
+                SearchBOMMaterialProduct();
+            }
+        });
+
+        $('#input-cust-name').on('keypress', function (e) {
+            if (e.which === 13 && NoEmptyFill()) {
+                SearchBOMMaterialProduct();
+            }
+        });
+
+        $('#input-cust-code').on('keypress', function (e) {
+            if (e.which === 13 && NoEmptyFill()) {
+                SearchBOMMaterialProduct();
+            }
+        });
+
+        $('#input-pc1').on('keypress', function (e) {
+            if (e.which === 13 && NoEmptyFill()) {
+                SearchBOMMaterialProduct();
+            }
+        });
+
+        $('#input-pc2').on('keypress', function (e) {
+            if (e.which === 13 && NoEmptyFill()) {
+                SearchBOMMaterialProduct();
+            }
+        });
+
+        $('#input-pc3').on('keypress', function (e) {
+            if (e.which === 13 && NoEmptyFill()) {
+                SearchBOMMaterialProduct();
+            }
+        });
+
+        function NoEmptyFill() {
+            let custId = $("#input-cust-id").val();
+            let custName = $("#input-cust-name").val();
+            let custCode = $("#input-cust-code").val();
+            let pc1 = $("#input-pc1").val();
+            let pc2 = $("#input-pc2").val();
+            let pc3 = $("#input-pc3").val();
+            if ((custId != "" && custId != null) || (custName != "" && custName != null) || (custCode != "" && custCode != null) || (pc1 != "" && pc1 != null) || (pc2 != "" && pc2 != null) || ( pc3 != "" && pc3 != null)) {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        function SearchBOMMaterialProduct()
+        {
+            let custId = $("#input-cust-id").val();
+            let custName = $("#input-cust-name").val();
+            let custCode = $("#input-cust-code").val();
+            let pc1 = $("#input-pc1").val();
+            let pc2 = $("#input-pc2").val();
+            let pc3 = $("#input-pc3").val();
+
+            if (NoEmptyFill()) {
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("SearchBOMMaterialProduct", "ProductCatalog")',
+                    data: {custId: custId, custName: custName, custCode: custCode, pc1: pc1, pc2: pc2, pc3 : pc3},
+                    success: function (res) {
+                        if (res.IsSuccess) {
+
+                            setTimeout(function () {
+                                //hide loading
+                                $("#preLoadingScreen").hide();
+                            }, 1000);
+
+                            $('#divBOMMaterialProduct').html(res.View);
+                            $('.modal-backdrop').css('display', 'none');
+                            $('#BOMMaterialProductTable').DataTable({
+                                "scrollX": true,
+                                "ordering": false,
+                                "dom": 'Bfrt<"float-left"i>p',
+                                "paging": true,
+                                "autoWidth": true,
+                                "buttons": [
+                                    {
+                                        extend: 'excelHtml5',
+                                        text: 'ดาวน์โหลด Excel',
+                                        title: "BOM Material Product(" + new Date().yyyymmdd() + ")",
+                                        messageTop: "BOM Material Product",
+                                        createEmptyCells: true,
+                                        exportOptions: {
+                                            title: null,
+                                            orthogonal: 'export'
+                                        },
+                                        customize: function (xlsx) {
+                                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+                                            // Loop over the cells
+                                            let row = 0;
+
+                                            $('row c[r="A3"]', sheet).attr('s', 47);
+                                            $('row c[r="B3"]', sheet).attr('s', 47);
+                                            $('row c[r="C3"]', sheet).attr('s', 47);
+                                            $('row c[r="D3"]', sheet).attr('s', 47);
+                                            $('row c[r="E3"]', sheet).attr('s', 47);
+                                            $('row c[r="F3"]', sheet).attr('s', 47);
+                                            $('row c[r="G3"]', sheet).attr('s', 47);
+                                            $('row c[r="H3"]', sheet).attr('s', 47);
+                                            $('row c[r="I3"]', sheet).attr('s', 47);
+                                            $('row c[r="J3"]', sheet).attr('s', 47);
+                                            $('row c[r="K3"]', sheet).attr('s', 47);
+                                            $('row c[r="L3"]', sheet).attr('s', 47);
+                                            $('row c[r="M3"]', sheet).attr('s', 47);
+                                            $('row c[r="N3"]', sheet).attr('s', 47);
+                                            $('row c[r="O3"]', sheet).attr('s', 47);
+
+                                            //$('row c', sheet).each(function () {
+                                            //    debugger;
+                                            //    //select the index of the row
+                                            //    if (row == 1) {
+                                            //        $(this).attr('s', '51');
+                                            //    } else if (row == 2) {
+
+                                            //        $('row c[r="A3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="B3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="C3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="D3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="E3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="F3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="G3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="H3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="I3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="J3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="K3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="L3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="M3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="N3"]', sheet).attr('s', 47);
+                                            //        $('row c[r="O3"]', sheet).attr('s', 47);
+                                            //    } else if (row > 2) {
+                                            //        if ($('row:nth-child(' + row + ') c:nth-child(3)', sheet).text() === "")
+                                            //        {
+                                            //            $('row:nth-child(' + row + ') c:nth-child(1)', sheet).attr('s', '15');
+                                            //            $('row:nth-child(' + row + ') c:nth-child(2)', sheet).attr('s', '15');
+                                            //            $('row:nth-child(' + row + ') c:nth-child(15)', sheet).attr('s', '17');
+                                            //        }
+                                            //    }
+
+                                            //    row++;
+                                            //});
+
+                                        },
+                                    }
+                                ],
+                                "oLanguage": {
+                                    "sSearch": "ค้นหา:"
+                                }
+                            });
+
+                        }
+                        else {
+                            swal("Search Failed!", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+            else
+            {
+                $("#input-cust-code").focus();
+            }
+
+        }
+
+        function ClearAll()
+        {
+            var elements = document.getElementsByTagName("input");
+            for (var ii = 0; ii < elements.length; ii++) {
+                if (elements[ii].type == "text") {
+                    elements[ii].value = "";
+                }
+            }
+        }
+
+        Date.prototype.yyyymmdd = function () {
+            var mm = this.getMonth() + 1; // getMonth() is zero-based
+            var dd = this.getDate();
+
+            return [
+                (dd > 9 ? '' : '0') + dd,
+                (mm > 9 ? '' : '0') + mm,
+                this.getFullYear(),
+            ].join('/');
+        };
+    </script>
+}

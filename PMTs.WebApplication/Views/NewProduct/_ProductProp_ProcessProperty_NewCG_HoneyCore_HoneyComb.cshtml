@@ -1,0 +1,38 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="card card-outline">
+    <h4 class="card-header">@Localizer["Process Properties"] </h4>
+    <div class="card-body">
+
+        <div class="form-group">
+            <div class="row">
+                @*<label asp-for="modelProductSpec.CutSheetWid" class="col-sm-6 control-label"></label>*@
+                <label class="col-md-6 control-label ">@Localizer["CutSheetWid"]<i style="color:red"> *</i> </label>
+                <div class="col-sm-5">
+                    <div class="controls">
+                        <input asp-for="modelProductProp.CutSheetWid" required="" class="form-control mytextboxNumber noscroll" />
+                        <span asp-validation-for="modelProductProp.CutSheetWid" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                @*<label asp-for="modelProductSpec.CutSheetLeng" class="col-sm-6 control-label"></label>*@
+                <label class="col-md-6 control-label">@Localizer["CutSheetLeng"]<i style="color:red"> *</i> </label>
+                <div class="col-sm-5">
+                    <div class="controls">
+                        <input asp-for="modelProductProp.CutSheetLeng" required="" class="form-control mytextboxNumber noscroll"
+                               autocomplete="off" />
+                        <span asp-validation-for="modelProductProp.CutSheetLeng" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

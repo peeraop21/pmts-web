@@ -1,0 +1,314 @@
+﻿@model PMTs.DataAccess.ModelView.PresaleViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<br />
+<div class="card">
+    <div class="card-body">
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-xs-12 col-md-12">
+                    <h3 class="text-themecolor"><i class="mdi mdi-content-duplicate"></i>@Localizer["Title"]</h3>
+                    <hr />
+                </div>
+            </div>
+            <form asp-controller="Presale" id="formPresale">
+                <div class="col-sm-12 col-md-9 col-lg-6">
+
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch1">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch1" class="form-control input-sm  pull-right" style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch2">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch2" class="form-control input-sm  pull-right " style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch3">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch3" class="form-control input-sm  pull-right" style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-4">
+                            <select class=" form-control " asp-for="Param.ddlSearch4">
+                                <option value=""></option>
+                                <option value="PSM_ID">@Localizer["PSM_ID"]</option>
+                                <option value="PSM_Status">@Localizer["PSM_Status"]</option>
+                                <option value="Material_No">@Localizer["Material_No"]</option>
+                                <option value="PC">@Localizer["PC"]</option>
+                                <option value="Cust_Name">@Localizer["Cust_Name"]</option>
+                                <option value="Description">@Localizer["Description"]</option>
+                                <option value="User">@Localizer["User"]</option>
+                                <option value="CreateDate">@Localizer["CreateDate"]</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" asp-for="Param.txtSearch4" class="form-control input-sm  pull-right" style="margin-left:-1px" placeholder="@Localizer["Search"]">
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-4">
+                        </div>
+                        <div class="col-8  text-right col-md-8">
+                            <div>
+                                <button type="submit" class="btn btn-info" asp-action="SearchPresale">
+                                    <i class="fas fa-search"></i>
+                                    @Localizer["Search"]
+                                </button>
+
+                                <button type="button" class="btn btn-danger" id="btnClearPresale">
+                                    <i class="fas fa-redo-alt"></i>
+                                    @Localizer["Clear"]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive m-t-10">
+
+                @Html.Partial("_SearchPresale", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/lib/momentjs/moment.min.js"></script>
+    <script type="text/javascript" src="~/lib/momentjs/datetime-moment.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $.fn.dataTable.moment('DD/MM/YYYY');
+
+            $('#myTable').DataTable({
+                'pageLength': 20,
+                'columnDefs': [{
+                    'targets': [0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                },
+                {
+                    "render": function (data, type, full, meta) {
+                        debugger;
+                        // let datetimeArr = data.split(' ');
+                        // let dateArr = datetimeArr[0].split('/');
+                        // let timeArr = datetimeArr[1].split(':');
+                        // let year = dateArr[2];
+                        // let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                        // let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                        // let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                        // let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                        // let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                        // var newDate = moment(new Date(year, month - 1, day, hour, min, sec)).format('DD/MM/YYYY');
+                        let newDate = moment(new Date(full[11])).format('DD/MM/YYYY');
+                        return newDate;
+                    },
+                    "targets": [9],
+                },
+                {
+                    "render": function (data, type, full, meta) {
+                        debugger;
+                        // let datetimeArr = data.split(' ');
+                        // let dateArr = datetimeArr[0].split('/');
+                        // let timeArr = datetimeArr[1].split(':');
+                        // let year = dateArr[2];
+                        // let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                        // let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                        // let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                        // let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                        // let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                        // var newDate = moment(new Date(year, month - 1, day, hour, min, sec)).format('DD/MM/YYYY');
+
+                        let newDate = moment(new Date(full[12])).format('DD/MM/YYYY');
+                        return newDate;
+                    },
+                    "targets": [10],
+                },
+                ],
+                "order": []
+            });
+        });
+
+        $("#btnClearPresale").click(function () {
+            $('#formPresale')[0].reset();
+        });
+
+        function ImportPresale(PSM_ID, board, flute, flagChange) {
+            //check board pmts and presale board
+            let psmIdFlagChange = flagChange == "Y" ? PSM_ID : "";
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CheckImportPresale", "Presale") ',
+                datatype: "json",
+                data: { board: board, flute: flute, psmId: psmIdFlagChange },
+                success: function (res) {
+                    //if (res.HasBoard) {
+                    var $row = $(this).closest("tr");
+                    let actionFlagChange = flagChange == "Y" ? "PresaleChangeNewProduct" : "Presale";
+                    window.location.href = "@Url.Action("Categories", "NewProduct")" + "?psmId=" + PSM_ID + "&ActionTran=" + actionFlagChange;
+                    //}
+                    //else {
+                    //    //modalDialog("warning", res.Message);
+                    //    swal(res.Message, "", "warning");
+                    //}
+                },
+                error: function (res) {
+                    //modalDialog("warning", res.Message);
+                    swal(res.Message, "", "warning");
+                }
+            });
+        }
+        function UpdateTable() {
+            $.ajax({
+                url: '@Url.Action("SearchPresale", "Presale")',
+                success: function (res) {
+                    if (res) {
+                        window.location.reload(true);
+                    }
+                },
+                error: function () { }
+            });
+        }
+        function RejectPresale(PSM_ID) {
+            swal({
+                title: "Are you sure ?",
+                text: "Are you sure you want to Reject?",
+                icon: "info",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("RejectPresale", "Presale") ',
+                            datatype: "json",
+                            data: { psmId: PSM_ID },
+                            success: function (res) {
+                                UpdateTable();
+                            },
+                            error: function (res) {
+                                swal(res.Message, "", "warning");
+                            }
+                        });
+                    }
+                });
+
+        }
+        function DeletePresale(PSM_ID) {
+            swal({
+                title: "Are you sure ?",
+                text: "Are you sure you want to Delete?",
+                icon: "info",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("DeletePresale", "Presale") ',
+                            datatype: "json",
+                            data: { psmId: PSM_ID },
+                            success: function (res) {
+                                UpdateTable();
+                            },
+                            error: function (res) {
+                                swal(res.Message, "", "warning");
+                            }
+                        });
+                    }
+                });
+
+        }
+
+        async function downloadURI(blobUrl, name) {
+            let blob = await fetch(blobUrl).then((r) => r.blob());
+            var f = new FileReader();
+            f.readAsDataURL(blob);
+            f.onload = d => {
+                var uri = d.target.result;
+                var link = document.createElement('a');
+                link.download = name;
+                link.href = uri;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                delete link;
+            }
+        }
+
+        async function OpenFileByUrl(val) {
+            if (val) {
+                window.open(val);
+                let name = val.split('/').pop()
+                let type = "data:'application/pdf'";
+
+                await downloadURI(val, name);
+            }
+        }
+    </script>
+
+}

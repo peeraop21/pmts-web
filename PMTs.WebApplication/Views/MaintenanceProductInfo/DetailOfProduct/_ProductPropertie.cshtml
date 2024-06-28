@@ -1,0 +1,493 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+
+                <div class="card-body form-material">
+                    <div class="row justify-content-between">
+                        <div class="col-6">
+                            <h3 class="text-themecolor">New Product >  5. Product Properties</h3>
+                        </div>
+                    </div> <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div id="tabs" style="width:100%">
+                                <ul>
+                                    <li class="active"><a href="#Product" data-toggle="tab">Product</a></li>
+                                    <li><a href="#kiwi" data-toggle="tab">KIWI</a></li>
+                                    <li><a href="#Change" data-toggle="tab">Change</a></li>
+                                </ul>
+                                <div id="Product">
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header"> Process Properties</h4>
+
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            @*<label asp-for="modelProductSpec.CutSheetWid" class="col-sm-6 control-label"></label>*@
+                                                            <label class="col-md-6 control-label ">CutSheetWid> </label>
+
+                                                            <div class="col-sm-5">
+                                                                <div class="controls">
+                                                                    <input asp-for="modelProductProp.CutSheetWid" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                                                    <span asp-validation-for="modelProductProp.CutSheetWid" class="text-danger"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            @*<label asp-for="modelProductSpec.CutSheetLeng" class="col-sm-6 control-label"></label>*@
+
+                                                            <label class="col-md-6 control-label">CutSheetLeng</label>
+
+                                                            <div class="col-sm-5">
+                                                                <div class="controls">
+                                                                    <input asp-for="modelProductProp.CutSheetLeng" class="form-control mytextboxNumber" autocomplete="off" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                                                    <span asp-validation-for="modelProductProp.CutSheetLeng" class="text-danger"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-6 control-label">JoinType </label>
+                                                        <div class="col-sm-5">
+                                                            <div class="controls">
+                                                                <select id="JointList" asp-for="modelProductProp.JoinType" class="form-control" asp-items="@(new SelectList(Model.modelProductProp.JoinList, "Value", "Text"))"style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                                    <option value="" selected>--- Please Select Item ---</option>
+                                                                </select>
+                                                                <span asp-validation-for="modelProductProp.JoinType" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.Wire" class="col-sm-6 control-label">
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input type="text" id="wire" asp-for="modelProductProp.Wire" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled />
+                                                            <input type="hidden" id="wiredata" asp-for="modelProductProp.Wire" />
+                                                            <span asp-validation-for="modelProductProp.Wire" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        @*<label asp-for="modelProductProp.PrintMethod" class="col-sm-6 control-label"></label>*@
+                                                        <label class="col-sm-6 control-label">PrintMethod</label>
+
+                                                        <div class="col-sm-5">
+                                                            <div class="controls">
+                                                                <select id="PrintMethodList" asp-for="modelProductProp.PrintMethod" asp-items="@(new SelectList(Model.modelProductProp.PrintMethodList, "Value", "Text"))" class="form-control" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                                    <option value="" selected>--- Please Select Item ---</option>
+                                                                </select>
+                                                                <span asp-validation-for="modelProductProp.PrintMethod" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.OuterJoin" class="col-sm-6 control-label"></label>
+                                                        <div class="col-sm-5">
+                                                            <input data-toggle="toggle" asp-for="modelProductProp.OuterJoin" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" id="OuterJoin">
+                                                            <label class="form-check-label" for="OuterJoin"></label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.EANCODE" class="col-sm-6 control-label"></label>
+                                                        <div class="col-sm-5">
+                                                            <input type="text" asp-for="modelProductProp.EANCODE" class="form-control" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header">
+                                                    Packing Properties
+                                                </h4>
+
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+
+                                                        @*<label asp-for="modelProductProp.PalletSize" class="col-sm-4 control-label"></label>*@
+                                                        <label class="col-sm-4 control-label">PalletSize</label>
+                                                        <div class="col-sm-6">
+                                                            @*<select class="form-control input-sm" asp-for="modelProductProp.PalletSize" asp-items=" ViewBag.PalletSize"></select>*@
+                                                            @Html.DropDownListFor(m => m.modelProductProp.PalletSize, Model.modelProductProp.PalletList, "", new { @class = "form-control", @required = "true", @style = "background-color :white;  font-weight:bold; color:black; color:black;",@disabled = "true" })
+                                                            <span asp-validation-for="modelProductProp.PalletSize" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.Bun" class="col-sm-4 control-label">กล่อง / มัด</label>
+                                                        <div class="col-sm-6">
+
+                                                            <input class="form-control mytextboxNumber" asp-for="modelProductProp.Bun" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.BunLayer" class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.BunLayer" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.LayerPallet" class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.LayerPallet" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.BoxPalet" class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.BoxPalet" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-4 control-label">Picture Pallet</label>
+                                                        <div class="col-sm-6">
+                                                            @*<input id="Pic_Pallet" name="Pic_Pallet" type="file" title="search image" accept="image/*" onchange="show_Pallet(this)" />*@
+                                                            @*<i id="RM_Drawing" class="fa fa-remove pull-right " style="color:red; display:none;" onclick="test()"></i>*@
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        @if (Model.modelProductPicture.Pic_PalletPath == null)
+                                                        {
+                                                            <label class="col-sm-4 control-label"></label>
+                                                            <div class="col-sm-6">
+
+                                                                <center>
+                                                                    <img id="PicPallet" style="width: 200px; height: auto;display:none;" />
+                                                                </center>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="col-sm-4 control-label"></label>
+                                                            <div class="col-sm-6">
+                                                                <center>
+                                                                    <img id="PicPallet" src="@Url.Content(@Model.modelProductPicture.Pic_PalletPath)" style="width:  200px; height: auto" />
+                                                                </center>
+                                                            </div>
+                                                        }
+                                                        @*<img id="Pic_Pallet" style="width: 100%; height: auto" />*@
+                                                    </div>
+
+                                                    @Html.TextBoxFor(m => m.modelProductPicture.Pic_PalletPath, new { @id = "iPalletPath", @style = "display:none;" })
+
+                                                    <div class="form-group row">
+
+                                                        <label class="col-sm-4 control-label">Picture Packaging</label>
+                                                        <div class="col-sm-6">
+                                                            @*@Html.TextBoxFor(m => m.modelProductPicture.Pic_FG, new { type = "file", accept = "image/*", id = "file", onchange = "show_FG(this)" })*@
+                                                            @*<input asp-for="Pic_FG" type="file" title="search image" accept="image/*" onchange="show_FG(this)" />*@
+                                                            @*<input id="Pic_FG" name="Pic_FG" type="file" title="search image" accept="image/*" onchange="show_FG(this)" />*@
+                                                        </div>
+                                                    </div>
+                                                        <div class="form-group row">
+                                                            @if (Model.modelProductPicture.Pic_FGPath == null)
+                                                            {
+                                                                <label class="col-sm-4 control-label"></label>
+                                                                <div class="col-sm-6">
+                                                                    <center>
+                                                                        <img id="PicFG" style="width:  200px; height: auto ;display:none;" />
+                                                                    </center>
+                                                                </div>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <label class="col-sm-4 control-label"></label>
+                                                                <div class="col-sm-6">
+                                                                    <center>
+                                                                        <img id="PicFG" src="@Url.Content(@Model.modelProductPicture.Pic_FGPath)" style="width:  200px; height: auto" />
+                                                                    </center>
+                                                                </div>
+
+                                                            }
+                                                        </div>
+                                                        @Html.TextBoxFor(m => m.modelProductPicture.Pic_FGPath, new { @id = "iFGPath", @style = "display:none;" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header">
+                                                    Set Properties
+                                                </h4>
+
+                                                <div class="card-body">
+                                                    <div class="form-group row">
+                                                        @*<label asp-for="modelProductProp.PieceSet" class="col-sm-6 control-label"></label>*@
+                                                        <label class="col-sm-6 control-label">จำนวนชิ้น/ชุด</label>
+
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.PieceSet" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                            <span asp-validation-for="modelProductProp.PieceSet" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-6 control-label"> จำนวนชิ้นปะปึก</label>
+
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.PiecePatch" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                            <span asp-validation-for="modelProductProp.PiecePatch" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.BoxHandle" class="col-sm-6 control-label">
+                                                        </label>
+                                                        <div class="col-sm-5">
+
+                                                            @if (Model.modelCategories.ProductTypeName.Contains("ไม่มีหูจับ"))
+                                                            {
+                                                                <input data-toggle="toggle" asp-for="modelProductProp.BoxHandle" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" id="ProductTypeName" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                                <label class="form-check-label" for="ProductTypeName"></label>
+
+                                                            }
+                                                            else if (Model.modelCategories.ProductTypeName.Contains("มีหูจับ"))
+                                                            {
+                                                                <input data-toggle="toggle" asp-for="modelProductProp.BoxHandle" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" checked style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                                <label class="form-check-label" for="ProductTypeName"></label>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <input data-toggle="toggle" asp-for="modelProductProp.BoxHandle" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                                <label class="form-check-label" for="ProductTypeName"></label>
+
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header">
+                                                    Spare Properties
+                                                </h4>
+
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SparePercen" class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.SparePercen" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SpareMin" class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.SpareMin" class="form-control mytextboxNumberNodecimal" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SpareMax" class="col-sm-4 control-label"></label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.SpareMax" class="form-control mytextboxNumberNodecimal" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.Hardship" class="col-sm-4 control-label">HardShip</label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.Hardship" class="form-control mytextboxNumberNodecimal" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.LeadTime" class="col-sm-4 control-label">Lead time</label>
+                                                        <div class="col-sm-6">
+                                                            <input asp-for="modelProductProp.LeadTime" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="kiwi">
+
+                                    <div class="row">
+
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+                                                <div class="card-header with-border">
+                                                    <h3 class="card-header">
+                                                        Spacial setup Properties
+                                                    </h3>
+                                                </div>
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.RunSpeed" class="col-sm-4 control-label">
+                                                            Run speed (units/hour) :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.RunSpeed" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SetupTime" class="col-sm-4 control-label">Setup Time:</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.SetupTime" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">mins</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.PrepareTime" class="col-sm-4 control-label">Prepare Time:</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.PrepareTime" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">mins</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.PostTime" class="col-sm-4 control-label">Post Time :</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.PostTime" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">mins</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SetupWaste" class="col-sm-4 control-label">Setup Waste:</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.SetupWaste" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">แผ่น</label>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.RunWaste" class="col-sm-4 control-label">Run Waste :</label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.RunWaste" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                        <label class="col-sm-2 control-label">แผ่น</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header">
+                                                    Spacial stacking Properties
+                                                </h4>
+
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.SheetStack" class="col-sm-4 control-label">
+                                                            Sheet / Stack :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.SheetStack" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.RotationIn" class="col-sm-4 control-label">
+                                                            Rotation in :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.RotationIn" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.Rotationout" class="col-sm-4 control-label">
+                                                            Rotation out :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.Rotationout" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-sm-6">
+                                            <div class="card card-outline">
+
+                                                <h4 class="card-header">
+                                                    Process Properties
+                                                </h4>
+
+                                                <div class="card-body">
+
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.ScoreType" class="col-sm-4 control-label">
+                                                            Score type :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.ScoreType" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label asp-for="modelProductProp.ScoreGap" class="col-sm-4 control-label">
+                                                            Score gap :
+                                                        </label>
+                                                        <div class="col-sm-5">
+                                                            <input asp-for="modelProductProp.ScoreGap" class="form-control mytextboxNumber" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--<div class="col-sm-1 pull-right">
+                                            <button type="submit" class="btn btn-success pull-right btn-block btn-sm"><i class="fa fa-save"></i> SAVE</button>
+                                        </div>-->
+                                    </div>
+                                </div>
+
+                                <div id="Change">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="box box-warning">
+                                                <div class="box-body">
+                                                    <h4>
+                                                        Change information remark
+                                                    </h4>
+                                                    <textarea asp-for="modelProductProp.ChangeInfo" class="form-control center-block" rows="4" maxlength="100" style="background-color :white;  font-weight:bold; color:black; color:black;" disabled></textarea>
+                                                    <h4>
+                                                        Change history
+                                                    </h4>
+                                                    <div id="ChangeHistory-data-table">
+                                                        <partial name="~/Views/MaintenanceProductInfo/DetailOfProduct/_ChangeHistory.cshtml" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                </div>
+        </div>
+    </div>
+</div>

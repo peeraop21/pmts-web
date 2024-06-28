@@ -1,0 +1,302 @@
+﻿@model PMTs.DataAccess.ComplexModel.CreateDocumentSModel
+
+@using PMTs.DataAccess.ModelView
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@*<style>
+        input[type="date"]::-webkit-datetime-edit, input[type="date"]::-webkit-inner-spin-button, input[type="date"]::-webkit-clear-button {
+            color: #fff;
+            position: relative;
+        }
+
+        input[type="date"]::-webkit-datetime-edit-year-field {
+            position: absolute !important;
+            border-left: 1px solid #8c8c8c;
+            padding: 2px;
+            color: #000;
+            left: 56px;
+        }
+
+        input[type="date"]::-webkit-datetime-edit-month-field {
+            position: absolute !important;
+            border-left: 1px solid #8c8c8c;
+            padding: 2px;
+            color: #000;
+            left: 26px;
+        }
+
+        input[type="date"]::-webkit-datetime-edit-day-field {
+            position: absolute !important;
+            color: #000;
+            padding: 2px;
+            left: 4px;
+        }
+    </style>*@
+
+<br />
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["Manage S/O Change Document"] </h3>
+                    </div>
+
+                    @*<div class="col-md-6">
+                            <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["วันที่ : "] </h3>
+                            <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["เลขที่ S : "] </h3>
+                        </div>*@
+                    @*<div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info" onclick="CreateMoDataModal()">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["เพิ่มเอกสารเปลี่ยนเเปลง S"]
+                            </button>
+                        </div>*@
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-md-12">
+                        <div class="row line-space">
+                            <div class="form-group col-md-1" style="padding: 0px;text-align: left;">
+                                <label class="control-label" style="font-weight:800;font-size:large">@Localizer["วันที่ : "]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label" style="font-weight:800;font-size:large">@Model.documentS.CreatedDate.Value.ToString("dd/MM/yyyy hh:mm:ss tt")</label>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <button type="button" id="backToMainPage" style="float:right" class="btn btn-primary" onclick="backToMainPage()">@Localizer["Back"]</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row line-space">
+                            <div class="form-group col-md-1" style="padding: 0px;text-align: left;">
+                                <label class="control-label" style="font-weight:800;font-size:large">@Localizer["เลขที่ S : "]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="control-label" id="_docsnumber" style="font-weight:800;font-size:large">@Model.documentS.Snumber</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row line-space">
+                            @*<div class="form-group col-md-1" style="padding: 0px;text-align: left;">
+                                    <label class="control-label" style="font-weight:800">@Localizer["เลขที่ S"]</label>
+                                </div>*@
+                            <div class="form-group col-md-3 row">
+                                <input class="form-control col-12" id="txtorderitem" placeholder="Search OrderItem" maxlength="15" onkeyup="KeyupSearchMoData()" />
+                                <label id="requireOrderItemLength" style="color:red;min-width:300px" hidden>@Localizer["OrderItem Validate"]</label>
+                            </div>
+                            <div class="form-group col-md-3" style="padding: 0px;">
+                                <button type="button" class="btn btn-outline-info" id="btnsearchorder" style="max-height:30px;min-width:100px;font-weight:800" onclick="SearchOrderData()">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divChangeDocS" class="table-responsive m-t-10 col-md-12">
+                        <div class="card" style="width:70%">
+                            <div class="header" style="background-color:#e9ecef">
+                                <label class="control-label" style="font-weight:800;font-size:large;padding-left:15px">@Localizer["Order : "]<label class="control-label" style="font-weight:800;font-size:large;padding-left:15px" id="order_OrderItem"></label> </label>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["ชื่อลูกค้า : "]</label>
+                                            <label class="control-label" id="order_CustomerName"></label>
+                                        </div>
+                                        <div class="col-6">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["PO : "]</label>
+                                            <label class="control-label" id="order_PO"></label>
+                                        </div>
+                                        <div class="col-6">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["Material No : "]</label>
+                                            <label class="control-label" id="order_MateriailNo"></label>
+                                        </div>
+                                        <div class="col-6">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["PC : "]</label>
+                                            <label class="control-label" id="order_PC"></label>
+                                        </div>
+                                        <div class="col-6">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["Sale Text1 : "]</label>
+                                            <label class="control-label" id="order_SaleText1"></label>
+                                        </div>
+                                        <div class="col-6">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["Flute : "]</label>
+                                            <label class="control-label" id="order_Flute"></label>
+                                        </div>
+                                        <div class="col-6">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600;text-decoration: underline;">@Localizer["ข้อมูลปัจจุบัน"]</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600;text-decoration: underline;">@Localizer["ข้อมูลที่ต้องการเปลี่ยนเเปลง"]</label>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["Order Qty : "]</label>
+                                            <label class="control-label" id="order_OrderQty"></label>
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="text" id="changeOrder" class="form-control" onchange="chageCaptionRemarkByQty()" placeholder="Order Qty ใหม่" />
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["DueDate : "]</label>
+                                            <label class="control-label" id="order_DueDate"></label>
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="date" id="datepickerDueDate" onchange="chageCaptionRemarkByDueDate()" class="form-control" />
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["BlockType : "]</label>
+                                            <label class="control-label" id="order_BoxType"></label>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <label class="control-label" style="font-weight:600">@Localizer["สถานะสินค้า : "]</label>
+                                                </div>
+                                                <div class="col-8">
+                                                    <select class="form-control" id="changeStatus">
+                                                        <option value="" selected></option>
+                                                        <option value="1">@Localizer["Option 1"]</option>
+                                                        <option value="2">@Localizer["Option 2"]</option>
+                                                        <option value="3">@Localizer["Option 3"]</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="control-label" style="font-weight:600">@Localizer["Process : "]</label>
+                                            <label class="control-label" id="order_Process"></label>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <label class="control-label" style="font-weight:600">@Localizer["หมายเหตุ : "]</label>
+                                                </div>
+                                                <div class="col-8">
+                                                    <input type="text" id="changeRemark" class="form-control" placeholder="หมายเหตุ" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item li-space">
+                                    <div class="row">
+                                        <div class="col-6">
+                                        </div>
+                                        <div class="col-6">
+                                            <!-- Material inline 1 -->
+                                            @*<div class="form-check form-check-inline">
+                                                    <input type="checkbox" class="form-check-input" onchange="validateCheckHoldx()" id="materialInline1" name="inlineMaterialRadiosExample" value=1>
+                                                    <label class="form-check-label" for="materialInline1">Hold</label>
+                                                </div>*@
+
+                                            <!-- Material inline 2 -->
+                                            @*<div class="form-check form-check-inline">
+                                                    <input type="checkbox" class="form-check-input" onchange="validateCheckHold()" checked id="materialinline2" name="inlinematerialradiosexample" value=0>
+                                                    <label class="form-check-label" for="materialinline2">ยกเลิก</label>
+                                                </div>*@
+
+                                            <!-- Material inline 1 -->
+                                            <div class="form-check form-check-inline">
+                                                <input type="checkbox" class="form-check-input" onchange="validateCheckHoldx()" id="ckHold" name="inlinematerialradiosexample" value="1">
+                                                <label class="form-check-label" for="ckHold">@Localizer["Hold"]</label>
+                                            </div>
+
+                                            <!-- Material inline 2 -->
+                                            <div class="form-check form-check-inline">
+                                                <input type="checkbox" class="form-check-input" onchange="validateCheckHoldCancel()" id="ckCancel" name="inlinematerialradiosexample" value="0">
+                                                <label class="form-check-label" for="ckCancel">@Localizer["ยกเลิก"]</label>
+                                            </div>
+
+                                            @*<div class="form-check form-check-inline" style="padding-left: 0;padding-top: 20px;">
+                                                    <input type="checkbox" class="form-check-input" id="idhold" checked>
+                                                    <label class="form-check-label" for="idhold">Hold</label>
+                                                </div>
+
+                                                <div class="form-check form-check-inline" style="padding-left: 0;padding-top: 20px;">
+                                                    <input type="checkbox" class="form-check-input" id="idcancel" checked>
+                                                    <label class="form-check-label" for="idcancel">ยกเลิก</label>
+                                                </div>*@
+
+                                        <button type="button" id="btnAddUpdateDocsList" style="float:right" class="btn btn-outline-info" onclick="AddDocListOrder()">@Localizer["Add / Update"]</button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="changeSoDiv" class="table-responsive m-t-10 col-md-12">
+                        <partial name="_ChangeSoMainTable" model="Model" />
+                    </div>
+
+                    <div class="table-responsive m-t-10 col-md-12">
+                        <button type="button" style="float:right;margin-left:10px" class="btn btn-primary" onclick="PrintInChangePage()">@Localizer["Print Excel"]</button>
+                        <button type="button" style="float:right" class="btn btn-primary" onclick="PrintInChangePagePDF()">@Localizer["Print PDF"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+    </script>
+}

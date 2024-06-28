@@ -1,0 +1,1207 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+}
+
+<style>
+    .SubTitle {
+        text-align: left;
+        padding-right: 0px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+
+    .InputSubTitle {
+        padding-left: 0px;
+    }
+
+    .tag-a-link {
+        background: none !important;
+        border: none;
+        padding: 0 !important;
+        /*optional*/
+        font-family: arial, sans-serif;
+        /*input has OS specific font-family*/
+        color: #069;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+</style>
+
+<form id="ProdInfo" name="ProdInfo" asp-controller="NewProduct" asp-action="SaveProductInfo" data-ajax="true" data-ajax-method="post" data-ajax-success="OnSaveSuccess">
+    @*<input type="hidden" id="modelProductInfo_HighGroup" asp-for="modelProductInfo.HighGroup" />*@
+
+    <input type="hidden" id="modelProductInfo_OrderTypeId" asp-for="@Model.modelProductInfo.OrderTypeId" />
+    <input type="hidden" id="modelProductInfo_PLANTCODE" asp-for="@Model.modelProductInfo.PLANTCODE" />
+    <input type="hidden" id="modelProductInfo_SaleOrg" asp-for="@Model.modelProductInfo.SALEORG" />
+
+    <div class="card card-solid">
+        <div class="card-header">
+            <div class="row justify-content-between">
+                <div class="col-6">
+                    <h3 class="text-themecolor">@Localizer["New Product"]</h3>
+                </div>
+                @if (@Model.MaterialNo != null)
+                {
+                    <div class="col-6">
+                        <h3 class="box-title text-right">
+                            @Localizer["Material No"] : @Model.MaterialNo
+                        </h3>
+                    </div>
+                }
+            </div>
+            <hr />
+        </div>
+
+        <!-- /.box-header -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-7" style="padding:0px">
+                    <div class="card">
+                        <div class="card-header with-border">
+                            <h4 class="card-title">
+                                @Localizer["Product Detail"]
+                            </h4>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <div class="card-body  text-right">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="inputPart_no" class="col-sm-4 control-label SubTitle">
+                                        @Localizer["Part No"] :
+                                    </label>
+                                    <div class="col-sm-8 InputSubTitle ">
+                                        <input type="text" class="form-control " asp-for="modelProductInfo.PartNo" id="inputPart_no" maxlength="40" placeholder="@Localizer["40 Digits"]" autocomplete="off" />
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.PartNo, new { @id = "inputPart_no", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="MaterialDescription" class="col-sm-4 control-label SubTitle">
+                                        @Localizer["Material Description"] : <i style="color:red"> *</i>
+                                    </label>
+                                    <div class="col-sm-8 InputSubTitle ">
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.Description, new { @id = "MaterialDescription", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control" })*@
+                                        <input asp-for="modelProductInfo.Description" id="MaterialDescription" required="" placeholder="@Localizer["40 Digits"]" maxlength="40" class="form-control " onkeyup="CheckMaterialDescription()">
+                                        <span class="text-danger" id="descriptionReq" style="float:left" hidden>@Localizer["The Description field is a required."]</span>
+                                        @*@Html.ValidationMessageFor(m => m.modelProductInfo.Description, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="Product Code" class="col-sm-4 control-label SubTitle">
+                                        @Localizer["ProductCode"] : <i style="color:red"> *</i>
+                                    </label>
+                                    <div class="col-sm-8 InputSubTitle ">
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.PC, new { @id = "ProductCode", @placeholder = "20 Digits", @maxlength = "20", @class = "form-control" })*@
+                                        <input asp-for="modelProductInfo.PC" required="" id="ProductCode" placeholder="20 Digits" maxlength="20" class="form-control " autocomplete="off">
+                                        <span class="text-danger" id="productCodeReq" style="float:left" hidden> @Localizer["The PC field is a required."]</span>
+                                        @*@Html.ValidationMessageFor(m => m.modelProductInfo.PC, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="SaleText1" class="col-sm-4 control-label SubTitle">
+                                        @Localizer["SaleText1"] : <i style="color:red"> *</i>
+                                    </label>
+                                    <div class="col-sm-8 InputSubTitle ">
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText1, new { @id = "SaleText1", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control" })*@
+                                        <input asp-for="modelProductInfo.SaleText1" required="" id="SaleText1" placeholder="@Localizer["40 Digits"]" maxlength="40" class="form-control " autocomplete="off">
+                                        <span class="text-danger" id="saleText1Req" style="float:left" hidden>@Localizer["The SaleText1 field is a required."]</span>
+                                        @*@Html.ValidationMessageFor(m => m.modelProductInfo.SaleText1, "", new { @class = "text-danger" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="SaleText2" class="col-sm-4 control-label SubTitle">
+                                        @Localizer["SaleText2"] :
+                                    </label>
+                                    <div class="col-sm-8 InputSubTitle ">
+                                        <input type="text" class="form-control " asp-for="modelProductInfo.SaleText2" id="SaleText2" maxlength="40" placeholder="@Localizer["40 Digits"]" autocomplete="off" />
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText2, new { @id = "SaleText2", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="SaleText3" class="col-sm-4 control-label SubTitle">
+                                        @Localizer["SaleText3"] :
+                                    </label>
+                                    <div class="col-sm-8 InputSubTitle ">
+                                        <input type="text" class="form-control " asp-for="modelProductInfo.SaleText3" id="SaleText3" maxlength="40" placeholder="@Localizer["40 Digits"]" autocomplete="off" />
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText3, new { @id = "SaleText3", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="SaleText4" class="col-sm-4 control-label SubTitle">
+                                        @Localizer["SaleText4"] :
+                                    </label>
+                                    <div class="col-sm-8 InputSubTitle ">
+                                        <input type="text" class="form-control " asp-for="modelProductInfo.SaleText4" id="SaleText4" maxlength="40" placeholder="@Localizer["40 Digits"]" autocomplete="off" />
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText4, new { @id = "SaleText4", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off" })*@
+                                        @*<input type="text" class="form-control" asp-for="SaleText4" id="SaleText4" placeholder="@Localizer["40 Digits"]" maxlength="40">*@<span class="text-sm text-warning"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (Model.TransactionDetail.IsOutSource)
+                            {
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="SaleText4" class="col-sm-4 control-label SubTitle">
+                                            @Localizer["Material Sale Org"] :
+                                        </label>
+                                        <div class="col-sm-8 InputSubTitle ">
+                                            <input type="text" class="form-control " asp-for="modelProductInfo.MaterialSaleOrg" id="materialSaleOrg" maxlength="10" placeholder="@Localizer["10 Digits"]" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div id="divMainOs" class="row" style="padding-left:15px">
+                                <!--Creaete material number of outsourcing-->
+                                @if (!Model.TransactionDetail.IsOutSource && (Model.EventFlag != "CreateOs" || Model.EventFlag != "CopyOs") && Model.SaleOrg == userSession.SaleOrg)
+                                {
+                                    int i = 0;
+                                    var outsources = Model.modelProductInfo.Outsources.Where(o => o.IsOutsource == true).ToList();
+                                    <button id="btncolspan" type="button" class="btn btn-info float-left waves-effect waves-light"
+                                            data-toggle="collapse" data-target="#Outsource-Collapse"
+                                            aria-expanded="false" aria-controls="Outsource-Collapse">
+                                        <span class="btn-label"><i class="fas fa-ellipsis-h"></i></span>@Localizer["Outsources"]
+                                    </button>
+
+                                    <div class="collapse col-md-12" id="Outsource-Collapse" style="padding-top:15px">
+                                        <div class="card-header with-border row" style="padding:0px;margin:0px">
+                                            <h4 class="card-title float-left">
+                                                @Localizer["Outsources"]
+                                            </h4>
+                                        </div>
+
+                                        @if (outsources.Count > 0 && Model.SapStatus != false)
+                                        {
+                                            <div class="form-group" style="padding-top:5px">
+                                                <div class="row">
+                                                    <label class="col-sm-4 control-label SubTitle">
+                                                        @Localizer["Plant Outsources"] :
+                                                    </label>
+                                                    <div class="col-sm-8 InputSubTitle">
+                                                        <div class="float-left">
+
+                                                            @foreach (var outsource in outsources)
+                                                            {
+                                                                if (i == 0)
+                                                                {
+                                                                    <a class="tag-a-link"><code style="color: deepskyblue;font-weight: bold;">@outsource.ShortName</code></a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span>,</span>
+                                                                    <a class="tag-a-link"><code style="color: deepskyblue;font-weight: bold;">@outsource.ShortName</code></a>
+                                                                }
+
+                                                                i++;
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div class="form-group">
+                                            <div class="row">
+                                                @*Radio button for choose type of outsourcing*@
+                                                @*Select list for choose type of outsourcing*@
+                                                <div class="col-12 form-group newline" id="mainDivSelectOutsource">
+                                                    <label class="col-md-4 control-label SubTitle" style="float:left;padding-left: 0px;"> @Localizer["Type Outsources"]:</label>
+                                                    <div class="col-md-8 float-left InputSubTitle" style="padding-right:0px" id="subDivSelectOutsource">
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 form-group newline">
+                                                    <label class="col-sm-4 SubTitle" id="orderTypeReq1" hidden></label>
+                                                    <span class="col-sm-8 InputSubTitle text-danger" id="orderTypeReq2" style="text-align:left" hidden>@Localizer["Order Type field must be selected!"]</span>
+                                                </div>
+                                                <div class="col-12 form-group newline">
+                                                    <label class="col-sm-4 control-label SubTitle" id="divSelectPlantOsLabel" style="float: left;padding-left: 0;" hidden>
+                                                        @Localizer["Plant Outsource"] :
+                                                    </label>
+                                                    <div class="col-sm-8 InputSubTitle" id="divSelectPlantOs" style="float: left;padding-right: 0px;">
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 form-group newline">
+                                                    <label class="col-sm-4 SubTitle" id="plantOsReq1" hidden></label>
+                                                    <span class="col-sm-8 InputSubTitle text-danger" id="plantOsReq2" style="text-align:left" hidden>@Localizer["Plant Oursource field must be selected!"]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+                <div class="col-sm-5" style="padding:0px">
+
+                    <!-- Modal -->
+                    <div class="modal in" id="modal-show-materialNo" role="dialog">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2 class="modal-title text-themecolor">@Localizer["Save_Modal"] </h2>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <div class="swal2-icon swal2-success swal2-animate-success-icon" style="display: flex;"><div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);"></div><span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span><div class="swal2-success-ring"></div> <div class="swal2-success-fix" style="background-color: rgb(255, 255, 255);"></div><div class="swal2-success-circular-line-right" style="background-color: rgb(255, 255, 255);"></div></div>
+                                    <p><h3> @Localizer["Material No"] : <label id="materialNo-alert-display"></label></h3></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-success waves-effect waves-light" onclick="window.location.href='@Url.Action("ProductSpec")'" type="button"><i class="fa fa-check"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*}*@
+                    <div class="card ">
+                        <div class="card-header with-border">
+                            <h4 class="card-title">
+                                @Localizer["High Value"]
+                            </h4>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <div class="card-body  text-right">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-sm-2 control-label SubTitle">
+                                        @Localizer["Hva"] :
+                                    </label>
+                                    <div class="col-sm-10 ">
+                                        <input type="hidden" id="modelProductInfo_HighValue" asp-for="modelProductInfo.HighValue" readonly />
+                                        <input type="text" readonly class="form-control InputSubTitle" style="background-color:transparent;text-align: center;color: dodgerblue;font-weight: bold;" asp-for="modelProductInfo.HighValueDisplay" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="inputHightV" class="col-sm-5 control-label SubTitle">
+                                        @Localizer["Product Type"] :
+                                    </label>
+                                    <div class="col-sm-7 InputSubTitle">
+                                        <select class="form-control " style="text-align-last:center" asp-for="modelProductInfo.HvaProductType" asp-items="Model.modelProductInfo.HVL_ProdTypeList1">
+                                            <option value="" selected>--- @Localizer["Please Select Item"] ---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="HightI" class="col-sm-5 control-label SubTitle">
+                                        @Localizer["Structural Design"] :
+                                    </label>
+                                    <div class="col-sm-7 InputSubTitle">
+                                        <select class="form-control " style="text-align-last:center" asp-for="modelProductInfo.HvaStructural" asp-items="Model.modelProductInfo.HVL_ProdTypeList2">
+                                            <option value="" selected>--- @Localizer["Please Select Item"] ---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="HightI" class="col-sm-5 control-label SubTitle">
+                                        @Localizer["Printing Technology"] :
+                                    </label>
+                                    <div class="col-sm-7 InputSubTitle">
+                                        <select class="form-control " style="text-align-last:center" asp-for="modelProductInfo.HvaPrinting" asp-items="Model.modelProductInfo.HVL_ProdTypeList3">
+                                            <option value="" selected>--- @Localizer["Please Select Item"] ---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="HightI" class="col-sm-5 control-label SubTitle">
+                                        @Localizer["Flute"] :
+                                    </label>
+                                    <div class="col-sm-7 InputSubTitle">
+                                        <select class="form-control " style="text-align-last:center" asp-for="modelProductInfo.HvaFlute" asp-items="Model.modelProductInfo.HVL_ProdTypeList4">
+                                            <option value="" selected>--- @Localizer["Please Select Item"] ---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="HightI" class="col-sm-5 control-label SubTitle">
+                                        @Localizer["Corrugating"] :
+                                    </label>
+                                    <div class="col-sm-7 InputSubTitle">
+                                        <select class="form-control " style="text-align-last:center" asp-for="modelProductInfo.HvaCorrugating" asp-items="Model.modelProductInfo.HVL_ProdTypeList5">
+                                            <option value="" selected>--- @Localizer["Please Select Item"] ---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="HightI" class="col-sm-5 control-label SubTitle">
+                                        @Localizer["Coating"] :
+                                    </label>
+                                    <div class="col-sm-7 InputSubTitle">
+                                        <select class="form-control " style="text-align-last:center" asp-for="modelProductInfo.HvaCoating" asp-items="Model.modelProductInfo.HVL_ProdTypeList6">
+                                            <option value="" selected>--- @Localizer["Please Select Item"] ---</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="HightI" class="col-sm-5 control-label SubTitle">
+                                        @Localizer["FinishingServices"] :
+                                    </label>
+                                    <div class="col-sm-7 InputSubTitle">
+
+                                        <select class="form-control " style="text-align-last:center" asp-for="modelProductInfo.HvaFinishing" asp-items="Model.modelProductInfo.HVL_ProdTypeList7">
+                                            <option value="" selected>--- @Localizer["Please Select Item"] ---</option>
+                                        </select>
+
+                                        @*@Html.TextBoxFor(m => m.modelProductInfo.hvacode, new { @id = "hvacode", @type = "hidden", @class = "form-control no-border" })*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 text-right">
+                <!-- general form elements -->
+                <!--<form role="form" action="Productspec.html">-->
+                <div class="form-group">
+                    @*@if (Model.EventFlag != "Edit")
+                        {
+                            <button type="submit" class="btn btn-success btn-fixsize" id="btnSaveAndNext" onclick="SetHighValue()">
+                                <i class="fa fa-save"></i> @Localizer["Save"] &amp; @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-success btn-fixsize" id="btnSaveAndNext" onclick="UpdateTransactionDetail()">
+                                @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i>
+                            </button>
+                        }*@
+                    <button type="button" class="btn btn-success btn-fixsize " id="btnSaveAndNext" onclick="DisableSubmit()">
+                        <i class="fa fa-save"></i> @Localizer["Save"] &amp; @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i>
+                    </button>
+                    <button class="btn btn-info btn-fixsize" type="button" id="btnNextLoad" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                     </button>
+                </div>
+                <!-- /.box -->
+                <!-- /.box -->
+            </div>
+
+            <input id="inp_Material_No" name="MaterialNo" type="hidden" value="x">
+            @*<input id="inp_SALE_ORG" name="SALEORG" type="hidden" value="x">
+                <input id="inp_PLANT_CODE" name="PLANTCODE" type="hidden" value="x">*@
+            @*<input id="inp_Part_No" name="Part_No" type="hidden" value="">*@
+            <input id="inp_PC" name="PC" type="hidden" value="x">
+            <input id="inp_Hierarchy" name="Hierarchy" type="hidden" value="x">
+            <input id="inp_Cust_Code" name="CustCode" type="hidden" value="x">
+            <input id="inp_Cus_ID" name="CusID" type="hidden" value="x">
+            <input id="inp_Cust_Name" name="CustName" type="hidden" value="x">
+            <input id="inp_Description" name="Description" type="hidden" value="x">
+            @*<input id="inp_Change" name="Change" type="hidden" value="x">*@
+            <input id="inp_Language" name="Language" type="hidden" value="x">
+            <input id="inp_Ind_Des" name="Ind_Des" type="hidden" value="x">
+            @*<input id="inp_Material_Type" name="Material_Type" type="hidden" value="x">*@
+            <input id="inp_TwoPiece" name="TwoPiece" type="hidden" value="false">
+            @*<input id="inp_Flute" name="Flute" type="hidden" value="x">*@
+        </div>
+        <!-- /.box-body -->
+    </div>
+</form>
+
+<div class="modal" id="warningproductcode">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Modal Heading</h4>
+                <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                @Localizer["Productcode Duplicate"]
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        LoadingButton(false);
+
+        var $hvacode = $("#modelProductInfo_hvacode");
+        var $hva1 = $("#modelProductInfo_HvaProductType");
+        var $hva2 = $("#modelProductInfo_HvaStructural");
+        var $hva3 = $("#modelProductInfo_HvaPrinting");
+        var $hva4 = $("#modelProductInfo_HvaFlute");
+        var $hva5 = $("#modelProductInfo_HvaCorrugating");
+        var $hva6 = $("#modelProductInfo_HvaCoating");
+        var $hva7 = $("#modelProductInfo_HvaFinishing");
+        var fisrtTime = 0;
+        const materialDescription = '@Model.modelProductCustomer.CustCode' == "" ? "" : '@Model.modelProductCustomer.CustCode'.replace("&amp;", "&") + " ";
+        const hvaMasters = @Html.Raw(Json.Serialize(Model.modelProductInfo.HvaMasters));
+        const companyProfiles = @Html.Raw(Json.Serialize(Model.modelProductInfo.CompanyProfiles));
+        const hireOrders = @Html.Raw(Json.Serialize(Model.modelProductInfo.HireOrders));
+        const outsources = @Html.Raw(Json.Serialize(Model.modelProductInfo.Outsources));
+
+        function CheckMaterialDescription() {
+            var currentMaterialDescription = $("#MaterialDescription").val();
+            let indexOfCustCode = currentMaterialDescription.indexOf(materialDescription);
+            if (indexOfCustCode !== -1) {
+                let statusXDesc = (currentMaterialDescription.substring(0, indexOfCustCode));
+                let numOfXCharactor = (currentMaterialDescription.substring(0, currentMaterialDescription.indexOf(materialDescription)).split("x").length - 1);
+
+                if (statusXDesc.length != numOfXCharactor) {
+                    $("#MaterialDescription").val(materialDescription.trim() + " ");
+                }
+            }
+            else
+            {
+                $("#MaterialDescription").val(materialDescription.trim() + " ");
+            }
+        };
+
+        $('#MaterialDescription').on('input', function (e) {
+            var sanitizedValue = $(this).val().replace(/[;'"]/g, '');
+            $(this).val(sanitizedValue);
+        });
+
+        $('select').on('change', function () {
+            var hvaProductType = $('#modelProductInfo_HvaProductType').val();
+            var hvaStructural = $('#modelProductInfo_HvaStructural').val();
+            var hvaPrinting = $('#modelProductInfo_HvaPrinting').val();
+            var hvaFlute = $('#modelProductInfo_HvaFlute').val();
+            var hvaCorrugating = $('#modelProductInfo_HvaCorrugating').val();
+            var hvaCoating = $('#modelProductInfo_HvaCoating').val();
+            var hvaFinishing = $('#modelProductInfo_HvaFinishing').val();
+
+            var weight = 0;
+            var newWeight = 0;
+            var value = "";
+
+            var hvaValueArr = [hvaProductType, hvaStructural, hvaPrinting, hvaFlute, hvaCorrugating, hvaCoating, hvaFinishing];
+
+            $.each(hvaValueArr, function (hvKey, hvObj) {
+                if (hvObj != null && hvObj != "") {
+                    newWeight = hvaMasters.filter(h => { return h.HighValue == hvObj })[0].Weight;
+                }
+
+                if (newWeight > weight) {
+                    value = hvObj;
+                    weight = newWeight;
+                }
+            });
+
+            if (value != "") {
+                var hvaMaster = hvaMasters.filter(h => { return h.HighValue == value })[0].HighDescription;
+                $("#modelProductInfo_HighValue").val(value);
+                $("#modelProductInfo_HighValueDisplay").val(value + " " + hvaMaster);
+                //$("#modelProductInfo_HighGroup").val(hvaMasters.filter(h => { return h.HighValue == value })[0].HighGroup);
+            }
+            else
+            {
+                $("#modelProductInfo_HighValue").val("");
+                $("#modelProductInfo_HighValueDisplay").val("");
+            }
+        });
+
+        $(document).keypress(function (e) {
+            if ($("#myModal").hasClass('in') && (e.keycode == 13 || e.which == 13)) {
+                window.location.href = '@Url.Action("ProductSpec")';
+            }
+        });
+
+        $(function () {
+            fisrtTime++;
+            ////set checkbok
+            //$('input[type="checkbox"]').click(function () {
+            //    if ($(this).prop("checked") == true) {
+            //        $("#inputCustomMaterialNo").removeAttr("hidden");
+            //    }
+            //    else if ($(this).prop("checked") == false) {
+            //        $("#inputCustomMaterialNo").attr("hidden", "");
+            //    }
+            //});
+
+            //set high value
+            if ('@Model.modelProductInfo.HighValue' !=  "")
+            {
+                var hvaMaster = hvaMasters.filter(h => { return h.HighValue == '@Model.modelProductInfo.HighValue' });
+                if (hvaMaster.length > 0) {
+                    $("#modelProductInfo_HighValueDisplay").val('@Model.modelProductInfo.HighValue' + " " + hvaMaster[0].HighDescription);
+                } else
+                {
+                    $("#modelProductInfo_HighValueDisplay").val('@Model.modelProductInfo.HighValue');
+                }
+            }
+
+            var materialCheck = '@ViewBag.MatNo';
+
+            if (materialCheck !== "") {
+                $('#myModal').modal("show");
+                ViewBag.MatNo = null;
+            }
+
+            var actionTran = '@Model.EventFlag';
+            @*if (actionTran === "Edit" || ('@Model.MaterialNo' != "" && actionTran != "CreateOs" && actionTran != "CreateTrading")) {
+                $('#inputPart_no').prop('readonly', true);
+                $('#MaterialDescription').prop('readonly', true);
+                $('#ProductCode').prop('readonly', true);
+            }*@
+
+            let factoryCode = '@userSession.FactoryCode';
+            let userGroup = companyProfiles.filter(c => { return c.Plant == factoryCode })[0].Group;
+            let isOutsource = outsources.filter(o => { return o.IsOutsource == true })[0];
+            let actionPlantOs = "Initial";
+            let typeOfOutsource = "";
+            //if (userGroup === 4) {
+            //    $("#divMainOs").prop("hidden", true);
+            //}
+            //else
+            //{
+            GenerateSelectListByUserGroup(userGroup);
+            if (actionTran.includes("Copy")) {
+                $("#selectOutsource").val();
+            }
+
+            if (userGroup === 4) {
+                actionPlantOs = "group4";
+                typeOfOutsource = isOutsource != null && isOutsource.HireOrderType != "" ? isOutsource.HireOrderType  : "";
+            }
+
+            if (('@Model.modelProductInfo.PLANTCODE' != "" || isOutsource != null) && !actionTran.includes("Copy"))
+            {
+                $("#divSelectPlantOsLabel").removeAttr('hidden');
+                GeneratePlantOsListByTypeOfOutsource(typeOfOutsource, userGroup, actionPlantOs);
+
+                $("#Outsource-Collapse").collapse('show');
+            }
+        });
+
+        function ChangeTypeOfOutsource(e) {
+            fisrtTime++;
+            let factoryCode = '@userSession.FactoryCode';
+            let userGroup = companyProfiles.filter(c => { return c.Plant == factoryCode })[0].Group;
+            $typeOfOutsource = $(e).val();
+            if ($typeOfOutsource == "") {
+                $("#divSelectPlantOsLabel").attr("hidden", true);
+                $("#plantOsReq2").prop("hidden", true);
+                $("#divSelectPlantOs").empty();
+                $("#modelProductInfo_OrderTypeId").val("");
+                $("#modelProductInfo_PLANTCODE").val("");
+            }
+            else
+            {
+                if (userGroup === 4) {
+                    GeneratePlantOsListByTypeOfOutsource($typeOfOutsource, userGroup, "group4");
+                } else if(userGroup === 5) {
+                    GeneratePlantOsListByTypeOfOutsource($typeOfOutsource, userGroup, "group5");
+                }
+                else
+                {
+                    GeneratePlantOsListByTypeOfOutsource($typeOfOutsource, userGroup, "Copy");
+                }
+            }
+        }
+
+        function DisableSubmit() {
+
+            LoadingButton(true);
+
+            let matNoField = $("#customMatNo").val();
+            let description = $("#MaterialDescription").val();
+            let pc = $("#ProductCode").val();
+            let saleText1 = $("#SaleText1").val();
+            let isSubmit = true;
+
+            if (description === "") {
+                $("#descriptionReq").removeAttr("hidden");
+                LoadingButton(false);
+                isSubmit = false;
+            }
+            else
+            {
+                $("#descriptionReq").attr("hidden", "");
+            }
+
+            if (pc === "") {
+                $("#productCodeReq").removeAttr("hidden");
+                LoadingButton(false);
+                isSubmit = false;
+            } else { $("#productCodeReq").attr("hidden", "");}
+
+            if (saleText1 === "") {
+                $("#saleText1Req").removeAttr("hidden");
+                LoadingButton(false);
+                isSubmit = false;
+            } else { $("#saleText1Req").attr("hidden", "");}
+
+            if (isSubmit) {
+                $("#productCodeReq").attr("hidden", "");
+                $("#descriptionReq").attr("hidden", "");
+                $("#saleText1Req").attr("hidden", "");
+
+                if ('@Model.EventFlag' == "Edit") {
+                //$("#matNoReqMesg").attr("hidden", "");
+                    BindSelcetOptionToModel();
+                }
+                else if ('@Model.EventFlag' == "Backward" || ('@Model.EventFlag' == "Create" && ('@Model.MaterialNo' != null && '@Model.MaterialNo' != "")))
+                {
+                    //$("#matNoReqMesg").attr("hidden", "");
+                    BindSelcetOptionToModel();
+                }
+                else
+                {
+                    //if ($("#saleOrgSelection").val() != "") {
+                    //    if (matNoField == "") {
+                    //        //req message
+                    //        if(!$('#newMatNoChkb').prop("checked"))
+                    //        {
+                    //            $('#newMatNoChkb').prop('checked', true);
+                    //            $("#inputCustomMaterialNo").removeAttr("hidden");
+                    //            $("#customMatNo").focus();
+                    //        }
+                    //        $("#matNoReqMesg").removeAttr("hidden");
+                    //    }
+                    //    else {
+                    //        if (matNoField.length <= 9) {
+                    //            $("#matNoReqMesg").removeAttr("hidden");
+                    //        }
+                    //        else {
+                    //            $("#matNoReqMesg").attr("hidden", "");
+                    //            $("#btnSaveAndNext").prop("disabled", true);
+                    //            $("#ProdInfo").submit();
+                    //        }
+                    //    }
+                    //}
+                    //else {
+                    $("#matNoReqMesg").attr("hidden", "");
+                    BindSelcetOptionToModel();
+                    //}
+                }
+            }
+        }
+
+        function BindSelcetOptionToModel()
+        {
+            let orderTypeId = $("#selectOutsource").val();
+            let plantCode = $("#selectPlantOs").val();
+            var companySaleOrg = "";
+
+            $("#modelProductInfo_PLANTCODE").val(plantCode);
+            let company = companyProfiles.filter(c => { return c.Plant == plantCode })[0];
+            if (company != null && plantCode != "") {
+                companySaleOrg = company.SaleOrg;
+            }
+
+            $("#modelProductInfo_SaleOrg").val(companySaleOrg);
+            $("#modelProductInfo_OrderTypeId").val(orderTypeId);
+
+            if (orderTypeId != "" && plantCode == "") {
+                $("#plantOsReq1").prop("hidden", false);
+                $("#plantOsReq2").prop("hidden", false);
+            }
+            else
+            {
+                $("#orderTypeReq1").prop("hidden", true);
+                $("#orderTypeReq2").prop("hidden", true);
+                $("#plantOsReq1").prop("hidden", true);
+                $("#plantOsReq2").prop("hidden", true);
+
+                //$("#btnSaveAndNext").prop("disabled", true);
+                $("#ProdInfo").submit();
+            }
+        }
+
+        function GenerateSelectListByUserGroup(group) {
+            let appendStr = "<option value=\"\">Choose Order Type</option>";
+            //let Group1Arr = [1, 2, 3];
+            let Group1Arr = [1, 2, 3, 4];
+            let Group4Arr = [1,2 ,3, 4];
+            //let Group2And3Arr = [2];
+            let Group2And3Arr = [2, 4];
+            let Group5Arr = [2,4];
+            $("#subDivSelectOutsource").empty();
+
+            if (group == 1) {
+                $.each(Group1Arr, function (hKey, hObj) {
+                    let hireOrder = hireOrders.filter(h => { return h.Id == hObj })[0];
+                    appendStr = appendStr + "<option value=\"" + hireOrder.Id + "\">" + hireOrder.OrderType + "</option>";
+                });
+            }else if (group == 4) {
+                $.each(Group4Arr, function (hKey, hObj) {
+                    let hireOrder = hireOrders.filter(h => { return h.Id == hObj })[0];
+                    appendStr = appendStr + "<option value=\"" + hireOrder.Id + "\">" + hireOrder.OrderType + "</option>";
+                });
+            } else if (group == 5) {
+                $.each(Group5Arr, function (hKey, hObj) {
+                    let hireOrder = hireOrders.filter(h => { return h.Id == hObj })[0];
+                    appendStr = appendStr + "<option value=\"" + hireOrder.Id + "\">" + hireOrder.OrderType + "</option>";
+                });
+            }
+            else
+            {
+                $.each(Group2And3Arr, function (hKey, hObj) {
+                    let hireOrder = hireOrders.filter(h => { return h.Id == hObj })[0];
+                    appendStr = appendStr + "<option value=\"" + hireOrder.Id + "\">" + hireOrder.OrderType + "</option>";
+                });
+            }
+
+            $("#subDivSelectOutsource").append("<select class=\"form-control float-left\" id=\"selectOutsource\" style=\"max-height:30px;text-align-last:center\" onchange=\"ChangeTypeOfOutsource(this)\">" + appendStr + "</select >");
+        }
+
+        function GeneratePlantOsListByTypeOfOutsource(typeOfOutsource, userGroup, action) {
+            let IsEmpty = 0;
+            let appendStr = "<option value=\"\">Choose Plant Outsource</option>";
+            $("#divSelectPlantOs").empty();
+            if (action == "Initial") {
+                $.each(companyProfiles, function (cKey, cObj) {
+                    if (cObj.Plant != '@userSession.FactoryCode') {
+                        let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+
+                        if ('@Model.SapStatus' === "False") {
+                            appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                            IsEmpty++;
+
+                        }
+                        else {
+                            if (outsource === false && cObj.StatusPmts === true) {
+                                appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                IsEmpty++;
+                            }
+                        }
+                    }
+                });
+            }
+            else if (action == "group4") {
+                if (typeOfOutsource == 2 || typeOfOutsource == 4) {
+                    $.each(companyProfiles, function (cKey, cObj) {
+                        if (cObj.Group != userGroup && cObj.Plant != '@userSession.FactoryCode') {
+                            let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+                            if ('@Model.SapStatus' === "False") {
+                                appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                IsEmpty++;
+                            }
+                            else {
+                                if (outsource === false && cObj.StatusPmts === true) {
+                                    appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                    IsEmpty++;
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    let companyForGroup4 = companyProfiles.filter(c => { return c.Group == 4 });
+                    $.each(companyForGroup4, function (cKey, cObj) {
+                        if (cObj.Plant != '@userSession.FactoryCode') {
+                            let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+
+                            if ('@Model.SapStatus' === "False") {
+                                appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                IsEmpty++;
+
+                            }
+                            else {
+                                if (outsource === false && cObj.StatusPmts === true) {
+                                    appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                    IsEmpty++;
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            else if (action == "group5")
+            {
+                $.each(companyProfiles, function (cKey, cObj) {
+                    if (cObj.Group != userGroup && cObj.Plant != '@userSession.FactoryCode') {
+                        let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+                        if ('@Model.SapStatus' === "False") {
+                            appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                            IsEmpty++;
+                        }
+                        else
+                        {
+                            if (outsource === false && cObj.StatusPmts === true) {
+                                appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                IsEmpty++;
+                            }
+                        }
+                    }
+                });
+            }
+            else
+            {
+                if (typeOfOutsource == 1 || typeOfOutsource == 3) {
+                    //where group1
+                    $.each(companyProfiles, function (cKey, cObj) {
+
+                        if (cObj.Group == 1 && cObj.Plant != '@userSession.FactoryCode') {
+                            let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+                            if ('@Model.SapStatus' === "False") {
+                                appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                IsEmpty++;
+
+                            }
+                            else
+                            {
+                                if (outsource === false && cObj.StatusPmts === true) {
+                                    appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                    IsEmpty++;
+                                }
+                            }
+                        }
+                    });
+                }
+                else if (typeOfOutsource == 2 ) {
+                    //non my group
+                    $.each(companyProfiles, function (cKey, cObj) {
+
+                        if (cObj.Group != userGroup && cObj.Plant != '@userSession.FactoryCode') {
+                            let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+
+                            if ('@Model.SapStatus' === "False") {
+                                appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                IsEmpty++;
+
+                            }
+                            else
+                            {
+                                if (outsource === false && cObj.StatusPmts === true) {
+                                    appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                    IsEmpty++;
+                                }
+                            }
+                        }
+                    });
+                }if (typeOfOutsource == 4) {
+                    //non my group
+                    $.each(companyProfiles, function (cKey, cObj) {
+
+                        if (userGroup == 1 || userGroup == 2 || userGroup == 3) {
+
+                            if (cObj.Group != userGroup  && cObj.Plant != '@userSession.FactoryCode') {
+                                let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+
+                                if ('@Model.SapStatus' === "False") {
+                                    appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                    IsEmpty++;
+
+                                }
+                                else
+                                {
+                                    if (outsource === false && cObj.StatusPmts === true) {
+                                        appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                        IsEmpty++;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (cObj.Group != userGroup && cObj.Group != 4  && cObj.Plant != '@userSession.FactoryCode') {
+                                let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant })[0].IsOutsource;
+
+                                if ('@Model.SapStatus' === "False") {
+                                    appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                    IsEmpty++;
+
+                                }
+                                else
+                                {
+                                    if (outsource === false && cObj.StatusPmts === true) {
+                                        appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                        IsEmpty++;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                else if (typeOfOutsource == 5) {
+                    //where group 4
+                    $.each(companyProfiles, function (cKey, cObj) {
+                        if ((cObj.Group == 4) && cObj.Plant != '@userSession.FactoryCode') {
+                            let outsource = outsources.filter(o => { return o.PlantOs == cObj.Plant})[0].IsOutsource;
+
+                            if ('@Model.SapStatus' === "False") {
+                                appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                IsEmpty++;
+
+                            }
+                            else
+                            {
+                                if (outsource === false && cObj.StatusPmts === true) {
+                                    appendStr = appendStr + "<option value=\"" + cObj.Plant + "\">" + cObj.Plant + " " + cObj.ShortName + "</option>";
+                                    IsEmpty++;
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            $("#divSelectPlantOsLabel").removeAttr('hidden');
+            $("#divSelectPlantOs").append("<select id=\"selectPlantOs\" class=\"form-control\" style=\"max-height:30px;text-align-last:center;float: left;padding-right: 0px;\">" + appendStr + "</select>");
+            if (IsEmpty == 0)
+            {
+                $("#selectOutsource").val("");
+            }
+
+            if (('@Model.SapStatus' === "False" && action == "Initial" || action == "group4") && fisrtTime == 1)
+            {
+                let outsourceSelection = outsources.filter(o => { return o.IsOutsource == true })[0];
+                $("#selectOutsource").val(outsourceSelection.HireOrderType);
+                $("#selectPlantOs").val(outsourceSelection.PlantOs);
+            }
+        }
+
+        //function SetHighValue()
+        //{
+        //    var hvaProductType = $('#modelProductInfo_HvaProductType').val();
+        //    var hvaStructural = $('#modelProductInfo_HvaStructural').val();
+        //    var hvaPrinting = $('#modelProductInfo_HvaPrinting').val();
+        //    var hvaFlute = $('#modelProductInfo_HvaFlute').val();
+        //    var hvaCorrugating = $('#modelProductInfo_HvaCorrugating').val();
+        //    var hvaCoating = $('#modelProductInfo_HvaCoating').val();
+        //    var hvaFinishing = $('#modelProductInfo_HvaFinishing').val();
+
+        //    var weight = 0;
+        //    var newWeight = 0;
+        //    var value = "";
+
+        //    var hvaValueArr = [hvaProductType, hvaStructural, hvaPrinting, hvaFlute, hvaCorrugating, hvaCoating, hvaFinishing];
+
+        //    $.each(hvaValueArr, function (hvKey, hvObj) {
+        //        if (hvObj != null && hvObj != "")
+        //        {
+        //            newWeight = hvaMasters.filter(h => { return h.HighValue == hvObj })[0].Weight;
+        //        }
+
+        //        if (newWeight > weight)
+        //        {
+        //            value = hvObj;
+        //            weight = newWeight;
+        //        }
+        //    });
+
+        //    if (value != "")
+        //    {
+        //        $("#modelProductInfo_HighValue").val(value);
+        //        $("#modelProductInfo_HighGroup").val(hvaMasters.filter(h => { return h.HighValue == value })[0].HighGroup);
+        //    }
+        //}
+
+        //$("#plantOsSelection").change(function ()
+        //{
+        //    var plantOs = $("#plantOsSelection").val();
+        //    if (plantOs != "") {
+        //        $("#formGroupSaleOrg").hide();
+        //        $("#saleOrgSelection").val("");
+        //        $("#saleOrgSelection").attr("hidden","");
+        //    } else
+        //    {
+        //        $("#formGroupSaleOrg").show();
+        //        $("#saleOrgSelection").removeAttr("hidden");
+        //    }
+        //});
+
+        //function CheckRequriedMaterialNo()
+        //{
+        //    var matNoField1 = $("#customMatNo").val();
+        //    if (matNoField1 != "" && matNoField1.length <= 9) {
+        //        $("#matNoReqMesg").removeAttr("hidden");
+        //    }
+        //    else {
+        //        $("#matNoReqMesg").attr("hidden", "");
+        //    }
+        //}
+
+        function UpdateTransactionDetail()
+        {
+           // alert("UpdateTransactionDetail");
+            var eventFlag = '@Model.EventFlag';
+            var isOldMaterial = '@Model.TransactionDetail.IsOldMaterial';
+
+            if (eventFlag === "Edit") {
+                if (isOldMaterial == "True") {
+
+                    $.ajax({
+                        url: '@Url.Action("SaveProductInfo", "NewProduct")',
+                        type: "POST",
+                        dataType: "json",
+                        async: false,
+                        success: function (res)
+                        {
+                            if (res.isSuccess)
+                            {
+                                window.location = '@Url.Action("ProductSpec", "NewProduct")';
+                            } else
+                            {
+                                swal(res.exeptionMessage, "", "warning");
+                            }
+                        },
+                        error: function ()
+                        {
+
+                        }
+                    });
+                }
+                else
+                {
+                    window.location = '@Url.Action("ProductSpec", "NewProduct")';
+                    return false;
+                }
+            }
+        }
+        @*let plantOs = $("#selectPlantOs").val();
+            if (res.isSuccess)
+                            {
+                                if (plantOs != "" && plantOs != null && res.IsExistCost == false) {
+                                    swal({
+                                        title: "ไม่สามารถหา Cost ของ " + plantOs + "!",
+                                        text: "ให้ไปใส่ Cost ที่ Step 4",
+                                        icon: "warning",
+                                        //buttons: true,
+                                        //dangerMode: false,
+                                    })
+                                        .then((willAccept) => {
+                                            if (willAccept) {
+                                                window.location = '@Url.Action("ProductSpec", "NewProduct")';
+                                            }
+                                        });
+                                }
+                                else
+                                {
+                                    window.location = '@Url.Action("ProductSpec", "NewProduct")';
+                                }
+                            } else
+                            {
+                                swal(res.exeptionMessage, "", "warning");
+                            }*@
+        var OnSaveSuccess = function (res)
+        {
+            LoadingButton(true);
+            let plantOs = $("#selectPlantOs").val();
+
+            if (typeof res.isSuccess === 'undefined') {
+                window.location.href = '@Url.Action("Index", "Login")';
+            }
+            else {
+                if (res.isSuccess)
+                {
+                    if (res.materialType == "14" || res.materialType == "24" || res.materialType == "84") {
+                        window.location = '@Url.Action("ProductProp", "NewProduct")';
+                    }
+                    else
+                    {
+                        if (res.IsShowSaveModel) {
+                            if (plantOs != "" && plantOs != null && res.IsExistCost == false) {
+                                swal({
+                                    title: "Can't find the cost of " + plantOs + "!",
+                                    text: "Please enter Cost at Step 4.",
+                                    icon: "warning",
+                                    //buttons: true,
+                                    //dangerMode: false,
+                                })
+                                    .then((willAccept) => {
+                                        if (willAccept) {
+                                            window.location = '@Url.Action("ProductSpec", "NewProduct")';
+                                        }
+                                    });
+                            }
+                            else
+                            {
+
+                                window.location = '@Url.Action("ProductSpec", "NewProduct")';
+                            }
+                        }
+                        else
+                        {
+                            if (plantOs != "" && plantOs != null && res.IsExistCost == false) {
+                                swal({
+                                    title: "ไม่สามารถหา Cost ของ " + plantOs + "!",
+                                    text: "Please enter Cost at Step 4.",
+                                    icon: "warning",
+                                    //buttons: true,
+                                    //dangerMode: false,
+                                })
+                                    .then((willAccept) => {
+                                        if (willAccept) {
+                                            $("#materialNo-alert-display").html(res.materialNo);
+                                            $("#modal-show-materialNo").modal({ backdrop: 'static', keyboard: false });
+                                            $("#modal-show-materialNo").modal("show");
+                                            LoadingButton(false);
+                                        }
+                                    });
+                            }
+                            else
+                            {
+                                $("#materialNo-alert-display").html(res.materialNo);
+                                $("#modal-show-materialNo").modal({ backdrop: 'static', keyboard: false });
+                                $("#modal-show-materialNo").modal("show");
+                                LoadingButton(false);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    LoadingButton(false);
+                    swal("Save Failed", res.exeptionMessage, "warning");
+                }
+            }
+        };
+        function LoadingButton(value) {
+            if (value) {
+                $('#btnSaveAndNext').hide();
+                $('#btnNextLoad').show();
+            } else {
+                $('#btnNextLoad').hide();
+                $('#btnSaveAndNext').show();
+            }
+        }
+    </script>
+
+}

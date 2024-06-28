@@ -1,0 +1,45 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+
+<div class="box-body" style="overflow-x:auto">
+    <div style="width:100%; margin:0 auto;">
+        <!--Table-->
+        <table class="table table-hover table-fixed" width="100%" cellspacing="0">
+
+            <!--Table head-->
+            <thead>
+                <tr>
+
+                    @{
+                        foreach (var item in Model.editCostFieldsModel.plantCostFields)
+                        {
+                            <th class="widthcolumn">@item.CostField</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <!--Table head-->
+            <!--Table body-->
+            <tbody>
+                <tr>
+
+                    @{
+                        foreach (var item in Model.editCostFieldsModel.plantCostFields)
+                        {
+                            <td class="widthcolumn">
+                                <input type="number" class="form-control" id="C_@item.CostField" />
+                            </td>
+                        }
+                    }
+                </tr>
+            </tbody>
+            <!--Table body-->
+        </table>
+        <!--Table-->
+    </div>
+</div>

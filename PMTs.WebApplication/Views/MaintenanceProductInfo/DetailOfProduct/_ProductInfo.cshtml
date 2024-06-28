@@ -1,0 +1,265 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<div class="card card-solid">
+    <div class="card-header with-border">
+        <h3 class="text-themecolor">
+            New Product > 3.Product Information
+        </h3>
+        <hr />
+    </div>
+    <!-- /.box-header -->
+    @*<form asp-controller="Productinfo" asp-action="SaveProdInfo" method="post" role="form">*@
+
+    <div class="card-body form-material">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header with-border">
+                        <h4 class="card-title">
+
+                            Product Detail
+                        </h4>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+
+                    <div class="card-body  text-right">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-5 text-right control-label col-form-label">Part No. :</label>
+                                <div class="col-sm-7">
+                                    @*@Html.TextBoxFor(m => m.modelProductInfo.PartNo, new { @id = "inputPart_no", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off", @disabled = "true" })*@
+                                    @Html.TextBoxFor(m => m.modelProductInfo.PartNo, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="MaterialDescription" class="col-sm-5 control-label">
+                                    Material Description :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.TextBoxFor(m => m.modelProductInfo.Description, new { @id = "MaterialDescription", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control" })*@
+                                    @Html.TextBoxFor(m => m.modelProductInfo.Description, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                                    @*<input asp-for="modelProductInfo.Description" id="MaterialDescription" placeholder="40 Digits" maxlength="40" class="form-control" autocomplete="off" disabled>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="Product Code" class="col-sm-5 control-label">
+                                    ProductCode :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.TextBoxFor(m => m.modelProductInfo.PC, new { @id = "ProductCode", @placeholder = "20 Digits", @maxlength = "20", @class = "form-control" })*@
+                                    @*<input asp-for="modelProductInfo.PC" id="ProductCode" placeholder="20 Digits" maxlength="20" class="form-control" autocomplete="off" disabled>*@
+                                    @Html.TextBoxFor(m => m.modelProductInfo.PC, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="SaleText1" class="col-sm-5 control-label">
+                                    SaleText1 :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText1, new { @id = "SaleText1", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control" })*@
+                                    @*<input asp-for="modelProductInfo.SaleText1" id="SaleText1" placeholder="40 Digits" maxlength="40" class="form-control" autocomplete="off" disabled>*@
+                                    @Html.TextBoxFor(m => m.modelProductInfo.SaleText1, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="SaleText2" class="col-sm-5 control-label">
+                                    SaleText2 :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText2, new { @id = "SaleText2", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off", @disabled = "true" })*@
+                                    @Html.TextBoxFor(m => m.modelProductInfo.SaleText2, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+
+                                <label for="SaleText3" class="col-sm-5 control-label">
+                                    SaleText3 :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText3, new { @id = "SaleText3", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off", @disabled = "true" })*@
+                                    @Html.TextBoxFor(m => m.modelProductInfo.SaleText3, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+
+                                    @*<input type="text" class="form-control" asp-for="SaleText3" id="SaleText3" placeholder="40 Digits" maxlength="40"><span class="text-sm text-warning"></span>
+        <span asp-validation-for="SaleText3" class="text-danger"></span>*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="SaleText4" class="col-sm-5 control-label">
+                                    SaleText4 :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.TextBoxFor(m => m.modelProductInfo.SaleText4, new { @id = "SaleText4", @placeholder = "40 Digits", @maxlength = "40", @class = "form-control", @autocomplete = "off", @disabled = "true" })*@
+                                    @Html.TextBoxFor(m => m.modelProductInfo.SaleText4, new { @style = "background-color :white;  font-weight:bold; color:black; color:black;", @class = "form-control no-border text-red", @readonly = "readonly", @disabled = "true" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+            <div class="col-sm-6">
+                @*@if (@ViewBag.MatNo != null)
+                    {
+                        <script type="text/javascript">
+                            window.onload = function () {
+                                $('#myModal').modal("show");
+                                ViewBag.MatNo = null;
+
+                            };
+                        </script>*@
+
+                <!-- Modal -->
+                <div class="modal fade in " id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="modal-title text-themecolor">Save Success</h2>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="swal2-icon swal2-success swal2-animate-success-icon" style="display: flex;"><div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);"></div><span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span><div class="swal2-success-ring"></div> <div class="swal2-success-fix" style="background-color: rgb(255, 255, 255);"></div><div class="swal2-success-circular-line-right" style="background-color: rgb(255, 255, 255);"></div></div>
+
+                                <p><h3> Material No : @ViewBag.MatNo</h3></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-success waves-effect waves-light" onclick="window.location.href='@Url.Action("ProductSpec")'" type="button"><i class="fa fa-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*}*@
+                <div class="card ">
+                    <div class="card-header with-border">
+                        <h4 class="card-title">
+                            High Value
+                        </h4>
+                    </div>
+                    <!-- /.box-header -->
+                    <!-- form start -->
+
+                    <div class="card-body  text-right">
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="inputHightV" class="col-sm-5 control-label">
+                                    Product Type :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.DropDownListFor(m => m.modelProductInfo.HvaProductType, Model.modelProductInfo.HVL_ProdTypeList1, new { @id = "hvaItem1", @class = "form-control", @disabled = "true" })*@
+                                    @Html.DropDownListFor(m => m.modelProductInfo.HvaProductType, Model.modelProductInfo.HVL_ProdTypeList1, new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+
+                                <label for="HightI" class="col-sm-5 control-label">
+                                    Structural Design :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.DropDownListFor(m => m.modelProductInfo.HvaStructural, Model.modelProductInfo.HVL_ProdTypeList2, new { @id = "hvaItem2", @class = "form-control", @disabled = "true" })*@
+                                    @Html.DropDownListFor(m => m.modelProductInfo.HvaStructural, Model.modelProductInfo.HVL_ProdTypeList2, new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+
+                                <label for="HightI" class="col-sm-5 control-label">
+                                    Printing Technology :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.DropDownListFor(m => m.modelProductInfo.HvaPrinting, Model.modelProductInfo.HVL_ProdTypeList3, new { @id = "hvaItem3", @class = "form-control", @disabled = "true" })*@
+                                    @Html.DropDownListFor(m => m.modelProductInfo.HvaPrinting, Model.modelProductInfo.HVL_ProdTypeList3, new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+
+                                <label for="HightI" class="col-sm-5 control-label">
+                                    Flute :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.DropDownListFor(m => m.modelProductInfo.HvaFlute, Model.modelProductInfo.HVL_ProdTypeList4, new { @id = "hvaItem4", @class = "form-control", @disabled = "true" })*@
+                                    @Html.DropDownListFor(m => m.modelProductInfo.HvaFlute, Model.modelProductInfo.HVL_ProdTypeList4, new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+
+                                <label for="HightI" class="col-sm-5 control-label">
+                                    Corrugating :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.DropDownListFor(m => m.modelProductInfo.HvaCorrugating, Model.modelProductInfo.HVL_ProdTypeList5, new { @id = "hvaItem5", @class = "form-control", @disabled = "true" })*@
+                                    @Html.DropDownListFor(m => m.modelProductInfo.HvaCorrugating, Model.modelProductInfo.HVL_ProdTypeList5, new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+
+                                <label for="HightI" class="col-sm-5 control-label">
+                                    Coating :
+                                </label>
+                                <div class="col-sm-7">
+                                    @*@Html.DropDownListFor(m => m.modelProductInfo.HvaCoating, Model.modelProductInfo.HVL_ProdTypeList6, new { @id = "hvaItem6", @class = "form-control", @disabled = "true" })*@
+                                    @Html.DropDownListFor(m => m.modelProductInfo.HvaCoating, Model.modelProductInfo.HVL_ProdTypeList6, new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="HightI" class="col-sm-5 control-label">
+                                    Finishing / Services :
+                                </label>
+                                <div class="col-sm-7">
+                                    @Html.DropDownListFor(m => m.modelProductInfo.HvaFinishing, Model.modelProductInfo.HVL_ProdTypeList7, new { @class = "form-control no-border text-red", @disabled = "disabled", @style = "background-color :white;  font-weight:bold; color:black; color:black;" })
+                                    @*@Html.DropDownListFor(m => m.modelProductInfo.HvaFinishing, Model.modelProductInfo.HVL_ProdTypeList7, new { @id = "hvaItem7", @class = "form-control", @disabled = "true" })*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+
+        <input id="inp_Material_No" name="MaterialNo" type="hidden" value="x">
+        <input id="inp_SALE_ORG" name="SALEORG" type="hidden" value="x">
+        <input id="inp_PLANT_CODE" name="PLANTCODE" type="hidden" value="x">
+        @*<input id="inp_Part_No" name="Part_No" type="hidden" value="">*@
+        <input id="inp_PC" name="PC" type="hidden" value="x">
+        <input id="inp_Hierarchy" name="Hierarchy" type="hidden" value="x">
+        <input id="inp_Cust_Code" name="CustCode" type="hidden" value="x">
+        <input id="inp_Cus_ID" name="CusID" type="hidden" value="x">
+        <input id="inp_Cust_Name" name="CustName" type="hidden" value="x">
+        <input id="inp_Description" name="Description" type="hidden" value="x">
+        @*<input id="inp_Change" name="Change" type="hidden" value="x">*@
+        <input id="inp_Language" name="Language" type="hidden" value="x">
+        <input id="inp_Ind_Des" name="Ind_Des" type="hidden" value="x">
+        @*<input id="inp_Material_Type" name="Material_Type" type="hidden" value="x">*@
+        <input id="inp_TwoPiece" name="TwoPiece" type="hidden" value="false">
+        @*<input id="inp_Flute" name="Flute" type="hidden" value="x">*@
+    </div>
+
+    <!-- /.box-body -->
+</div>

@@ -1,0 +1,403 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.BomRawMaterial.RawMaterialMasterViewModel
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Raw Material Master";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .option-btn {
+        max-width: 30px;
+        max-height: 40px;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-top-bar">
+            <div class="card-header">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-hexagon-multiple"></i> @Localizer["Raw Material Master"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body tab-criteria">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row line-space" style=" margin-bottom:15px">
+
+                            <div class="form-group col-md-2" style="padding: 0px;text-align: right;">
+                                <label class=" vertical-sub-text  ml-5 mt-1">@Localizer["Material No"] : </label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control text-left" id="inputMaterialNo" style="font-weight:bolder;" type="text" />
+                            </div>
+                            <div class="form-group col-md-2" style="padding: 0px;text-align: right;max-width:180px">
+                                <label class=" vertical-sub-text  ml-5 mt-1">@Localizer["Material Description"] : </label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control text-left" id="inputDesc" style="font-weight:bolder;" type="text" />
+                            </div>
+
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" onclick="SearchMasterData('')">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 form-inline">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                            <div>
+                                <button id="btnAddMat" style="width:100px;height:30px" class="btn btn-success" @*disabled="disabled"*@><i class="fa mdi">@Localizer["Add"]</i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divRawMaterialMaster" class="card-body col-md-12" style="padding:2px 2px 10px 2px;">
+                        <partial name="_RawMaterialMasterTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        var iuFlag = "";
+        var formDataObj = new FormData();
+
+        $(document).ready(function () {
+            $('#rawmaterialmaster-table').DataTable({
+                "paging": true,
+                "scrollX": true,
+                "dom": 'Bfrt<"float-left"i>p',
+                "bFilter": false
+            });
+
+            ClearForm();
+        });
+
+        function SearchMasterData(materialNoParam)
+        {
+            let materialNO = $("#inputMaterialNo").val();
+            let desc = $("#inputDesc").val();
+            if (materialNoParam != "" && materialNoParam != null)
+            {
+                materialNO = materialNoParam;
+            }
+
+            $.ajax({
+                type: "POST",
+                async: false,
+                dataType: "json",
+                url: '@Url.Action("SearchRawMaterialMaster", "BomRaw")',
+                data: {
+                    materialNo: materialNO,
+                    description: desc
+                },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('#divRawMaterialMaster').html(res.View);
+                        $('#rawmaterialmaster-table').DataTable({
+                            "paging": true,
+                            "scrollX": true,
+                            "dom": 'Bfrt<"float-left"i>p',
+                            "bFilter": false,
+                            "order": [[1, "desc"]]
+                        });
+                        $(".modal-backdrop").attr("hidden", true);
+                        if (materialNoParam != "" && materialNoParam != null) {
+                            $("#inputMaterialNo").val(materialNoParam);
+                        }
+                    }
+                    else {
+                        swal("Search Failed!", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () { }
+            });
+
+        }
+
+        function SaveRawMaterialMaster() {
+            $("#RmmSaveBtn").attr("disabled", true);
+            var form = $('#edit-rawmaterialmaster')[0];
+            var data = new FormData(form);
+            debugger;
+            if (!VerifyRawMat()) {
+                if (iuFlag == "I") {
+                $.ajax({
+                    type: 'POST',
+                    enctype: 'multipart/form-data',
+                    url: '@Url.Action("AddRawMaterialMaster", "BomRaw")',
+                    data: data,
+                    async: false,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            swal("Add successfully", "", "success")
+                                .then((willDelete) => {
+                                    if (willDelete) {
+                                        let matParam = "";
+                                        if ($("#rmm_MaterialNo").val() != "" && $("#rmm_MaterialNo").val() != null)
+                                        {
+                                            matParam = $("#rmm_MaterialNo").val();
+                                        }
+                                        $(".modal-backdrop").attr("hidden", true);
+                                        SearchMasterData(matParam);
+                                    }
+                                });
+                        }
+                        else
+                        {
+                            swal("Add Fail", res.ExceptionMessage, "warning")
+                                .then((willDelete) => {
+                                    if (willDelete) {
+                                        //ClearForm();
+                                        //SearchMasterData();
+                                        $("#RmmSaveBtn").attr("hidden", false);
+                                        $("#RmmSaveBtn").attr("disabled", false);
+                                    }
+                                });
+                        }
+
+                    }
+                });
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        enctype: 'multipart/form-data',
+                        url: '@Url.Action("UpdateRawMaterialMaster", "BomRaw")',
+                        data: data,
+                        async: false,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                swal("Updated successfully", "", "success")
+                                    .then((willDelete) => {
+                                        if (willDelete) {
+                                            let matParam = "";
+                                            if ($("#rmm_MaterialNo").val() != "" && $("#rmm_MaterialNo").val() != null)
+                                            {
+                                                matParam = $("#rmm_MaterialNo").val();
+                                            }
+                                            $(".modal-backdrop").attr("hidden", true);
+                                            SearchMasterData(matParam);
+                                        }
+                                    });
+                            }
+                            else
+                            {
+                                swal("Updated Fail", res.ExceptionMessage, "warning")
+                                    .then((willDelete) => {
+                                        if (willDelete) {
+                                            ClearForm();
+                                            SearchMasterData();
+                                        }
+                                    });
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        function DeleteRawMaterialMaster(item) {
+            let Id = $(item).attr("data-Id");
+            $.ajax({
+                type: 'PUT',
+                url: '@Url.Action("DeleteRawMaterialMaster", "BomRaw")',
+                data: { Id: Id },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Deleted successfully", "", "success")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    $(".modal-backdrop").attr("hidden", true);
+                                    SearchMasterData("");
+                                }
+                            });
+                    }
+                    else
+                    {
+                        swal("Deleted Fail", res.ExceptionMessage, "warning")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    ClearForm();
+                                    SearchMasterData("");
+                                }
+                            });
+                    }
+                }
+            });
+        }
+
+        function CloseRawMaterialMaster() {
+            ClearForm();
+            $("#modal-rmm-create-edit").modal('hide');
+            $(".modal-backdrop").attr("hidden", true);
+        }
+
+        function ClearForm() {
+            $("#rmm_Id").val("");
+            $("#rmm_MaterialNo").val("");
+            $("#rmm_MaterialType").val("");
+            $("#rmm_MaterialDescription").val("");
+            $("#rmm_NetWeight").val("");
+            $("#rmm_MaterialGroup").val("");
+            $("#rmm_Uom").val("");
+            $("#rmm_OldMaterialNumber").val("");
+
+            $("#rmm_Id").attr("readonly", true);
+            $("#rmm_MaterialNo").attr("readonly", true);
+            $("#rmm_MaterialType").attr("readonly", true);
+            $("#rmm_MaterialDescription").attr("readonly", true);
+            $("#rmm_NetWeight").attr("readonly", true);
+            $("#rmm_MaterialGroup").attr("readonly", true);
+            $("#rmm_Uom").attr("readonly", true);
+            $("#rmm_OldMaterialNumber").attr("readonly", true);
+
+            $("#RmmSaveBtn").attr("disabled", true);
+        }
+
+        function BindRawMaterialMasterView(item)
+        {
+            SetDefaultSelection(item);
+
+            $("#rmm_MaterialNo").attr("readonly", true);
+            $("#rmm_MaterialType").attr("readonly", true);
+            $("#rmm_MaterialDescription").attr("readonly", true);
+            $("#rmm_NetWeight").attr("readonly", true);
+            $("#rmm_MaterialGroup").attr("readonly", true);
+            $("#rmm_Uom").attr("readonly", true);
+            $("#rmm_OldMaterialNumber").attr("readonly", true);
+
+            document.getElementById('modelHeader').innerHTML = 'View Raw Material Master';
+            $("#RmmSaveBtn").attr("hidden", true);
+
+            $("#modal-rmm-create-edit").modal('show');
+        }
+
+        function BindRawMaterialMasterEdit(item) {
+            SetDefaultSelection(item);
+            iuFlag = "U";
+            $("#rmm_Id").val($(item).attr("data-Id"));
+
+            $("#rmm_MaterialNo").attr("readonly", true);
+            $("#rmm_MaterialType").attr("readonly", false);
+            $("#rmm_MaterialDescription").attr("readonly", false);
+            $("#rmm_NetWeight").attr("readonly", false);
+            $("#rmm_MaterialGroup").attr("readonly", false);
+            $("#rmm_Uom").attr("readonly", false);
+            $("#rmm_OldMaterialNumber").attr("readonly", false);
+
+            $("#rmm_DateOfCreation").val($(item).attr("data-DateOfCreation"));
+
+            $("#RmmSaveBtn").attr("hidden", false);
+            $("#RmmSaveBtn").attr("disabled", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Edit Raw Material Master';
+            $("#modal-rmm-create-edit").modal('show');
+        }
+
+        //function CreateRawMaterialMaster(item) {
+        //    $("#rmm_Id").val(0);
+
+        //    document.getElementById('modelHeader').innerHTML = 'Create Raw Material Master';
+
+        //    $("#RmmSaveBtn").attr("disabled", false);
+        //    $("#modal-rmm-create-edit").modal('show');
+        //}
+
+        function SetDefaultSelection(item) {
+            $("#rmm_MaterialNo").val($(item).attr("data-MaterialNumber"));
+            $("#rmm_MaterialType").val($(item).attr("data-MaterialType"));
+            $("#rmm_MaterialDescription").val($(item).attr("data-MaterialDescription"));
+            $("#rmm_NetWeight").val($(item).attr("data-NetWeight"));
+            $("#rmm_MaterialGroup").val($(item).attr("data-MaterialGroup"));
+            $("#rmm_Uom").val($(item).attr("data-Uom"));
+            $("#rmm_OldMaterialNumber").val($(item).attr("data-OldMaterialNumber"));
+            $("#rmm_DateOfCreation").val($(item).attr("data-DateOfCreation"));
+            $("#rmm_Plant").val($(item).attr("data-Plant"));
+
+        }
+        $("#btnAddMat").click(function () {
+            iuFlag = "I";
+            $("#rmm_Id").val(0);
+            $("#rmm_NetWeight").val(0.00);
+            $("#rmm_MaterialNo").attr("readonly", false);
+            $("#rmm_MaterialType").attr("readonly", false);
+            $("#rmm_MaterialDescription").attr("readonly", false);
+            $("#rmm_NetWeight").attr("readonly", false);
+            $("#rmm_MaterialGroup").attr("readonly", false);
+            $("#rmm_Uom").attr("readonly", false);
+            $("#rmm_OldMaterialNumber").attr("readonly", false);
+
+            $("#RmmSaveBtn").attr("hidden", false);
+            $("#RmmSaveBtn").attr("disabled", false);
+
+            $("#modal-rmm-create-edit").modal('show');
+        });
+
+        $("#inputDesc").keypress(function (ev) {
+            //console.log("Enter",ev.keyCode)
+            if (ev.keyCode == '13') {
+                SearchMasterData('');
+            }
+        });
+
+        $("#inputMaterialNo").keypress(function (ev) {
+            //console.log("Enter",ev.keyCode)
+            if (ev.keyCode == '13') {
+                SearchMasterData('');
+            }
+        });
+
+        function VerifyRawMat() {
+            let results = false;
+            let matNo = $("#rmm_MaterialNo").val();
+            if (matNo === "" || matNo === null) {
+                swal("Require Alert", "Please Fill Material No.", "warning");
+                results = true;
+                $("#RmmSaveBtn").attr("hidden", false);
+                $("#RmmSaveBtn").attr("disabled", false);
+            }
+            return results;
+        }
+    </script>
+}

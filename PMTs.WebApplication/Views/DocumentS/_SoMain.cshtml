@@ -1,0 +1,62 @@
+﻿@model PMTs.DataAccess.ComplexModel.CreateDocumentSModel
+
+@using PMTs.DataAccess.ModelView
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<br />
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["Create S/O Change Document"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info" onclick="RenderChangeProcess()">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["เพิ่มเอกสารเปลี่ยนเเปลง S"]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-md-12">
+                        <div class="row line-space">
+                            <div class="form-group col-md-3" style="padding: 0px;text-align: right;">
+                                <label class="control-label vertical-sub-text  ml-5 mt-1" style="font-weight:800">@Localizer["เลขที่ S"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" id="snumber" maxlength="15" />
+                            </div>
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-outline-info" id="btnsearchdocs" style="max-height:30px;min-width:100px;font-weight:800" >@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="SnumberTbl" class="table-responsive m-t-10 col-md-12">
+                        <partial name="_SoMainTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $('#txtorderitem').keyup(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            console.log(keycode)
+            if (keycode === 13) {
+                alert('in ee')
+                $('#btnsearchorder').trigger('click');
+            }
+        });
+    </script>
+}

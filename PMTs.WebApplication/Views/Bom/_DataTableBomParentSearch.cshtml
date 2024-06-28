@@ -1,0 +1,76 @@
+﻿@model PMTs.DataAccess.ModelView.BOMViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{ int No = 1; }
+<div class="box-body table-responsive">
+    <table id="BomdatatableParentSearch" class="table table-bordered color-table dataTable no-footer" cellspacing="0">
+        <thead>
+            <tr style="white-space:nowrap;background:darkgray;color:black;">
+                <th>@Localizer["Select"]</th>
+                <th>@Localizer["Material Type"]</th>
+                <th>@Localizer["PC"]</th>
+                <th>@Localizer["Material No"]</th>
+                <th>@Localizer["Cust Name"]</th>
+                <th>@Localizer["Description"]</th>
+                <th>@Localizer["Flute"]</th>
+                <th>@Localizer["Board"]</th>
+                <th>@Localizer["PDIS Status"]</th>
+                <th>@Localizer["Part No"]</th>
+                <th>@Localizer["Plant"]</th>
+                <th>@Localizer["Cust Code"]</th>
+                <th>@Localizer["Cust ID"]</th>
+                <th>@Localizer["Sale Text1"]</th>
+                <th>@Localizer["Sale Text2"]</th>
+                <th>@Localizer["Sale Text3"]</th>
+                <th>@Localizer["Sale Text4"]</th>
+                <th>@Localizer["Wid"]</th>
+                <th>@Localizer["Leg"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lstMasterData)
+            {
+                <tr>
+                    <td scope="row">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="form-check-input[]" id="@No.ToString()" value="@item.MaterialNo">
+                            <label class="form-check-label" for="@No.ToString()"></label>
+                        </div>
+                        <input type="hidden" class="pieces-suite-child" value="@item.PieceSet" />
+                        <input type="hidden" class="weight-child" value="@item.WeightBox" />
+                    </td>
+                    @*<td align="center"><input type="checkbox" class="case" name="case[]" value="1" /></td>*@
+                    @*<td>@No</td>*@
+                    <td>@item.MaterialType</td>
+                    <td>@item.Pc</td>
+                    <td class="material-no-child">@item.MaterialNo</td>
+                    <td>@item.CustName</td>
+                    <td>@item.Description</td>
+                    <td>@item.Flute</td>
+                    <td>@item.Board</td>
+                    <td>@item.PdisStatus</td>
+                    <td>@item.PartNo</td>
+                    <td>@item.Plant</td>
+                    <td>@item.CustCode</td>
+                    <td>@item.CusId</td>
+                    <td>@item.SaleText1</td>
+                    <td>@item.SaleText2</td>
+                    <td>@item.SaleText3</td>
+                    <td>@item.SaleText4</td>
+                    <td>@item.Wid</td>
+                    <td>@item.Leg</td>
+                </tr>
+                No++;
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#BomdatatableParentSearch').DataTable();
+        });
+    </script>
+}

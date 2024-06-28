@@ -1,0 +1,83 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+<div class="card card-solid">
+    <div class="card-header with-border">
+        <h3 class="text-themecolor">
+            New Product > 8.Product Picture
+        </h3>
+        <hr />
+    </div>
+    <div class="card-body">
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body ">
+                            <div class="row">
+                                &nbsp;&nbsp;&nbsp;<img src="~/pic/drawIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> Drawing</h4>
+                            </div>
+                            <div class="text-center">
+                                @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_DrawingPath))
+                                {
+                                    <img src='@Model.modelProductPicture.Pic_DrawingPath' style="width:90%">
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                &nbsp;&nbsp;&nbsp;<img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> Print Master</h4>
+                            </div>
+                            <div class="text-center">
+                                @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_PrintPath))
+                                {
+                                    <img src='@Model.modelProductPicture.Pic_PrintPath' style="width:90%">
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="row">
+                                &nbsp;&nbsp;&nbsp;<img src="~/pic/palletIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> Pallet</h4>
+                            </div>
+
+                            <div class="text-center">
+                                @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_PalletPath))
+                                {
+                                    <img src='@Model.modelProductPicture.Pic_PalletPath' style="width:90%">
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                &nbsp; &nbsp;&nbsp;<img src="~/pic/fgBoxIcon.jpg" width="20" height="20" />&nbsp; <h4 class="card-title"> Packaging</h4>
+                            </div>
+
+                            <div class="text-center">
+                                @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_FGPath))
+                                {
+                                    <img src='@Model.modelProductPicture.Pic_FGPath' style="width:90%">
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

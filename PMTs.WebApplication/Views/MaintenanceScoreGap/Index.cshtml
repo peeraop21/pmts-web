@@ -1,0 +1,165 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceScoreGap.MaintenanceScoreGapViewModel
+
+@{
+    ViewData["Title"] = "ScoreGap";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+</style>
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-chart-areaspline"></i> @Localizer["ScoreGap"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalScoreGap">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Create"]
+                    </button>
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="box" id="ScoreGap-table">
+                <partial name="_ScoreGapTable" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#ScoreGap-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModalScoreGap').click(function () {
+            //$(".field-validation-error span").hide();
+            $('#modal-create').modal('show');
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+        function OpenModalView(id) {
+            $('#' + id).modal('show');
+        }
+
+        function UpdateAllowanceTableNew(res) {
+            //$('#Allowance-table').html(res.View);
+            //$('#Allowance-data-table').DataTable();
+            $('#ScoreGap-table').html(res.View);
+            $('#ScoreGap-data-table').DataTable();
+            $('body').css('padding', '0px');
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+
+            $('.modal').modal('hide');
+            $('.modal-backdrop').hide();
+            $("body").removeClass("modal-open");
+
+        }
+
+        function UpdateScoreGapTable() {
+            $.ajax({
+                url: '@Url.Action("UpdateScoreGapTable", "MaintenanceScoreGap")',
+                success: function (res) {
+                    $('#ScoreGap-table').html(res);
+                    $('#ScoreGap-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+                },
+                error: function () {  }
+            });
+        }
+
+        function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeleteScoreGap", "MaintenanceScoreGap")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                swal("Deleted!", {
+                                    icon: "success",
+                                });
+                                UpdateAllowanceTableNew(res);
+                            }
+                        }
+                    });
+                    } else {
+                    }
+                });
+        }
+
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                swal("Success!", { icon: "success", });
+                UpdateAllowanceTableNew(res);
+            }
+            else {
+                swal("Faile!", { icon: "warning", });
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+                swal("Success!", { icon: "success", });
+                UpdateAllowanceTableNew(res);
+            }
+            else {
+                swal("Faile!", { icon: "warning", });
+            }
+        };
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                swal("Success!", { icon: "success", });
+                UpdateAllowanceTableNew(res);
+            }
+            else {
+                swal("Faile!", { icon: "warning", });
+            }
+        };
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

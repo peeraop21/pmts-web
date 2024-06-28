@@ -1,0 +1,134 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceProductType.MaintenanceProductTypeCreateModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var actionName = ViewData["Title"];
+}
+
+<div class="modal fade bs-example-modal-lg" id="modal-create-category">
+    <div class="modal-dialog modal-xl" style="width:90%">
+        <div class="modal-content">
+            <form id="fromCategoriesCreate">
+                <input type="hidden" asp-for="CreatedBy" />
+                <input type="hidden" asp-for="CreatedDate" />
+                <input type="hidden" asp-for="UpdatedBy" />
+                <input type="hidden" asp-for="UpdatedDate" />
+                <input type="hidden" name="IsTwoPiece" id="IsTwoPieceCreate" asp-for="IsTwoPiece" />
+                <input type="hidden" name="BoxHandle" id="BoxHandleCreate" asp-for="BoxHandle" />
+
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left" id="myLargeModalLabel">@Localizer["Create"]  @ViewData["Title"]</h4>
+                    <button type="button" class="close pull-right" data-dismiss="modal"  data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["UID"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="number" id="UID" class="form-control" asp-for="UID" />
+                            <span asp-validation-for="UID" class="text-danger" style="float:left"></span>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["Status"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            @if (Model.Status)
+                            {
+                                <select id="selectStatusEdit-@Model.UID" asp-for="Status" style="background-color:lightgreen" class="form-control" onchange="statusChange(@Model.UID)">
+                                    <option value="true" style="background-color: lightgreen">@Localizer["Active"]</option>
+                                    <option value="false" style="background-color: lightcoral">@Localizer["Inactive"]</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <select id="selectStatusEdit-@Model.UID" asp-for="Status" style="background-color:lightcoral" class="form-control" onchange="statusChange(@Model.UID)">
+                                    <option value="true" style="background-color: lightgreen">@Localizer["Active"]</option>
+                                    <option value="false" style="background-color: lightcoral">@Localizer["Inactive"]</option>
+                                </select>
+                            }
+                        </div>
+                        <div class="col-md-1"></div>
+
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["Name"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <input style="word-break:break-word;word-wrap:break-word" class="form-control" maxlength="100" asp-for="Name" />
+                            <span asp-validation-for="Name" class="text-danger" style="float:left"></span>
+                        </div>
+                        <div class="col-md-1"></div>
+
+                        <div class="col-md-1"></div>
+                        <div class="form-group col-md-1">
+                            <label class="control-label" style="line-height:31px">@Localizer["Description"]<i style="color:red">*</i></label>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <textarea class="form-control" asp-for="Description" rows="3" maxlength="100"></textarea>
+                            <span asp-validation-for="Description" class="text-danger" style="float:left"></span>
+                        </div>
+                        <div class="col-md-1"></div>
+
+                        @if (ViewData["Title"] == "Product Type")
+                        {
+                            <div class="col-md-1"></div>
+                            <div class="form-group col-md-1">
+                                <label class="control-label" style="line-height:31px">@Localizer["HierarchyLv2"]</label>
+                            </div>
+                            <div class="autocomplete form-group col-md-4">
+                                <input asp-for="HierarchyLv2" maxlength="2" type="text" id="hierarchyLv2AutoComplete" class="form-control" />
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label class="control-label" style="line-height:31px">@Localizer["FormGroup"]</label>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <select asp-for="FormGroup" class="form-control input-sm"
+                                        asp-items="@Model.SelectFormGroups"></select>
+                                <input class="form-control" type="hidden" asp-for="FormGroup" />
+                            </div>
+                            <div class="col-md-1"></div>
+
+                            <div class="col-md-1"></div>
+                            <div class="form-group col-md-1">
+                                <label class="control-label" style="line-height:31px">@Localizer["Unit Desc"]</label>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <input asp-for="UnitDesc" maxlength="2" type="text" id="hierarchyLv2AutoCompletess" class="form-control" />
+                            </div>
+                            <div class="col-md-5"></div>
+
+                            <div class="col-md-12 row">
+                                <div class="col-md-1"></div>
+                                <div class="form-group col-md-1">
+                                    <label class="control-label">@Localizer["Option"]</label>
+                                </div>
+                                <div class="form-group col-sm-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="IsTwoPieceCreateCheckBox" onclick="IsTwoPieceCheck('Create')">
+                                        <label style="font-size:14px" class="form-check-label" for="IsTwoPieceCreateCheckBox">@Localizer["IsTwoPiece"]</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="BoxHandleCreateCheckBox" onclick="BoxHandleCheck('Create')">
+                                        <label style="font-size:14px" class="form-check-label" for="BoxHandleCreateCheckBox">@Localizer["BoxHandle"]</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="CreateCategoriesModel('@ViewData["CreateAction"]')" id="btnCreate" class="btn btn-info text-center col-md-1">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-center col-md-1" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

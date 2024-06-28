@@ -1,0 +1,143 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    ViewBag.Title = "";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="row" style="width: 100%">
+    <div class="col-sm-6">
+        <div style="height:auto;width:auto">
+            <div id="MainPic">
+                <div class="row" id="pic">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img id="hb" src="~/images/HB.jpg" />
+                    <input id="SheetWid" type="text" style="position: absolute; left: 96px; top: 151px; width: 40px; border:none; text-align:center; color:black;" tabindex="-1" readonly />
+                    <input id="SheetLen" type="text" style="position: absolute; left: 303px; top: 140px; width: 40px; border:none; text-align:center; color:black;" tabindex="-1" readonly />
+                </div>
+            </div>
+            <div id="FilePic">
+                <center>
+                    <br />
+                    @Html.TextBoxFor(m => m.modelProductSpec.PrintMasterPath, new { @id = "iDrawingPath", @style = "display:none;" })
+                    @if (Model.modelProductSpec.PrintMasterPath == null)
+                    {
+                        <img id="Pic_Drawing" style="width: auto; height: 281px;" />
+                    }
+                    else
+                    {
+                        <img id="Pic_Drawing" src="@Url.Content(@Model.modelProductSpec.PrintMasterPath)" style="width: auto; height: 281px;" />
+                    }
+                </center>
+            </div>
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-sm-11">
+                    <input id="PrintMaster" name="PrintMaster" type="file" title="search image" accept="image/*" onchange="show_Drawing(this)" />
+                </div>
+                <div class="col-sm-1">
+                    <i id="RM_Drawing" class="mdi mdi-close" style="color:red; display:none;" onclick="ClosePic()"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <h4>@Localizer["Honey Comp/Board"] </h4>
+        <div class="form-group row">
+
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-5">
+            </div>
+            <div class="col-sm-3">
+                <button id="btProcess" tabindex="5" class="btn btn-info waves-effect waves-light" type="button" disabled>@Localizer["Calculate"]</button>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-4">
+                <span id="modelProductSpec_CutSheetWid-error" class="text-danger" style="display: none;">@Localizer["W' required"]</span>
+                <span id="modelProductSpec_CutSheetLeng-error" class="text-danger" style="display: none;">@Localizer["L' required"]</span>
+            </div>
+            <div class="col-sm-2">
+                @Localizer["Stretch"]
+            </div>
+            <div class="col-sm-3">
+                @Localizer["HN Core Size"]
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                @Localizer["Width"] :<i id="redReq" style="color:red"> *</i>
+            </div>
+            <div class="col-sm-5">
+                <input type="text" asp-for="modelProductSpec.CutSheetWid" tabindex="3" maxlength="4" style="width: 86px" class="form-control mytextboxNumber" autocomplete="off" />&nbsp;&nbsp;&nbsp;
+                <input type="text" asp-for="modelProductSpec.shrink" style="width: 60px" class="form-control mytextboxNumber" readonly />
+            </div>
+            <div class="col-sm-3">
+                <input type="text" asp-for="modelProductSpec.widHC" class="form-control mytextboxNumber" readonly />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                @Localizer["Length"] :<i id="redReq" style="color:red"> *</i>
+            </div>
+            <div class="col-sm-5">
+                <input type="text" asp-for="modelProductSpec.CutSheetLeng" tabindex="4" maxlength="4" style="width: 86px" class="form-control mytextboxNumber" autocomplete="off" />&nbsp;&nbsp;&nbsp;
+                <input type="text" asp-for="modelProductSpec.stretch" style="width: 60px" class="form-control mytextboxNumber" readonly />
+            </div>
+            <div class="col-sm-3">
+                <input type="text" asp-for="modelProductSpec.lenHC" class="form-control mytextboxNumber" readonly />
+                <input class="filled-in" type="checkbox" value="" id="chkTwoP" disabled>
+                <label class="form-check-label" id="lbTwoP" for="chkTwoP" style="font-size:14px; font-weight:300;">
+                    @Localizer["2Pieces"]
+                </label>
+                <input type="hidden" asp-for="modelProductSpec.TwoPiece" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4" style="text-align:center;">
+                @Localizer["Sheet Board"]
+            </div>
+            <div class="col-sm-4" style="text-align:center;">
+                @Localizer["Finished goods"]
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                @Localizer["Area"] :
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.SheetArea" type="text" class="form-control text-right" readonly />
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.BoxArea" type="text" class="form-control text-right" readonly />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                @Localizer["Weight"] :
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.WeightSh" type="text" class="form-control text-right" readonly>
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.WeightBox" type="text" class="form-control text-right" readonly>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-8">
+                @Localizer["RemarkDiffWeightFromGL"]
+            </div>
+        </div>
+    </div>
+</div>

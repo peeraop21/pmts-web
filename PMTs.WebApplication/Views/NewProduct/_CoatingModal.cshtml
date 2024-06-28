@@ -1,0 +1,94 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    ViewBag.Title = "";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    #p_scents_ .col-md-12{
+        padding: 0 ;
+    }
+    .table-coating {
+        width: 300px !important;
+    }
+</style>
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-coating">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Special Coating New"]</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-2">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" id="Station" onchange=""></select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button id="AddStation2" type="button" class="btn btn-info waves-effect waves-light" onclick="renderAdd()">@Localizer["Add Station"]</button>
+                    </div>
+                </div>
+
+                <div class="tblcontainer1" id="tblcontainer1">
+                    <div class='tblelement1' id='tbl_1'>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="SaveCoating()">@Localizer["Save"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function renderAdd() {
+        var Station = $("#Station").val().toUpperCase();
+        if (CheckListTblDuplicate(Station)) {
+
+            swal("data duplicate!");
+        }
+        else
+        {
+            var total_element = $(".tblelement1").length;
+            var lastid = $(".tblelement1:last").attr("id");
+            var split_id = lastid.split("_");
+            var nextindex = Number(split_id[1]) + 1;
+            var max = 20;
+            if (total_element < max) {
+                $(".tblelement1:last").after("<div class='tblelement1 text-center' id='tbl_" + nextindex + "'><i class='fa fa-trash-alt tblremovetagprint' style='font-size:22px;position:absolute;right:100px;color: red;' aria-hidden='true' id='tbl_" + nextindex + "'></i> <div id='tbls_" + nextindex + "'></div></div>");
+                $.ajax({
+                    type: 'POST',
+                    async: false,
+                    url: '@Url.Action("addCoating", "NewProduct")',
+                    data: { station: Station },
+                    success: function (res) {
+                        $("#tbls_" + nextindex).html(res);
+                    },
+                    error: function () { }
+                });
+            }
+        }
+
+    }
+
+    function CheckListTblDuplicate(station) {
+        var countdivD = $(".DropType").length;
+        var i;
+        arrayidD = [];
+        for (i = 0; i < countdivD; i++) {
+            var idelementD = ""
+            idelementD = document.getElementsByClassName('DropType')[i].id;
+            arrayidD.push(idelementD);
+        }
+        var n = arrayidD.toString().includes(station);
+        return n;
+    }
+</Script >

@@ -1,0 +1,2449 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.ProductCatalog.ProductCatalogModel
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Product Catalog";
+}
+
+@*<link href="~/lib/JqueryDatatable/datatables.min.css" rel="stylesheet">*@
+
+<style>
+
+    .form-control-sm {
+        min-height: 30px;
+    }
+
+    .paddinglable {
+        padding: 0;
+    }
+
+    .paddingtext {
+        padding-left: 0
+    }
+
+    .loader {
+        border: 14px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 14px solid #3498db;
+        width: 20px;
+        height: 20px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+    }
+
+    /* Safari */
+    @@-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    table.table-bordered {
+        border: 1px solid gray;
+        margin-top: 20px;
+    }
+
+        table.table-bordered > thead > tr > th {
+            border: 1px solid gray;
+        }
+
+        table.table-bordered > tbody > tr > td {
+            border: 1px solid gray;
+        }
+</style>
+
+<div id="overlay">
+    <div class="cv-spinner">
+        <span class="spinner"></span>
+    </div>
+</div>
+<form>
+    <div class="card">
+        @*<div class="card-header">
+        <div class="card-title">Product Catalog</div>
+        </div>*@
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-xs-12 col-md-12">
+                    <h3 class="text-themecolor"><i class="mdi mdi-book-multiple"></i>@Localizer["Product Catalog"]</h3>
+                    <hr />
+                </div>
+            </div>
+            <div class="card-body table-responsive m-t-10">
+                <div class="d-flex align-items-center" style="position:initial;">
+
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4">
+
+                                <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnshowmodalsetting">
+                                    <span class="btn-label"><i class="fa fa-cogs"></i></span> @Localizer["Setting"]
+                                </button>
+                                <button type="button" class="btn waves-effect waves-light btn-info btn-info" style="margin-left:15px" id="btnExportExcel">
+                                    <span class="btn-label"><i class="fa fa-file-excel text-left"></i></span> @Localizer["Export Excel"]
+                                </button>
+
+                                @*<button type="button" class="btn waves-effect waves-light btn-info btn-info" style="margin-left:15px" id="btnTest">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span> @Localizer["Exporttt"]
+                                </button>*@
+                            </div>
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div>
+                                            <label style="float:left;padding-left:115px" class="form-check-label" id="idCheckPlantlbltxt">@Localizer["All Sale Plant"]</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-4">
+
+                                                <div id="checkPlant">
+                                                    <div class="form-check" style="float:right">
+                                                        <input type="checkbox" class="form-check-input" id="idCheckPlant" checked>
+                                                        <label class="form-check-label" id="idCheckPlantlbl" for="idCheckPlant"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-8">
+
+                                                <div id="renderDropdown">
+                                                    <partial name="_RenderDropDownPlant" model="Model" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div>
+                                            <label style="float:left;padding-left:120px" class="form-check-label" id="idCheckPlantProductionlbltxt">@Localizer["All Production Plant"]</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-4">
+
+                                            <div id="checkPlantProduction">
+                                                <div class="form-check" style="float:right">
+                                                    <input type="checkbox" class="form-check-input" id="idCheckPlantProduction" checked>
+                                                    <label class="form-check-label" id="idCheckPlantProductionlbl" for="idCheckPlantProduction">@*@Localizer["All Plant Production"]*@</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-8">
+
+                                            <div id="renderDropdownProduction">
+                                                <partial name="_RenderDropDownPlantProduction" model="Model" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card" id="cardSearch" style="width:100%">
+                            <div class="card-body">
+                                @*style="overflow-x: auto;"*@
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="form-group col-md-1 ">
+                                                <label class="control-label">@Localizer["PC"]</label>
+                                            </div>
+                                            <div class="form-group col-md-11 ">
+                                                <input type="text" style="width:16%" id="pc1" class="form-control" />
+                                                <input type="text" style="width:16%" id="pc2" class="form-control" />
+                                                <input type="text" style="width:16%" id="pc3" class="form-control" />
+                                                <input type="text" style="width:16%" id="pc4" class="form-control" />
+                                                <input type="text" style="width:16%" id="pc5" class="form-control" />
+                                                <input type="text" style="width:16%" id="pc6" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                <div class="col-md-2">
+                                <div class="row">
+                                <div class="form-group col-md-5 ">
+                                <label class="control-label">PC</label>
+                                </div>
+                                <div class="form-group col-md-7 paddingtext">
+                                <input type="text" id="pc1" class="form-control" />
+                                </div>
+                                </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                <div class="row">
+                                <div class="form-group col-md-5 ">
+                                <label class="control-label">PC</label>
+                                </div>
+                                <div class="form-group col-md-7 paddingtext">
+                                <input type="text" id="pc2" class="form-control" />
+                                </div>
+                                </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                <div class="row">
+                                <div class="form-group col-md-5 ">
+                                <label class="control-label">PC</label>
+                                </div>
+                                <div class="form-group col-md-7 paddingtext">
+                                <input type="text" id="pc3" class="form-control" />
+                                </div>
+                                </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                <div class="row">
+                                <div class="form-group col-md-5 ">
+                                <label class="control-label">PC</label>
+                                </div>
+                                <div class="form-group col-md-7 paddingtext">
+                                <input type="text" id="pc4" class="form-control" />
+                                </div>
+                                </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                <div class="row">
+                                <div class="form-group col-md-5 ">
+                                <label class="control-label">PC</label>
+                                </div>
+                                <div class="form-group col-md-7 paddingtext">
+                                <input type="text" id="pc5" class="form-control" />
+                                </div>
+                                </div>
+                                </div>
+                                <div class="col-md-2">
+                                <div class="row">
+                                <div class="form-group col-md-5 ">
+                                <label class="control-label">PC</label>
+                                </div>
+                                <div class="form-group col-md-7 paddingtext">
+                                <input type="text" id="pc6" class="form-control" />
+                                </div>
+                                </div>
+                                </div>
+                                </div>*@
+                                <div class="row">
+                                    <div class="form-group col-md-1 ">
+                                        <label class="control-label">@Localizer["Sale Text"]</label>
+                                    </div>
+                                    <div class="form-group col-md-5 ">
+                                        <input type="text" id="saleText" class="form-control" />
+                                    </div>
+                                    @*</div>
+                                    <div class="row">*@
+                                    <div class="form-group col-md-1" style="padding-left:0">
+                                        <label class="control-label">@Localizer["Description"]</label>
+                                    </div>
+                                    <div class="form-group col-md-5 ">
+                                        <input type="text" id="desc" class="form-control" />
+                                    </div>
+                                </div>
+                                @* ============================================================================================== *@
+                                <div class="row">
+                                    <div class="col-md-2">
+
+                                        <div class="row">
+                                            <div class="form-group col-md-5 ">
+                                                <label class="control-label">@Localizer["PartNo"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="partNo" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Cust Code"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="custCode" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Cust ID"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="custID" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label" style="padding-right:0px">@Localizer["Cust Name"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="custName" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Rate"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="number" id="rate" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5">
+                                                <label class="control-label">@Localizer["Leg"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="number" id="leg" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable ">
+                                                <label class="control-label">@Localizer["Wid"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="number" id="wid" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Hig"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="number" id="hig" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Flute"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="flute" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Board"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="board" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 ">
+                                                <label class="control-label">@Localizer["Remark"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="remark" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Block No"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="blockNo" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="form-group col-md-5 paddinglable">
+                                                <label class="control-label">@Localizer["Plate No"]</label>
+                                            </div>
+                                            <div class="form-group col-md-7 paddingtext">
+                                                <input type="text" id="plateNo" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group col-md-2" style="padding-left:0;padding-right:0">
+                                                <label class="control-label">@Localizer["Material No"]</label>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <input type="text" id="MaterialNo" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7" style="padding-left:3%">
+                                        <div class="row">
+                                            <div class="col-sm-2">
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-8 paddinglable">
+                                                        <input type="checkbox" class="form-check-input" id="idNonMove">
+                                                        <label class="form-check-label" style="font-size:inherit" for="idNonMove">@Localizer["NonMove"]</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-12 paddinglable">
+
+                                                        <input type="checkbox" class="form-check-input" id="idStockWIP">
+                                                        <label class="form-check-label" style="font-size:inherit" for="idStockWIP">@Localizer["Stock WIP"]</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-12 paddinglable">
+                                                        <input type="checkbox" class="form-check-input" id="idStockFG">
+                                                        <label class="form-check-label" style="font-size:inherit" for="idStockFG">@Localizer["Stock FG"]</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-12 paddinglable">
+                                                        <input type="checkbox" class="form-check-input" id="idStockQA">
+                                                        <label class="form-check-label" style="font-size:inherit" for="idStockQA">@Localizer["Stock QA"]</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-2">
+                                                <div class="row">
+                                                    <div class="form-group col-md-8 paddinglable">
+                                                        <input type="checkbox" class="form-check-input" id="idHoldFind">
+                                                        <label class="form-check-label" style="font-size:inherit" for="idHoldFind">@Localizer["Hold"]</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-2">
+                                                <div class="row">
+                                                    <div class="form-group col-md-8 paddinglable">
+                                                        <input type="checkbox" class="form-check-input" id="isXPC">
+                                                        <label class="form-check-label" style="font-size:inherit" for="isXPC" title="@Localizer["Filter with X PC"]">@Localizer["X-PC"]</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        @*<div class="row">
+                                        <div class="col-md-6">
+                                        <div class="row">
+                                        <div class="form-group col-md-5 paddinglable">
+                                        <label class="control-label">CustInvType</label>
+                                        </div>
+                                        <div class="form-group col-md-7 paddingtext">
+                                        <input type="text" id="CustInvType" class="form-control" />
+                                        </div>
+                                        </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                        <div class="row">
+                                        <div class="form-group col-md-5 paddinglable">
+                                        <label class="control-label">CIPInvType</label>
+                                        </div>
+                                        <div class="form-group col-md-7 paddingtext">
+                                        <input type="text" id="CIPInvType" class="form-control" />
+                                        </div>
+                                        </div>
+                                        </div>
+                                        </div>*@
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-5 ">
+                                                                <label class="control-label">@Localizer["CustInvType"]</label>
+                                                            </div>
+                                                            <div class="form-group col-md-7 paddingtext">
+                                                                <input type="text" id="CustInvType" class="form-control" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-5 ">
+                                                                <label class="control-label">@Localizer["CIPInvType"]</label>
+                                                            </div>
+                                                            <div class="form-group col-md-7 paddingtext">
+                                                                <input type="text" id="CIPInvType" class="form-control" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5" style="float:right">
+                                                <div class="row">
+                                                    <div class="form-group col-md-7">
+                                                        @*<input type="button" id="btnSearch" class="btn btn-info" style="width:100%" /> <i class="fas fa-search"></i>@Localizer["Search"]</button>*@
+                                                        <button id="btnSearch" class="btn btn-info"><i class="fas fa-search"></i> @Localizer["Search"]</button>
+                                                        <button id="btnClear" class="btn btn-danger"><i class="fas fa-redo-alt"></i> @Localizer["Clear"]</button>
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <div id="divProgress" style="display:none" class="loader"></div>
+                                                    </div>
+                                                    <div class="form-group col-md-5">
+                                                        @*<input type="button" id="btnClear" class="btn btn-danger" style="width:100%" value="@Localizer["Clear"]" />*@
+                                                        @*<button id="btnClear" class="btn btn-danger"><i class="fas fa-refresh"></i>@Localizer["Clear"]</button>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="padding-left:0px;">
+                        <div class="card" style="width:100%;">
+                            <div class="card-body">
+
+                                <div class="box-header">
+                                    <h3 class="box-title"><i class="mdi mdi-clipboard-outline"></i>@Localizer["Total Record"] : <label id="lblTotalRecord">0</label></h3>
+                                </div>
+
+                                <div id="rederProductConfigCatalog">
+                                    @*<partial name="_RenderTbl" model="Model" />*@
+                                    <div class="table-responsive text-nowrap">
+                                        <table id="RenderTableProductCatalog" class="table table-bordered">
+                                            <thead>
+                                            </thead>
+
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal" id="modalsetting">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalSetting">@Localizer["Setting"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <input type="number" class="form-control" id="Id" hidden />
+            <div class="modal-body" id="idCardSetting">
+                <select class="selectDemo" id="selectDemo" multiple>
+                    @{
+                        int i = 0;
+                        foreach (var item in Model.columnNamesInModal)
+                        {
+                            i++;
+                            if (item != "Hold")
+                            {
+                                <option value="@i">@item</option>
+                            }
+
+                        }
+                    }
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnConfig" onclick="callConfig()" class="btn btn-primary">@Localizer["Config"]</button>
+                <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelSetting" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalChangeRemark">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalSetting">@Localizer["Remark"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body" id="idCardRemark">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">@Localizer["PC"]</label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <input type="text" id="r_pc" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="row" hidden>
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">@Localizer["Material No"]</label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <input type="text" id="r_material" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">@Localizer["Remark"]</label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <input type="text" id="r_remark" style="color:red;font-weight:bold;" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">@Localizer["NonMoveMonth"]</label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <input type="date" id="r_nonmovemonth" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="row">
+                            <div class="form-group col-md-5 paddinglable">
+                                <label class="control-label">@Localizer["NonMove"]</label>
+                            </div>
+                            <div class="form-group col-md-7 paddingtext">
+                                @*<input type="checkbox" class="form-check-input" id="r_nonmove">
+                                <label class="form-check-label" for="r_nonmove"></label>*@
+                                <input type="number" id="r_nonmove" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-5 paddinglable">
+                                <label class="control-label">@Localizer["Stock WIP"]</label>
+                            </div>
+                            <div class="form-group col-md-7 paddingtext">
+                                @*<input type="checkbox" class="form-check-input" id="r_stockwip">
+                                <label class="form-check-label" for="r_stockwip"></label>*@
+                                <input type="number" id="r_stockwip" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-5 paddinglable">
+                                <label class="control-label">@Localizer["Stock FG"]</label>
+                            </div>
+                            <div class="form-group col-md-7 paddingtext">
+                                @*<input type="checkbox" class="form-check-input" id="r_stockfg">
+                                <label class="form-check-label" for="r_stockfg"></label>*@
+                                <input type="number" id="r_stockfg" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-5 paddinglable">
+                                <label class="control-label">@Localizer["Stock QA"]</label>
+                            </div>
+                            <div class="form-group col-md-7 paddingtext">
+                                @*<input type="checkbox" class="form-check-input" id="r_stockqa">
+                                <label class="form-check-label" for="r_stockqa"></label>*@
+                                <input type="number" id="r_stockqa" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12 ">
+                        @* <label class="control-label" id="lblLastUpdate"></label>*@
+                    </div>
+                    @*<div class="form-group col-md-7 ">
+                    <input type="date" id="r_nonmovemonth" class="form-control" />
+                    </div>*@
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <label class="control-label mr-auto" id="lblLastUpdate"></label>
+                <button type="button" id="btnSaveRemark" onclick="SaveRemark()" class="btn btn-primary">@Localizer["Save"]</button>
+
+                <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelRemark" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalChangeHoldMaterial">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalSetting">@Localizer["Hold Material"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body" id="idCardHoldMaterial">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">@Localizer["Material No"] : </label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <label class="control-label" id="holdMaterial">@Localizer["Material No"]</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">@Localizer["Hold"] : </label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <!-- Material checked -->
+                                <div class="switch">
+                                    <label>
+                                        Un Hold
+                                        <input type="checkbox" id="hold" checked>
+                                        <span class="lever"></span>@Localizer["Hold"]
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">Hold Remark : </label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <input type="text" id="holdRemark" class="form-control" maxlength="50" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-5 ">
+                                <label class="control-label">@Localizer["Change Product No"] : </label>
+                            </div>
+                            <div class="form-group col-md-7 ">
+                                <input type="text" id="changeProductNo" class="form-control" maxlength="20" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" style="float:right" class="btn btn-primary waves-effect text-left" id="btnSaveHoldMaterial">@Localizer["Save"]</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="renderTblHoldMaterialHistory">
+                        @* <partial name="_RenderTblHoldHistory" model="Model" />*@
+                        <div class="table-responsive text-nowrap">
+                            <table id="RenderTableHoldHistory" class="table table-bordered">
+                                <thead>
+                                </thead>
+
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelHoldMaterial" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalViewBom">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalSetting">@Localizer["Bom"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body" id="idViewBom">
+                <div class="row">
+                    <div id="renderBom">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelidViewBom" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal bd-example-modal-lg" id="ModalWait">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            Please wait ...
+        </div>
+    </div>
+</div>
+
+@*Modal show all image*@
+<div class="modal" id="modalImageDetails">
+    <div class="modal-dialog modal-xl" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="titleImageName">@Localizer["Images Of"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 text-center" style="height:400px">
+                        <h5>@Localizer["Palletization Image"]</h5>
+                        <img id="palletization-pic" style="max-height:330px" src="" alt="Red dot" />
+                        <div class="mt-2">
+                            <a id="palletization-pic-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download Palletization image"]</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center" style="height:400px">
+                        <h5>@Localizer["PrintMaster Image"]</h5>
+                        <img id="print-master-pic" style="max-height:330px" src="~/images/NoImage.jpg" alt="Red dot" />
+                        <div class="mt-2">
+                            <a id="print-master-pic-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download PrintMaster image"]</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center mt-xl-5" style="height:400px">
+                        <h5>@Localizer["Diecut Image"]</h5>
+                        <img id="diecut-pic" style="max-height:330px" src="~/images/NoImage.jpg" alt="Red dot" />
+
+                        <div class="mt-2">
+                            <a id="diecut-pic-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download Diecut image"]</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center mt-xl-5" style="height:400px">
+                        <h5>@Localizer["FG Image"]</h5>
+                        <img id="fg-pic" style="max-height:330px" src="~/images/NoImage.jpg" alt="Red dot" />
+                        <div class="mt-2">
+                            <a id="fg-pic-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download FG image"]</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 text-center mt-xl-5" style="height:400px">
+                        <h5>@Localizer["Semi1 Image"]</h5>
+                        <img id="semi1-pic" style="max-height:330px" src="~/images/NoImage.jpg" alt="Red dot" />
+
+                        <div class="mt-2">
+                            <a id="semi1-pic-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download Semi1 image"]</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center mt-xl-5" style="height:400px">
+                        <h5>@Localizer["Semi2 Image"]</h5>
+                        <img id="semi1-pic" style="max-height:330px" src="~/images/NoImage.jpg" alt="Red dot" />
+
+                        <div class="mt-2">
+                            <a id="semi2-pic-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download Semi2 image"]</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center mt-xl-5" style="height:400px">
+                        <h5>@Localizer["Semi3 Image"]</h5>
+                        <img id="semi3-pic" style="max-height:330px" src="~/images/NoImage.jpg" alt="Red dot" />
+
+                        <div class="mt-2">
+                            <a id="semi3-pic-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download Semi3 image"]</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center mt-xl-5" style="height:400px">
+                        <h5>@Localizer["Semi Pdf File"]</h5>
+                        @*<img id="semi-file-pdf" style="max-height:330px" src="~/images/NoImage.jpg" alt="Red dot" />*@
+                        <div id="pdf-status">PDF file not available</div>
+                        <div class="mt-2">
+                            <a id="semi-file-pdf-btn" class="btn btn-outline-primary" hidden><span class="fas fa-file-image mr-2"></span>@Localizer["Download Semi Pdf File"]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelidViewBom" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="~/lib/JqueryDatatable/datatables.min.js"></script>
+    <script src="~/lib/JqueryDatatable/ColReorderWithResize.js"></script>*@
+
+<link href="~/lib/DualListBox/dist/dual-listbox.css" rel="stylesheet">
+<script src="~/lib/DualListBox/dist/dual-listbox.js"></script>
+
+<script src="~/lib/MultiSelect/multi-input.js"></script>
+
+@section Scripts {
+    <script>
+
+                    $(document).ready(function () {
+                        $('#renderDropdown').css('display', 'none');
+                        $('#renderDropdownProduction').css('display', 'none');
+                        let ckRole = '@Model.Role';
+                        if (ckRole === "4") {
+                            $('#checkPlantProduction').css('display', 'block');
+                            $('#checkPlant').css('display', 'block');
+                            $('#idCheckPlantlbltxt').css('display', 'block');
+                            $('#idCheckPlantProductionlbltxt').css('display', 'block');
+                        }
+                        else {
+                            $('#checkPlantProduction').css('display', 'none');
+                            $('#checkPlant').css('display', 'none');
+                            $('#idCheckPlantlbltxt').css('display', 'none');
+                            $('#idCheckPlantProductionlbltxt').css('display', 'none');
+                        }
+                    });
+
+                    GetDataOption = () => {
+                        debugger
+                        var data = $('#idmultioption').val()
+                        var data2 = $('#languages2').val()
+                        var data3 = $('#languages2 .item').val()
+                        var data4 = getValuesProd()
+                        console.log(data)
+                        console.log(data2)
+                        console.log(data3)
+                        console.log(data4)
+                    }
+
+                    function bindBom(mat) {
+                        var factory = "";
+                        if ('@Model.Role' === "4") {
+                            factory = JSON.stringify(getValuesProd())
+                        }
+
+                        console.log('facto ', factory)
+
+                        $.ajax({
+                            url: '@Url.Action("RenderBom", "ProductCatalog")',
+                            type: "POST",
+                            async: false,
+                            data: { material: mat, fac: factory },
+                            dataType: "json",
+                            success: function (data) {
+                                $('#renderBom').html(data.View);
+                                $('#BomdatatableParent').DataTable({
+                                    "autoWidth": true,
+                                    //  "scrollY": 200,
+                                    //"scrollX": true,
+                                });
+                                // $('#BomdatatableParent').DataTable();
+                                $('#bomMaterial').text(mat);
+                            }
+                        });
+                        $('#modalViewBom').modal('show');
+                    }
+
+                    function getValues() {
+                        const values = [];
+                        const items = document.getElementById("idmultioption").getElementsByClassName("item");// document.querySelectorAll(".item");
+                        for (const item of items) {
+                            const words = item.textContent.slice(0, item.textContent.lastIndexOf("-"));// item.textContent.split('-');
+                            //console.log(words[0]);
+                            //values.push(words[0]);
+                            values.push(words);
+                        }
+                        return values;
+                    }
+
+                    function getValuesProd() {
+                        const values = [];
+                        debugger
+                        const items = document.getElementById("idmultioptionProd").getElementsByClassName("item");
+                        //const dtcheck =  document.querySelectorAll(".item");
+                        for (const item of items) {
+                            const words = item.textContent.slice(0, item.textContent.lastIndexOf("-"));// item.textContent.split('-');
+                            //console.log(words[0]);
+                            //values.push(words[0]);
+                            values.push(words);
+                        }
+                        return values;
+                    }
+
+                    function renderDropdownPlant() {
+                        $.ajax({
+                            url: '@Url.Action("RefreshDropdown", "ProductCatalog")',
+                            type: "POST",
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                $('#renderDropdown').html(data.View);
+                            }
+                        });
+                    }
+
+                    function renderDropdownPlantProduction() {
+                        $.ajax({
+                            url: '@Url.Action("RefreshDropdownProduction", "ProductCatalog")',
+                            type: "POST",
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                $('#renderDropdownProduction').html(data.View);
+                            }
+                        });
+                    }
+
+                    $("#idCheckPlant").on('change', function () {
+                        if ($(this).prop('checked')) {
+                            renderDropdownPlant();
+                            //$('#dropdownPlant').prop("disabled", true);
+                            $('#renderDropdown').css('display', 'none');
+                            $('#idCheckPlantlbltxt').text("All Sale Plant");
+                        }
+                        else {
+                            renderDropdownPlant();
+                            // $('#dropdownPlant').prop("disabled", false);
+                            $('#renderDropdown').css('display', 'block');
+                            $('#idCheckPlantlbltxt').text("Select Sale Plant");
+                        }
+                    });
+
+                    $("#idCheckPlantProduction").on('change', function () {
+                        if ($(this).prop('checked')) {
+                            renderDropdownPlantProduction();
+                            //$('#dropdownPlant').prop("disabled", true);
+                            $('#renderDropdownProduction').css('display', 'none');
+                            $('#idCheckPlantProductionlbltxt').text("All Production Plant");
+                        }
+                        else {
+                            renderDropdownPlantProduction();
+                            // $('#dropdownPlant').prop("disabled", false);
+                            $('#renderDropdownProduction').css('display', 'block');
+                            $('#idCheckPlantProductionlbltxt').text("Select Production Plant");
+                        }
+                    });
+
+                    function bindHoldMaterial(mat) {
+                        $('#holdMaterial').text(mat);
+                        $.ajax({
+                            url: '@Url.Action("GetHoldMaterial", "ProductCatalog")',
+                            type: "POST",
+                            async: false,
+                            data:
+                            {
+                                Material: mat,
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                $('#holdRemark').val(data.DataHoldMaterial.HoldRemark);
+                                $('#changeProductNo').val(data.DataHoldMaterial.ChangeProductNo);
+
+                                // debugger;
+
+                                $.ajax({
+                                    url: '@Url.Action("GetAllCompanyProfileByLogin", "ProductCatalog")',
+                                    type: "POST",
+                                    dataType: "json",
+                                    success: function (res) {
+                                        console.log(res)
+                                        debugger;
+                                        if (res.Group === 4) {
+                                            if (data.DataHoldMaterial.IsLocked == true) {
+                                                $('#hold').prop('checked', true);
+                                                //$('#hold').prop('disabled', false);
+
+                                            }
+                                            else {
+                                                $('#hold').prop('checked', false);
+                                                // $('#hold').prop('disabled', true);
+                                            }
+                                        }
+                                        else if (res.Group === 5) {
+                                            if (data.DataHoldMaterial.IsLocked == true) {
+                                                $('#hold').prop('checked', true);
+                                                // $('#hold').prop('disabled', false);
+
+                                            }
+                                            else {
+                                                $('#hold').prop('checked', false);
+                                                // $('#hold').prop('disabled', true);
+                                            }
+
+                                        } else {
+                                            if (data.DataHoldMaterial.IsLocked == true) {
+                                                $('#hold').prop('checked', true);
+                                                $('#hold').prop('disabled', false);
+
+                                            }
+                                            else {
+                                                $('#hold').prop('checked', false);
+                                                $('#hold').prop('disabled', true);
+                                            }
+                                        }
+
+                                    },
+                                    error: function () {
+                                        console.log('error in scope')
+                                    }
+                                });
+
+                                $('#modalChangeHoldMaterial').modal('show');
+                                $('#renderTblHoldMaterialHistory').html(data.ViewHoldMaterialHistory);
+                                $('#RenderTableHis').DataTable({
+                                    "autoWidth": true,
+                                    //  "scrollY": 200,
+                                    //"scrollX": true,
+
+                                });
+
+                            }
+                        });
+
+                    }
+
+                    $("#hold").change(function () {
+                        $.ajax({
+                            url: '@Url.Action("GetAllCompanyProfileByLogin", "ProductCatalog")',
+                            type: "POST",
+                            dataType: "json",
+                            success: function (res) {
+                                if (res.Group === 4 || res.Group === 5 || res.Group === 6) {
+
+                                }
+                                else {
+                                    let checkBoxes = $('#hold').is(':checked');
+                                    if (checkBoxes == true) {
+                                        $('#hold').prop("disabled", false);
+                                    }
+                                    else{
+                                        $('#hold').prop("disabled", true)
+                                    }
+                                }
+                            },
+                            error: function () {
+                                console.log('error in scope')
+                            }
+                        });
+
+                    });
+
+                    function RenderTblHoldHistory(data) {
+                        $('#RenderTableHoldHistory').DataTable({
+                            "destroy": true,
+
+                            "autoWidth": true,
+                            // paging: false
+                            // searching: false
+
+                            "data": data,
+                            // "columns": arrayColumn,
+                            "columnDefs":
+                                [
+
+                                ],
+                            "scrollY": 500,
+                            "scrollX": true,
+
+                        });
+                    }
+
+                    function getHoldMaterial() {
+                        let req = {
+                            "MaterialNo": $("#holdMaterial").text(),
+                            "HoldRemark": $("#holdRemark").val(),
+                            "ChangeProductNo": $("#changeProductNo").val(),
+                        };
+                        return req;
+                    }
+
+                    function SaveHoldMaterial() {
+                        var tmp = getHoldMaterial();
+                        if ($('#hold').prop('checked')) {
+                            Object.assign(tmp, { IsLocked: 1 });
+                        } else {
+                            Object.assign(tmp, { IsLocked: 0 });
+                        }
+
+                        var form = JSON.stringify(tmp);
+                        $.ajax({
+                            url: '@Url.Action("SaveHoldMaterial", "ProductCatalog")',
+                            type: "POST",
+                            async: false,
+                            data:
+                            {
+                                req: form.toString(),
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                if(data.IsSuccess)
+                                {
+                                    swal("Save Success!", { icon: "success", });
+                                    $('#modalChangeHoldMaterial').modal('hide');
+                                    $('.modal-backdrop').hide();
+                                    $("body").removeClass("modal-open");
+                                    $('body').css('padding', '0px');
+                                    $('#btnSearch').trigger('click');
+                                }else{
+                                    swal("Save Failed", data.ExceptionMessage, "warning");
+                                    $('#modalChangeHoldMaterial').modal('hide');
+                                    $('.modal-backdrop').hide();
+                                    $("body").removeClass("modal-open");
+                                    $('body').css('padding', '0px');
+                                    $('#btnSearch').trigger('click');
+                                }
+                            }
+                        });
+                    }
+
+                    $('#btnSaveHoldMaterial').click(function () {
+                        SaveHoldMaterial();
+                    });
+
+                    function setReadOnly(param) {
+                        if (param === "1") {
+                            document.getElementById("divProgress").style.display = "block";
+                            $("#cardSearch :input").attr("disabled", true);
+                        } else {
+                            $("#cardSearch :input").attr("disabled", false);
+                            document.getElementById("divProgress").style.display = "none";
+                        }
+                    }
+
+                    function getDataRemark() {
+                        let req = {
+                            "Id": 0,
+                            "PC": $("#r_pc").val(),
+                            "MaterialNo": $("#r_material").val(),
+                            "Remark": $("#r_remark").val(),
+                            "NonMoveMonth": $("#r_nonmovemonth").val(),
+
+                            "NonMove": $("#r_nonmove").val(),
+                            "StockWIP": $("#r_stockwip").val(),
+                            "StockFG": $("#r_stockfg").val(),
+                            "StockQA": $("#r_stockqa").val(),
+                        };
+                        return req;
+                    }
+
+                    function ChangeDateTimeFormat(oDatetime) {
+                        // 1 / 22 /2012
+                        debugger;
+                        console.log(oDatetime)
+                        let datetimeStr = "";
+
+                        if (oDatetime === "" || oDatetime === null) {
+                            datetimeStr = "";
+                        } else {
+
+                            // if (oDatetime !== null || oDatetime !== "") {
+                            let datetimeArr = oDatetime.split(' ');
+                            let dateArr = datetimeArr[0].split('/');
+                            //let timeArr = datetimeArr[1].split(':');
+                            let year = dateArr[2];
+                            let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                            let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                            //let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                            //let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                            //let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                            datetimeStr = year + "-" + month + "-" + day
+                            //   + "
+                            //" + hour + ":" + min + ":" + sec;
+                        }
+
+                        return datetimeStr;
+                    }
+
+                    function OpenModalChangeRemark(pc, mat, remark, nonmove, nonmovemonth, stockwip, stockfg, stockqa, lastUpdate) {
+                        $("#r_pc").val(pc)
+                        $("#r_material").val(mat)
+                        $("#r_remark").val(remark)
+                        var tempdate = ChangeDateTimeFormat(nonmovemonth)
+                        $("#r_nonmovemonth").val(tempdate)
+
+                        $("#r_nonmove").val(nonmove)
+                        $("#r_stockwip").val(stockwip)
+                        $("#r_stockfg").val(stockfg)
+                        $("#r_stockqa").val(stockqa)
+
+                        $('#lblLastUpdate').text(lastUpdate)
+
+                        //if (nonmove === "1") {
+                        //    $('#r_nonmove').prop('checked', true);
+                        //} else
+                        //{
+                        //    $('#r_nonmove').prop('checked', false);
+                        //}
+                        //if (stockwip === "1") {
+                        //    $('#r_stockwip').prop('checked', true);
+                        //} else {
+                        //    $('#r_stockwip').prop('checked', false);
+                        //}
+                        //if (stockfg === "1") {
+                        //    $('#r_stockfg').prop('checked', true);
+                        //} else {
+                        //    $('#r_stockfg').prop('checked', false);
+                        //}
+                        //if (stockqa === "1") {
+                        //    $('#r_stockqa').prop('checked', true);
+                        //} else {
+                        //    $('#r_stockqa').prop('checked', false);
+                        //}
+                        $('#modalChangeRemark').modal('show');
+                    }
+
+                    function SaveRemark() {
+                        var tmp = getDataRemark();
+                        //if ($('#r_nonmove').prop('checked')) {
+                        //    Object.assign(tmp, { NonMove: 1 });
+                        //} else {
+                        //    Object.assign(tmp, { NonMove: 0 });
+                        //}
+                        //if ($('#r_stockwip').prop('checked')) {
+                        //    Object.assign(tmp, { StockWIP: 1 });
+                        //} else {
+                        //    Object.assign(tmp, { StockWIP: 0 });
+                        //}
+                        //if ($('#r_stockfg').prop('checked')) {
+                        //    Object.assign(tmp, { StockFG: 1 });
+                        //} else {
+                        //    Object.assign(tmp, { StockFG: 0 });
+                        //}
+                        //if ($('#r_stockqa').prop('checked')) {
+                        //    Object.assign(tmp, { StockQA: 1 });
+                        //} else {
+                        //    Object.assign(tmp, { StockQA: 0 });
+                        //}
+
+                        var form = JSON.stringify(tmp);
+                        $.ajax({
+                            url: '@Url.Action("SaveRemark", "ProductCatalog")',
+                            type: "POST",
+                            async: false,
+                            data:
+                            {
+                                req: form.toString(),
+                            },
+                            dataType: "json",
+                            success: function (data) {
+
+                                swal("Save Success!", { icon: "success", });
+                                $('#modalChangeRemark').modal('hide');
+                                $('.modal-backdrop').hide();
+                                $("body").removeClass("modal-open");
+                                $('body').css('padding', '0px');
+                                $('#btnSearch').trigger('click');
+                            }
+                        });
+                    }
+
+                    $('#btnshowmodalsetting').click(function () {
+                        $('.dual-listbox__buttons button').each(function () {
+                            if ($(this).text() == 'remove all') {
+                                $(this).trigger('click');
+                            }
+                        });
+
+                        var temcheck = [];
+        @foreach (var d in Model.productCatalogConfigs)
+        {
+            if (d.ColumnName == "Hold")
+            {
+            }
+            else
+            {
+                @:temcheck.push("@d.ColumnName");
+            }
+
+        }
+
+                                        // $(".dual-listbox__selected li).addClass('dual-listbox__item--selected')//.trigger('dbclick');
+                                        // $("#deleteMenuItem").removeClass("active");
+                                        // setTimeout(function () {
+
+                                        if (temcheck.length > 0) {
+                            $.each(temcheck, function (index, value) {
+                                //if (value === text) {
+
+                                $('.dual-listbox__available li').each(function () {
+
+                                    console.log(value)
+                                    if (value === $(this).text()) {
+                                        //if (temcheck.includes($(this).text())) {
+                                        console.log($(this).text())
+                                        $(this).addClass("dual-listbox__item--selected");
+                                        clickTriggerAddColumn();
+                                        $(".dual-listbox__selected li").removeClass('dual-listbox__item--selected');
+                                    }
+
+                                });
+
+                            });
+
+                        }
+
+                        //   }, 3000);
+                        //  $("#.dual-listbox__buttons li:contains('Add')").click();
+                        //  document.getElementByName("dual-dual-listbox__selected").getElementsByTagName("li").conta
+
+                        $('#modalsetting').modal('show');
+                    });
+
+                    function checkListConfig(temp, text) {
+        @*var temcheck = [];
+    @foreach(var d in Model.productCatalogConfigs)
+    {
+    @: temcheck.push("@d.ColumnName");
+    }*@
+                                        var condition = "0";
+                        $.each(temp, function (index, value) {
+                            if (value === text) {
+                                condition = "1";
+                            } else { condition = "0"; }
+                        })
+                        return condition;
+                    }
+
+                    function clickTriggerAddColumn() {
+                        // settimeout(function () {
+                        $('.dual-listbox__buttons button').each(function () {
+                            if ($(this).text() == 'add') {
+                                $(this).trigger('click');
+                            }
+                        });
+                        // }, 1000);
+                    }
+
+                    $('#btnClear').click(function () {
+                        clearSearch();
+                    });
+
+                    $(document).keypress(function (event) {
+                        var keycode = (event.keyCode ? event.keyCode : event.which);
+                        if (keycode == '13') {
+                            $('#btnSearch').trigger('click');
+                        }
+                    });
+
+                    function clearSearch() {
+                        if ($('#idCheckPlant').prop('checked')) {
+                        }
+                        else {
+                            $('#idCheckPlant').trigger('click');
+                        }
+                        $("#pc1").val("")
+                        $("#pc2").val("")
+                        $("#pc3").val("")
+                        $("#pc4").val("")
+                        $("#pc5").val("")
+                        $("#pc6").val("")
+                        $("#partNo").val("")
+                        $("#custCode").val("")
+                        $("#custID").val("")
+                        $("#custName").val("")
+                        $("#desc").val("")
+                        $("#saleText").val("")
+                        $("#wid").val("")
+                        $("#leg").val("")
+                        $("#hig").val("")
+                        $("#flute").val("")
+                        $("#board").val("")
+                        $("#rate").val("")
+                        $("#remark").val("")
+                        //$("#idNonMove").val("")
+                        //$("#idStockWIP").val("")
+                        //$("#idStockFG").val("")
+                        //$("#idStockQA").val("")
+                        $("#blockNo").val("")
+                        $("#plateNo").val("")
+                        $("#MaterialNo").val("")
+
+                        $('#idNonMove').prop('checked', false);
+                        $('#idStockWIP').prop('checked', false);
+                        $('#idStockFG').prop('checked', false);
+                        $('#idStockQA').prop('checked', false);
+                        $('#idHoldFind').prop('checked', false);
+                        $('#isXPC').prop('checked', false);
+
+                        $("#CustInvType").val("")
+                        $("#CIPInvType").val("")
+                    }
+
+                    function getData() {
+                        let req = {
+                            "Role": '@Model.Role',
+                            "FactoryCode": JSON.stringify(getValuesProd()),
+                            "FactoryCodeProduction": JSON.stringify(getValues()),
+                            "pc1": $("#pc1").val(),
+                            "pc2": $("#pc2").val(),
+                            "pc3": $("#pc3").val(),
+                            "pc4": $("#pc4").val(),
+                            "pc5": $("#pc5").val(),
+                            "pc6": $("#pc6").val(),
+                            "partNo": $("#partNo").val(),
+                            "custCode": $("#custCode").val(),
+                            "custID": $("#custID").val(),
+                            "custName": $("#custName").val(),
+                            "desc": $("#desc").val().split('*').join('%'),
+                            "saleText": $("#saleText").val().split('*').join('%'),
+                            "wid": $("#wid").val() === "" ? 0 : $("#wid").val(),
+                            "leg": $("#leg").val() === "" ? 0 : $("#leg").val(),
+                            "hig": $("#hig").val() === "" ? 0 : $("#hig").val(),
+                            "flute": $("#flute").val(),
+                            "board": $("#board").val(),
+                            "rate": $("#rate").val() === "" ? -99 : $("#rate").val(),
+                            "remark": $("#remark").val(),
+                            "blockNo": $("#blockNo").val(),
+                            "plateNo": $("#plateNo").val(),
+                            "MaterialNo": $("#MaterialNo").val(),
+
+                            "CustInvType": $("#CustInvType").val(),
+                            "CIPInvType": $("#CIPInvType").val()
+                            //"idNonMove": $("#idNonMove").val(),
+                            //"idStockWIP": $("#idStockWIP").val(),
+                            //"idStockFG": $("#idStockFG").val(),
+                            //"idStockQA": $("#idStockQA").val(),
+                        };
+                        return req;
+                    }
+
+                    $('#btnSearch').click(function () {
+                        DynamicShowColumn();
+        @*setReadOnly("1")
+
+    setTimeout(function () {
+    var tmp = getData();
+    if ($('#idNonMove').prop('checked')) {
+    Object.assign(tmp, { idNonMove: 1 });
+    } else {
+    Object.assign(tmp, { idNonMove: 0 });
+    }
+    if ($('#idStockWIP').prop('checked')) {
+    Object.assign(tmp, { idStockWIP: 1 });
+    } else {
+    Object.assign(tmp, { idStockWIP: 0 });
+    }
+    if ($('#idStockFG').prop('checked')) {
+    Object.assign(tmp, { idStockFG: 1 });
+    } else {
+    Object.assign(tmp, { idStockFG: 0 });
+    }
+    if ($('#idStockQA').prop('checked')) {
+    Object.assign(tmp, { idStockQA: 1 });
+    } else {
+    Object.assign(tmp, { idStockQA: 0 });
+    }
+    var form = JSON.stringify(tmp);
+    $.ajax({
+
+    url: '@Url.Action("SearchProCatalog", "ProductCatalog")',
+    type: "POST",
+    async: false,
+    data:
+    {
+    req: form.toString(),
+    },
+    dataType: "json",
+    //beforeSend: function () {
+    //    document.getElementById("divProgress").style.display = "block";
+    //},
+    success: function (data) {
+    //setTimeout(function () {
+    //  $("#overlay").fadeOut();
+    //}, 500);
+    setReadOnly("0")
+    if (data.Message === "0") {
+    swal("No Data !", { icon: "warning", });
+    $('#rederProductConfigCatalog').html(data.View);
+    $('#example').DataTable({
+    "scrollY": 400,
+    "scrollX": true,
+    "autoWidth": true,
+
+    //"data": jsonString,
+    //"columns": [
+
+    //    { "data": "patientId" },
+    //    { "data": "otherId" },
+    //    { "data": "firstName" },
+    //    { "data": "lastName" },
+    //    { "data": "gender" },
+    //    { "data": "dob" },
+    //    { "data": "race" },
+    //]
+
+    });
+    } else
+    {
+    $('#rederProductConfigCatalog').html(data.View);
+    $('#example').DataTable({
+    "scrollY": 400,
+    "scrollX": true,
+    "autoWidth": true
+    });
+    }
+    // $("#ModalWait").modal('hide');
+    }
+    });
+    }, 3000);*@
+
+                                });
+
+                    //$('#examplexxx').on('click', 'tbody tr', function () {
+                    //    var row = table.row($(this)).data();
+                    //    console.log(row);   //full row of array data
+                    //    console.log(row[1]);   //EmployeeId
+                    //    alert(row[2])
+                    //});
+
+                    function AddRemarkData(Pc, mat) {
+                        //debugger;
+                        //if (Bt === "c") {
+        @*var roleId = '@Model.Role';
+    if (roleId === "4") // Sale
+    {
+    bindHoldMaterial(mat);
+    }
+    else {*@
+                            $.ajax({
+                                url: '@Url.Action("GetRemark", "ProductCatalog")',
+                                type: "POST",
+                                async: false,
+                                data:
+                                {
+                                    pc: Pc.toString(),
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    var lastUpdateData = "";
+                                    var createby = "";
+                                    var CreateDate = "";
+                                    if (data != null) {
+                                        if (data.UpdateBy == null) {
+                                            createby = "";
+                                        }
+                                        else {
+                                            createby = data.UpdateBy;
+                                        }
+
+                                        if (data.LastUpdate == null) {
+                                            CreateDate = "";
+                                        } else {
+                                            CreateDate = data.LastUpdate.replace('T', ' ')
+                                        }
+
+                                        lastUpdateData = 'LastUpdate : ' + CreateDate + ' UpdateBy : ' + createby;
+                                    }
+                                    console.log(lastUpdateData)
+                                    OpenModalChangeRemark(data.PC, data.MaterialNo, data.Remark, data.NonMove, data.NonMoveMonth, data.StockWIP, data.StockFG, data.StockQA, lastUpdateData);
+                                }
+                            });
+                        // }
+                        //} else
+                        //{
+                        //    bindHoldMaterial(mat)
+                        //}
+                    }
+
+                    var dataTemp;
+
+                    function DynamicShowColumn() {
+                        setReadOnly("1")
+
+                        setTimeout(function () {
+                            var tmp = getData();
+                            debugger;
+                            console.log(tmp);
+                            if ($('#idNonMove').prop('checked')) {
+                                Object.assign(tmp, { idNonMove: 1 });
+                            } else {
+                                Object.assign(tmp, { idNonMove: 0 });
+                            }
+                            if ($('#idStockWIP').prop('checked')) {
+                                Object.assign(tmp, { idStockWIP: 1 });
+                            } else {
+                                Object.assign(tmp, { idStockWIP: 0 });
+                            }
+                            if ($('#idStockFG').prop('checked')) {
+                                Object.assign(tmp, { idStockFG: 1 });
+                            } else {
+                                Object.assign(tmp, { idStockFG: 0 });
+                            }
+                            if ($('#idStockQA').prop('checked')) {
+                                Object.assign(tmp, { idStockQA: 1 });
+                            } else {
+                                Object.assign(tmp, { idStockQA: 0 });
+                            }
+                            if ($('#idHoldFind').prop('checked')) {
+                                Object.assign(tmp, { idHoldFind: 1 });
+                            } else {
+                                Object.assign(tmp, { idHoldFind: 0 });
+                            }
+
+                            if ($('#isXPC').prop('checked')) {
+                                Object.assign(tmp, { isXPC: 1 });
+                            } else {
+                                Object.assign(tmp, { isXPC: 0 });
+                            }
+
+                            var form = JSON.stringify(tmp);
+                            $.ajax({
+
+                                url: '@Url.Action("SearchProCatalogDynamicColumn", "ProductCatalog")',
+                                type: "POST",
+                                async: false,
+                                data:
+                                {
+                                    req: form.toString(),
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    setReadOnly("0")
+
+                                    $('#lblTotalRecord').text(data.RecordCount);
+
+                                    var arrayColumn = [];
+                                    var indexcount = 0;
+                                    var indexRemark = 0;
+                                    var indexSaleText = 0;
+                                    var arrayIndexColumn = [];
+
+        @foreach (var d in Model.productCatalogConfigs)
+        {
+            @:arrayColumn.push("@d");
+            @:arrayColumn[indexcount] = { };
+            @:arrayColumn[indexcount].data = "@d.ColumnName";
+            @:arrayColumn[indexcount].title = "@d.ColumnName";
+            @:arrayColumn[indexcount].autoWidth = "true";
+            if (d.ColumnName == "Remark")
+            {
+                @:indexRemark = indexcount;
+            }
+
+            if (d.ColumnName == "SaleText")
+            {
+                @:indexSaleText = indexcount;
+            }
+
+            if (d.ColumnName == "Action")
+            {
+            }
+            else if (d.ColumnName == "Bom") { }
+            else
+            {
+                if (d.ColumnName == "Remark")
+                {
+
+                }
+                else
+                {
+                    @:arrayIndexColumn.push(indexcount)
+                }
+
+            }
+            @:indexcount++;
+        }
+
+                                    if (indexRemark == 0) { indexRemark = null; }
+                                    if (indexSaleText == 0) { indexSaleText = null; }
+
+                                    if (arrayColumn.length > 0) {
+
+                                        if (data.Message === "0") {
+                                            swal("No Data !", { icon: "warning", });
+                                            dataTemp = data.jsonresult;
+
+                                            $('#RenderTableProductCatalog').DataTable({
+                                                "destroy": true,
+
+                                                "autoWidth": true,
+                                                // paging: false
+                                                // searching: false
+
+                                                "data": data.jsonresult,
+                                                "columns": arrayColumn,
+                                                "columnDefs":
+                                                    [
+                                                        {
+                                                            "targets": [0],
+                                                            //"visible": false,
+                                                            //"searchable": false
+                                                            // "className": "dt-center",
+                                                            //createdCell: function (td, cellData, rowData, row, col) {
+                                                            //   $(td).css('text-align', 'center');
+                                                            //},
+                                                            data: null, render: function (data, type, row) {
+                                                                // return "<button type='button' class='btn btn-default'  data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button>"
+                                                                return "<button type='button' data-toggle='tooltip' title='Add Remark' class='btn btn-default' data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button> <button type='button'  data-toggle='tooltip' title='Hold' id='Z" + row.MaterialNo + "' class='btn btn-default btnban' data-mat='" + row.MaterialNo + "' onclick=bindHoldMaterial(this.getAttribute('data-mat')); ><span class='fa fa-ban text-danger' aria-hidden='true'></span></button> <button type='button'  data-toggle='tooltip' title='Print MasterCard MO' data-idpc='" + row.MaterialNo + "' class='btn btn-default btnprint' data-facpc='" + row.FactoryCode + "' onclick=PrintMasterCardMo(this.getAttribute('data-idpc'),this.getAttribute('data-facpc')); ><span class='fa fa-print text-success' aria-hidden='true'></span></button>";
+                                                                //  return "<button type='button' class='btn btn-default' data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button>"
+
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": [1],
+                                                            // "className": "dt-center",
+                                                            data: null, render: function (data, type, row) {
+                                                                return "<button type='button'  data-toggle='tooltip' title='Preview Bom' id='" + row.FactoryCode + row.MaterialNo + "' class='btn btn-default'  data-mat='" + row.MaterialNo + "' onclick=bindBom(this.getAttribute('data-mat'));  ><span class='fa fa-share-alt-square text-primary' style='font-size:115%;' aria-hidden='true'></span></button>"
+                                                                //return "<button type='button' id='" + row.MaterialNo + "' class='btn btn-default' data-mat='" + row.MaterialNo + "' onclick=bindHoldMaterial(this.getAttribute('data-mat')); ><span class='fas fa-file-alt text-primary' aria-hidden='true'></span></button>"
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": [2],
+                                                            createdCell: function (td, cellData, rowData, row, col) {
+                                                                $(td).css('color', 'red');
+                                                                $(td).css('font-weight', 'bold');
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": arrayIndexColumn,
+                                                            createdCell: function (td, cellData, rowData, row, col) {
+                                                                $(td).css('color', 'black');
+                                                                // $(td).css('font-weight', 'bold');
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": [indexRemark],
+                                                            createdCell: function (td, cellData, rowData, row, col) {
+                                                                $(td).css('color', 'red');
+                                                                $(td).css('font-weight', 'bold');
+                                                            },
+                                                        },
+                                                        //{
+                                                        //    "targets": [0],
+                                                        //    createdCell: function (td, cellData, rowData, row, col) {
+                                                        //        $(td).css('text-align', 'center');
+                                                        //    },
+                                                        //},
+                                                        // {
+                                                        // "width": "600px", "targets": [indexSaleText]
+                                                        // "width":"50px","word-wrap":"break-word","targets":[indexSaleText]
+                                                        // "targets": [indexSaleText],
+                                                        //createdCell: function (td, cellData, rowData, row, col) {
+                                                        //    $(td).css('width', 'auto');
+                                                        //   // $(td).css('font-weight', 'bold');
+                                                        //},
+                                                        //},
+
+                                                    ],
+                                                "scrollY": 500,
+                                                "scrollX": true,
+                                                "pageLength": 200
+
+                                            });
+
+                                            //DisplayBom(data.jsonresult);
+
+                                        } else {
+
+                                            dataTemp = data.jsonresult;
+
+                                            $('#RenderTableProductCatalog').DataTable({
+                                                "destroy": true,
+
+                                                "autoWidth": true,
+                                                // paging: false
+                                                // searching: false
+
+                                                "data": data.jsonresult,
+                                                "columns": arrayColumn,
+                                                "columnDefs":
+                                                    [
+                                                        {
+                                                            "targets": [0],
+                                                            //"visible": false,
+                                                            //"searchable": false
+                                                            // "className": "dt-center",
+                                                            //createdCell: function (td, cellData, rowData, row, col) {
+                                                            //   $(td).css('text-align', 'center');
+                                                            //},
+                                                            data: null, render: function (data, type, row) {
+                                                                // return "<button type='button' class='btn btn-default'  data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button>"
+                                                                return "<button type='button' data-toggle='tooltip' title='Add Remark' class='btn btn-default' data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' style='min-width:15px;' aria-hidden='true'></span></button> <button type='button'  data-toggle='tooltip' title='Hold' id='Z" + row.MaterialNo + "' class='btn btn-default btnban' data-mat='" + row.MaterialNo + "' onclick=bindHoldMaterial(this.getAttribute('data-mat')); ><span class='fa fa-ban text-danger'  style='min-width:15px;' aria-hidden='true'></span></button> <button type='button'  data-toggle='tooltip' title='Print MasterCard' data-idpc='" + row.MaterialNo + "' class='btn btn-default btnprint' data-facpc='" + row.FactoryCode + "' onclick=PrintMasterCardMo(this.getAttribute('data-idpc'),this.getAttribute('data-facpc')); ><span class='fa fa-print text-success'  style='min-width:15px;' aria-hidden='true'></span></button><button type='button' data-toggle='tooltip' title='View Image' class='btn btn-download' data-FactoryCode='" + row.FactoryCode + "' data-MaterialNo='" + row.MaterialNo + "' onclick=GetImageOfProductCatalog(this.getAttribute('data-FactoryCode'),this.getAttribute('data-MaterialNo')); ><span class='fas fa-image text-primary' style='min-width:15px;' aria-hidden='true'></span></button> ";
+                                                                //  return "<button type='button' class='btn btn-default' data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button>"
+
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": [1],
+                                                            // "className": "dt-center",
+                                                            data: null, render: function (data, type, row) {
+                                                                return "<button type='button'  data-toggle='tooltip' title='Preview Bom' id='" + row.FactoryCode + row.MaterialNo + "' class='btn btn-default'  data-mat='" + row.MaterialNo + "' onclick=bindBom(this.getAttribute('data-mat'));  ><span class='fa fa-share-alt-square text-primary' style='font-size:115%;' aria-hidden='true'></span></button>"
+                                                                //return "<button type='button' id='" + row.MaterialNo + "' class='btn btn-default' data-mat='" + row.MaterialNo + "' onclick=bindHoldMaterial(this.getAttribute('data-mat')); ><span class='fas fa-file-alt text-primary' aria-hidden='true'></span></button>"
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": [2],
+                                                            createdCell: function (td, cellData, rowData, row, col) {
+                                                                $(td).css('color', 'red');
+                                                                $(td).css('font-weight', 'bold');
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": arrayIndexColumn,
+                                                            createdCell: function (td, cellData, rowData, row, col) {
+                                                                $(td).css('color', 'black');
+                                                                // $(td).css('font-weight', 'bold');
+                                                            },
+                                                        },
+                                                        {
+                                                            "targets": [indexRemark],
+                                                            createdCell: function (td, cellData, rowData, row, col) {
+                                                                $(td).css('color', 'red');
+                                                                $(td).css('font-weight', 'bold');
+                                                            },
+                                                        },
+                                                        //{
+                                                        //    "targets": [0],
+                                                        //    createdCell: function (td, cellData, rowData, row, col) {
+                                                        //        $(td).css('text-align', 'center');
+                                                        //    },
+                                                        //},
+                                                        // {
+                                                        // "width": "600px", "targets": [indexSaleText]
+                                                        // "width":"50px","word-wrap":"break-word","targets":[indexSaleText]
+                                                        // "targets": [indexSaleText],
+                                                        //createdCell: function (td, cellData, rowData, row, col) {
+                                                        //    $(td).css('width', 'auto');
+                                                        //   // $(td).css('font-weight', 'bold');
+                                                        //},
+                                                        //},
+
+                                                    ],
+                                                "scrollY": 500,
+                                                "scrollX": true,
+                                                "pageLength": 200
+
+                                            });
+
+                                            //var table =   $('#RenderTableProductCatalog').DataTable({
+                                            //    'destroy': true,
+
+                                            //   // "autoWidth": true,
+                                            //    // paging: false
+                                            //    // searching: false
+
+                                            //    'data': data.jsonresult,
+                                            //    'columns': arrayColumn,
+
+                                            //    'columnDefs':
+                                            //        [
+                                            //            {
+                                            //                "targets": [0],
+                                            //                //"visible": false,
+                                            //                //"searchable": false
+                                            //                // "className": "dt-center",
+                                            //                //createdCell: function (td, cellData, rowData, row, col) {
+                                            //                //   $(td).css('text-align', 'center');
+                                            //                //},
+                                            //                data: null, render: function (data, type, row) {
+                                            //                    // return "<button type='button' class='btn btn-default'  data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button>"
+                                            //                    return "<button type='button' data-toggle='tooltip' title='Add Remark' class='btn btn-default' data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button> <button type='button'  data-toggle='tooltip' title='Hold' id='Z" + row.MaterialNo + "' class='btn btn-default btnban' data-mat='" + row.MaterialNo + "' onclick=bindHoldMaterial(this.getAttribute('data-mat')); ><span class='fa fa-ban text-danger' aria-hidden='true'></span></button>";
+                                            //                    //  return "<button type='button' class='btn btn-default' data-pc='" + row.Pc + "' data-mat='" + row.MaterialNo + "' onclick=AddRemarkData(this.getAttribute('data-pc'),this.getAttribute('data-mat')); ><span class='fas fa-pencil-alt text-warning' aria-hidden='true'></span></button>"
+
+                                            //                },
+                                            //            },
+                                            //            {
+                                            //                "targets": [1],
+                                            //                // "className": "dt-center",
+                                            //                data: null, render: function (data, type, row) {
+                                            //                    return "<button type='button'  data-toggle='tooltip' title='Preview Bom' id='" + row.MaterialNo + "' class='btn btn-default'  data-mat='" + row.MaterialNo + "' onclick=bindBom(this.getAttribute('data-mat'));  ><span class='fa fa-share-alt-square text-primary' style='font-size:115%;' aria-hidden='true'></span></button>"
+                                            //                    //return "<button type='button' id='" + row.MaterialNo + "' class='btn btn-default' data-mat='" + row.MaterialNo + "' onclick=bindHoldMaterial(this.getAttribute('data-mat')); ><span class='fas fa-file-alt text-primary' aria-hidden='true'></span></button>"
+                                            //                },
+                                            //            },
+                                            //            {
+                                            //                "targets": arrayIndexColumn,
+                                            //                createdCell: function (td, cellData, rowData, row, col) {
+                                            //                    $(td).css('color', 'black');
+                                            //                    // $(td).css('font-weight', 'bold');
+                                            //                },
+                                            //            },
+                                            //            {
+                                            //                "targets": [indexRemark],
+                                            //                createdCell: function (td, cellData, rowData, row, col) {
+                                            //                    $(td).css('color', 'red');
+                                            //                    $(td).css('font-weight', 'bold');
+                                            //                },
+                                            //            },
+
+                                            //        ],
+                                            //   // "scrollY": 500,
+                                            //   // "scrollX": true,
+                                            //    'pageLength': 200,
+
+                                            //    //"sDom": "Rlfrtip"
+                                            //    //'colReorder': {
+                                            //    //    'allowReorder': false
+                                            //    //},
+                                            //    "dom": 'Zlfrtip',
+                                            //    "colResize": {
+                                            //        "tableWidthFixed": false
+                                            //    },
+
+                                            //});
+
+                                            DisplayBom(data.jsonresult);
+                                            DisplayHold(data.jsonresult);
+                                            //DisplayPrint();
+                                        }
+
+                                    }
+                                }
+                            });
+                        }, 3000);
+
+                    }
+
+                    $(".RenderTableProductCatalog_length").on('change', function () {
+                        alert("in")
+                        DisplayBom(dataTemp);
+                    });
+
+                    function PrintMasterCardMo(Material, Factory) {
+                        $.ajax({
+                            url: '@Url.Action("SetMasterCardMOProductCatalogs", "Report")',
+                            type: "POST",
+                            dataType: "json",
+                            data: { mat: Material, fac: Factory },
+                            // contentType: "application/json; charset=utf-8",
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    window.open('@Url.Action("MasterCardMO", "Report")', '_blank');
+                                    return false;
+                                } else {
+                                    //$("#errorMsg").html(res.ErrorMessage);
+                                    swal(res.ErrorMessage, "", "warning");
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+
+        @*$.ajax({
+    url: '@Url.Action("GetOrderItemInMoData", "ProductCatalog")',
+    type: "POST",
+    async: false,
+    data:
+    {
+    Fac: Factory,
+    Mat: Material,
+    },
+    dataType: "json",
+    success: function (data) {
+    PrintMastercardMO(data);
+    }
+    });*@
+                                    }
+
+                    function PrintMastercardMO(SaleOrder) {
+                        let fileUploadName = ""; //$("#file-name").text();
+                        if (fileUploadName != "") {
+                            fileUploadName = fileUploadName.split('.')[0];
+                        }
+                        var saleOrders = [];
+
+                        var saleOrdersTmp = SaleOrder;
+                        saleOrders.push(saleOrdersTmp);
+                        if (saleOrders.length > 0) {
+                            var jsonObject = {
+                                "OrderItem": saleOrders,
+                                "MaterialNo": [],
+                                "SizeOfPage": 0,
+                                "FileName": fileUploadName,
+                                "IsPreview": false //isPreview
+                            };
+
+                            $.ajax({
+                                url: '@Url.Action("SetMasterCardMO", "Report")',
+                                type: "POST",
+                                dataType: "json",
+                                data: JSON.stringify(jsonObject),
+                                contentType: "application/json; charset=utf-8",
+                                success: function (res) {
+                                    if (res.IsSuccess) {
+                                        window.open('@Url.Action("MasterCardMO", "Report")', '_blank');
+                                        return false;
+                                    } else {
+                                        //$("#errorMsg").html(res.ErrorMessage);
+                                        swal(res.ErrorMessage, "", "warning");
+                                    }
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                        else {
+                            swal("กรุณาเลือก Master Card MO ที่ต้องการพิมพ์", "", "warning");
+                        }
+                    }
+
+                    function DisplayPrint() {
+                        if ('@Model.Role' !== '4') {
+                            let idso = '.btnprint';
+                            $(idso).css('display', 'none');
+
+                            //$.each(data, function (index) {
+
+                            //    let idmat = '.btnban';//'#Z' + data[index].MaterialNo;
+                            //        $(idmat).css('display', 'none');
+                            //});
+                        }
+                    }
+
+                    function DisplayHold(data) {
+                        if ('@Model.Role' !== '4') {
+                            let idmat = '.btnban';
+                            $(idmat).css('display', 'none');
+
+                        } else {
+
+                            $.ajax({
+                                url: '@Url.Action("GetAllCompanyProfile", "ProductCatalog")',
+                                type: "POST",
+                                dataType: "json",
+                                success: function (res) {
+                                    var check = true;
+                                    $.each(data, function (index) {
+                                        check = false;
+                                        $.each(res, function (i) {
+                                            if (data[index].FactoryCode === res[i].Plant && data[index].SaleOrg === res[i].SaleOrg) {
+                                                check = true
+                                            }
+                                        });
+                                        console.log(check)
+                                        console.log(data[index].FactoryCode + ' - ' + data[index].SaleOrg)
+
+                                        if (check) {
+                                            console.log('item not hold', data[index].MaterialNo)
+                                        } else {
+                                            let idmat = '#Z' + data[index].MaterialNo;
+                                            console.log('item hold', idmat)
+                                            $(idmat).css('display', 'none');
+                                        }
+
+                                    });
+                                },
+                                error: function () {
+                                    console.log('error in scope')
+                                }
+                            });
+                            //check company profile
+
+                        }
+                    }
+
+                    function DisplayBom(data) {
+                        $.each(data, function (index) {
+                            if (data[index].MaterialType === "84") {
+
+                            } else {
+                                let idmat = '#' + data[index].FactoryCode + data[index].MaterialNo;
+                                $(idmat).css('display', 'none');
+                            }
+                        });
+                    }
+
+                    $('#btnExportExcel').click(function () {
+                        // setReadOnly("1")
+
+                        // setTimeout(function () {
+                        var tmp = getData();
+                        if ($('#idNonMove').prop('checked')) {
+                            Object.assign(tmp, { idNonMove: 1 });
+                        } else {
+                            Object.assign(tmp, { idNonMove: 0 });
+                        }
+                        if ($('#idStockWIP').prop('checked')) {
+                            Object.assign(tmp, { idStockWIP: 1 });
+                        } else {
+                            Object.assign(tmp, { idStockWIP: 0 });
+                        }
+                        if ($('#idStockFG').prop('checked')) {
+                            Object.assign(tmp, { idStockFG: 1 });
+                        } else {
+                            Object.assign(tmp, { idStockFG: 0 });
+                        }
+                        if ($('#idStockQA').prop('checked')) {
+                            Object.assign(tmp, { idStockQA: 1 });
+                        } else {
+                            Object.assign(tmp, { idStockQA: 0 });
+                        }
+                        if ($('#idHoldFind').prop('checked')) {
+                            Object.assign(tmp, { idHoldFind: 1 });
+                        } else {
+                            Object.assign(tmp, { idHoldFind: 0 });
+                        }
+
+                        if ($('#isXPC').prop('checked')) {
+                            Object.assign(tmp, { isXPC: 1 });
+                        } else {
+                            Object.assign(tmp, { isXPC: 0 });
+                        }
+
+                        var form = JSON.stringify(tmp);
+
+                        document.location.href = '@Url.Action("ExportProductCatalogExcel", "ProductCatalog")' + "?req=" + encodeURIComponent(form.toString())
+                    });
+
+                    function callConfig() {
+                        // var myArray = document.getElementByName("dual-listbox__selected").getElementsByTagName("li");
+                        //var xxx = document.getElementsByClassName("dual-listbox__selected")
+                        var col = $(".dual-listbox__selected li").toArray().map(function (i) { return i.innerText })
+                        console.log(col)
+                        if (col.length > 0) {
+                            $.ajax({
+                                url: '@Url.Action("SettingConfig", "ProductCatalog")',
+                                type: "POST",
+                                async: false,
+                                traditional: true,
+                                data: { array: col },
+                                //  dataType: "json",
+                                success: function (data) {
+                                    //swal("Setting Success!", { icon: "success", });
+                                    $('#modalsetting').modal('hide');
+                                    $('.modal-backdrop').hide();
+                                    $("body").removeClass("modal-open");
+
+                                    swal("Setting Success!",
+                                        {
+                                            icon: "success",
+                                        }
+                                    ).then((willDelete) => {
+                                        if (willDelete) {
+                                            location.reload();
+                                        }
+                                    });
+
+                                }
+                            });
+
+                        } else {
+                            swal("Please select column!", { icon: "warning", });
+                        }
+
+                    }
+
+        @*var temcheck = [];
+    @foreach(var d in Model.productCatalogConfigs)
+    {
+    @: temcheck.push("@d.ColumnName");
+    }
+    var temcheckall = [];
+    @foreach(var ss in Model.columnNames)
+    {
+    @: temcheckall.push("@ss");
+    }
+
+    //  var a = temcheck.indexOf("Apple");
+    temcheck.forEach(function (item, index) {
+    debugger;
+    //  console.log(item, index);
+    show_hide_column(item,"")
+    });
+
+    function show_hide_column(col_no, do_show) {
+    debugger;
+    var rows = document.getElementById('example').rows;
+
+    for (var row = 0; row < rows.length; row++) {
+    var cols = rows[row].cells;
+    if (col_no >= 0 && col_no < cols.length) {
+    cols[col_no].style.display = do_show ? '' : 'none';
+    }
+    }
+    }*@
+
+                        // let dualListbox = new DualListbox('selectDemo'); // Selects the first selectbox on the page.
+                        // let dualListbox = new DualListbox('.demo'); // Selects the first element with the class 'select'
+                        //   let dualListbox = new DualListbox('#selectDemo'); // Selects the first element with the id 'select'
+
+                        let select = document.querySelector('#selectDemo');
+                    let dualListbox = new DualListbox(select); // Add a HTMLElement
+
+                    // demo = new DualListbox('.selectDemo');
+
+                    //DualListbox('.selectDemo', {
+                    //    addEvent: function (value) {
+                    //        console.log(value);
+                    //    },
+                    //    removeEvent: function (value) {
+                    //        console.log(value);
+                    //    },
+                    //    availableTitle: 'Different title',
+                    //    selectedTitle: 'Different title',
+                    //    addButtonText: '>',
+                    //    removeButtonText: '<', addAllButtonText: '>',
+                    //    removeAllButtonText: '<<',
+                    //    options: [
+                    //        { text: "Option 1", value: "OPTION1" },
+                    //        { text: "Option 2", value: "OPTION2" },
+                    //        { text: "Selected option", value: "OPTION3", selected: true }
+                    //    ]
+                    //});
+
+                    new DualListbox('.selectDemo', {
+                        addEvent: function (value) {
+                            console.log(value);
+                        },
+                        removeEvent: function (value) {
+                            console.log(value);
+                        },
+                        availableTitle: 'Available options',
+                        selectedTitle: 'I want to use this',
+                        addButtonText: '>',
+                        removeButtonText: '<',
+                        addAllButtonText: '>',
+                        removeAllButtonText: '<<'
+                    });
+
+                    // $('#btnConfig').click(function () {
+                    //    alert('in')
+                    // alert('in')
+                    //var myArray = document.getElementByName(".dual-listbox__selected").getElementsByTagName("li");
+
+                    // const navbar = Array.from(document.getElementByName('dual-listbox__selected'));
+
+                    //var myArray = $(".dual-listbox__selected li.dual-listbox__item").map(function () {
+                    //    return $(this).text();
+                    //}).get();
+                    //  console.log(navbar)
+                    //});
+
+                    function GetImageOfProductCatalog(factoryCode, materialNo) {
+                        $.ajax({
+                            url: '@Url.Action("GetImageOfProductCatalog", "ProductCatalog")',
+                            type: "POST",
+                            async: false,
+                            data:
+                            {
+                                factoryCode: factoryCode.toString(),
+                                materialNo: materialNo.toString()
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.IsSuccess) {
+                                    document.getElementById("titleImageName").innerHTML = "Images Of Material No. " + materialNo;
+                                    $("#palletization-pic").attr("src", '\images/NoImage.jpg');
+                                    if (data.palletizationBase64 != "" && data.palletizationBase64 != null) {
+                                        $("#palletization-pic-btn").attr("hidden", false);
+                                        $("#palletization-pic-btn").attr("download", data.palletizationFileName);
+                                        $("#palletization-pic").attr("src", data.palletizationBase64);
+                                        $("#palletization-pic-btn").attr("href", data.palletizationBase64);
+                                    }
+
+                                    $("#diecut-pic").attr("src", '\images/NoImage.jpg');
+                                    if (data.diecutBase64 != "" && data.diecutBase64 != null) {
+                                        $("#diecut-pic-btn").attr("hidden", false);
+                                        $("#diecut-pic-btn").attr("download", data.diecutFileName);
+                                        $("#diecut-pic").attr("src", data.diecutBase64);
+                                        $("#diecut-pic-btn").attr("href", data.diecutBase64);
+                                    }
+
+                                    $("#print-master-pic").attr("src", '\images/NoImage.jpg');
+                                    if (data.printmasterBase64 != "" && data.printmasterBase64 != null) {
+                                        $("#print-master-pic-btn").attr("hidden", false);
+                                        $("#print-master-pic-btn").attr("download", data.printmasterFileName);
+                                        $("#print-master-pic").attr("src", data.printmasterBase64);
+                                        $("#print-master-pic-btn").attr("href", data.printmasterBase64);
+                                    }
+
+                                    $("#fg-pic").attr("src", '\images/NoImage.jpg');
+                                    if (data.fgBase64 != "" && data.fgBase64 != null) {
+                                        $("#fg-pic-btn").attr("hidden", false);
+                                        $("#fg-pic-btn").attr("download", data.fgFileName);
+                                        $("#fg-pic").attr("src", data.fgBase64);
+                                        $("#fg-pic-btn").attr("href", data.fgBase64);
+                                    }
+                                    //
+                                    $("#semi1-pic").attr("src", '\images/NoImage.jpg');
+                                    if (data.semi1Base64 != "" && data.semi1Base64 != null) {
+                                        $("#semi1-pic-btn").attr("hidden", false);
+                                        $("#semi1-pic-btn").attr("download", data.semi1FileName);
+                                        $("#semi1-pic").attr("src", data.semi1Base64);
+                                        $("#semi1-pic-btn").attr("href", data.semi1Base64);
+                                    }
+
+                                    $("#semi2-pic").attr("src", '\images/NoImage.jpg');
+                                    if (data.semi2Base64 != "" && data.semi2Base64 != null) {
+                                        $("#semi2-pic-btn").attr("hidden", false);
+                                        $("#semi2-pic-btn").attr("download", data.semi2FileName);
+                                        $("#semi2-pic").attr("src", data.semi2Base64);
+                                        $("#semi2-pic-btn").attr("href", data.semi2Base64);
+                                    }
+
+                                    $("#semi3-pic").attr("src", '\images/NoImage.jpg');
+                                    if (data.semi3Base64 != "" && data.semi3Base64 != null) {
+                                        $("#semi3-pic-btn").attr("hidden", false);
+                                        $("#semi3-pic-btn").attr("download", data.semi3FileName);
+                                        $("#semi3-pic").attr("src", data.semi3Base64);
+                                        $("#semi3-pic-btn").attr("href", data.semi3Base64);
+                                    }
+
+                                    if (data.semiPDFFileName != "" && data.semiPDFFileName != null && data.semiPDFFileBase64 != "" && data.semiPDFFileBase64 != null) {
+                                        document.getElementById("pdf-status").innerHTML = "Semi PDF file name : " + data.semiPDFFileName;
+
+                                        $("#semi-file-pdf-btn").attr("hidden", false);
+                                        $("#semi-file-pdf-btn").attr("download", data.semiPDFFileName);
+                                        //$("#semi-file-pdf-btn").attr("src", data.semiPDFFileBase64);
+                                        $("#semi-file-pdf-btn").attr("href", "data:application/pdf;base64," + data.semiPDFFileBase64);
+                                    }
+
+                                    //
+                                    $("#modalImageDetails").modal('show');
+                                } else {
+                                    swal(res.ExceptionMessage, "", "warning");
+                                }
+                            }
+                        });
+                    }
+
+                    function ClickDownload(htmlId) {
+                        $("#" + htmlId).cilck();
+                    }
+    </script>
+
+}

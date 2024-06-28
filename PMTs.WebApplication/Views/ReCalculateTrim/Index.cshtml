@@ -1,0 +1,568 @@
+﻿@model PMTs.DataAccess.ComplexModel.ReCalculateTrimViewModel
+@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+
+<style>
+    .LockScreen {
+        display: block;
+        visibility: visible;
+        position: absolute;
+        z-index: 999;
+        top: 0px;
+        left: 0px;
+        width: 105%;
+        height: 105%;
+        background-color: transparent;
+        vertical-align: bottom;
+        padding-top: 20%;
+        filter: alpha(opacity=75);
+        opacity: 0.70;
+        font-size: large;
+        color: blue;
+        font-style: italic;
+        font-weight: 400;
+        background-image: url("/images/report-preloading.gif");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    .center {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div id="preLoadingScreen" class="LockScreen"></div>
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="fa fa-cog"></i> &nbsp;@Localizer["ReCalculate Flute"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div style="margin-right:5px">
+                        </div>
+                        <div style="margin-right:5px">
+                            <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:100px;float:left" onclick="ExportReCalculateTrimTemplate();"><i class="fa fa-download mr-1"></i>@Localizer["Load Template for Upload"]</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-body">
+                        <div style="background-color:white;padding:20px 0px;" class="text-center">@Localizer["explaintext"] </div>
+                        <div style="background-color:white;" class="text-center">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <select class="form-control" id="flute" style="width: 100%;max-width: 240px;margin-top: 1px;min-height: 34px;text-align-last:center" asp-items="@(new SelectList(Model.FluteAndMachineModels,"FluteAndMachine","Flute"))">
+                                        <option value="">------ Select Flute ------</option>
+                                    </select>
+                                    <select class="form-control" id="machine" style="width: 100%;max-width: 240px;margin-top: 1px;min-height: 34px;text-align-last:center" asp-items="@(new SelectList(Model.Machines,"Machine1","Machine1"))">
+                                        <option value="">------ Select Machince ------</option>
+                                    </select>
+                                   
+                                    <a class="btn btn-info" id="btnPreviewCalculate" style="min-height:35px;min-width:130px;color: white;">@Localizer["Download File"]</a>
+
+                                </div>
+                              @*   <div class="col-md-1"></div>
+                                <div class="col-md-5">
+                                    <select class="form-control" id="machince" style="width: 100%;max-width: 240px;margin-top: 1px;float: right;min-height: 34px;text-align-last:center" asp-items="@(new SelectList(Model.Machines,"Machine1","Machine1"))">
+                                        <option value="">------ Select Machince ------</option>
+                                    </select>
+                                </div>
+                                    <select class="form-control" id="flute" style="width: 100%;max-width: 240px;margin-top: 1px;float: right;min-height: 34px;text-align-last:center" asp-items="@(new SelectList(Model.FluteAndMachineModels,"FluteAndMachine","Flute"))">
+                                        <option value="">------ Select Flute ------</option>
+                                    </select>
+                                </div>
+                                <div class="mr-2"></div>
+                                <div class="col-md-2" style="padding:0;max-width:130px">
+                                    <a class="btn btn-info" id="btnPreviewCalculate" style="min-height:35px;min-width:130px;float:left;color: white;">@Localizer["Download File"]</a>
+                                </div>
+                                <div class="col-md-3 float-left" style="padding-left:10px;">
+                                    <a class="btn btn-info" hidden id="btnReCalculate" style="min-height:35px;min-width:130px;float:left;color: white;">@Localizer["ReCalculate"]</a>
+                                </div>
+                                <div class="col-md-1"></div> *@
+                                <div id="div-progressbar" class="container col-md-8" hidden>
+                                    <br>
+                                    <div class="progress" style="max-width:100%">
+                                        <div id="progressbar" class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                            <span id="current-progress"></span>
+                                        </div>
+                                    </div>
+                                    @*<div class="progress" style="max-width:100%">
+                                            <div id="progressbar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:0.5%">0%</div>
+                                        </div>*@
+                                    <label style="color:dodgerblue">@Localizer["processing recalcualte trim..."]</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-body">
+                        <div style="background-color:white;padding:20px 0px;" class="text-center">@Localizer["Choose File"]</div>
+                        <div style="background-color:white;height:14vh" class="text-center">
+                            <form id="fromReCalculateTrim">
+                                <div id="textFieled" class="form-group row">
+                                    <div class="col-md-12">
+                                        <input type="file" name="importFile" id="importFile" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onchange="javascript:ImportList()">
+                                        <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:170px;" onclick="ImportReCalculateTrim();">@Localizer["Choose File for Update"]&ensp;<i class="fa fa-upload"></i></a>
+                                        <label for="importFile"></label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        const flutes = @Html.Raw(Json.Serialize(Model.FluteAndMachineModels));
+        let current_progress = 0;
+        let current_interval = 0;
+        let current_progress_bar = 0;
+        let exportPreview = false;
+        let isReCalTrim = false;
+        var elem = document.getElementById("progressbar");
+
+        $(document).ready(function () {
+            $("#preLoadingScreen").hide();
+            $("#div-progressbar").attr("hidden", true);
+            current_progress = 0;
+            current_interval = 0;
+            current_progress_bar = 0;
+            exportPreview = false;
+            isReCalTrim = false;
+
+            let status = '@Model.Status';
+            if(status == "error"){
+                swal({
+                    title: "ReCalcurateTrim Failed!",
+                    text: "ไม่สามารถดาวน์โหลดไฟล์excel ได้กรุณาลองใหม่.",
+                    icon: "warning",
+                });
+            }
+        });
+
+        $('#btnPreviewCalculate').click(function () {
+            DisabledSubmitButton(this);
+            let flute = $("#flute").val();
+            let machine = $("#machine").val();
+            let fluteSelected = flutes.filter(p => { return p.FluteAndMachine == flute });
+            if (flute != "") {
+                swal({
+                    title: "Are you sure?",
+                    text: "Preview re-calculate with flute " + fluteSelected[0].Flute + " - " + machine + " (Trim = " + fluteSelected[0].Trim + ")",
+                    icon: "warning",
+                    async: false,
+                    buttons: {
+                        confirm: "Ok",
+                        cancel: true,
+                    },
+                    dangerMode: false,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            ReCalculateTrimProgress(true);
+                        }
+                    });
+            }
+            else {
+                $("#flute").focus();
+            }
+        });
+
+        $('#btnReCalculate').click(function () {
+            DisabledSubmitButton(this);
+
+            let Thaihours = new Date().getUTCHours() + 7 % 24;
+
+            if (1==1) {//if (Thaihours >= 19 || Thaihours < 7) {
+                let flute = $("#flute").val();
+                let machine = $("#machine").val();
+                let fluteSelected = flutes.filter(p => { return p.FluteAndMachine == flute });
+                if (flute != "") {
+                    swal({
+                        title: "Are you sure?",
+                        text: "ReCalculate will change trim with Flute " + fluteSelected[0].Flute + " - " + machine + " (Trim = " + fluteSelected[0].Trim + ")",
+                        icon: "warning",
+                        async: false,
+                        buttons: {
+                            confirm: "Ok",
+                            cancel: true,
+                        },
+                        dangerMode: false,
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                ReCalculateTrimProgress(false);
+                            }
+                        });
+                }
+                else
+                {
+                    $("#flute").focus();
+                }
+            } else {
+                swal("ReCalcualteTrim Message", "PMTs can not re-calculating trim entries during time. \n ReCalculateTrim will start at 19.00-07.00", "warning")
+            }
+        });
+
+        function ReCalculateTrimProgress(isPreview) {
+            let fluteVal = $("#flute").val();
+            let machineVal = $("#machine").val();
+            let fluteSelected = flutes.filter(p => { return p.FluteAndMachine == fluteVal });
+            let flute = fluteSelected[0].FluteAndMachine.split(',')[0];
+            // let machine = fluteSelected[0].FluteAndMachine.split(',')[1];
+            let machine = machineVal ? machineVal : fluteSelected[0].FluteAndMachine.split(',')[1];
+            let boxType = fluteSelected[0].FluteAndMachine.split(',')[2];
+            let printMethod = fluteSelected[0].FluteAndMachine.split(',')[3];
+            let proType = fluteSelected[0].FluteAndMachine.split(',')[4];
+            $("#div-progressbar").attr("hidden", false);
+            var elem = document.getElementById("progressbar");
+            elem.style.width = '0%';
+            elem.innerHTML = '0%';
+            //$("#preLoadingScreen").show();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ReCalculateTrimProgress", "ReCalculateTrim")',
+                data: {
+                    flute: flute,
+                    machine: machine,
+                    boxType: boxType,
+                    printMethod: printMethod,
+                    proType: proType
+                },
+                dataType: "json",
+                async: true,
+                success : function (res) {
+                    if (res.IsSuccess) {
+                        let allProcess = parseInt(res.AllProgress);
+                        GetProgress(allProcess, isPreview);
+                    } else {
+
+                        $("#preLoadingScreen").hide();
+                        swal("ReCalculate Failed", res.ExceptionMessage, "warning");
+                    }
+                },
+                error: function () {
+
+                    $("#preLoadingScreen").hide();
+                }
+            });
+        }
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+
+        function GetProgress(numOfProcess, isPreview) {
+            let startTime = Date.now();
+            let fluteVal = $("#flute").val();
+            let machineVal = $("#machine").val();
+            let fluteSelected = flutes.filter(p => { return p.FluteAndMachine == fluteVal });
+            let flute = fluteSelected[0].Flute + "," + machineVal
+            let action = isPreview ? "IsPreview" : "Recalculate";
+            current_progress = current_progress+1;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ReCalculateTrimChangeRouting", "ReCalculateTrim")',
+                data: {
+                    flute: flute,
+                    numberOfProgress: current_progress,
+                    action: action
+                },
+                async: false,
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        exportPreview = res.HasDataTableRows;
+                        isReCalTrim = res.HasDataForSave;
+                        let listsInProcess = res.ListsInProcess;
+                        let perc = parseInt(((listsInProcess / numOfProcess) * 100).toFixed(2));
+
+                        var width = (current_progress_bar + perc);
+                        elem.style.width = current_progress_bar + '%';
+                        elem.innerHTML = current_progress_bar + '%';
+                        var interval = setInterval(function () {
+                            if (current_progress_bar >= width) {
+                                current_interval = current_interval + 1;
+                                clearInterval(interval);
+                                SetDataToPreviewAndSave(numOfProcess, isPreview, res.EndProcess);
+                                current_progress_bar = width;
+                            } else {
+                                current_progress_bar++;
+                                elem.style.width = current_progress_bar + '%';
+                                elem.innerHTML = current_progress_bar + '%';
+                            }
+                            //$("#progressbar")
+                            //    .css("width", current_progress_bar + "%")
+                            //    .attr("aria-valuenow", current_progress_bar)
+                            //    .text(current_progress_bar + "% Complete");
+                            //if (current_progress_bar >= width) {
+                            //    current_interval = current_interval + 1;
+                            //    clearInterval(interval);
+                            //    SetDataToPreviewAndSave(numOfProcess, isPreview, res.EndProcess);
+                            //    current_progress_bar = width;
+                            //}
+                        }, 20);
+                    }
+                    else {
+                        $("#preLoadingScreen").hide();
+                        swal({
+                            title: "ReCalculate Failed",
+                            text: res.ExceptionMessage,
+                            icon: "warning",
+                            async: false,
+                            dangerMode: false,
+                        }).then((willDelete) => {
+                            if (willDelete) {
+                                location.reload();
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    $("#preLoadingScreen").hide();
+                    swal({
+                        title: "ReCalculate Failed",
+                        text: res.ExceptionMessage,
+                        icon: "warning",
+                        async: false,
+                        dangerMode: false,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            location.reload();
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function SetDataToPreviewAndSave(numOfProcess, isPreview, endProcess)
+        {
+            let startTime = Date.now();
+            let fluteVal = $("#flute").val();
+            let machineVal = $("#machine").val();
+            let fluteSelected = flutes.filter(p => { return p.FluteAndMachine == fluteVal });
+            let flute = fluteSelected[0].Flute + "," + machineVal
+            if (current_progress == current_interval && endProcess) {
+                if (isPreview) {
+                    if (exportPreview) {
+                        $("#preLoadingScreen").hide();
+                        document.location.href = '@Url.Action("ReCalculateTrimExportExcel", "ReCalculateTrim")' + "?flute=" + flute;
+      
+                        if (endProcess) {
+                            elem.style.width = '100%';
+                            elem.innerHTML = '100%';
+                            setTimeout(() => {
+                                elem.style.width = '0%';
+                                elem.innerHTML = '0%';
+                                $("#div-progressbar").attr("hidden", true);
+                                current_progress = 0;
+                                current_interval = 0;
+                                current_progress_bar = 0;
+                                exportPreview = false;
+                                isReCalTrim = false;
+                                $("#progressbar")
+                                    .css("width", "0%")
+                                    .attr("aria-valuenow", "0")
+                                    .attr("aria-valuemax", "100")
+                                    .attr("aria-valuemax", "0")
+                                    .text("0%");
+                            },1000)
+                           
+                        }
+                        // ClearSession();
+                    }
+                    else
+                    {
+                        $("#preLoadingScreen").hide();
+                        swal("ReCalculateTrim Message", "not found routing for calculate new trim with flute " + flute, "warning");
+                        setTimeout(location.reload(), Date.now() - startTime);
+                    }
+                } else {
+                    if (isReCalTrim) {
+                        if (endProcess) {
+                            elem.style.width = '100%';
+                            elem.innerHTML = '100%';
+                        }
+                        //SaveReCalculateTrim();
+                        $("#preLoadingScreen").hide();
+                        ClearSession();
+                        swal("ReCalculate Successfully", "", "success");
+                    }
+                }
+
+            }
+            else {
+                setTimeout(GetProgress(numOfProcess, isPreview), 1000);
+            }
+        }
+
+        function SaveReCalculateTrim() {
+            let startTime = Date.now();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveReCalculateTrim", "ReCalculateTrim")',
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        setTimeout(function () {
+                            $("#preLoadingScreen").hide();
+                            swal("ReCalculate Successfully", "", "success");
+                        }, Date.now() - startTime);
+                    }
+                    else
+                    {
+                        $("#preLoadingScreen").hide();
+                        swal("ReCalculate Failed", res.ExceptionMessage, "warning")
+                    }
+                },
+                error: function () {
+
+                    $("#preLoadingScreen").hide();
+                }
+            });
+        }
+
+        function ClearSession() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ClearSessionReCalculateTrim", "ReCalculateTrim")',
+                dataType: "json",
+                success: function (res) {
+                    elem.style.width = '0%';
+                    elem.innerHTML = '0%';
+                    $("#div-progressbar").attr("hidden", true);
+                    current_progress = 0;
+                    current_interval = 0;
+                    current_progress_bar = 0;
+                    exportPreview = false;
+                    isReCalTrim = false;
+                    $("#progressbar")
+                        .css("width", "0%")
+                        .attr("aria-valuenow", "0")
+                        .attr("aria-valuemax", "100")
+                        .attr("aria-valuemax", "0")
+                        .text("0%");
+                },
+                error: function () {
+
+                    $("#preLoadingScreen").hide();
+                }
+            });
+        }
+
+        function ImportReCalculateTrim() {
+            $("#importFile").click();
+        }
+
+        $('#importFile').click(function () {
+            document.getElementById("importFile").value = null;
+        });
+
+        ImportList = function () {
+            debugger;
+            var input = document.getElementById('importFile');
+            var filesName = "";
+            var tempFile = $('#importFile')[0].files[0];
+            for (var i = 0; i < input.files.length; ++i) {
+                tempFile = $('#importFile')[0].files[i];
+                filesName = filesName +input.files[i].name +" \n";
+            }
+
+            swal({
+                title: "Do you want to recalculate trim from file " + filesName + "?",
+                text: "",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+                }).then((willDelete) => {
+                    if (willDelete)
+                    {
+                        formDataObj = new FormData();
+                        formDataObj.append("file", tempFile);
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ImportReCalculateTrimFromFile", "ReCalculateTrim")',
+                            data: formDataObj,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    if (res.ExceptionMessage != "" && res.ExceptionMessage != null) {
+                                        swal({
+                                            title: "ReCalculateTrim?",
+                                            text: res.ExceptionMessage +"\n Do you want to download failed data!",
+                                            icon: "warning",
+                                            buttons: {
+                                                confirm: "Ok",
+                                                cancel: true,
+                                            },
+                                            dangerMode: false,})
+                                            .then((willDelete) => {
+                                                if (willDelete) {
+                                                    document.location.href = '@Url.Action("ExportInvalidReCalculateTrim", "ReCalculateTrim")';
+                                                }
+                                            });
+                                    } else {
+                                        swal("ReCalculate Successfully", "", "success");
+                                    }
+                                }
+                                else
+                                {
+                                    swal("ReCalculate Failed", res.ExceptionMessage, "warning")
+                                }
+                            }
+                        });
+                    }
+                });
+        }
+
+        function ExportReCalculateTrimTemplate() {
+            swal({
+                title: "Are you sure?",
+                text: "Export template with PMTs_RecalculateTrimTemplate.xlsx",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        document.location.href = '@Url.Action("ExportReCalculateTrimTemplate", "ReCalculateTrim")';
+                    }
+                });
+        };
+    </script>
+}

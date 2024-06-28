@@ -1,0 +1,235 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceColor.MaintenanceColorViewModel
+
+@{
+    ViewData["Title"] = "Color";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-comment-text-outline"></i> @Localizer["Color"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalCreateColor">
+                                <span class="btn-label">
+                                    <i class="fa fa-plus-square text-left"></i>
+                                </span>@Localizer["Create"]
+                            </button>
+                            <partial name="_CreateModal" model="Model" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+
+                    <div class="box" id="Color-table">
+                        <partial name="_ColorTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+<script>
+    function viewShow(Id, Ink, Shade, OptDelete, MainDensity) {
+        $('#Id').val(Id);
+        $('#Ink').val(Ink);
+        $('#Shade').val(Shade);
+        // $('#OptDelete').val(OptDelete);
+        debugger;
+        if (OptDelete === "True")
+        {
+            $('#OptDelete').prop('checked', false);
+        } else {
+            $('#OptDelete').prop('checked', true);
+        }
+        $('#MainDensity').val(MainDensity);
+        $('#modal-view').modal('show');
+    }
+
+    function viewEdit(Id, Ink, Shade, OptDelete, MainDensity, CreatedDate , CreatedBy) {
+
+        $('#EShade').prop('disabled', true);
+        $('#EId').val(Id);
+        $('#EInk').val(Ink);
+        $('#EShade').val(Shade);
+        $('#ECreatedDate').val(ChangeDateTimeFormat(CreatedDate));
+        $('#ECreatedBy').val(CreatedBy);
+        // $('#EOptDelete').val(OptDelete);
+        if (OptDelete === "True") {
+            $('#EOptDelete').prop('checked', false);
+        } else {
+            $('#EOptDelete').prop('checked', true);
+        }
+        $('#EMainDensity').val(MainDensity);
+        $('#modal-edit').modal('show');
+        // $('.modal-backdrop').show();
+    }
+
+    function ChangeDateTimeFormat(oDatetime) {
+        let datetimeStr = "";
+
+        if (oDatetime != null && oDatetime != "") {
+            let datetimeArr = oDatetime.split(' ');
+            let dateArr = datetimeArr[0].split('/');
+            let timeArr = datetimeArr[1].split(':');
+            let year = dateArr[2];
+            let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+            let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+            let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+            let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+            let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+            datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+        }
+
+        return datetimeStr;
+    }
+
+    function getData() {
+        let req = {
+            "Id": $("#EId").val(),
+            "Ink": $("#EInk").val(),
+            "Shade": $("#EShade").val(),
+            "CreatedDate": $("#ECreatedDate").val(),
+            "CreatedBy": $("#ECreatedBy").val(),
+            //"OptDelete": $("#EOptDelete").val(),
+            "MainDensity": $("#EMainDensity").val(),
+        };
+        return req;
+    }
+
+    $('#btnSubmitMaintainColor').click(function () {
+        DisabledSubmitButton(this);
+        if ($("#ColorViewModel_Ink").val() === "" || $("#ColorViewModel_Shade").val() === "" ) {
+            swal("Please input data!", { icon: "warning", });
+        }
+        else
+        {
+            var form = $('#create-Color-form').serialize();
+            $.ajax({
+                url: '@Url.Action("SaveColor", "MaintenanceColor")',
+                type: "POST",
+                async: false,
+                data: form,
+                dataType: "json",
+                success: function (data) {
+                    if (data.IsSuccess)
+                    {
+                        UpdateColorTableNew(data);
+                        swal("Save Success!", { icon: "success", });
+                    }else{
+                            swal("Save Failed", data.ExceptionMessage, "warning");
+                    }
+                    $('#modal-create').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $("body").removeClass("modal-open");
+                }
+            });
+        }
+    });
+
+    $('#btnsubmitmaintaincolorchange').click(function () {
+        DisabledSubmitButton(this);
+        if ($("#EInk").val() === "" || $("#EShade").val() === "") {
+            swal("Please input data!", { icon: "warning", });
+        }
+        else {
+            var tmp = getData();
+            if ($('#EOptDelete').prop('checked')) {
+                Object.assign(tmp, { OptDelete: 0 });
+            } else {
+                Object.assign(tmp, { OptDelete: 1 });
+            }
+            debugger;
+            var form = JSON.stringify(tmp);// $('#edit-maintain-color').serialize();
+            $.ajax({
+                url: '@Url.Action("UpdateColor", "MaintenanceColor")',
+                type: "POST",
+                async: false,
+                data:
+                {
+                    req: form.toString()
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.IsSuccess)
+                    {
+                        UpdateColorTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                    }else{
+                            swal("Update Failed", data.ExceptionMessage, "warning");
+                    }
+                    $('#modal-edit').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $("body").removeClass("modal-open");
+                }
+            });
+        }
+    });
+
+    $(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+
+        $('#Color-data-table').DataTable();
+    });
+
+    $('#btnShowCreateModalCreateColor').click(function () {
+        $('#modal-create').modal('show');
+        $("#chkDel").prop("checked", true);
+
+    });
+
+    $('#btnSubmit').click(function () {
+        DisabledSubmitButton(this);
+        $('.add-row').remove();
+    });
+
+    $("#chkDel").click(function () {
+        if ($('#chkDel').is(":checked")) {
+            $('#ColorViewModel_OptDelete').val(false);
+        }
+        else {
+            $('#ColorViewModel_OptDelete').val(true);
+        }
+    });
+
+    function UpdateColorTableNew(res) {
+
+        $('#Color-table').html(res.View);
+        $('#Color-data-table').DataTable();
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '-webkit-fill-available');
+        $('.form-control').css('width', '-webkit-fill-available');
+    }
+
+    function DisabledSubmitButton(item) {
+        item.disabled = true;
+
+        setTimeout(function () {
+            item.disabled = false;
+        }, 2000);
+    }
+</script>
+
+}

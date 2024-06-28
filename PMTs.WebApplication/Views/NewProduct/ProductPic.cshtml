@@ -1,0 +1,1389 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+
+@{
+    //Layout = null;
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+@{
+    ViewData["Title"] = "index";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<form id="allData" asp-action="ProductPic" asp-controller="NewProduct" data-ajax="true" data-ajax-method="post" data-ajax-success="OnSaveSuccess" onsubmit="return SaveImg()">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <div class="row justify-content-between">
+                    <div class="col-6">
+                        <h3 class="text-themecolor">@Localizer["New Product"]</h3>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="box-title text-right ">
+                            @Localizer["Material No"] : @Model.MaterialNo
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="row">
+                    @if (Model.modelCategories.Id_MatType != 2 && Model.modelCategories.Id_MatType != 4 && Model.modelCategories.Id_MatType != 7)
+                    {
+                        <div class="col-md-12" style="padding-bottom:20px">
+                            <h6>@Localizer["Attach Label File"]</h6>
+                            @*button attachfile masterdata*@
+                            <div class="row line-space">
+                                <div class="form-group col-md-3 ml-2 mt-1 " style="max-width: 220px;">
+                                    <input type="file" name="fileUpload" id="fileUpload" style="display:none;" accept="application/pdf" onchange="javascript:updateList()">
+                                    <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:100px;float:right;" onclick="thisFileUpload();"><i class="fa fa-paperclip"></i>&ensp;@Localizer["Choose Label PDF File"]</a>
+                                    <label for="fileUpload"></label>
+                                </div>
+                                <div class="form-group col-md-5" style="font-size: larger;font-weight:700">
+                                    <div style="font-size:medium;font-weight:normal" id="fileList"></div>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <button type="button" onclick="ModalCreateBOM()" class="float-right text-center btn btn-success btn-fixsize " style="padding-right:10px;width:auto;">@Localizer["Create BOM Master Material"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-12" style="padding-bottom:20px">
+                            @*button attachfile masterdata*@
+                            <div class="row line-space">
+                                <div class="form-group col-md-3 ml-2 mt-1 " style="max-width: 200px;">
+                                    <input type="file" name="fileUpload" id="fileUpload" style="display:none;" accept="application/pdf" onchange="javascript:updateList()">
+                                    <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:100px;float:right" onclick="thisFileUpload();"><i class="fa fa-paperclip"></i>&ensp;@Localizer["Choose Label PDF File"]</a>
+                                    <label for="fileUpload"></label>
+                                </div>
+                                <div class="form-group col-md-5" style="font-size: larger;font-weight:700">
+                                    <div style="font-size:medium;font-weight:normal" id="fileList"></div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-pencil-alt"></i></span>
+
+                                            @Localizer["Drawing"]
+                                            @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_DrawingPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removeclick" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addclick" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(@Model.modelProductPicture.Pic_DrawingPath.Trim()))
+                                {
+                                    <input type="file" id="Pic_Drawing" name="Pic_Drawing" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Drawing(this)" />
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_Drawing" name="Pic_Drawing" data-height="300" accept="image/*" onchange="show_Drawing(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Drawing" src='@Model.modelProductPicture.Pic_DrawingPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.modelProductPicture.Pic_DrawingPath, new { @id = "iDrawing", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body">
+                                <div class="row">
+                                    @*&nbsp;&nbsp;&nbsp;<img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Print Master"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-print"></i></span>
+                                            @Localizer["Print Master"]
+                                            @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_PrintPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removeprintmasterclick" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addprintmasterclick" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(Model.modelProductPicture.Pic_PrintPath))
+                                {
+                                    <input type="file" id="Pic_Print" name="Pic_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Print(this)" />
+
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_Print" name="Pic_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Print(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Print" src='@Model.modelProductPicture.Pic_PrintPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.modelProductPicture.Pic_PrintPath, new { @id = "iPrint", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body">
+                                <div class="row">
+                                    @*&nbsp;&nbsp;&nbsp;<img src="~/pic/palletIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Pallet"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-tape"></i></span>
+                                            @Localizer["Pallet"]
+                                            @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_PalletPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removepalletclick" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addpalletclick" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+                                @if (string.IsNullOrEmpty(Model.modelProductPicture.Pic_PalletPath))
+                                {
+                                    <input type="file" id="Pic_Pallet" name="Pic_Pallet" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Pallet(this)" />
+
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_Pallet" name="Pic_Pallet" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Pallet(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Pallet" src='@Model.modelProductPicture.Pic_PalletPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.modelProductPicture.Pic_PalletPath, new { @id = "iPallet", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+
+                            <div class="card-body">
+                                <div class="row">
+                                    @*&nbsp; &nbsp;&nbsp;<img src="~/pic/fgBoxIcon.jpg" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Packaging"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-box-open"></i></span>
+                                            @Localizer["Packaging"]
+                                            @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Pic_FGPath.Trim()))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removefgclick" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addfgclick" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(Model.modelProductPicture.Pic_FGPath))
+                                {
+                                    <input type="file" id="Pic_FG" name="Pic_FG" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_FG(this)" />
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Pic_FG" name="Pic_FG" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_FG(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+                                        <img id="FG" src='@Model.modelProductPicture.Pic_FGPath' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+
+                                @Html.TextBoxFor(m => m.modelProductPicture.Pic_FGPath, new { @id = "iFG", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @************************************************************************************************************ Semi ***********************************************************@
+
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body">
+                                <div class="row">
+                                    @*&nbsp;&nbsp;&nbsp;<img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Print Master"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-print"></i></span>
+                                            @Localizer["Semi1"]
+                                            @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Semi1_Path))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removesemi1click" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addsemi1click" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(Model.modelProductPicture.Semi1_Path))
+                                {
+                                    <input type="file" id="Semi1_Print" name="Semi1_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Semi1(this)" />
+
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Semi1_Print" name="Semi1_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Semi1(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Semi1" src='@Model.modelProductPicture.Semi1_Path' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.modelProductPicture.Semi1_Path, new { @id = "iSemi1", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body">
+                                <div class="row">
+                                    @*&nbsp;&nbsp;&nbsp;<img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Print Master"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-print"></i></span>
+                                            @Localizer["Semi2"]
+                                            @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Semi2_Path))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removesemi2click" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addsemi2click" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(Model.modelProductPicture.Semi2_Path))
+                                {
+                                    <input type="file" id="Semi2_Print" name="Semi2_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Semi2(this)" />
+
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Semi2_Print" name="Semi2_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Semi2(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Semi2" src='@Model.modelProductPicture.Semi2_Path' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.modelProductPicture.Semi2_Path, new { @id = "iSemi2", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body">
+                                <div class="row">
+                                    @*&nbsp;&nbsp;&nbsp;<img src="~/pic/printMasterIcon.png" width="20" height="20" />&nbsp; <h4 class="card-title"> @Localizer["Print Master"]</h4>*@
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-print"></i></span>
+                                            @Localizer["Semi3"]
+                                            @if (!string.IsNullOrEmpty(@Model.modelProductPicture.Semi3_Path))
+                                            {
+                                                <span style="float:right"><i style="font-size:25px;color:brown" id="removesemi3click" class="fa fa-trash"></i></span>
+                                                <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addsemi3click" class="fa fa-camera"></i></span>
+                                            }
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                @if (string.IsNullOrEmpty(Model.modelProductPicture.Semi3_Path))
+                                {
+                                    <input type="file" id="Semi3_Print" name="Semi3_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Semi3(this)" />
+
+                                }
+                                else
+                                {
+                                    <div style="display:none">
+                                        <input type="file" id="Semi3_Print" name="Semi3_Print" class="dropify inp-picture" data-height="300" accept="image/*" onchange="show_Semi3(this)" />
+                                    </div>
+
+                                    <div class="row ">
+                                        <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                                    </div>
+                                    <div class="SImg">
+
+                                        <img id="Semi3" src='@Model.modelProductPicture.Semi3_Path' style="max-height: 300px; max-width: 100%;" />
+                                    </div>
+                                }
+                                @Html.TextBoxFor(m => m.modelProductPicture.Semi3_Path, new { @id = "iSemi3", @class = "inp-picture", @style = "display:none;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card" style="height:370px">
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h4 class="card-title">
+                                            <span style="float:left"><i style="font-size:25px" class="fa fa-print"></i></span>
+                                            @Localizer["Semi Pdf"]
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="row col-md-12" style="padding-bottom:20px">
+                                    @*button attachfile masterdata*@
+                                    <div class="row line-space">
+                                        <div class="form-group col-md-3 ml-2 mt-6 " style="max-width:200px;padding-top:100px">
+                                            <input type="file" name="fileUpload2" id="fileUpload2" style="display:none;" accept="application/pdf" onchange="javascript:updateList2()">
+                                            <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:100px;float:right" onclick="thisFileUpload2();"><i class="fa fa-paperclip"></i>&ensp;@Localizer["Choose Label PDF File"]</a>
+                                            <label for="fileUpload2"></label>
+                                        </div>
+                                        <div class="form-group col-md-5" style="font-size: larger;font-weight:700">
+                                            <div style="font-size:medium;font-weight:normal;margin-top: 92px;" id="fileList2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="card-title">
+                                    <span style="float:left"><i style="font-size:25px" class="fa fa-print"></i></span>
+                                    @Localizer["Semi Pdf"]
+                                    @if (!string.IsNullOrEmpty(@Model.modelProductPicture.SemiFilePdfPath))
+                                    {
+                                        <span style="float:right"><i style="font-size:25px;color:brown" id="removesemi4click" class="fa fa-trash"></i></span>
+                                        <span style="float:right;padding-right:15px;color:blue"><i style="font-size:25px" id="addsemi4click" class="fa fa-file"></i></span>
+                                    }
+                                </h4>
+                            </div>
+                        </div>
+
+                        @if (string.IsNullOrEmpty(Model.modelProductPicture.SemiFilePdfPath))
+                        {
+                            <input type="file" id="Semi4_Print" name="Semi4_Print" class="dropify inp-picture" data-height="300" accept="application/pdf" onchange="show_Semi4(this)" />
+
+                        }
+                        else
+                        {
+                            <div style="display:none">
+                                <input type="file" id="Semi4_Print" name="Semi4_Print" class="dropify inp-picture" data-height="300" accept="application/pdf" onchange="show_Semi4(this)" />
+                            </div>
+
+                            <div class="row ">
+                                <i id="dr" class="fa fa-remove pull-right " style="color:red; "></i>
+                            </div>
+                            <div class="SImg">
+
+                                <img id="Semi4" src="~/pic/save.gif" style="max-height: 300px; max-width: 100%;" onclick="DownloadLabelPdfSemi('@Model.modelProductPicture.SemiFilePdfPath')" />
+                            </div>
+                        }
+                        @Html.TextBoxFor(m => m.modelProductPicture.SemiFilePdfPath, new { @id = "iSemi4", @class = "inp-picture", @style = "display:none;" })*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btnSave" type="submit" class="btn btn-success btn-fixsize"> <i class="fa fa-save"></i> @Localizer["Save"] </button>
+                <button class="btn btn-info btn-fixsize" type="button" id="btnNextLoad" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading...
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade in" id="modal-show-save" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title text-themecolor">@Localizer["Save"]</h2>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="swal2-icon swal2-success swal2-animate-success-icon" style="display: flex;">
+                        <div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);">
+                        </div>
+                        <span class="swal2-success-line-tip"></span>
+                        <span class="swal2-success-line-long"></span>
+                        <div class="swal2-success-ring"></div>
+                        <div class="swal2-success-fix" style="background-color: rgb(255, 255, 255);"></div>
+                        <div class="swal2-success-circular-line-right" style="background-color: rgb(255, 255, 255);"></div>
+                    </div>
+                    <p><h3>@Localizer["Update Material"] @Model.MaterialNo @Localizer["Completed"]</h3></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success waves-effect waves-light" onclick="reponseToInforAfterSave()" type="button"><i class="fa fa-check"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Left side column. contains the logo and sidebar -->
+<!-- Content Wrapper. Contains page content -->
+<!-- /.row -->
+
+@section Scripts {
+    <script>
+        var fileArr = [];
+        var fileArr2 = [];
+        var formDataObj = new FormData();
+        var fileNo = 1;
+        var fileNo2 = 1;
+
+        $("#addclick").click(function () {
+            $("#Pic_Drawing").trigger('click');
+        });
+
+        $("#removeclick").click(function () {
+            removePrintMasterModel();
+            $('#iDrawing').val(null);
+            $('#Drawing').attr('src', "");
+        });
+
+        $("#addprintmasterclick").click(function () {
+            $("#Pic_Print").trigger('click');
+        });
+
+        $("#removeprintmasterclick").click(function () {
+            //removePrintMasterModel();
+            $('#iPrint').val(null);
+            $('#Print').attr('src', "");
+        });
+
+        $("#addpalletclick").click(function () {
+            $("#Pic_Pallet").trigger('click');
+        });
+
+        $("#removepalletclick").click(function () {
+           // removePrintMasterModel();
+            $('#iPallet').val(null);
+            $('#Pallet').attr('src', "");
+        });
+
+        $("#addfgclick").click(function () {
+            $("#Pic_FG").trigger('click');
+        });
+
+        $("#removefgclick").click(function () {
+            //removePrintMasterModel();
+            $('#iFG').val(null);
+            $('#FG').attr('src', "");
+        });
+
+        $("#addsemi1click").click(function () {
+            $("#Semi1_Print").trigger('click');
+        });
+
+        $("#removesemi1click").click(function () {
+            //removePrintMasterModel();
+            $('#iSemi1').val(null);
+            $('#Semi1').attr('src', "");
+        });
+
+        $("#addsemi2click").click(function () {
+            $("#Semi2_Print").trigger('click');
+        });
+
+        $("#removesemi2click").click(function () {
+            //removePrintMasterModel();
+            $('#iSemi2').val(null);
+            $('#Semi2').attr('src', "");
+        });
+
+        $("#addsemi3click").click(function () {
+            $("#Semi3_Print").trigger('click');
+        });
+
+        $("#removesemi3click").click(function () {
+            //removePrintMasterModel();
+            $('#iSemi3').val(null);
+            $('#Semi3').attr('src', "");
+        });
+
+        $("#addsemi4click").click(function () {
+            $("#Semi4_Print").trigger('click');
+        });
+
+        $("#removesemi4click").click(function () {
+            //removePrintMasterModel();
+            $('#iSemi4').val(null);
+            $('#Semi4').attr('src', "");
+        });
+
+        function removePrintMasterModel() {
+            $.ajax({
+                url: '@Url.Action("RemovePrintMasterProductPic", "NewProduct")',
+                    type: "POST",
+                    async: false,
+                dataType: "json",
+                    success: function (data) {
+
+                 }
+                });
+        }
+
+        DowloadpdfFile = (path) => {
+           // window.open(path)
+            Response.ContentType = "Application/pdf";
+            Response.AppendHeader("Content-Disposition", "attachment; filename=xxxxxx.pdf");
+            Response.TransmitFile(path);
+            Response.End();
+        }
+
+        function reponseToInforAfterSave()
+        {
+            swal({
+                title: "Update Material Completed!",
+                text: '@userSession.BusinessGroup' === "Offset" ? "Do you want to go to raw material page?" : "Do you want to back main page?",
+                icon: "success" ,// "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        if ('@userSession.BusinessGroup' == "Offset" && '@Model.modelCategories.MatCode' == "81") {
+                            window.location.href = '@Url.Action("Index", "BomRaw")' + "?materialNo=" + '@Model.MaterialNo';
+
+                        } else {
+                            window.location.href = '@Url.Action("ViewListProduct","MaintenanceProductInfo")';
+                        }
+                    } else
+                    {
+                        $('#modal-show-save').modal('hide');
+                    }
+                });
+        }
+
+        function show_Drawing(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iDrawing').val(temp);
+                    $('#Drawing').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function show_Print(input) {
+
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iPrint').val(temp);
+                    $('#Print').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function show_Pallet(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iPallet').val(temp);
+                    $('#Pallet').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function show_FG(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iFG').val(temp);
+                    $('#FG').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function show_Semi1(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iSemi1').val(temp);
+                    $('#Semi1').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function show_Semi2(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iSemi2').val(temp);
+                    $('#Semi2').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function show_Semi3(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iSemi3').val(temp);
+                    $('#Semi3').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function show_Semi4show_Semi4(input) {
+            if (input.files && input.files[0]) {
+                var filerdr = new FileReader();
+                filerdr.onload = function (e) {
+                    var temp = e.target.result;
+                    $('#iSemi4').val(temp);
+                    $('#Semi4').attr('src', e.target.result);
+                }
+                filerdr.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function SaveImg() {
+            LoadingButton(true);
+            var form = $('#allData')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("ProdPicSaveImage", "NewProduct")',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    LoadingButton(false);
+                    return true;
+
+                },
+                error: function () {
+                    LoadingButton(false);
+                    return false;
+                }
+            });
+        }
+
+        $(document).ready(function () {
+
+            LoadingButton(false);
+
+            var path = "../Picture/";
+
+            var Drawing = '@Model.modelProductPicture.Pic_DrawingName'
+            var Dimension = '@Model.modelProductSpec.DimensionPropertiesImageBase64String'
+
+            if (Drawing !== "") {
+                var nameImage = path + Drawing;
+                $('#Pic_Drawing').attr("data-default-file", nameImage);
+                $('#Pic_Drawing').dropify();
+            } else if (Dimension !== "") {
+                //mook
+                var nameImage = path + Dimension;
+                $('#Pic_Drawing').attr("value", Dimension);
+                $('#Pic_Drawing').dropify();
+            }
+
+            var Print = '@Model.modelProductPicture.Pic_PrintName'
+            if ( Print !== "") {
+            var nameImage = path + Print;
+            $('#Pic_Print').attr("data-default-file", nameImage);
+            $('#Pic_Print').dropify();
+
+            }
+
+            var PicPallet = '@Model.modelProductPicture.Pic_PalletName'
+            if (PicPallet !== "") {
+            var nameImage = path + PicPallet;
+            $('#Pic_Pallet').attr("data-default-file", nameImage);
+            $('#Pic_Pallet').dropify();
+
+            }
+
+            var FG = '@Model.modelProductPicture.Pic_FGName'
+            if (FG !== "") {
+            var nameImage = path + FG;
+            $('#Pic_FG').attr("data-default-file", nameImage);
+            $('#Pic_FG').dropify();
+
+            }
+
+             var Semi1 = '@Model.modelProductPicture.Semi1_Name'
+            if (Semi1 !== "") {
+            var nameImage = path + Semi1;
+            $('#Semi1_Print').attr("data-default-file", nameImage);
+            $('#Semi1_Print').dropify();
+
+            }
+
+                var Semi2 = '@Model.modelProductPicture.Semi2_Name'
+            if (Semi2 !== "") {
+            var nameImage = path + Semi2;
+            $('#Semi2_Print').attr("data-default-file", nameImage);
+            $('#Semi2_Print').dropify();
+
+            }
+
+                var Semi3 = '@Model.modelProductPicture.Semi3_Name'
+            if (Semi3 !== "") {
+            var nameImage = path + Semi3;
+            $('#Semi3_Print').attr("data-default-file", nameImage);
+            $('#Semi3_Print').dropify();
+
+            }
+
+                var Semi4 = '@Model.modelProductPicture.SemiFilePdf_Name'
+            if (Semi4 !== "") {
+            var nameImage = path + Semi4;
+            $('#Semi4_Print').attr("data-default-file", nameImage);
+            $('#Semi4_Print').dropify();
+
+            }
+
+            // Basic
+            $('.dropify').dropify();
+
+            // Translated
+            $('.dropify-fr').dropify({
+                messages: {
+                    default: 'Glissez-déposez un fichier ici ou cliquez',
+                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                    remove: 'Supprimer',
+                    error: 'Désolé, le fichier trop volumineux'
+                }
+            });
+
+            // Used events
+            var drEvent = $('#input-file-events').dropify();
+
+            drEvent.on('dropify.beforeClear', function (event, element) {
+                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+            });
+
+            drEvent.on('dropify.afterClear', function (event, element) {
+                alert('File deleted');
+            });
+
+            drEvent.on('dropify.errors', function (event, element) {
+                console.log('Has Errors');
+            });
+
+            var drDestroy = $('#input-file-to-destroy').dropify();
+            drDestroy = drDestroy.data('dropify')
+            $('#toggleDropify').on('click', function (e) {
+                e.preventDefault();
+
+                if (drDestroy.isDropified()) {
+                    drDestroy.destroy();
+                } else {
+                    drDestroy.init();
+                }
+            })
+
+            var materialCheck = '@ViewBag.SavePic';
+            if (materialCheck !== "") {
+                 $('#myModal').modal("show");
+
+               // swal("Save success.", "", "success")
+                ViewBag.SavePic = null;
+            }
+
+            if ('@Model.modelProductPicture.AttachFileMoPath' != "" && '@Model.modelProductPicture.AttachFileMoPath' != null)
+            {
+                var output = document.getElementById('fileList');
+                let nameOfFile = "";
+                var children = "";
+                children += '<li>' + '@Model.modelProductPicture.AttachFileMoPath' + '</li>';
+                nameOfFile = "file" + fileNo.toString();
+                $("#fileList").append("<div class=\"control-group\" style=\"width:100%;color: #1b74b3;opacity:1;font-size: 14px;padding: 5px;\" id=\"div" + nameOfFile + "\"><a class=\"btn btn-small fileSelect\"  style=\"display:inline-flex;\" id=\"" + nameOfFile + "\">" +"<p id=\"label-" + nameOfFile + "\"  style=\"cursor: pointer\" onclick=\"DownloadLabelPdf()\">@Model.modelProductPicture.AttachFileMoPath</p>"  + "<i class=\"fa btn\" id=\"closebtn-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\">&times;</i></a ></div >");
+                document.getElementById("closebtn-" + nameOfFile).onclick = function () { DeleteCardMoFile(nameOfFile) };
+
+                let tempFile = $('#fileUpload')[0].files[0];
+                fileArr.push({ "Name": nameOfFile, "File": tempFile });
+
+                //document.getElementById(nameOfFile).onclick = function () {
+                //    alert("Download");
+                //};
+
+                fileNo++;
+            }
+
+            if ('@Model.modelProductPicture.SemiFilePdfPath' != "" && '@Model.modelProductPicture.SemiFilePdfPath' != null)
+            {
+                var output = document.getElementById('fileList2');
+                let nameOfFile = "";
+                var children = "";
+                children += '<li>' + '@Model.modelProductPicture.SemiFilePdf_Name' + '</li>';
+                nameOfFile = "file" + fileNo.toString();
+                $("#fileList2").append("<div class=\"control-group\" style=\"width:100%;color: #1b74b3;opacity:1;font-size: 14px;padding: 5px;\" id=\"div" + nameOfFile + "\"><a class=\"btn btn-small fileSelect\"  style=\"display:inline-flex;\" id=\"" + nameOfFile + "\">" +"<p id=\"label-" + nameOfFile + "\"  style=\"cursor: pointer\" onclick=\"DownloadLabelPdf2()\">@Model.modelProductPicture.SemiFilePdf_Name</p>"  + "<i class=\"fa btn\" id=\"closebtn2-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\">&times;</i></a ></div >");
+                document.getElementById("closebtn2-" + nameOfFile).onclick = function () { DeleteCardMoFile2(nameOfFile) };
+
+                let tempFile = $('#fileUpload2')[0].files[0];
+                fileArr2.push({ "Name": nameOfFile, "File": tempFile });
+
+                //document.getElementById(nameOfFile).onclick = function () {
+                //    alert("Download");
+                //};
+
+                fileNo++;
+            }
+
+        });
+
+        $(".inp-picture").change(function () {
+            $("body").append("<script class='script-drawing'> $('.dropify-clear').click(function () { $(this).closest('.card').find('.inp-picture').val(null); $('.script-drawing').remove(); }); <\/script>");
+        });
+
+        $(function () {
+            if ($('#iDrawing').val() !== "" || $('#iPrint').val() !== "" || $('#iPallet').val() !== "" || $('#iFG').val() !== "" || $('#iSemi1').val() !== "" || $('#iSemi2').val() !== "" || $('#iSemi3').val() !== "" || $('#iSemi4').val() !== "") {
+                $("body").append("<script class='script-drawing'> $('.dropify-clear').click(function () { $(this).closest('.card').find('.inp-picture').val(null); $('.script-drawing').remove(); }); <\/script>");
+            }
+        });
+
+        function ModalCreateBOM()
+        {
+            swal({
+                title: "Are you sure to create?",
+                text: "Do you want to create 84 Sale Bom Goods (BOM) from material No. @Model.MaterialNo ?",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+
+                    if (willDelete) {
+                        $.ajax({
+                            url: '@Url.Action("CreateBOM", "NewProduct")',
+                            type: "POST",
+                            dataType: "json",
+                            data: {},
+                            success: function (res) {
+                                if (res.isSuccess)
+                                {
+                                    window.location.href  = '@Url.Action("ProductInfo", "NewProduct")';
+                                }
+                            },
+                            error: function () {  }
+                        });
+                    }
+                });
+        }
+
+        var OnSaveSuccess = function () {
+
+            reponseToInforAfterSave();
+           // $("#modal-show-save").modal({ backdrop: 'static', keyboard: false });
+           // $("#modal-show-save").modal("show");
+
+        };
+
+        function thisFileUpload() {
+            $("#fileUpload").click();
+        }
+
+        function thisFileUpload2() {
+            $("#fileUpload2").click();
+        }
+
+        updateList = function () {
+            var input = document.getElementById('fileUpload');
+            var output = document.getElementById('fileList');
+            let nameOfFile = "";
+            var children = "";
+
+            children += '<li>' + input.files.item(0).name + '</li>';
+            nameOfFile = "file" + fileNo.toString();
+            $("#fileList").append("<div class=\"control-group\" style=\"width:100%;color: #1b74b3;opacity:1;font-size: 14px;padding: 5px;\" id=\"div" + nameOfFile + "\"><a class=\"btn btn-small fileSelect\" style=\"display:inline-flex;\" id=\"" + nameOfFile + "\">" + input.files.item(0).name + "<i class=\"fa btn\" id=\"closebtn-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\">&times;</i></a ></div >");
+            document.getElementById("closebtn-" + nameOfFile).onclick = function () {
+                DeleteCardMoFile(nameOfFile)
+            };
+            let tempFile = $('#fileUpload')[0].files[0];
+            fileArr.push({ "Name": nameOfFile, "File": tempFile });
+
+            fileNo++;
+
+            swal({
+                title: "Upload Attach File MO!",
+                text: "Do you want to attach file to mo of " + '@Model.MaterialNo'+" ?",
+                icon: "info" ,
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willAttach) => {
+                    if (willAttach) {
+                        //ajax attach file
+                        formDataObj.append('files', tempFile);
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("AttrachFileMO", "NewProduct")',
+                            data: formDataObj,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    swal("Save Attach File Successfully.", "", "success");
+                                    document.getElementById(nameOfFile).innerHTML = "<p id=\"label-" + nameOfFile + "\"  style=\"cursor: pointer\" onclick=\"DownloadLabelPdf()\">"+'@Model.MaterialNo' + "_" + '@userSession.FactoryCode' + "_File.pdf"+"</p>"+ "<i class=\"fa btn\" id=\"closebtn-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\">&times;</i>";
+                                    document.getElementById("closebtn-" + nameOfFile).onclick = function () {
+                                        DeleteCardMoFile(nameOfFile)
+                                    };
+
+                                    ClearSelectedOldAttachFile(nameOfFile);
+                                }
+                                else
+                                {
+                                    swal("Save Failed.", "", "warning");
+                                    CancelSelectAttachFile(nameOfFile);
+                                }
+                            },
+                            error: function () {
+                                CancelSelectAttachFile(nameOfFile);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        CancelSelectAttachFile(nameOfFile);
+
+                    }
+                });
+        }
+
+        updateList2 = ()  => {
+            var input = document.getElementById('fileUpload2');
+            var output = document.getElementById('fileList2');
+            let nameOfFile = "";
+            var children = "";
+
+            children += '<li>' + input.files.item(0).name + '</li>';
+            nameOfFile = "file" + fileNo.toString();
+            $("#fileList2").append("<div class=\"control-group\" style=\"width:100%;color: #1b74b3;opacity:1;font-size: 14px;padding: 5px;\" id=\"div" + nameOfFile + "\"><a class=\"btn btn-small fileSelect\" style=\"display:inline-flex;\" id=\"" + nameOfFile + "\">" + input.files.item(0).name + "<i class=\"fa btn\" id=\"closebtn2-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\">&times;</i></a ></div >");
+            document.getElementById("closebtn2-" + nameOfFile).onclick = function () {
+                DeleteCardMoFile2(nameOfFile)
+            };
+            let tempFile = $('#fileUpload2')[0].files[0];
+            fileArr2.push({ "Name": nameOfFile, "File": tempFile });
+
+            fileNo++;
+
+            console.log('update list2  step befor sweetalert', fileArr2)
+            debugger
+
+            swal({
+                title: "Upload Attach File MO!",
+                text: "Do you want to attach file to mo of " + '@Model.MaterialNo'+" ?",
+                icon: "info" ,
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willAttach) => {
+                    if (willAttach) {
+                        //ajax attach file
+                        formDataObj.append('files', tempFile);
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("AttrachFileSemi", "NewProduct")',
+                            data: formDataObj,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess) {
+                                    swal("Save Attach File Successfully.", "", "success");
+                                    document.getElementById(nameOfFile).innerHTML = "<p id=\"label2-" + nameOfFile + "\"  style=\"cursor: pointer\" onclick=\"DownloadLabelPdf2()\">"+'@Model.MaterialNo' + "_" + '@userSession.FactoryCode' + "_File.pdf"+"</p>"+ "<i class=\"fa btn\" id=\"closebtn2-" + nameOfFile + "\" style=\"font-size: large;padding: 0px 0px 2px 10px;color: red;\">&times;</i>";
+                                    document.getElementById("closebtn2-" + nameOfFile).onclick = function () {
+                                        DeleteCardMoFile2(nameOfFile)
+                                    };
+
+                                    ClearSelectedOldAttachFile2(nameOfFile);
+                                }
+                                else
+                                {
+                                    swal("Save Failed.", "", "warning");
+                                    CancelSelectAttachFile2(nameOfFile);
+                                }
+                            },
+                            error: function () {
+                                CancelSelectAttachFile2(nameOfFile);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        CancelSelectAttachFile2(nameOfFile);
+
+                    }
+                });
+        }
+
+        function ClearSelectedOldAttachFile(id)
+        {
+            $.each(fileArr, function (index, object) {
+                if (id != object.Name)
+                {
+                    let elementId = "#" + object.Name;
+                    document.querySelector(elementId).style.opacity = 0.7;
+                    document.querySelector(elementId).style.background = "red";
+                    document.querySelector(elementId).style.color = "white";
+
+                    setTimeout(function () {
+                        $("#div" + object.Name).remove();
+                    }, 300);
+                }
+            });
+            formDataObj = new FormData();
+            $("#fileUpload").val("");
+            fileArr = fileArr.filter(f => { return f.Name == id });
+
+        }
+
+        function CancelSelectAttachFile(id)
+        {
+            let elementId = "#" + id;
+            document.querySelector(elementId).style.opacity = 0.7;
+            document.querySelector(elementId).style.background = "red";
+            document.querySelector(elementId).style.color = "white";
+
+            setTimeout(function () {
+                fileArr = fileArr.filter(f => { return f.Name != id });
+                $("#div" + id).remove();
+            }, 300);
+
+            fileArr = [];
+            $("#fileUpload").val("");
+            formDataObj = new FormData();
+        }
+
+        function DeleteCardMoFile(id) {
+            let elementId = "#" + id;
+            document.querySelector(elementId).style.opacity = 0.7;
+            document.querySelector(elementId).style.background = "red";
+            document.querySelector(elementId).style.color = "white";
+
+            swal({
+                title: "Delete Attach File MO!",
+                text: "Do you want to delete attach file of " + '@Model.MaterialNo'+" ?",
+                icon: "warning" ,
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        //ajax delete attach file
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("DeleteAttrachFileMO", "NewProduct")',
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess) {
+
+                                    swal("Delete Attach File Successfully.", "", "success")
+                                    setTimeout(function () {
+                                        fileArr = fileArr.filter(f => { return f.Name != id });
+                                        $("#div" + id).remove();
+                                    }, 300);
+
+                                    fileArr = [];
+
+                                    $("#fileUpload").val("");
+                                }
+                            },
+                            error: function () {
+                                // return false;
+                            }
+                        });
+                    }
+                    else
+                    {
+                        document.querySelector(elementId).style.opacity = 1;
+                        document.querySelector(elementId).style.background = "transparent";
+                        document.querySelector(elementId).style.color = "#007bff";
+                    }
+                });
+
+        }
+
+        function ClearSelectedOldAttachFile2(id) {
+            $.each(fileArr2, function (index, object) {
+                if (id != object.Name) {
+                    let elementId = "#" + object.Name;
+                    document.querySelector(elementId).style.opacity = 0.7;
+                    document.querySelector(elementId).style.background = "red";
+                    document.querySelector(elementId).style.color = "white";
+
+                    setTimeout(function () {
+                        $("#div" + object.Name).remove();
+                    }, 300);
+                }
+            });
+            formDataObj = new FormData();
+            $("#fileUpload2").val("");
+            fileArr2 = fileArr2.filter(f => { return f.Name == id });
+
+        }
+
+        function CancelSelectAttachFile2(id) {
+            let elementId = "#" + id;
+            document.querySelector(elementId).style.opacity = 0.7;
+            document.querySelector(elementId).style.background = "red";
+            document.querySelector(elementId).style.color = "white";
+
+            setTimeout(function () {
+                fileArr2 = fileArr2.filter(f => { return f.Name != id });
+                $("#div" + id).remove();
+            }, 300);
+
+            fileArr2 = [];
+            $("#fileUpload2").val("");
+            formDataObj = new FormData();
+        }
+
+        function DeleteCardMoFile2(id) {
+            let elementId = "#" + id;
+            document.querySelector(elementId).style.opacity = 0.7;
+            document.querySelector(elementId).style.background = "red";
+            document.querySelector(elementId).style.color = "white";
+
+            swal({
+                title: "Delete Attach File MO!",
+                text: "Do you want to delete attach file of " + '@Model.MaterialNo'+" ?",
+                icon: "warning" ,
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        //ajax delete attach file
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("DeleteAttrachFileSemi", "NewProduct")',
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess) {
+
+                                    swal("Delete Attach File Successfully.", "", "success")
+                                    setTimeout(function () {
+                                        fileArr2 = fileArr2.filter(f => { return f.Name != id });
+                                        $("#div" + id).remove();
+                                    }, 300);
+
+                                    fileArr2 = [];
+
+                                    $("#fileUpload2").val("");
+                                }
+                            },
+                            error: function () {
+                                // return false;
+                            }
+                        });
+                    }
+                    else
+                    {
+                        document.querySelector(elementId).style.opacity = 1;
+                        document.querySelector(elementId).style.background = "transparent";
+                        document.querySelector(elementId).style.color = "#007bff";
+                    }
+                });
+
+        }
+
+        function DownloadLabelPdf()
+        {
+            swal({
+                title: "Download Attach File MO!",
+                text: "Do you want to download attach file?",
+                icon: "info" ,
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDownload) => {
+                    if (willDownload) {
+                        document.location.href = '@Url.Action("DownloadAttachFilePDF", "NewProduct")' +"?materialNo=" + '@Model.MaterialNo';
+                    }
+                });
+        }
+
+        function DownloadLabelPdf2()
+        {
+            swal({
+                title: "Download Attach File MO!",
+                text: "Do you want to download attach file?",
+                icon: "info" ,
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDownload) => {
+                    if (willDownload) {
+                         document.location.href = '@Url.Action("DownloadAttachFilePDFSemi", "NewProduct")' +"?Path=" + '@Model.MaterialNo';
+                    }
+                });
+        }
+
+        ConvertPathToHex = (path) => {
+            alert(path)
+            var data = { Path: path.replace(/\\\\/g, "\\") }
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ConvertPath", "NewProduct")',
+                data: data,
+               async: false,
+                success: function (res) {
+                    alert(res)
+                    return res
+                },
+                error: function () {
+                    // return false;
+                }
+             });
+
+       }
+
+        DownloadLabelPdfSemi =(path) =>
+        {
+            //var hexStr = ConvertPathToHex(path)
+            //debugger
+            //alert(hexStr)
+
+            swal({
+                title: "Download File Semi!",
+                text: "Do you want to download file?",
+                icon: "info" ,
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDownload) => {
+                    if (willDownload) {
+                         document.location.href = '@Url.Action("DownloadAttachFilePDFSemi", "NewProduct")' + "?Path=" + '@Model.MaterialNo';
+                    }
+                });
+        }
+
+        function LoadingButton(value) {
+            if (value) {
+                $('#btnSave').hide();
+                $('#btnNextLoad').show();
+            } else {
+                $('#btnNextLoad').hide();
+                $('#btnSave').show();
+            }
+        }
+    </script>
+}

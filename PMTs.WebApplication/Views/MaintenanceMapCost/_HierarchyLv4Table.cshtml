@@ -1,0 +1,50 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceMapCost.MaintenanceMapCostViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "HierarchyLv4";
+    ViewData["CreateAction"] = "CreateHierarchyLv4";
+    ViewData["EditAction"] = "EditHierarchyLv4";
+    var createModel = new PMTs.DataAccess.ModelView.MaintenanceMapCost.HierarchyCreateModel();
+}
+
+<table id="hierarchyLv4Table" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th width="10%" scope="col">@Localizer["Id"]</th>
+            <th width="25%" scope="col">@Localizer["Name"]</th>
+            <th width="52%" scope="col">@Localizer["Description"]</th>
+            <th width="13%" scope="col" class="text-center">@Localizer["Option"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Hierarchy4s)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Hierarchy4</td>
+                <td>@item.Description</td>
+                <td class="text-center">
+                    <a id="DetailHierarchy4"
+                       data-Id="@item.Id"
+                       data-Hierarchy4="@item.Hierarchy4"
+                       data-Description="@item.Description"
+                       onclick="BindHierarchyLv4View(this)">
+                        <i style="cursor:pointer" class="fas fa-file-alt text-info btn" title="View"></i>
+                    </a>&nbsp;
+                    <a id="EditHierarchy4"
+                       data-Id="@item.Id"
+                       data-Hierarchy4="@item.Hierarchy4"
+                       data-Description="@item.Description"
+                       data-CreatedBy="@item.CreatedBy"
+                       data-CreatedDate="@item.CreatedDate"
+                       onclick="BindHierarchyLv4Edit(this)">
+                        <i style="cursor:pointer" class="fas fa-pencil-alt text-warning " title="Edit"></i>
+                    </a>&nbsp;
+                    @*<a id="DeleteHierarchy4">  <i style="cursor:pointer" onclick="DeleteHierarchy4('@item.Id')" data-toggle="tooltip" title="Delete" class="fas fa-trash text-danger"></i></a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,175 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceFlute.MaintenanceFluteModel
+
+<div class="containerno" style="margin-top:30px">
+    <div class='elementno1' id='divno_1'>
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true" style="float:right;padding-right:15px">
+                <i class="fas fa-plus-circle addno" style="color:forestgreen"></i>
+            </span>
+        </button>
+        <div class="row">
+            <div class="form-group col-md-4" style="padding-left:20px">
+                <label class="control-label" for="Code">@Localizer["Station"]</label>
+            </div>
+            <div class="form-group col-md-4" style="padding-left:22px">
+                <label class="control-label" for="Code">@Localizer["Tr"]</label>
+            </div>
+            <div class="form-group col-md-4" style="padding-left:25px">
+                <label class="control-label" for="Code">@Localizer["Item"]</label>
+            </div>
+        </div>
+    </div>
+
+    @{
+        int idx = 1;
+        foreach (var item in Model.FluteTrs)
+        {
+            idx++;
+            <div class='elementno1' id='divno_@idx'>
+                <button type="button" class='close removetagno' id='divno_@idx' aria-label='Close'>
+                    <span aria-hidden='true' style='float:right;padding-right:10px'>×</span>
+                </button>
+                <div>
+                    <div class="row" @*style="padding-right:53px" *@>
+                        <div class="form-group col-md-4">
+                            <input type="text" id="s_@idx" class="form-control" autocomplete="off" value="@item.Station" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="number" id="c_@idx" class="form-control" autocomplete="off" value="@item.Tr" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="number" id="i_@idx" class="form-control" autocomplete="off" value="@item.Item" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
+
+    @*<div class='elementno1' id='divno_3'>
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true" style="float:right;padding-right:10px"></span>
+            </button>
+            <div>
+                <div class="row" style="padding-right:53px">
+                    <div class="form-group col-md-4">
+                        <input type="text" id="s_3" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" id="c_3" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="number" id="i_3" class="form-control" autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='elementno1' id='divno_4'>
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true" style="float:right;padding-right:10px"></span>
+            </button>
+            <div>
+                <div class="row" style="padding-right:53px">
+                    <div class="form-group col-md-4">
+                        <input type="text" id="s_4" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" id="c_4" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="number" id="i_4" class="form-control" autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='elementno1' id='divno_5'>
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true" style="float:right;padding-right:10px"></span>
+            </button>
+            <div>
+                <div class="row" style="padding-right:53px">
+                    <div class="form-group col-md-4">
+                        <input type="text" id="s_5" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" id="c_5" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="number" id="i_5" class="form-control" autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='elementno1' id='divno_6'>
+            <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true" style="float:right;padding-right:10px"></span>
+            </button>
+            <div>
+                <div class="row" style="padding-right:53px">
+                    <div class="form-group col-md-4">
+                        <input type="text" id="s_6" class="form-control" autocomplete="off" maxlength="10" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" id="c_6" class="form-control" autocomplete="off" maxlength="10" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="number" id="i_6" class="form-control" autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+        </div>*@
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Add new element
+        $(".addno").click(function () {
+            // Finding total number of elements added
+            var total_element = $(".elementno1").length;
+            // last <div> with element class id
+            var lastid = $(".elementno1:last").attr("id");
+            var split_id = lastid.split("_");
+            var nextindex = Number(split_id[1]) + 1;
+            var max = 20;
+            // Check total number elements
+            if (total_element < max) {
+                // Adding new div container after last occurance of element class
+                //  $(".element:last").after("<div class='element' id='div_" + nextindex + "'></div>");
+                $(".elementno1:last").after("<div class='elementno1' id='divno_" + nextindex + "'></div>");
+                // Adding element to <div>
+                $("#divno_" + nextindex).append("<button type='button' class='close removetagno' id='divno_" + nextindex + "' aria-label='Close'><span aria-hidden='true' style='float:right;padding-right:10px'>×</span ></button ><div><div class='row'><div class='form-group col-md-4'><input type='text' id='s_" + nextindex + "' class='form-control' autocomplete='off' maxlength='10'  /></div><div class='form-group col-md-4'><input type='number' id='c_" + nextindex + "' class='form-control' autocomplete='off' maxlength='10' /></div><div class='form-group col-md-4'><input type='number' id='i_" + nextindex + "' class='form-control'  autocomplete='off' /></div></div></div>");
+            }
+        });
+
+        // Remove element
+        $('.containerno').on('click', '.removetagno', function () {
+            var id = this.id;
+            var split_id = id.split("_");
+            var deleteindex = split_id[1];
+            swal({
+                title: "Are you sure ?",
+                text: "Do you want delete FluteTR .",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $("#divno_" + deleteindex).remove();
+                    }
+                });
+
+        });
+
+    });
+</script>

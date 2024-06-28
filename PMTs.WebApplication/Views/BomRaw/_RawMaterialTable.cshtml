@@ -1,0 +1,47 @@
+﻿@model PMTs.DataAccess.ModelView.BomRawMaterial.BomRawMaterialViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<table id="SearchRawMaterialTable" class="table table-bordered color-table dataTable no-footer" style="width:100%">
+    <thead>
+        <tr>
+            <th style="width: 50px;">@Localizer["Action"]</th>
+            <th hidden>@Localizer["Id"]</th>
+            <th style="width: 100px;">@Localizer["Material Type"]</th>
+            <th style="width: 120px;">@Localizer["Material Number"]</th>
+            <th style="width: 80px;">@Localizer["Plant"]</th>
+            <th style="width: 200px;">@Localizer["Material Description"]</th>
+            <th style="width: 80px;">@Localizer["Net Weight"]</th>
+            <th style="width: 100px;">@Localizer["Material Group"]</th>
+            <th style="width: 80px;">@Localizer["UOM"]</th>
+            <th style="width: 150px;">@Localizer["Date Of Creation"]</th>
+            <th style="width: 150px;">@Localizer["Update Date"]</th>
+            <th style="width: 100px;">@Localizer["Update By"]</th>
+            <th style="width: 140px;">@Localizer["Old Material Number"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PPCRawMaterialMastersList)
+        {
+            <tr class="rawmat-row" id="rawmat-@item.MaterialNumber">
+                <td class="text-center">
+                    <a style="cursor: pointer;" data-target="rawmat-@item.MaterialNumber" tooltip="Select" onclick="AddDataRawMat(this.getAttribute('data-target'))">
+                        <i style="font-size:16px" class="fa fa-plus-circle text-success"></i>
+                    </a>
+                </td>
+                <td hidden>@item.Id</td>
+                <td>@item.MaterialType</td>
+                <td>@item.MaterialNumber</td>
+                <td>@item.Plant</td>
+                <td>@item.MaterialDescription</td>
+                <td>@item.NetWeight</td>
+                <td>@item.MaterialGroup</td>
+                <td>@item.Uom</td>
+                <td>@item.DateOfCreation</td>
+                <td>@item.UpdateDate</td>
+                <td>@item.UpdateBy</td>
+                <td>@item.OldMaterialNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,340 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceMapCost.MaintenanceMapCostViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Product Type";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+
+            <div class="card-body">
+
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="fa fa-cog"></i>&nbsp;@Localizer["Maintenance Map Cost"]</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right">
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btn-create-mapcost-modal">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["Create"]
+                            </button>
+                            @*create*@
+                            <div class="modal bs-example-modal-lg" id="modal-create-mapcost">
+                                <div class="modal-dialog modal-lg" style="width:90%">
+                                    <div class="modal-content">
+                                        <form id="create-mapcost-form">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title pull-left" id="myLargeModalLabel">
+                                                    @Localizer["Create Map Cost"]</h4>
+                                       <button type="button" class="close pull-right" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                                   </div>
+                                   <div class="modal-body">
+                                       <div class="row">
+                                           <div class="col-12 row">
+                                               <div class="col-md-2"></div>
+                                               <div class="form-group col-md-2">
+                                                   <label class="control-label" style="line-height:31px">@Localizer["Cost Field"]<i style="color:red">*</i></label>
+                                               </div>
+                                               <div class="form-group col-md-6">
+                                                   <input id="Id" class="form-control" maxlength="20" asp-for="CostField" required />
+                                               </div>
+                                               <div class="col-md-2"></div>
+                                           </div>
+
+                                           <div class="col-12 row">
+                                               <div class="col-md-2"></div>
+                                               <div class="form-group col-md-2">
+                                                   <label class="control-label" style="line-height:31px">@Localizer["Hierarchy2"]<i style="color:red">*</i></label>
+                                               </div>
+                                               <div class="form-group col-md-6">
+                                                   <select asp-for="Hierarchy2" required class="form-control custom-select browser-default" asp-items="@Model.Hierarchy2SelectList">
+                                                       <option value="">--Please select--</option>
+                                                   </select>
+                                                   <input class="form-control" type="hidden" asp-for="Hierarchy2" />
+                                               </div>
+                                               <div class="col-md-2"></div>
+                                           </div>
+
+                                           <div class="col-12 row">
+                                               <div class="col-md-2"></div>
+                                               <div class="form-group col-md-2">
+                                                   <label class="control-label" style="line-height:31px">@Localizer["Hierarchy3"]<i style="color:red">*</i></label>
+                                               </div>
+                                               <div class="form-group col-md-6">
+                                                   <select asp-for="Hierarchy3" required class="form-control custom-select browser-default" asp-items="@Model.Hierarchy3SelectList">
+                                                       <option value="">--Please select--</option>
+                                                   </select>
+                                                   <input class="form-control" type="hidden" asp-for="Hierarchy3" />
+                                               </div>
+                                               <div class="col-md-2"></div>
+                                           </div>
+
+                                           <div class="col-12 row">
+                                               <div class="col-md-2"></div>
+                                               <div class="form-group col-md-2">
+                                                   <label class="control-label" style="line-height:31px">@Localizer["Hierarchy4"]<i style="color:red">*</i></label>
+                                               </div>
+                                               <div class="form-group col-md-6">
+                                                   <select asp-for="Hierarchy4" required class="form-control custom-select browser-default" asp-items="@Model.Hierarchy4SelectList">
+                                                       <option value="">--Please select--</option>
+                                                   </select>
+                                                   <input class="form-control" type="hidden" asp-for="Hierarchy4" />
+                                               </div>
+                                               <div class="col-md-2"></div>
+                                           </div>
+
+                                           <div class="col-12 row">
+                                               <div class="col-md-2"></div>
+                                               <div class="form-group col-md-2">
+                                                   <label class="control-label" style="line-height:31px">@Localizer["Description"]</label>
+                                               </div>
+                                               <div class="form-group col-md-6">
+                                                   <textarea class="form-control" asp-for="Description" required rows="3"></textarea>
+                                                   <span asp-validation-for="Description" class="text-danger" style="float:left"></span>
+                                               </div>
+                                               <div class="col-md-2"></div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="modal-footer">
+                                       <button type="button" id="btnCreate" class="btn btn-success text-center col-md-1" onclick="CreateMapCost()">@Localizer["Save"]</button>
+                                       <button type="button" class="btn btn-danger waves-effect text-center col-md-1" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                                   </div>
+                               </form>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+
+                <button type="button" class="btn btn-info" onclick="RedirectToPage('Hierarchy3')">@Localizer["Hierarchy3"]</button>
+                <button type="button" class="btn btn-info" onclick="RedirectToPage('Hierarchy4')">@Localizer["Hierarchy4"]</button>
+
+       <div class="box">
+           <div class="box-body">
+               <table id="tableData" class="table table-bordered table-striped">
+                   <thead>
+                       <tr>
+                           <th width="5%" scope="col">@Localizer["Id"]</th>
+                           <th width="10%" scope="col">@Localizer["Hierarchy2"]</th>
+                           <th width="10%" scope="col">@Localizer["Hierarchy3"]</th>
+                           <th width="10%" scope="col">@Localizer["Hierarchy4"]</th>
+                           <th width="20%" scope="col">@Localizer["Cost Field"]</th>
+                           <th width="38%" scope="col">@Localizer["Description"]</th>
+                                                @*<th class="text-center" width="10%" scope="col">Options</th>*@
+                                                                                                </tr>
+                                                                                                </thead>
+                                                                                                <tbody>
+                                                                                                    @foreach (var mapCost in Model.MapCosts)
+                                                                                                                                    {
+                                                                                                    <tr>
+                                                                                                        <td>@mapCost.Id</td>
+                                                                                                        <td>@mapCost.Hierarchy2</td>
+                                                                                                        <td>@mapCost.Hierarchy3</td>
+                                                                                                        <td>@mapCost.Hierarchy4</td>
+                                                                                                        <td>@mapCost.CostField</td>
+                                                                                                        <td>@mapCost.Description</td>
+                                                                                                    </tr>
+                                                                                                                                    }
+                                                                                                </tbody>
+                                                                                                </table>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery-1.12.4.js"></script>
+@section Scripts
+    {
+    <script>
+
+        const mapCosts = @Html.Raw(Json.Serialize(Model.MapCosts));
+
+        $(document).ready(function () {
+
+            var processCostTable = $('#tableData').DataTable();
+        });
+
+        // Tooltips Initialization
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        function BindEditDataToModel(id)
+        {
+
+            var description = $("#editDescriptionField-" + id).val();
+            var hierarchy2 = $("#editHierarchy2Field-" + id).val();
+            var hierarchy3 = $("#editHierarchy3Field-" + id).val();
+            var hierarchy4 = $("#editHierarchy4Field-" + id).val();
+
+            $("#editHierarchy2-" + id).val(hierarchy2);
+            $("#editHierarchy3-" + id).val(hierarchy3);
+            $("#editHierarchy4-" + id).val(hierarchy4);
+            $("#editDescription-" + id).val(description);
+
+            return true;
+        }
+
+        //var onSaveSuccess = function (res) {
+
+        //    if (res.IsSuccess) {
+        //        if (res.ActionType == "create") {
+        //            swal("Created!", { icon: "success" })
+        //                .then(() => {
+        //                    window.location.reload(true);
+        //                });
+        //        }
+        //        else if (res.ActionType == "edit") {
+        //            swal("Updated!", { icon: "success" })
+        //                .then(() => {
+        //                    window.location.reload(true);
+        //                });
+        //        }
+
+        //    } else {
+        //        if (res.ActionType == "create") {
+        //            swal("Failed to create!", res.ExceptionMessage, { icon: "warning" })
+        //                .then(() => {
+        //                    $("#UID").focus();
+        //                });
+        //        }
+        //        else if (res.ActionType == "edit") {
+        //            swal("Failed to updated!", res.ExceptionMessage, { icon: "warning" })
+        //                .then(() => {
+        //                    window.location.reload(true);
+        //                });
+        //        }
+        //    }
+        //};
+
+        function DeleteMapCost(id)
+        {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: 'Post',
+                        url: '@Url.Action("DeleteMaintenanceMapCost", "MaintenanceMapCost")',
+                        data: { Id: id},
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                $('.modal-backdrop').hide();
+                                $("body").removeClass("modal-open");
+
+                                swal("Deleted!", {icon:"success"})
+                                    .then(()=> {
+                                        window.location.reload(true);
+                                    });
+                            } else
+                            {
+                                swal("Failed to delete!", res.ExceptionMessage, { icon: "warning" })
+                                    .then(() => {
+
+                                    });
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                }
+
+            });
+        }
+
+        function CreateMapCost()
+        {
+            let form = $('#create-mapcost-form')[0];
+            let data = new FormData(form);
+
+            $.ajax({
+	            type: 'POST',
+	            enctype: 'multipart/form-data',
+	            url: '@Url.Action("CreateMaintenanceMapCost", "MaintenanceMapCost")',
+	            data: data,
+	            async: false,
+	            processData: false,
+	            contentType: false,
+	            cache: false,
+	            success: function (res) {
+                    if (res.IsSuccess) {
+                        if (res.ActionType == "create") {
+                            swal("Created!", { icon: "success" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+                        else if (res.ActionType == "edit") {
+                            swal("Updated!", { icon: "success" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+                    }
+                    else {
+                        if (res.ActionType == "create") {
+                            swal("Failed to create!", res.ExceptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    $("#UID").focus();
+                                });
+                        }
+                        else if (res.ActionType == "edit") {
+                            swal("Failed to updated!", res.ExceptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    window.location.reload(true);
+                                });
+                        }
+                    }
+	            },
+	            error: function () {
+		            // return false;
+	            }
+            });
+        }
+
+        $('#btn-create-mapcost-modal').click(function () {
+            //  $(".field-validation-error span").hide();
+            $('#modal-create-mapcost').modal('show');
+        });
+
+        function RedirectToPage(view)
+        {
+            if (view == "Hierarchy3") {
+                window.location.href = '@Url.Action("MaintenanceHierarchyLv3", "MaintenanceMapCost")';
+            } else if (view == "Hierarchy4"){
+                window.location.href = '@Url.Action("MaintenanceHierarchyLv4", "MaintenanceMapCost")';
+            }
+        }
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+}

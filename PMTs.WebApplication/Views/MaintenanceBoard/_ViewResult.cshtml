@@ -1,0 +1,23 @@
+﻿<div class="modal @ViewBag.ModalStyle fade" id="@ViewBag.ModalStyle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btnClose close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">@ViewBag.ModalTitle</h4>
+            </div>
+            <div class="modal-body">
+                <p>@ViewBag.Message</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#@ViewBag.ModalStyle" id="btnShowResultModal" style="display: none;" />

@@ -1,0 +1,348 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceJoint.MaintenanceJointViewModel
+
+@{
+    ViewData["Title"] = "Joint";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-layers"></i> @Localizer["Joint"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btn-create-joint-modal">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["Create"]
+                    </button>
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="Joint-table">
+                <partial name="_JointTable" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#Joint-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModal').click(function () {
+            $(".field-validation-error span").hide();
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+        function CreateJoint()
+        {
+            let isSubmit = true;
+            let jointId = $("#jointIdCreate").val();
+            let jointName = $("#jointNameCreate").val();
+
+            if(jointId == "")
+            {
+                $("#jointIdCreateReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#jointIdCreateReq").attr("hidden",true);
+            }
+
+            if(jointName == "")
+            {
+                $("#jointNameCreateReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#jointNameCreateReq").attr("hidden",true);
+            }
+
+            if(isSubmit)
+            {
+                let form = $('#create-Joint-form')[0];
+                let data = new FormData(form);
+
+                $.ajax({
+	                type: 'POST',
+	                enctype: 'multipart/form-data',
+	                url: '@Url.Action("SaveJoint", "MaintenanceJoint")',
+	                data: data,
+	                async: false,
+	                processData: false,
+	                contentType: false,
+	                cache: false,
+	                success: function (res) {
+                        if (res.IsSuccess) {
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+
+                            swal("Save Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                            UpdateJointTable();
+                        }
+                        else {
+                            swal("Save Failed", "", "warning");//modalDialog(error, SaveFailed);
+                        }
+	                },
+	                error: function () {
+		                // return false;
+	                }
+                });
+            }
+        }
+
+        $('#edit-joint-btn').click(function () {
+            DisabledSubmitButton(this);
+            let isSubmit = true;
+            let jointId = $("#jointIdEdit").val();
+            let jointName = $("#jointNameEdit").val();
+
+            if(jointId == "")
+            {
+                $("#jointIdEditReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#jointIdEditReq").attr("hidden",true);
+            }
+
+            if(jointName == "")
+            {
+                $("#jointNameEditReq").removeAttr("hidden");
+                isSubmit = false;
+            }else
+            {
+                $("#jointNameEditReq").attr("hidden",true);
+            }
+
+            if(isSubmit)
+            {
+                let formData = {
+                    "Id": $("#idEdit").val(),
+                    "JointId": $("#jointIdEdit").val(),
+                    "JointName": $("#jointNameEdit").val(),
+                    "JointDescription ": $("#jointNameEdit").val(),
+                    "KiwiJoinCodeInner": $("#KiwiJoinCodeInnerEdit").val(),
+                    "KiwiJoinCodeOuter": $("#KiwiJoinCodeOuterEdit").val(),
+                    "CreatedDate": $("#ECreatedDate").val(),
+                    "CreatedBy": $("#ECreatedBy").val(),
+                };
+
+                var form = JSON.stringify(formData);
+
+                $.ajax({
+                    url: '@Url.Action("UpdateJoint", "MaintenanceJoint")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString()
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            $('.modal').modal('hide');
+                            $('.modal-backdrop').hide();
+                            $("body").removeClass("modal-open");
+
+                            swal("Update Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                            UpdateJointTable();
+                        }
+                        else {
+                            swal("Uppdate Failed", "", "warning");//modalDialog(error, SaveFailed);
+                        }
+                    },
+                    error: function () {
+                        // return false;
+                    }
+                });
+            }
+         });
+
+        function UpdateJointTable() {
+            $.ajax({
+                url: '@Url.Action("UpdateJointTable", "MaintenanceJoint")',
+                success: function (res) {
+                    $('#Joint-table').html(res);
+                    $('.modal-backdrop').css('display', 'none');
+                    $('#Joint-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+                },
+                error: function () {  }
+            });
+        }
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        function BindDatatoView(item)
+        {
+            $("#JointIdView").val($(item).attr("data-JointId"));
+            $("#JointNameView").val($(item).attr("data-JointName"));
+            $("#KiwiJoinCodeInnerView").val($(item).attr("data-KiwiJoinCodeInner"));
+            $("#KiwiJoinCodeOuterView").val($(item).attr("data-KiwiJoinCodeOuter"));
+            $("#JointDescriptionView").val($(item).attr("data-JointName"));
+            $('#modal-joint-view').modal('show');
+        }
+
+        function BindDatatoEdit(item)
+        {
+            $("#jointIdEdit").val($(item).attr("data-JointId"));
+            $("#idEdit").val($(item).attr("data-Id"));
+            $("#jointNameEdit").val($(item).attr("data-JointName"));
+            $("#KiwiJoinCodeInnerEdit").val($(item).attr("data-KiwiJoinCodeInner"));
+            $("#KiwiJoinCodeOuterEdit").val($(item).attr("data-KiwiJoinCodeOuter"));
+            $("#ECreatedDate").val(ChangeDateTimeFormat($(item).attr("data-CreatedDate")));
+            $("#ECreatedBy").val($(item).attr("data-CreatedBy"));
+            $('#modal-joint-edit').modal('show');
+        }
+
+        function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                        type: 'PUT',
+                        url: '@Url.Action("DeleteJoint", "MaintenanceJoint")',
+                        data: { Id: Id },
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('.modal').modal('hide');
+                                $('.modal-backdrop').hide();
+                                $("body").removeClass("modal-open");
+
+                                swal("Deleted!", {
+                                    icon: "success",
+                                });
+                                UpdateJointTable();
+                                window.location.reload(true);
+                            }
+                        }
+                    });
+                    } else {
+                    }
+                });
+        }
+
+        var onSaveSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+
+                swal("Save Success!", {
+                    icon: "success",
+                });//modalDialog(success, SaveSuccess);
+
+                UpdateJointTable();
+            }
+            else {
+                swal("Save Failed!", {
+                    icon: "warning",
+                });//modalDialog(error, SaveFailed);
+            }
+        };
+
+        var onUpdateSuccess = function (res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+
+                swal("Update Success!", {
+                    icon: "warning",
+                });//modalDialog(success, UpdateSuccess);
+
+                UpdateJointTable();
+            }
+            else {
+                swal("Update Failed!", {
+                    icon: "warning",
+                });//modalDialog(error, UpdateFailed);
+            }
+        };
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+
+                swal("Update Success!", {
+                    icon: "success",
+                });//modalDialog(success, UpdateSuccess);
+
+                UpdateJointTable();
+            }
+            else {
+                swal("Update Failed!", {
+                    icon: "warning",
+                });// modalDialog(error, UpdateFailed);
+            }
+        };
+
+        $('#btn-create-joint-modal').click(function () {
+            //  $(".field-validation-error span").hide();
+            $('#modal-create-joint').modal('show');
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

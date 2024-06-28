@@ -1,0 +1,37 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceFlute.MaintenanceFluteModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div class="box-header">
+    <h3 class="box-title">Flute</h3>
+</div>
+
+<div class="box-body">
+    <table id="flute-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">@Localizer["No."]</th>
+                <th scope="col">@Localizer["Flute Name"]</th>
+                <th scope="col">@Localizer["Flute Code"]</th>
+                <th scope="col">@Localizer["Height"]</th>
+                <th scope="col">@Localizer["Layer"]</th>
+                <th scope="col">@Localizer["View"]</th>
+                <th scope="col">@Localizer["Edit"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_DataOfTable", Model)
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+        $('#flute-data-table').DataTable();
+    });
+</script>

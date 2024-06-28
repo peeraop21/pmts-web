@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceAccount.MaintenanceAccountViewModel
+@*<div class="box-header">
+        <h3 class="box-title">AccountData</h3>
+    </div>*@
+<!-- /.box-header -->
+<div class="box-body">
+    <table id="Account-data-table" class="table table-bordered color-table">
+        <thead>
+            <tr class="bg-gray">
+                <th scope="col" width="5%">@Localizer["No."]</th>
+                <th scope="col" width="15%">@Localizer["USERNAME"]</th>
+                <th scope="col" width="20%">@Localizer["FIRST NAME[TH]"]</th>
+                <th scope="col" width="20%">@Localizer["LAST NAME[TH]"]</th>
+                <th scope="col" width="15%">@Localizer["ROLE NAME"]</th>
+                <th scope="col" width="8%" class="text-center">@Localizer["STATUS"]</th>
+                <th scope="col" width="8%" class="text-center">@Localizer["View"]</th>
+                <th scope="col" width="8%" class="text-center">@Localizer["Edit"]</th>
+                @*<th scope="col">Delete</th>*@
+</thead>
+        <tbody>
+            <partial name="_DataOfTable" model="Model" />
+        </tbody>
+        <tfoot>
+            <!-- Footer Content -->
+        </tfoot>
+    </table>
+</div>

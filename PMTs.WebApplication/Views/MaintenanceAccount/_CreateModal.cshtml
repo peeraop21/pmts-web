@@ -1,0 +1,188 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceAccount.MaintenanceAccountViewModel
+
+<div class="modal" id="modal-create">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        @*<div class="modal fade bs-example-modal-lg" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lg">*@
+        <div class="modal-content">
+            <form id="create-customer-form">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">@Localizer["Create Account"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.UserName">@Localizer["Account Username"] <i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.UserName" required />
+                            <span asp-validation-for="AccountViewModel.UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.Password">@Localizer["Account Password"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.Password" type="password" required />
+                            <span asp-validation-for="AccountViewModel.Password" class="text-danger"></span>
+                        </div>
+
+                        <a onclick="ShowCasePassword()" title="password policy" class="fa fa-question-circle text-gray btn" style="font-size:14px;padding-top:6px"></a>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.UserDomain">@Localizer["Account UserDomain"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+
+                            <select asp-for="AccountViewModel.UserDomain" class="form-control" asp-items="ViewBag.UserDomain">
+                                @*<option value="">@Localizer["Choose here"]</option>*@
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.SaleOrg">@Localizer["Account SaleOrg"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            @*<input class="form-control" asp-for="AccountViewModel.SaleOrg" required />
+                    <span asp-validation-for="AccountViewModel.SaleOrg" class="text-danger"></span>*@
+
+                            <input class="form-control" asp-for="AccountViewModel.SaleOrg" required readonly value="@ViewBag.SaleOrg" />
+
+                            @*<select class="form-control" asp-for="AccountViewModel.SaleOrg" asp-items="@Model.Lst_SaleOrg">
+                    </select>*@
+                        </div>
+
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.FactoryCode">@Localizer["Account Plant"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            @*<input class="form-control" asp-for="AccountViewModel.FactoryCode" required />
+                    <span asp-validation-for="AccountViewModel.FactoryCode" class="text-danger"></span>*@
+
+                            <input class="form-control" asp-for="AccountViewModel.FactoryCode" required readonly value="@ViewBag.FactoryCode" />
+
+                            @*<select class="form-control" asp-for="AccountViewModel.FactoryCode" asp-items="@Model.Lst_Plant">
+                    </select>*@
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft" style="padding-right:0;">
+                            <label class="control-label" asp-for="AccountViewModel.FirstNameTh">@Localizer["Account FirstNameTh"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.FirstNameTh" required />
+                        </div>
+
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.LastNameTh">@Localizer["Account LastNameTh"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.LastNameTh" required />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.FirstNameEn">@Localizer["Account FirstNameEn"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.FirstNameEn" required />
+                        </div>
+
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.LastNameEn">@Localizer["Account LastNameEn"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.LastNameEn" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.Email">@Localizer["Account Email"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.Email" required />
+                        </div>
+
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.Telephone">@Localizer["Account Telephone"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="number" asp-for="AccountViewModel.Telephone" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.MobileNo">@Localizer["Account MobileNo"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="number" asp-for="AccountViewModel.MobileNo" />
+                        </div>
+
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.PasswordHint">@Localizer["Account PasswordHint"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.PasswordHint" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.Comment">@Localizer["Account Comment"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" asp-for="AccountViewModel.Comment" />
+                        </div>
+
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label" asp-for="AccountViewModel.RoleList">@Localizer["Account Role"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+
+                            <select class="form-control" asp-for="AccountViewModel.DefaultRoleId" asp-items="@(new SelectList(Model.RoleList,"RoleId","RoleName"))" required>
+                                @*<option value="">@Localizer["Choose here"]</option>*@
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label">@Localizer["Picture"] </label>
+                        </div>
+                        @*<div class="form-group col-md-3">
+                    <input id="Pic_User" name="Pic_User" type="file" title="search image" asp-for="AccountViewModel.PictureUser" accept="image/*" onchange="show_User(this)" />
+                </div>*@
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2 setLeft">
+                            <label class="control-label"></label>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+
+                                            <input type="file" id="PictureUser" name="PictureUser" class="dropify" />
+                            </div>
+
+                            <div class="row justify-content-end">
+                                <i id="RM_User" class="fas fa-times" style="color:red; display:none;" onclick="RMUser()"></i>
+                            </div>
+
+                            <img id="PicUser" style="width: 100px; height: auto;display:none;" />
+
+                            @Html.TextBoxFor(m => m.AccountViewModel.PictureUser, new { @id = "iUserPath", @style = "display:none;" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnSubmit" class="btn btn-primary" onclick="SaveNewUser()">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

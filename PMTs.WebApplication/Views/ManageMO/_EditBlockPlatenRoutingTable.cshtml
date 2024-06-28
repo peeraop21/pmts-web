@@ -1,0 +1,33 @@
+﻿@model PMTs.DataAccess.ComplexModel.EditBlockPlatenModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+
+    if (Model != null)
+    {
+        foreach (var item in Model.editBlockPlatenRouting)
+        {
+            <div class="row">
+                <input class="form-control" id="idmaterial_@item.seq" value="@item.materialno" hidden />
+                <input class="form-control" id="idfactorycode_@item.seq" value="@item.factorycode" hidden />
+
+                <div class="form-group col-md-2">
+                    <label class="control-label" id="lbl_@item.seq" style="float:left">@item.machine</label>
+                </div>
+                <div class="form-group col-md-3">
+                    <input class="form-control" id="printingplateno_@item.seq" value="@item.printingplate" />
+                </div>
+                <div class="form-group col-md-3">
+                    <input class="form-control" id="cuttingdieno_@item.seq" value="@item.cuttingdieno" />
+                </div>
+                <div class="form-group col-md-3">
+                    <input class="form-control" id="mylano_@item.seq" value="@item.mylano" />
+                </div>
+            </div>
+
+        }
+
+    }
+
+}

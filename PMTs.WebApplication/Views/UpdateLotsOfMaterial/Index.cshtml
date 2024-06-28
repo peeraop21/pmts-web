@@ -1,0 +1,239 @@
+﻿@model PMTs.DataAccess.ModelView.UpdateLotsOfMaterial.UpdateLotsOfMaterialViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Update Lots Of Material";
+}
+<style>
+    .center {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+            <div class="card-body">
+                <div class="row box">
+                    <div>
+                        <h3 class="text-themecolor"><i class="fa fa-cog"></i>&nbsp;@Localizer["Update Lots Of Material"]</h3>
+                    </div>
+                </div>
+                <form id="formUpdateMat">
+                    <div class="box">
+                        <div class="box-body">
+                            <div style="background-color:white;padding:20px 0px;">@Localizer["expains update"]</div>
+                            <div class="form-group row">
+                                <div class="col-md-1"></div>
+                                @*<div class="col-md-5" style="border:1px solid gray;padding:15px;">*@
+                                @*<select id="importSelect" name="importSelect" style="min-width:250px;min-height:24px;margin-top:5px" asp-items="@(new SelectList(Model.CompanyProfiles,"Text","Value"))"></select>*@
+                                <input type="text" name="fileDownload" id="fileDownload" style="display:none;" value="">
+                                <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:100px;float:right" onclick="thisFileDownload()">@Localizer["Load Template"]&ensp;<i class="fa fa-download"></i></a>
+                                <label for="fileDownload"></label>
+                                &ensp;&ensp;
+                                <input type="file" name="fileUpload" id="fileUpload" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                <a href="#0" class="btn btn-outline-info" style="min-height:35px;min-width:100px;float:right" onclick="thisFileUpload();">@Localizer["Import"]&ensp;<i class="fa fa-upload"></i></a>
+                                <label for="fileUpload"></label>
+                                @*</div>*@
+                                <div class="col-md-7"></div>
+                            </div>
+                            <div style="background-color:white;padding:10px 0px;">@Localizer["expains delete"]</div>
+                            <div class="form-group row">
+                                <div class="col-md-1"></div>
+                                @*<div class="col-md-5" style="border:1px solid gray;padding:15px;">*@
+                                @*<select id="importSelect" name="importSelect" style="min-width:250px;min-height:24px;margin-top:5px" asp-items="@(new SelectList(Model.CompanyProfiles,"Text","Value"))"></select>*@
+                                <input type="text" name="fileDownloadx" id="fileDownloadx" style="display:none;" value="">
+                                <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:100px;float:right" onclick="thisFileDownloadx()">@Localizer["Load Template"]&ensp;<i class="fa fa-download"></i></a>
+                                <label for="fileDownloadx"></label>
+                                &ensp;&ensp;
+                                <input type="file" name="fileUploadx" id="fileUploadx" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                <a href="#1" class="btn btn-outline-info" style="min-height:35px;min-width:100px;float:right" onclick="thisFileUploadx();">Import&ensp;<i class="fa fa-upload"></i></a>
+                                <label for="fileUploadx"></label>
+                                @*</div>*@
+                                <div class="col-md-9"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                @*@if (Model.MasterDatas.Count != 0){*@
+                <div id="divMasterDataTable" class="table-responsive m-t-10 col-md-12">
+                    <partial name="_MasterDataTable" model="Model" />
+                </div>
+                @*}*@
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var plant = '@Model.factoryCode';
+
+        $(document).ready(function () {
+            $("#fileDownload").val("");
+        });
+
+        function thisFileDownload() {
+            $("#fileDownload").val("download");
+
+            swal({
+                title: "Are you sure?",
+                text: "You want to Download Template file for Update PC and Description.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDo) => {
+                    if (willDo) {
+                        document.location.href = '@Url.Action("UpdateMatExportExcel", "UpdateLotsOfMaterial")' + "?excelTemplate=updateMat";
+                    }
+                });
+        };
+
+        function thisFileDownloadx() {
+            $("#fileDownloadx").val("download");
+
+            swal({
+                title: "Are you sure?",
+                text: "You want to Download Template file for Delete Material.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDo) => {
+                    if (willDo) {
+                        document.location.href = '@Url.Action("UpdateMatExportExcel", "UpdateLotsOfMaterial")' + "?excelTemplate=deleteMat";;
+                    }
+                });
+        };
+
+        function thisFileUpload() {
+            $("#fileDownload").val("");
+            document.getElementById('fileUpload').value = null;
+            document.getElementById("fileUpload").click();
+        };
+
+        function thisFileUploadx() {
+            $("#fileDownload").val("");
+            document.getElementById('fileUploadx').value = null;
+            document.getElementById("fileUploadx").click();
+        };
+
+        $('#fileUpload').change(function () {
+
+            //var saleOrg = $("#importSelect").val();
+            //var saleOrg = '252B';
+
+            swal({
+                title: "Are you sure?",
+                text: "Import excel data to update Material of plant " + plant + "",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let form = $('#formUpdateMat')[0];
+                        let data = new FormData(form);
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ExcelUpdateMat", "UpdateLotsOfMaterial")',
+                            data: data,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                $('#divMasterDataTable').html(res.View);
+                                if (res.IsSuccess)
+                                {
+                                    swal("Update Data Success!", { icon: "success" });
+                                    @*.then(()=> {
+                                            window.location.href = "@Url.Action("Index", "UpdateLotsOfMaterial")";
+                                    });*@
+                                }
+                                else
+                                {
+                                    swal("Update Data Failed!", res.ExceptionMessage , {icon:"warning"})
+                                        .then(()=> {
+                                            window.location.href = "@Url.Action("Index", "UpdateLotsOfMaterial")";
+                                    });
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                });
+        });
+
+        $('#fileUploadx').change(function () {
+
+            swal({
+                title: "Are you sure?",
+                text: "Import excel data to delete Material of plant " + plant + "",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let form = $('#formUpdateMat')[0];
+                        let data = new FormData(form);
+
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ExcelUpdateStatus", "UpdateLotsOfMaterial")',
+                            data: data,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                $('#divMasterDataTable').html(res.View);
+                                if (res.IsSuccess)
+                                {
+                                    swal("Update Status Success!", { icon: "success" });
+                                    $('#fileUploadx').val();
+                                    @*.then(()=> {
+                                            window.location.href = "@Url.Action("Index", "UpdateLotsOfMaterial")";
+                                    });*@
+                                }
+                                else
+                                {
+                                    swal("Update Status Failed!", res.ExceptionMessage , {icon:"warning"})
+                                        .then(()=> {
+                                            window.location.href = "@Url.Action("Index", "UpdateLotsOfMaterial")";
+                                    });
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                });
+        });
+    </script>
+}

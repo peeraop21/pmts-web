@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.Models.TruckOptimize
+@using System.Linq
+
+@{
+    Layout = null;
+}
+<style>
+    .btn {
+        min-width: 80px;
+    }
+</style>
+
+@*Create Edit*@
+<div class="modal bs-example-modal-lg" id="modal-create-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <form id="edit-truckWarehouse">
+                <input type="hidden" id="TW_CreatedDate" asp-for="CreatedDate" />
+                <input type="hidden" id="TW_Id" asp-for="Id" />
+                <input type="hidden" id="TW_FactoryCode" asp-for="FactoryCode" />
+                <input type="hidden" id="TW_CreatedBy" asp-for="CreatedBy" />
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modelHeader">@Localizer["Create Truck Optimize"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="row col-md-12 mb-2 mt-2">
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["MaterialNo"]</label>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input class="form-control" type="text" maxlength="10" id="TW_MaterialNo" asp-for="MaterialNo" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["FGPallet W"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_FGPalletW" asp-for="FgpalletW" readonly />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["FGPallet L"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_FGPalletL" asp-for="FgpalletL" readonly />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["FGPallet H"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_FGPalletH" asp-for="FgpalletH" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["FGBundle W"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_FGBundleW" asp-for="FgbundleW" readonly />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["FGBundle L"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_FGBundleL" asp-for="FgbundleL" readonly />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["FGBundle H"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_FGBundleH" asp-for="FgbundleH" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12 mb-2">
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["PalletSize W"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_PalletSizeW" asp-for="PalletSizeW" readonly />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["PalletSize L"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_PalletSizeL" asp-for="PalletSizeL" readonly />
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label class="control-label float-right mt-1">@Localizer["PalletSize H"]</label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control" type="number" id="TW_PalletSizeH" asp-for="PalletSizeH" readonly />
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6" style="margin-top:30px">
+                            <button type="button" class="btn btn-success float-right" id="TW_SaveBtn" disabled onclick="SaveTruckOptimize()">@Localizer["Save"]</button>
+                        </div>
+                        <div class="form-group col-md-6" style="margin-top:30px">
+                            <button type="button" class="btn btn-danger waves-effect text-center float-left" data-dismiss="modal" data-backdrop="false" id="TW_CloseBtn" onclick="CloseTruckOptimize()">@Localizer["Close"]</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

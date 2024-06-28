@@ -1,0 +1,967 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@{
+    Layout = "~/Views/Shared/_LayoutNew.cshtml";
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    //STD = 0, Non STD1 = 1, Non STD2 = 2
+    var typeOfProperty = 0;
+    var formGroup = Model.modelCategories.FormGroup;
+    //Tassanai Update 02072020 แก้เรื่อง การแสดง UI ตามประเภทสินค้า
+    //if (formGroup == "ROLL" || formGroup == "BOM" || formGroup == "TCG" || formGroup == "HC" || Model.modelCategories.Id_MatType == 1 || Model.modelCategories.Id_MatType == 2 || Model.modelCategories.Id_MatType == 4 || Model.modelCategories.Id_MatType == 7)
+    //if (formGroup == "ROLL" || formGroup == "BOM" || formGroup == "TCG" || formGroup == "HC" )
+    //if (formGroup == "BOM" || formGroup == "TCG" || formGroup == "HC")
+
+    //{
+    //    typeOfProperty = 2;
+    //}
+    //else if (formGroup == "PALLET" || formGroup == "CG" || formGroup == "HB" || formGroup == "DIGITAL")
+    //{
+    //    typeOfProperty = 1;
+    //}
+    //else if (formGroup == "STDRSC" || formGroup == "FULLRSC" || formGroup == "STDDC" || formGroup == "OFFSETTS" || formGroup == "SF" || formGroup == "SB"
+    //    || formGroup == "SPCRSC" || formGroup == "SS" || formGroup == "AC" || formGroup == "ROLL")
+    //{
+    //    typeOfProperty = 0;
+    //}
+    if (formGroup == "BOM" || formGroup == "TCG" )
+
+    {
+        typeOfProperty = 2;
+    }
+    else if (formGroup == "PALLET" || formGroup == "CG" || formGroup == "DIGITAL")
+    {
+        typeOfProperty = 1;
+    }
+    else if (formGroup == "STDRSC" || formGroup == "FULLRSC" || formGroup == "STDDC" || formGroup == "OFFSETTS" || formGroup == "SF" || formGroup == "SB"
+        || formGroup == "SPCRSC" || formGroup == "SS" || formGroup == "AC" || formGroup == "ROLL" || formGroup == "HC" || formGroup == "HB")
+    {
+        typeOfProperty = 0;
+    }
+
+    ViewData["TypeOfProperty"] = typeOfProperty;
+}
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+</style>
+<input type="hidden" name="typeOfProperty" id="typeOfProperty" value="@formGroup" />
+
+@*<input type="text" name="typeOfProperty" id="typeOfProperty" value="@typeOfProperty" />*@
+
+<input asp-for="modelProductSpec.ScoreL6" type="hidden" />
+
+@*<input type="hidden" id="modelProductProp_AmountColor" asp-for="modelProductProp.AmountColor" />*@
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <form id="allData" asp-action="SaveProductProp" role="form" enctype="multipart/form-data" data-ajax="true" data-ajax-method="post" data-ajax-success="OnSaveSuccess">
+                @* *@
+                <input asp-for="modelProductProp.CutSheetWid" type="hidden" />
+                <input asp-for="modelProductProp.CutSheetLeng" type="hidden" />
+                <input asp-for="modelProductProp.AmountColor" type="hidden" />
+
+                <div class="card-body">
+                    <div class="row justify-content-between">
+                        <div class="col-6">
+                            <h3 class="text-themecolor">@Localizer["New Product"]</h3>
+                        </div>
+                        <div class="col-6">
+                            <h3 class="box-title text-right">
+                                @Localizer["Material No"] : @Model.MaterialNo
+                            </h3>
+                        </div>
+                    </div> <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div style="width:100%">
+                                <div id="Product">
+                                    <div class="row">
+                                        <div class="col-md-6" id="RenderProcessProp">
+                                            @*@{
+                                                    @if (typeOfProperty == 0)
+                                                    {
+                                                        <partial name="_ProductProp_ProcessProperty_Digital" model="Model" view-data="@ViewData" />
+                                                    }
+
+                                                }*@
+                                            @if (typeOfProperty == 0)
+                                            {
+                                                <div>
+                                                    <partial name="_ProductProp_ProcessProperty_Digital" model="Model" view-data="@ViewData" />
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <div style="display:none">
+                                                    <partial name="_ProductProp_ProcessProperty_Digital" model="Model" view-data="@ViewData" />
+                                                </div>
+
+                                            }
+                                            <partial name="_ProductProp_SetProperty" model="Model" view-data="@ViewData" />
+                                            <div class="card card-outline ">
+                                                <div class="card-body">
+                                                    <h4>
+                                                        @Localizer["Change information remark"]
+                                                    </h4>
+                                                    @*<textarea asp-for="modelProductProp.ChangeInfo" class="form-control center-block" rows="4" maxlength="100"></textarea>*@
+                                                    <textarea asp-for="modelProductProp.Change" class="form-control center-block" rows="4" maxlength="100"></textarea>
+                                                    <h4>
+                                                        @Localizer["Change history"]
+                                                    </h4>
+                                                    <div id="ChangeHistory-data-table">
+                                                        <partial name="_ChangeHistory" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card card-outline ">
+                                                <div class="card-body">
+                                                    <h4>
+                                                        @Localizer["VMI"]
+                                                    </h4>
+                                                    <div>
+                                                        Customer Inventory Type
+                                                        <br />
+                                                        <input type="radio" class="with-gap" id="vmi" value="VMI" asp-for="modelProductProp.CustInvType">
+                                                        <label for="vmi" class="control-label"> @Localizer["VMI"]</label>
+                                                        <input type="radio" class="with-gap" id="jit" value="JIT" asp-for="modelProductProp.CustInvType">
+                                                        <label for="jit" class="control-label">@Localizer["JIT"]</label>
+                                                        <input type="radio" class="with-gap" id="gen" value="GEN" asp-for="modelProductProp.CustInvType">
+                                                        <label for="gen" class="control-label">@Localizer["GEN"]</label>
+                                                    </div>
+                                                    <div>
+                                                        CIP Inventory Type
+                                                        <br />
+                                                        <br />
+                                                        <input type="radio" class="with-gap" id="mts" value="MTS" asp-for="modelProductProp.CIPInvType">
+                                                        <label for="mts" class="control-label">@Localizer["MTS"]</label>
+                                                        <input type="radio" class="with-gap" id="mto" value="MTO" asp-for="modelProductProp.CIPInvType">
+                                                        <label for="mto" class="control-label">@Localizer["MTO"]</label>
+                                                    </div>
+                                                    @*<textarea asp-for="modelProductProp.ChangeInfo" class="form-control center-block" rows="4" maxlength="100"></textarea>*@
+                                                </div>
+                                            </div>
+                                            <div class="card card-outline ">
+                                                <div class="card-body">
+                                                    <h4>
+                                                        @Localizer["TopSheet Material"]
+                                                    </h4>
+                                                    <div>
+                                                        <input type="text" class="form-control col-md-6" asp-for="modelProductProp.TopSheetMaterial" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <img id="pica" />
+                                        <div class="col-md-6" id="RenderPackingProp">
+                                            @*<input type="text" value="@typeOfProperty" />*@
+                                            @if (typeOfProperty == 0)
+                                            {
+
+                                                <partial name="_ProductProp_PackingProperty_NewCG" model="Model" view-data="@ViewData" />
+
+                                            }
+                                            else if (typeOfProperty == 1)
+                                            {
+
+                                                <partial name="_ProductProp_PackingProperty_Nonstd1" model="Model" view-data="@ViewData" />
+
+                                            }
+                                            else if (typeOfProperty == 2)
+                                            {
+
+                                                <partial name="_ProductProp_PackingProperty_Nonstd2" model="Model" view-data="@ViewData" />
+
+                                            }
+
+                                            <partial name="_ProductProp_SpareProperty" model="Model" view-data="@ViewData" />
+                                            <div class="card card-outline ">
+                                                <div class="card-body">
+                                                    <h4>
+                                                        @Localizer["Non Standard Paper"]
+                                                    </h4>
+                                                    <div>
+                                                        <input data-toggle="toggle" asp-for="modelProductProp.NoneStandardPaper" class="filled-in" data-onstyle="success" type="checkbox" data-on="Enabled" data-off="Disabled" id="NoneStandardPaper">
+                                                        <label class="form-check-label" for="NoneStandardPaper"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedTab" name="selectedTab" value="@ViewBag.SelectedTab" />
+                </div>
+                <section class="card-footer">
+                    <div class="col-sm-12 text-right">
+                        <!-- general form elements -->
+                        <!--<form role="form" action="Productspec.html">-->
+
+                        <div class="form-group">
+
+                            <button id="btnSave" type="button" onclick="validateForm('@Model.modelCategories.FormGroup')" class="btn btn-success btn-fixsize"><i class="fa fa-save"></i> @Localizer["Save"] &amp; @Localizer["Next"]<i class="fa fa-arrow-circle-right"></i></button>
+                            <button class="btn btn-info btn-fixsize" type="button" id="btnNextLoad" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
+                        </div>
+
+                        <!-- /.box -->
+                        <!-- /.box -->
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        const PrintMethodList = @Html.Raw(Json.Serialize(@Model.modelProductProp.PrintMethodList));
+        const JoinList = @Html.Raw(Json.Serialize(@Model.modelProductProp.JoinList));
+        const BoiStatusList = @Html.Raw(Json.Serialize(@Model.modelProductProp.PpcBoiStatusList));
+        const WorkTypeList = @Html.Raw(Json.Serialize(@Model.modelProductProp.PpcWorkTypeList));
+
+        var selected_tab = 0;
+        $(function () {
+
+            var tabs = $("#tabs").tabs({
+                select: function (e, i) {
+                    selected_tab = i.index;
+                }
+            });
+            $(':input').live('focus', function () {
+                $(this).attr('autocomplete', 'off');
+            });
+            selected_tab = $("#selectedTab").val() !== "" ? parseInt($("#selectedTab").val()) : 0;
+            tabs.tabs('select', selected_tab);
+            $("form").submit(function () {
+                $("#selectedTab").val(selected_tab);
+            });
+
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            })
+            //Red color scheme for iCheck
+            $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+                checkboxClass: 'icheckbox_minimal-red',
+                radioClass: 'iradio_minimal-red'
+            })
+            //Flat red color scheme for iCheck
+            $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            })
+        });
+
+        //$(function () {
+
+        //    //iCheck for checkbox and radio inputs
+        //    $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+        //        checkboxClass: 'icheckbox_minimal-blue',
+        //        radioClass: 'iradio_minimal-blue'
+        //    })
+        //    //Red color scheme for iCheck
+        //    $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+        //        checkboxClass: 'icheckbox_minimal-red',
+        //        radioClass: 'iradio_minimal-red'
+        //    })
+        //    //Flat red color scheme for iCheck
+        //    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+        //        checkboxClass: 'icheckbox_flat-green',
+        //        radioClass: 'iradio_flat-green'
+        //    })
+
+        //})
+
+        $(document).ready(function () {
+
+            //checkwire();
+            LoadingButton(false);
+
+            var dataJoint = $("#modelProductProp_JoinId").val();
+            var Jointypedata = $("#modelProductProp_JoinType").val();
+
+            //alert(Jointypedata);
+            if (dataJoint === "STI" || Jointypedata === "ตอก") { // ตอก
+                $("#wire").prop('readOnly', false);
+
+            } else {
+
+                $("#wire").prop('readOnly', true);
+            }
+            let dataJoinType = $("#modelProductProp_JoinType").val();
+            if (dataJoinType === "AGL" || dataJoinType === "กาวเครื่องอัตโนมัติ") {
+
+                $("#JoinCharactirdiv").show();
+            } else {
+                $("#JoinCharactirdiv").hide();
+            }
+
+            palletsizewithOverhang();
+
+            $("form").attr('autocomplete', 'off');
+
+            $('.mytextboxNumber').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|\./;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+            $('.mytextboxNumberNodecimal').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|/;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+          if (@Model.modelCategories.Id_ProcCost == 90) {
+            $("#PrintMethod").val("ไม่พิมพ์");
+        }
+
+    });
+
+    function check() {
+       // alert("123");
+        var elem = $("#modelProductProp_Hardship").val();
+
+       // alert(elem);
+        if (elem == 0 && elem != "") {
+            swal("Hardship ค่าห้ามน้อยกว่า 0");
+            $("#modelProductProp_Hardship").val(5)
+           // swal()
+        }
+        //alert(elem);
+        //if (!elem.match(/[0-9]/)) {
+        //    alert("กรอกได้เฉพาะตัวเลขและตัวอักษรภาษาอังกฤษเท่านั้น");
+        //   // document.getElementById('test_txt').value = "";
+        //}
+    }
+
+        function chkNum(ele) {
+            var num = parseFloat(ele.value);
+            ele.value = num.toFixed(2); required
+        }
+
+        function validateForm(chk_formgroup) {
+
+        debugger;
+        //LoadingButton(true);
+            let PieceSet = $("#PieceSet").val();
+            let PiecePatch = $("#PiecePatch").val();
+
+            let result = true;
+                if (PieceSet == '') {
+                  //  sheet.insertRule("input:focus {background: #f30;}", 0);
+                    document.getElementById('PieceSet').style.borderColor = "red";
+                    LoadingButton(false);
+                    result =false;
+                }
+            if (PiecePatch == '') {
+                //sheet.insertRule("input:focus {background: #f30;}", 0);
+                document.getElementById('PiecePatch').style.borderColor = "red";
+                LoadingButton(false);
+                result =false;
+            }
+
+            if (chk_formgroup == "CG" || chk_formgroup == "ROLL" || chk_formgroup == "BOM" || chk_formgroup == "TCG" || chk_formgroup == "DIGITAL" || chk_formgroup == "HC" || chk_formgroup == "HB" || chk_formgroup == "PALLET" || @typeOfProperty=="2") {
+                }
+                else
+                {
+                let JoinType = $("#modelProductProp_JoinType").val();
+                let PrintMethodList = $("#modelProductProp_PrintMethod").val();
+                let palletSize = $("#modelProductProp_PalletSize").val();
+                let JoinList = $("#modelProductProp_JoinType").val();
+                let modelProductProp_Hardship = $("#modelProductProp_Hardship").val();
+
+                let JoinList2 = $("#modelProductProp_JoinType2").val();
+
+                let BusinessGroup = $("#BusinessGroup").val();
+                let statusValidate5 = false;
+                if (BusinessGroup == "Offset") {
+                    let BoxPacking = $("#modelProductProp_BoxPacking").val();
+                    if (BoxPacking == "") {
+                        statusValidate5 = false;
+                        swal('Please input BoxPacking')
+                            .then((willAccept) => {
+                                if (willAccept) {
+                                    LoadingButton(false);
+                                }
+                            });
+                        result = false;
+                    } else {
+                        statusValidate5 = true;
+                    }
+                } else {
+                    statusValidate5 = true;
+                }
+
+                let statusValidate1 = false;
+                let statusValidate2 = false;
+                let statusValidate3 = false;
+                let statusValidate4 = false;
+                //let statusValidate5 = false;
+
+                if (JoinType == "") {
+                    statusValidate1 = false;
+                    swal('Please Select JoinType')
+                        .then((willAccept) => {
+                            if (willAccept) {
+                                LoadingButton(false);
+                            }
+                        });
+                    result = false;
+                } else {
+                    statusValidate1 = true;
+                }
+                if (PrintMethodList == "")
+                {
+                    statusValidate2 = false;
+                    swal('Please Select PrintMethodList')
+                        .then((willAccept) => {
+                            if (willAccept) {
+                                LoadingButton(false);
+                            }
+                        });
+                    result = false;
+                } else {
+                    statusValidate2 = true;
+                }
+                if (palletSize == "") {
+                    statusValidate3 = false;
+                    swal('Please Select palletSize')
+                        .then((willAccept) => {
+                            if (willAccept) {
+                                LoadingButton(false);
+                            }
+                        });
+                    result = false;
+                } else {
+                    statusValidate3 = true;
+                }
+                if (modelProductProp_Hardship == "") {
+                    statusValidate4 = false;
+                    swal('Hardship is null !!')
+                        .then((willAccept) => {
+                            if (willAccept) {
+                                LoadingButton(false);
+                            }
+                        });
+                    result = false;
+                } else {
+                    statusValidate4 = true;
+                }
+
+                let BoxPallet = $("#modelProductProp_BoxPalet").val();
+
+                if (BoxPallet == "" || BoxPallet == "0") {
+
+                    result = false;
+
+                    swal({
+                        title: "Are you sure Box Pallet=0 ?",
+                        text: "Press OK if confirmed or press Cancel to return to filling",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                //check validate
+
+                                if (statusValidate1 == true && statusValidate2 == true && statusValidate3 == true && statusValidate4 == true && statusValidate5 == true) {
+                                    SaveImg();
+                                }
+                                else {
+
+                                    if (JoinType == "") {
+
+                                        swal('Please Select JoinType')
+                                            .then((willAccept) => {
+                                                if (willAccept) {
+                                                    LoadingButton(false);
+                                                }
+                                            });
+                                        result = false;
+                                    }
+
+                                    if (PrintMethodList == "") {
+
+                                        swal('Please Select PrintMethodList')
+                                            .then((willAccept) => {
+                                                if (willAccept) {
+                                                    LoadingButton(false);
+                                                }
+                                            });
+                                        result = false;
+                                    }
+
+                                    if (palletSize == "") {
+
+                                        swal('Please Select palletSize')
+                                            .then((willAccept) => {
+                                                if (willAccept) {
+                                                    LoadingButton(false);
+                                                }
+                                            });
+                                        result = false;
+                                    }
+                                    if (modelProductProp_Hardship == "") {
+
+                                        swal('Hardship is null !!')
+                                            .then((willAccept) => {
+                                                if (willAccept) {
+                                                    LoadingButton(false);
+                                                }
+                                            });
+                                        result = false;
+                                    }
+                                   // let BoxPacking = $("#modelProductProp_BoxPacking").val();
+                                    if ($("#modelProductProp_BoxPacking").val()== "") {
+
+                                        swal('Please input BoxPacking')
+                                            .then((willAccept) => {
+                                                if (willAccept) {
+                                                    LoadingButton(false);
+                                                }
+                                            });
+                                        result = false;
+                                    }
+                                }
+
+                            } else {
+                                LoadingButton(false);
+                                result = false;
+                            }
+                        });
+
+                }
+
+            }
+
+            let dataJoinType = $("#modelProductProp_JoinType").val();
+
+            if (dataJoinType === "AGL" || dataJoinType === "กาวเครื่องอัตโนมัติ") { // ตอก
+
+                if ($("#modelProductProp_NameJoinCharacter").val() == "") {
+                    swal('Please Select JoinCharacter')
+                        .then((willAccept) => {
+                            if (willAccept) {
+                                LoadingButton(false);
+                            }
+                        });
+                    result = false;
+                }
+            } else {
+                $("#modelProductProp_NameJoinCharacter").val('');
+                //alert($("#modelProductProp_NameJoinCharacter").val());
+
+        }
+
+            if (result == true) {
+                SaveImg();
+            }
+        }
+
+    function show_Pallet(input) {
+        $('#modelProductProp_PathpalletSuggess').val('');
+        if (input.files && input.files[0]) {
+            $('#modelProductProp_picgetPallet').val(null);
+            $('#iPalletPath').val(null);
+            $('#PicPallet2').hide();
+            $('#RM_Pallet2').hide();
+            console.log(input.files[0]);
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+                console.log(e.target.result);
+
+                $('#PicPallet').attr('src', e.target.result);
+                $('#PicPallet').show();
+                $('#RM_Pallet').show();
+                var temp = e.target.result;
+                $('#iPalletPath').val(temp);
+            };
+            filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+        function RMPallet() {
+        $('#iPalletPath').val(null);
+        $('#PicPallet').hide();
+        $('#RM_Pallet').hide();
+            const file = document.getElementById('Pic_Pallet');
+
+            $('#modelProductProp_PathpalletSuggess').val(null);
+            $('#modelProductProp_PathPallet').val(null);
+
+        file.value = '';
+    }
+
+    function show_FG(input) {
+        if (input.files && input.files[0]) {
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+                $('#PicFG').attr('src', e.target.result);
+                $('#PicFG').show();
+                $('#RM_FG').show();
+                var temp = e.target.result;
+                $('#iFGPath').val(temp);
+            };
+
+            filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function RMFG() {
+        $('#iFGPath').val(null);
+        $('#PicFG').hide();
+        $('#RM_FG').hide();
+        const file = document.getElementById('Pic_FG');
+        file.value = '';
+    }
+
+        function SaveImg() {
+
+            var form = $('#allData')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("ProdPicSaveImage", "NewProduct")',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                   $('#allData').submit();
+                },
+                error: function () {
+                    LoadingButton(false);
+                }
+            });
+    }
+
+     function palletsizewithOverhang() {
+         let palletSize = $("#modelProductProp_PalletSize").val();
+
+            let Overhang = $("#modelProductProp_PalletOverhang").val();
+            var temp = new Array();
+            temp = palletSize.split("x");
+            var w = temp[0];
+            var l = temp[1];
+            let wOver = (w * 100) + Number(Overhang / 10);
+            let lOver = (l * 100) + Number(Overhang / 10);
+            var palletOverhangsum = (wOver/100).toFixed(2) + "x"+ (lOver/100).toFixed(2);
+                $("#PalletOverhangSum").val(palletOverhangsum);
+
+        }
+
+        function GetPallet() {
+            //alert('qqq');
+            let JoinId = $("#modelProductProp_JoinId").val();
+            let palletSize = $("#modelProductProp_PalletSize").val();
+            let WidDC = $("#modelProductProp_Wid").val();
+            let LegDC = $("#modelProductProp_Leg").val();
+            let Overhang = $("#modelProductProp_PalletOverhang").val();
+
+            $('#PicPallet').hide();
+             $.ajax({
+                url: '@Url.Action("GetPallet", "NewProduct")',
+                type: "POST",
+                dataType: "json",
+                 data: { MaterialNo: '@Model.MaterialNo', JoinId: JoinId, palletSize: palletSize, WidDC: WidDC, LegDC: LegDC,Overhang: Overhang},
+                 success: function (resss) {
+
+                     var path = location.pathname.split('/');
+                     if (path[path.length - 1].indexOf('.html') > -2) {
+                         path.length = path.length - 1;
+                     }
+                     var app = path[path.length - 2];
+
+                  //  var pathsuggess = "\\L0740_OUTSOURC2\\Drawing\\PicPallet\\" + resss.resultPallet;
+
+                    //var pathsuggess = "/pmtsappproduction/images/PicPallet/" + resss.resultPallet;
+                    // var pathsuggess = "D:\\Drawing\\PicPallet\\" + resss.resultPallet;
+                     //alert(pathsuggess);
+                     var pathsuggess = "";
+                     var pathsuggessSave = "";
+                //     alert(pathsuggess);
+
+                  //   var pathsuggess = "\\" + PathSplit[2] + "\\" + PathSplit[3] + "\\PicPallet\\" + resss.resultPallet;
+                     var bunlayer = resss.bunlayer;
+                     if (bunlayer == 0) {
+                         swal('Product Size Over  Pallet Size!!');
+                         debugger;
+                         bunlayer = 1;
+                         pathsuggess = "/" + app + "/images/PicPallet/C0111.png";
+                         pathsuggessSave = "D:\\Drawing\\PicPallet\\C0111.png";
+                         $('#PicPallet').attr('src', "/" + app + "/images/PicPallet/C0111.png");
+                         $('#modelProductProp_picgetPallet').val(pathsuggessSave);
+                         $('#modelProductProp_PathpalletSuggess').val(pathsuggessSave);
+                         $('#modelProductPicture.Pic_PalletPath').val('');
+
+                     } else {
+                         pathsuggess = "/" + app + "/images/PicPallet/" + resss.resultPallet;
+                         pathsuggessSave = "D:\\Drawing\\PicPallet\\" + resss.resultPallet;
+                         $('#PicPallet').attr('src', pathsuggess);
+                         $('#modelProductProp_picgetPallet').val(pathsuggessSave);
+                         $('#modelProductProp_PathpalletSuggess').val(pathsuggessSave);
+                         $('#modelProductPicture.Pic_PalletPath').val('');
+                     }
+
+                     $('#modelProductProp_BunLayer').val(bunlayer);
+
+                    // $('#PicPallet2').attr('src', pathsuggess);
+                     //$('#modelProductProp_picgetPallet').val(pathsuggessSave);
+                   //  alert(pathsuggess);
+                     $('#PicPallet').show();
+                     //$('#PicPallet2').show();
+                     //$('#modelProductProp_PathpalletSuggess').val(pathsuggessSave);
+                     //$('#modelProductPicture.Pic_PalletPath').val('');
+
+                     var bun = $("#modelProductProp_Bun").val();
+                     //var bunlayer = $("#modelProductProp_BunLayer").val();
+                     var layerpallet = $("#modelProductProp_LayerPallet").val();
+                     var res = bun * bunlayer * layerpallet;
+                     $("#modelProductProp_BoxPalet").val(res);
+
+                },
+                error: function () { }
+            });
+
+          //  $('#Pic_Pallet').val('D:/Drawing/TCNK/FG/252B-Z038036099.png');
+        }
+
+        //$('input[name=Buntxt], input[name=BunLayertxt], input[name=LayerPallettxt]').keyup(function () {
+    $('#modelProductProp_Bun, #modelProductProp_BunLayer, #modelProductProp_LayerPallet').keyup(function () {
+
+            var bun = $("#modelProductProp_Bun").val();
+            var bunlayer = $("#modelProductProp_BunLayer").val();
+            var layerpallet = $("#modelProductProp_LayerPallet").val();
+            var res = bun * bunlayer * layerpallet;
+            $("#modelProductProp_BoxPalet").val(res);
+        });
+
+        $("#modelProductProp_JoinType").change(function () {
+           // var sss = $("#modelProductProp_JoinId option:selected").text();
+          // alert("sss");
+
+            let dataJoinType = $("#modelProductProp_JoinType").val();
+
+            var code = $(this).val();
+
+            for (var i = 0; i < JoinList.length; i++) {
+
+                if (JoinList[i].JointName == code) {
+                    $('#modelProductProp_JoinId').val(JoinList[i].JointId);
+                    //alert(JoinList[i].JointId);
+                    break;
+                }
+            }
+
+            if (dataJoinType === "AGL" || dataJoinType === "กาวเครื่องอัตโนมัติ") { // ตอก
+
+                $("#JoinCharactirdiv").show();
+            } else {
+                $("#JoinCharactirdiv").hide();
+            }
+
+           // let  dataJoint = $("#modelProductProp_JoinId").val();
+
+            //$('#modelProductProp_JoinType').val($("#modelProductProp_JoinId option:selected").text());
+
+            //alert(dataJoint);
+            //alert($("#modelProductProp_JoinId").val());
+            var formgroup = $("#typeOfProperty").val();
+            var n = formgroup.includes("RSC");
+           // alert(n);
+            if (n ==true) {
+                GetPallet();
+            }
+
+            //
+            $("#modelProductProp_BunLayer").val('');
+            $("#modelProductProp_BoxPalet").val('');
+
+            //var dataJoint = this.value;
+           // alert('555');
+           // debugger;
+            checkwire();
+
+    });
+
+    function checkwire() {
+        var dataJoint = $("#modelProductProp_JoinId").val();
+        var Jointypedata = $("#modelProductProp_JoinType").val();
+        //alert(Jointypedata);
+        if (dataJoint === "STI" || Jointypedata === "ตอก") { // ตอก
+
+            //alert(dataJoint);
+
+            //var wiredata = $("#wiredata").val();
+            $("#modelProductProp_Bun").val($("#modelProductPropBun").val());
+            $("#modelProductProp_LayerPallet").val($("#modelProductPropLayerPallet").val());
+
+            var scoreW2 = $("#scoreW2").val();
+
+            var wiredata = parseInt(scoreW2 / 50) + 1;
+            $("#wire").val(wiredata);
+          //  $("#wire").val(wiredata);
+            $("#wire").prop('readOnly', false);
+           // alert('4444');
+        } else if (dataJoint === "OOO") { //ไม่มีรอยต่อ
+
+            $("#wire").val(0);
+            $("#modelProductProp_Bun").val($("#modelProductProp_BoxPerBundleNoJoint").val());
+            $("#modelProductProp_LayerPallet").val($("#modelProductProp_LayerPerPalletNoJoint").val());
+            $("#wire").prop('readOnly', true);
+        } else {
+            //  alert("aa");
+            $("#wire").val(0);
+            $("#modelProductProp_Bun").val($("#modelProductPropBun").val());
+            $("#modelProductProp_LayerPallet").val($("#modelProductPropLayerPallet").val());
+            $("#wire").prop('readOnly', true);
+        }
+    }
+
+        $("#modelProductProp_PrintMethod").change(function () {
+            // alert($(this).val());
+            var code = $(this).val();
+
+            for (var i = 0; i < PrintMethodList.length; i++) {
+
+                if (PrintMethodList[i].Method == code) {
+                    $('#modelProductProp_AmountColor').val(PrintMethodList[i].AmountColor);
+                    break;
+                }
+            }
+    });
+
+        $("#modelProductProp_PalletSize").change(function () {
+            if ($("#modelProductProp_PalletSize").val != "") {
+
+                var formgroup = $("#typeOfProperty").val();
+                var n = formgroup.includes("RSC");
+                // alert(n);
+                if (n == true) {
+                    GetPallet();
+                }
+            }
+            //  GetPallet();
+
+        });
+
+        var OnSaveSuccess = function (res) {
+            if (typeof res.isSuccess === 'undefined') {
+                window.location.href = '@Url.Action("Index", "Login")';
+            }
+            else {
+
+                if (res.isSuccess) {
+                    window.location = "Routing";
+                }
+                else {
+                    //modalDialog(error, SaveFailed);
+                    swal("SaveFailed", "", "warning")
+                        .then((willAccept) => {
+                            if (willAccept) {
+                                LoadingButton(false);
+                            }
+                        });
+                }
+            }
+    };
+
+    // Modal Choose Pattern Pallet
+    $('#btn-choose-pattern-modal').click(function () {
+        //  $(".field-validation-error span").hide();
+        $('#modal-choose-pattern').modal('show');
+    });
+    $("#sizelist").on("click", "a", function (e) {
+        $('#modelProductProp_PathpalletSuggess').val('');
+        e.preventDefault();
+        var $this = $(this).parent();
+        $this.addClass("select").siblings().removeClass("select");
+      //  var pathsuggess = "/" + app + "/images/PicPallet/" + $this.data("value");
+      //  alert($this.data("value"));
+
+        var path = location.pathname.split('/');
+        if (path[path.length - 1].indexOf('.html') > -2) {
+            path.length = path.length - 1;
+        }
+        var app = path[path.length - 2];
+
+        var pathsuggess = "/" + app + "/images/PicPallet/" + $this.data("value")+ ".png";
+        //alert(pathsuggess);
+        var pathsuggessSave = "D:\\Drawing\\PicPallet\\" + $this.data("value") + ".png";
+        $('#PicPallet').show();
+        $('#PicPallet').attr('src', pathsuggess);
+        $('#RM_Pallet').show();
+        $('#modelProductProp_PathpalletSuggess').val(pathsuggessSave);
+    })
+
+    $("form[name=size-form]").submit(function (e) {
+        if ($(this).find("div.select").length == 0) {
+            alert("Please select a size.");
+            e.preventDefault();
+        }
+    });
+
+    //$("form[name=size-form]").submit(function (e) {
+    //    if ($(this).find("li.select").length == 0) {
+    //        alert("Please select a size.");
+    //        e.preventDefault();
+    //    }
+    //});
+
+    document.addEventListener("wheel", function (event) {
+        if (document.activeElement.type === "number" &&
+            document.activeElement.classList.contains("noscroll")) {
+            document.activeElement.blur();
+        }
+    });
+
+    function LoadingButton(value) {
+        if (value) {
+            $('#btnSave').hide();
+            $('#btnNextLoad').show();
+        } else {
+            $('#btnNextLoad').hide();
+            $('#btnSave').show();
+        }
+    }
+    </script>
+
+}

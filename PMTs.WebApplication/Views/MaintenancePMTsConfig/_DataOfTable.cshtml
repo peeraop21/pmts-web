@@ -1,0 +1,189 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenancePMTsConfig.MaintenancePMTsConfigViewModel
+
+@{ int No = 1; }
+
+@foreach (var item in Model.PMTsConfigViewModelList)
+{
+    //if (item.Status == true)
+    //{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.FucName</td>
+        <td>@item.FucValue</td>
+        <td>@item.Description</td>
+        <td>
+            <button type="button" class="btn btn-default"
+                    data-id="@item.Id" data-FucName="@item.FucName"
+                    data-FucValue="@item.FucValue" data-Description="@item.Description"
+                    onclick="viewShow(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-FucName')
+                    , this.getAttribute('data-FucValue')
+                    , this.getAttribute('data-Description'))">
+                    <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span></button>
+        </td>
+        <td>
+            <button type="button" class="btn btn-default"
+                    data-id="@item.Id" data-FucName="@item.FucName"
+                    data-FucValue="@item.FucValue" data-Description="@item.Description"
+                    data-CreatedDate="@item.CreatedDate"
+                    data-CreatedBy="@item.CreatedBy"
+                    onclick="viewEdit(
+                    this.getAttribute('data-Id')
+                    , this.getAttribute('data-FucName')
+                    , this.getAttribute('data-FucValue')
+                    , this.getAttribute('data-Description')
+                    , this.getAttribute('data-CreatedDate')
+                    , this.getAttribute('data-CreatedBy'))">
+                    <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span></button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+    @* } *@
+}
+
+<!-- Start View Modal -->
+<div class="modal bs-example-modal-lg" id="modal-view">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["View PMTsConfig"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="Id" />
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["FucName"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="FucName" id="FucName" readonly />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["FucValue"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="FucValue" id="FucValue" readonly />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">@Localizer["Description"]</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control" name="Description" id="Description" readonly />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+<!-- /.modal -->
+<!-- End View Modal -->
+
+<!-- Start Edit Modal -->
+<div class="modal" id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-maintain-corconfig">
+            @*asp-controller="MaintenancePMTsConfig" asp-action="UpdatePMTsConfig" data-ajax="true" data-ajax-success="onUpdateSuccess" data-ajax-method="POST">*@
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit PMTsConfig"]</h4>
+                    <button type="button" class="close" data-dismiss="modal"  data-backdrop="false" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="EId" />
+                    <input type="hidden" name="CreatedBy" id="ECreatedBy" />
+                    <input type="hidden" name="CreatedDate" id="ECreatedDate" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["FucName"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EFucName" name="FucName" maxlength="50" readonly />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="List">@Localizer["FucValue"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EFucValue" name="FucValue"  maxlength="50" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Description"]</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="EDescription" name="Description" maxlength="100" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btneditmaintaincorconfig">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- End Edit Modal -->
+
+<script>
+
+        $('.btneditmaintaincorconfig').click(function () {
+            if ($('#EFucName').val() === "" || $('#EFucValue').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            } else {
+                //var form = JSON.stringify(getData());
+                var form = getData();
+                var data = form;
+               // var form = $('#edit-maintain-corconfig').serialize();
+                $.ajax({
+                    url: '@Url.Action("UpdatePMTsConfig", "MaintenancePMTsConfig")',
+                    type: "POST",
+                    async: false,
+                    data:data,
+                    dataType: "json",
+                    success: function (data) {
+                        UpdatePMTsConfigTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modal-edit').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+       });
+
+        function UpdatePMTsConfigTableNew(res) {
+            $('#PMTsConfig-table').html(res.View);
+            $('#PMTsConfig-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '-webkit-fill-available');
+            $('.form-control').css('width', '-webkit-fill-available');
+
+            //$('.modal').modal('hide');
+            //$('.modal-backdrop').hide();
+            //$("body").removeClass("modal-open");
+        }
+</script>

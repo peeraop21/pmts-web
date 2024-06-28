@@ -1,0 +1,73 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model IEnumerable<PMTs.DataAccess.ModelView.Report.CheckDiffDueDate>
+
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckOrderTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:6%">@Localizer["No."]</th>
+            <th>@Localizer["S/O ปัจจุบัน"]</th>
+            <th>@Localizer["Material No"]</th>
+            <th>@Localizer["Product Code"]</th>
+            <th style="width:19%">@Localizer["Customer"]</th>
+            <th>@Localizer["Product Type"]</th>
+            <th>@Localizer["กำหนดส่ง (ปัจจุบัน)"]</th>
+            <th>@Localizer["กำหนดส่ง (ล่าสุด)"]</th>
+            <th>@Localizer["สร้าง M/C"]</th>
+            <th>@Localizer["DIFF"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{  int count = 0;
+        @if (Model != null) {
+        @foreach (var item in Model)
+        {
+            count++;
+        <tr>
+            <td>@count</td>
+            <td>@item.OrderItem</td>
+            <td>@item.MaterialNo</td>
+            <td>@item.PC</td>
+            <td>@item.Name</td>
+            <td>@item.BoxType</td>
+
+            @if (item.DueDate.ToString("dd/MM/yyyy") == "01/01/0001")
+            {
+                <td></td>
+            }
+            else
+            {
+                <td>@item.DueDate.ToString("dd/MM/yyyy")</td>
+            }
+
+            @if (item.MaxDue.ToString("dd/MM/yyyy") == "01/01/0001")
+            {
+                <td></td>
+            }
+            else
+            {
+                <td>@item.MaxDue.ToString("dd/MM/yyyy")</td>
+            }
+
+            @if (item.CreatedDate.ToString("dd/MM/yyyy") == "01/01/0001")
+            {
+                <td></td>
+            }
+            else
+            {
+                <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+            }
+            <td>@item.diff</td>
+        </tr>
+        }
+        }
+            }
+    </tbody>
+</table>

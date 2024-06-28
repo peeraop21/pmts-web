@@ -1,0 +1,413 @@
+﻿@{
+    ViewData["Title"] = "View";
+}
+
+@model PMTs.DataAccess.ModelView.MaintenanceFlute.MaintenanceFluteModel
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-file-document-box"></i> @Localizer["Flute"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModal">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Create"]
+                    </button>
+                    <div id="modal">
+                        <partial name="_CreateModal" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="flute-table">
+                @Html.Partial("_FluteTable", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#flute-data-table').DataTable();
+        });
+
+        function getData() {
+            let req = {
+                "Flute1": $("#idFlut").val(),
+                "Code": $("#idCode").val(),
+                "Description": $("#idDescription").val(),
+                "Height": $("#idHeight").val(),
+                "A": $("#idA").val(),
+                "B": $("#idB").val(),
+                "C": $("#idC").val(),
+                "D1": $("#idD1").val(),
+                "D2": $("#idD2").val(),
+                //"Tr1": $("#idTr1").val(),
+                //"Tr2": $("#idTr2").val(),
+                //"Tr3": $("#idTr3").val(),
+                "JoinSize": $("#idJoinSize").val(),
+                "GlueArea": $("#idGlueArea").val(),
+                "BundlePiece": $("#idBundlePiece").val(),
+                //"Layer": $("#idLayer").val(),
+                "Trim": $("#idTrim").val(),
+                "Stack": $("#idStack").val(),
+                "WasteStack": $("#idWaste_Stack").val(),
+                "SpeedFactor": $("#idSpeed_factor").val(),
+                "Speed": $("#idSpeed").val(),
+                "SetupTime": $("#idSetupTime").val(),
+                "NoOfChange": $("#idNoOfChange").val(),
+                "LayerPallet": $("#idLayerPallet").val(),
+                "BoxPerBundleNoJoint": $("#idBoxPerBundle_NoJoint").val(),
+                "LayerPerPalletNoJoint": $("#idLayerPerPallet_NoJoint").val(),
+                "Thickness": $("#idThickness").val()
+               // "Status": $("#idStatus:checked").val()
+            };
+            return req;
+        }
+
+        function BindFlute(data)
+        {
+            $("#idFlut").val(data.Flute1);
+            $("#idCode").val(data.Code);
+            $("#idDescription").val(data.Description);
+            $("#idHeight").val(data.Height);
+            $("#idA").val(data.A);
+            $("#idB").val(data.B);
+            $("#idC").val(data.C);
+            $("#idD1").val(data.D1);
+            $("#idD2").val(data.D2);
+            //$("#idTr1").val(data.Tr1);
+            //$("#idTr2").val(data.Tr2);
+            //$("#idTr3").val(data.Tr3);
+            $("#idJoinSize").val(data.JoinSize);
+            $("#idGlueArea").val(data.GlueArea);
+            $("#idBundlePiece").val(data.BundlePiece);
+            //$("#idLayer").val(data.Layer);
+            $("#idTrim").val(data.Trim);
+            $("#idStack").val(data.Stack);
+            $("#idWaste_Stack").val(data.WasteStack);
+            $("#idSpeed_factor").val(data.SpeedFactor);
+            $("#idSpeed").val(data.Speed);
+            $("#idSetupTime").val(data.SetupTime);
+            $("#idNoOfChange").val(data.NoOfChange);
+            $("#idLayerPallet").val(data.LayerPallet);
+            $("#idThickness").val(data.Thickness);
+            $("#idBoxPerBundle_NoJoint").val(data.BoxPerBundleNoJoint);
+            $("#idLayerPerPallet_NoJoint").val(data.LayerPerPalletNoJoint);
+            if (data.Status) {
+                $('#idStatus').prop('checked', true);
+            } else {
+                $('#idStatus').prop('checked', false);
+            }
+        }
+
+        $('#btnShowCreateModal').click(function () {
+          $.ajax({
+                    url: '@Url.Action("OpenAddModal", "MaintenanceFlute")',
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                     success: function (data) {
+                      $('#modal').html(data);
+                      $("#modal_ViewFlute").modal({ backdrop: 'static', keyboard: false });
+                      $('#modal_ViewFlute').modal("show");
+                      $('#idupdatemodal').css('display', 'none');
+                      $('#idcancelmodal').css('display', 'block');
+                         $('#idaddmodal').css('display', 'block');
+                         setReadOnlyView("0")
+                    }
+            });
+        });
+
+        function setReadOnlyView(param) {
+            if (param === "1") {
+                $("#idcardFlute :input").attr("disabled", true);
+                $("#idcardFluteTR :input").attr("disabled", true);
+
+            } else {
+                $("#idcardFlute :input").attr("disabled", false);
+                $("#idcardFluteTR :input").attr("disabled", false);
+            }
+        }
+
+        function setReadOnlyEdit(param) {
+            if (param === "1") {
+                $("#idFlut").attr("disabled", true);
+            } else {
+                $("#idFlut").attr("disabled", true);
+            }
+        }
+
+        function viewEditDataView(param)
+        {
+            $.ajax({
+                    url: '@Url.Action("OpenViewModal", "MaintenanceFlute")',
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                    data: { flute: param },
+                     success: function (data) {
+                         $('#modal').html(data.view);
+                         BindFlute(data.data);
+                         $("#modal_ViewFlute").modal({ backdrop: 'static', keyboard: false });
+                         $('#modal_ViewFlute').modal("show");
+                         $('#idupdatemodal').css('display', 'none');
+                         $('#idcancelmodal').css('display', 'block');
+                         $('#idaddmodal').css('display', 'none');
+                         setReadOnlyView("1");
+                    }
+            });
+        }
+
+        function viewEditData(param) {
+            $.ajax({
+                    url: '@Url.Action("OpenEditModal", "MaintenanceFlute")',
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                    data: { flute: param },
+                     success: function (data) {
+                         $('#modal').html(data.view);
+                         BindFlute(data.data);
+                         $("#modal_ViewFlute").modal({ backdrop: 'static', keyboard: false });
+                         $('#modal_ViewFlute').modal("show");
+                         $('#idupdatemodal').css('display', 'block');
+                         $('#idcancelmodal').css('display', 'block');
+                         $('#idaddmodal').css('display', 'none');
+                         setReadOnlyEdit("1");
+                    }
+            });
+        }
+
+       function subAddData()
+       {
+           var reqx = getData();
+           var arrx = GetArrayFluteTr();
+
+           if ($('#idStatus').prop('checked')) {
+               Object.assign(reqx, { Status: 1 });
+           } else {
+               Object.assign(reqx, { Status: 0 });
+           }
+
+            var req_fluttr = JSON.stringify(arrx);
+            var req_flute = JSON.stringify(reqx);
+
+              $.ajax({
+                  url: '@Url.Action("ManageData", "MaintenanceFlute")',
+                  type: "POST",
+                  async: false,
+                  dataType: "json",
+                  data: { req: req_flute, arrfluteTr: req_fluttr.toString(), flag: "Add"},
+                  success: function (data) {
+                      $('#modal_ViewFlute').modal("hide");
+                      bindDataAfterSave();
+                    }
+                });
+        }
+
+       function subUpdateData()
+       {
+           var reqx = getData();
+           var arrx = GetArrayFluteTr();
+
+           if ($('#idStatus').prop('checked')) {
+               Object.assign(reqx, { Status: 1 });
+           } else {
+               Object.assign(reqx, { Status: 0 });
+           }
+
+            var req_fluttr = JSON.stringify(arrx);
+            var req_flute = JSON.stringify(reqx);
+
+              $.ajax({
+                  url: '@Url.Action("ManageData", "MaintenanceFlute")',
+                  type: "POST",
+                  async: false,
+                  dataType: "json",
+                  data: { req: req_flute, arrfluteTr: req_fluttr.toString(), flag: "Update"},
+                  success: function (data) {
+                      $('#modal_ViewFlute').modal("hide");
+                      bindDataAfterSave();
+                    }
+                });
+        }
+
+        function GetArrayFluteTr() {
+            var countdiv = $(".elementno1").length;
+            var i;
+            arrayid = [];
+            for (i = 0; i < countdiv; i++) {
+                var idelement = ""
+                idelement = document.getElementsByClassName('elementno1')[i].id;
+                arrayid.push(idelement);
+            }
+            // console.log(arrayid);
+            var j;
+            var idx = 0;
+            var array = [];
+            for (j = 0; j < arrayid.length; j++) {
+                idname = arrayid[j];
+                if (idname !== "divno_1") {
+                    // $("#" + idname).remove();
+                    let split_id = idname.split("_");
+                    let nextindex = split_id[1];
+                    let station_id = "#s_" + nextindex;
+                    let code_id = "#c_" + nextindex;
+                    let item_id = "#i_" + nextindex;
+
+                    if ($(item_id).val() === "" && $(code_id).val() === "" && $(station_id).val() === "") {
+                    } else {
+                        array[idx] = {};
+                        array[idx].Id = 0;
+                        array[idx].Code = "";
+                        array[idx].Tr = $(code_id).val();
+                        array[idx].Station = $(station_id).val();
+                        var itm = 0;
+                        if ($(item_id).val() !== "") {
+                            itm = $(item_id).val();
+                        }
+                        array[idx].Item = itm;
+                        idx++;
+                    }
+
+                }
+            }
+            return array;
+        }
+
+        function bindDataAfterSave()
+        {
+            //BuildRemark - table
+             $.ajax({
+                    url: '@Url.Action("GetFluteAfterManageData", "MaintenanceFlute")',
+                  type: "POST",
+                  async: false,
+                  dataType: "json",
+                  success: function (data) {
+                      $('#_FluteTable').html(data);
+                    }
+                });
+        }
+
+        function CheckDuplicateItem() {
+            var countdiv = $(".elementno1").length;
+            var i;
+            arrayid = [];
+            for (i = 0; i < countdiv; i++) {
+                var idelement = ""
+                idelement = document.getElementsByClassName('elementno1')[i].id;
+                arrayid.push(idelement);
+            }
+            //  console.log(arrayid);
+            var j;
+            var idx = 0;
+            var array = [];
+            for (j = 0; j < arrayid.length; j++) {
+                idname = arrayid[j];
+                if (idname !== "divno_1") {
+                    // $("#" + idname).remove();
+                    let split_id = idname.split("_");
+                    let nextindex = split_id[1];
+                    let station_id = "#s_" + nextindex;
+                    let code_id = "#c_" + nextindex;
+                    let item_id = "#i_" + nextindex;
+
+                    if ($(item_id).val() === "" && $(code_id).val() === "" && $(station_id).val() === "") {
+                    } else {
+
+                        var itm = 0;
+                        if ($(item_id).val() !== "") {
+                            itm = $(item_id).val();
+                        }
+                        array.push(itm);
+
+                    }
+
+                }
+            }
+
+            var sorted_arr = array.sort(); // You can define the comparing function here.
+            // JS by default uses a crappy string compare.
+            var results = [];
+            for (var i = 0; i < array.length - 1; i++) {
+                if (sorted_arr[i + 1] == sorted_arr[i]) {
+                    results.push(sorted_arr[i]);
+                }
+            }
+
+            return results;
+        }
+
+        function CheckDuplicateStation() {
+            var countdiv = $(".elementno1").length;
+            var i;
+            arrayid = [];
+            for (i = 0; i < countdiv; i++) {
+                var idelement = ""
+                idelement = document.getElementsByClassName('elementno1')[i].id;
+                arrayid.push(idelement);
+            }
+            //  console.log(arrayid);
+            var j;
+            var idx = 0;
+            var array = [];
+            for (j = 0; j < arrayid.length; j++) {
+                idname = arrayid[j];
+                if (idname !== "divno_1") {
+                    // $("#" + idname).remove();
+                    let split_id = idname.split("_");
+                    let nextindex = split_id[1];
+                    let station_id = "#s_" + nextindex;
+                    let code_id = "#c_" + nextindex;
+                    let item_id = "#i_" + nextindex;
+
+                    if ($(item_id).val() === "" && $(code_id).val() === "" && $(station_id).val() === "") {
+                    } else {
+
+                        var itm = 0;
+                        if ($(station_id).val() !== "") {
+                            itm = $(station_id).val();
+                        }
+                        array.push(itm);
+
+                    }
+
+                }
+            }
+
+            var sorted_arr = array.sort(); // You can define the comparing function here.
+            // JS by default uses a crappy string compare.
+            var results = [];
+            for (var i = 0; i < array.length - 1; i++) {
+                if (sorted_arr[i + 1] == sorted_arr[i]) {
+                    results.push(sorted_arr[i]);
+                }
+            }
+
+            return results;
+        }
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

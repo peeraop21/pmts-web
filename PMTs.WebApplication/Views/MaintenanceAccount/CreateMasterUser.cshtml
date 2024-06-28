@@ -1,0 +1,270 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MasterUserViewModel
+
+<div class="row page-titles">
+    <div class="col-md-5 col-8 align-self-center">
+        <h3 class="text-themecolor m-b-0 m-t-0">@Localizer["Account Management"]</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-action="Index">@Localizer["Account"]</a>
+            </li>
+            <li class="breadcrumb-item active">@Localizer["Create Account"]</li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card card-outline-info">
+            <div class="card-header">
+                <h4 class="m-b-0 text-white">@Localizer["Create Personal Information"]</h4>
+            </div>
+            <form asp-action="CreateMasterUser" class="form-horizontal">
+                <div class="card-body">
+                    <div class="form-body">
+
+                        <h3 class="box-title">Person Info</h3>
+                        <hr class="m-t-0 m-b-20">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Username"] <span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="USER_NAME" class="form-control" required />
+                                        <span asp-validation-for="USER_NAME" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Password"] <span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="PASSWORD" class="form-control" required />
+                                        <span asp-validation-for="PASSWORD" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["DOMAIN"]:</label>
+                                    <div class="col-md-9">
+                                        <select asp-for="USER_DOMAIN" id="USER_DOMAIN" name="USER_DOMAIN" class="form-control" asp-items="ViewBag.UserDomain" onchange="disPass();"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                $('#USER_DOMAIN').change(function () {
+                                    if ($(this).find('option:selected').text() != '') {
+                                        $('#PASSWORD').prop('disabled', true);
+                                    } else {
+                                        $('#PASSWORD').prop('disabled', false)
+                                    }
+                                });
+                            </script>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Sale Org"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="SALE_ORG" class="form-control" required />
+                                        <span asp-validation-for="SALE_ORG" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Plant Code"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="PLANT_CODE" class="form-control" required />
+                                        <span asp-validation-for="PLANT_CODE" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["First Name[TH]"]Firstname TH<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="FIRST_NAME_TH" class="form-control" required />
+                                        <span asp-validation-for="FIRST_NAME_TH" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Last Name[TH]"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="LAST_NAME_TH" class="form-control" required />
+                                        <span asp-validation-for="LAST_NAME_TH" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["First Name[EN]"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="FIRST_NAME_EN" class="form-control" required />
+                                        <span asp-validation-for="FIRST_NAME_EN" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Last Name[EN]"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="LAST_NAME_EN" class="form-control" required />
+                                        <span asp-validation-for="LAST_NAME_EN" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["E-mail"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="EMAIL" class="form-control" required />
+                                        <span asp-validation-for="EMAIL" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Telephone"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="TELEPHONE" class="form-control" required />
+                                        <span asp-validation-for="TELEPHONE" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Mobile No"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="MOBILE_NO" class="form-control" required />
+                                        <span asp-validation-for="MOBILE_NO" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Password Hint"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="PASSWORD_HINT" class="form-control" />
+                                        <span asp-validation-for="PASSWORD_HINT" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Comment"]:</label>
+                                    <div class="col-md-9">
+                                        <input asp-for="COMMENT" class="form-control" />
+                                        <span asp-validation-for="COMMENT" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Role"]<span class="text-danger">*</span>:</label>
+                                    <div class="col-md-9">
+                                        <select asp-for="Role.RoleId"
+                                                asp-items="ViewBag.Roles" class="form-control"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="control-label text-right col-md-3">@Localizer["Status"]:</label>
+                                    <div class="col-md-9">
+                                        <input type="checkbox" id="md_checkbox_29" asp-for="IS_FLAG_DELETE" class="filled-in chk-col-teal">
+                                        <label for="md_checkbox_29"></label>   <span class="small text-danger">(Check = NonActive)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="box-footer text-center">
+                        <button type="reset" class="btn btn-warning"><i class="fas fa-sync-alt"></i>@Localizer["Reset"]</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>@Localizer["Confirm Customer"]</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in " id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Messsage Alert</h4>
+            </div>
+            <div class="modal-body">
+                Save @ViewBag.message
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="window.location.href='@Url.Action("index")'" class="btn btn-info waves-effect waves-light">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in " id="myModalError" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-themecolor">Save Status</h2>
+            </div>
+            <div class="modal-body text-center">
+                <div class="swal2-icon swal2-success swal2-animate-success-icon" style="display: flex;"><div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);"></div><span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span><div class="swal2-success-ring"></div> <div class="swal2-success-fix" style="background-color: rgb(255, 255, 255);"></div><div class="swal2-success-circular-line-right" style="background-color: rgb(255, 255, 255);"></div></div>
+                <p><h3> Save Not Success</h3></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect waves-light">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    $(document).ready(function () {
+
+        var chkViewBag = '@ViewBag.message';
+        if (chkViewBag === "Success") {
+
+            $('#myModal').modal("show");
+
+        } else if (chkViewBag === "Warning") {
+            alert(chkViewBag);
+            $('#myModalError').modal("show");
+        }
+    });
+    </script>
+}

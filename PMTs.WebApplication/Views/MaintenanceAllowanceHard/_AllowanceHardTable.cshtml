@@ -1,0 +1,104 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceAllowanceHard.MaintenanceAllowanceHardViewModel
+
+@*<div class="box-header">
+    <h3 class="box-title"><i class="mdi mdi-clipboard-outline"></i> Allowance Hard Process</h3>
+</div>*@
+
+<div class="box-body">
+    <table id="Allowance-data-table" class="table table-bordered table-striped">
+        <thead>
+            <tr class="text-center">
+                <th scope="col">@Localizer["No"]</th>
+                <th scope="col">@Localizer["HandShip"]</th>
+                <th scope="col">@Localizer["Percen"]</th>
+                <th scope="col">@Localizer["SheetMin"]</th>
+                <th scope="col">@Localizer["SheetMax"]</th>
+                <th scope="col">@Localizer["GroupKiwi"]</th>
+                <th scope="col" align="center">@Localizer["Option"]</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @{ int No = 1; }
+
+            @foreach (var item in Model.allowanceHards)
+            {
+                //if (item.Status == true)
+                //{
+                <tr>
+                    <th scope="row">@No</th>
+                    <td>@item.Hardship</td>
+                    <td>@item.Percen</td>
+                    <td>@item.SheetMin</td>
+                    <td>@item.SheetMax</td>
+                    <td>@item.GroupKiwi</td>
+                    <td align="center">
+                        <button type="button" class="btn btn-default" title="View"
+                                data-id="@item.Id"
+                                data-HardShip="@item.Hardship" data-Percen="@item.Percen"
+                                data-SheetMin="@item.SheetMin" data-SheetMax="@item.SheetMax"
+                                data-GroupKiwi="@item.GroupKiwi" data-flag="0"
+                                data-CreatedBy="@item.CreatedBy" data-CreatedDate="@item.CreatedDate"
+                                onclick="viewShow(
+                                    this.getAttribute('data-Id'),
+                                    this.getAttribute('data-HardShip'),
+                                    this.getAttribute('data-Percen'),
+                                    this.getAttribute('data-SheetMin'),
+                                    this.getAttribute('data-SheetMax'),
+                                    this.getAttribute('data-GroupKiwi'),
+                                    this.getAttribute('data-flag'),
+                                    this.getAttribute('data-CreatedBy'),
+                                    this.getAttribute('data-CreatedDate')
+                                )">
+                            <span class="fas fa-file-alt text-info btn" aria-hidden="true"></span>
+                        </button>
+
+                        <button type="button" class="btn btn-default" title="Edit"
+                                data-id="@item.Id"
+                                data-HardShip="@item.Hardship" data-Percen="@item.Percen"
+                                data-SheetMin="@item.SheetMin" data-SheetMax="@item.SheetMax"
+                                data-GroupKiwi="@item.GroupKiwi" data-flag="1"
+                                data-CreatedBy="@item.CreatedBy" data-CreatedDate="@item.CreatedDate"
+                                onclick="viewShow(
+                                    this.getAttribute('data-Id'),
+                                    this.getAttribute('data-HardShip'),
+                                    this.getAttribute('data-Percen'),
+                                    this.getAttribute('data-SheetMin'),
+                                    this.getAttribute('data-SheetMax'),
+                                    this.getAttribute('data-GroupKiwi'),
+                                    this.getAttribute('data-flag'),
+                                    this.getAttribute('data-CreatedBy'),
+                                    this.getAttribute('data-CreatedDate')
+                                )">
+                            <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+                        </button>
+                    </td>
+
+                    @*<td>
+                            <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+                        </td>*@
+                </tr>
+
+                No++;
+                @* } *@
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+        $('#Allowance-data-table').DataTable();
+    });
+</script>

@@ -1,0 +1,513 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceRoles.MaintenanceRolesViewModel
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-account-settings-variant"></i> @Localizer["Roles"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModalCreateRole">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span> @Localizer["Create"]
+                    </button>
+
+                    <partial name="_CreateModal" model="Model" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="MasterRoles-table">
+                <partial name="_MasterRolesTable" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">
+            Config Role name :
+            <label id="rolenametext" name="rolenametext" />
+
+            <input id="rolenamehid" name="rolenamehid" type="hidden" />
+        </div>
+        <input type="hidden" id="roleidselect" name="roleidselect" />
+    </div>
+    <div class="row second">
+
+        <div class="col-md-6">
+
+            <div class="card-body" id="MasterMainmenu-table">
+                <partial name="_ConfigMenuByRole" model="Model" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <input type="hidden" id="txtroleid" />
+            <div class="card-body" id="MasterSubMainmenu-table">
+                <partial name="_ConfigSubMenuByRole" model="Model" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        var materials = [];
+        var i = 0;
+        var actionClick = 0;
+
+        function viewEdit(Id, RoleId, RoleName, RoleDesc) {
+
+        $('#EId').val(Id);
+            $('#ERoleId').val(RoleId);
+            $('#ERoleName').val(RoleName);
+            $('#ERoleDesc').val(RoleDesc);
+
+        $('#modal-edit').modal('show');
+        // $('.modal-backdrop').show();
+    }
+
+    function getData() {
+
+        let req = {
+            "Id": $("#EId").val(),
+            "RoleId": $("#ERoleId").val(),
+            "RoleName": $("#ERoleName").val(),
+            "RoleDesc": $("#ERoleDesc").val(),
+
+        };
+
+        return req;
+    }
+
+        $('#btnSubmitMaintainRole').click(function () {
+            if ($("#MasterRoleViewModel_RoleId").val() === "" || $("#MasterRoleViewModel_RoleName").val() === "" || $("#MasterRoleViewModel_RoleDesc").val() === "") {
+            swal("Please input data!", { icon: "warning", });
+        }
+        else
+            {
+                debugger;
+            var form = $('#create-Roles-form').serialize();
+            $.ajax({
+                url: '@Url.Action("SaveRole", "MaintenanceRoles")',
+                type: "POST",
+                async: false,
+                data: form,
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    UpdateRolesTableNew(data);
+                    swal("Save Success!", { icon: "success", });
+                    $('#modal-create').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $("body").removeClass("modal-open");
+                }
+            });
+        }
+    });
+
+        $('#btnsubmitmaintainrolechange').click(function () {
+            if ($("#ERoleId").val() === "" || $("#ERoleName").val() === "" || $("#ERoleDesc").val() === "") {
+            swal("Please input data!", { icon: "warning", });
+        }
+        else {
+            var tmp = getData();
+                debugger;
+            var form = JSON.stringify(tmp);// $('#edit-maintain-color').serialize();
+            $.ajax({
+                url: '@Url.Action("UpdateRole", "MaintenanceRoles")',
+                type: "POST",
+                async: false,
+                data:
+                {
+                    req: form.toString()
+                },
+                dataType: "json",
+                success: function (data) {
+                    UpdateRolesTableNew(data);
+                    swal("Update Success!", { icon: "success", });
+                    $('#modal-edit').modal('hide');
+                    $('.modal-backdrop').hide();
+                    $("body").removeClass("modal-open");
+                }
+            });
+        }
+    });
+
+    $(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+
+        $('#Roles-data-table').DataTable();
+    });
+
+        $('#btnShowCreateModalCreateRole').click(function () {
+        //  $(".field-validation-error span").hide();
+        $('#modal-create').modal('show');
+    });
+
+    $('#btnSubmit').click(function () {
+        $('.add-row').remove();
+    });
+
+    function UpdateRolesTableNew(res) {
+        $('#MasterRoles-table').html(res.View);
+            $('#Roles-data-table').DataTable();
+            $('.form-group').css('display', 'block');
+            //$('.form-inline').css('width', '-webkit-fill-available');
+            //$('.form-control').css('width', '-webkit-fill-available');
+    }
+
+    function UpdateMainTableNew(res) {
+        debugger;
+
+       // alert('UpdateMainTableNew');
+        $('#MasterMainmenu-table').html(res.View);
+        $('#MainMenuTable').DataTable({
+            "lengthChange": false,
+            paging: false,
+        });
+        $('.form-group').css('display', 'block');
+        //$('.form-inline').css('width', '-webkit-fill-available');
+        //$('.form-control').css('width', '-webkit-fill-available');
+    }
+
+        function viewMainmenu(RoleId, RoleName) {
+            //alert('aaa');
+            debugger;
+        $('html,body').animate({
+            scrollTop: $(".second").offset().top
+        },
+            'slow');
+
+        $("#rolenametext").html(RoleName);
+            $("#roleidselect").val(RoleId);
+            $("#rolenamehid").val(RoleName);
+
+        debugger;
+        $.ajax({
+            type: "GET",
+             url: '@Url.Action("GetMainMenuData", "MaintenanceRoles")',
+            data: { RoleId: RoleId },
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var form = JSON.stringify(result);
+                  //$('#rolenametext').val(RoleName);
+                UpdateMainTableNew(result);
+                //$("MasterSubMainmenu-table").hide()
+
+                $('#MasterSubMainmenu-table').css('display', 'none');
+                //UpdateSubTableNew(res)
+
+            },
+            error: function (response) {
+               // debugger;
+                alert('eror');
+            }
+        });
+
+        }
+
+        function SaveMenu(menuid, roleId, idmenurole) {
+            debugger;
+            var chk = $("#chk_" + menuid);
+            var chkmenu = false;
+            if ($(chk).is(":checked")) {
+                chkmenu = true;
+            }
+            else if ($(chk).is(":not(:checked)")) {
+                chkmenu = false;
+            }
+            roleId = $("#roleidselect").val();
+            //$("#rolenametext").html(RoleName);
+            var rolename = $("#rolenamehid").val();
+            //Save Mainmenu
+           $.ajax({
+            type: "GET",
+             url: '@Url.Action("SaveMenuByRoles", "MaintenanceRoles")',
+               data: { roleId: roleId, menuid: menuid, chkmenu: chkmenu, idmenurole: idmenurole},
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var form = JSON.stringify(result);
+
+                  //$('#rolenametext').val(RoleName);
+                //UpdateSubTableNew(result);
+                //UpdateMainTableNew(result);
+                //alert('Update Menu By Role Success');
+                swal('Update Menu By Role Success');
+                viewMainmenu(roleId, rolename);
+
+            },
+            error: function (response) {
+
+                swal("", "Error Update!", "error");
+            }
+        });
+
+        var $row = $(this).closest("tr");
+        var id = $row.find("input:eq(0)").attr('id');
+
+        var elementById = "#" + id;
+
+        $.ajax({
+            type: "GET",
+             url: '@Url.Action("GetSubMenuData", "MaintenanceRoles")',
+            data: { RoleId: RoleId, menuid: menuid },
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var form = JSON.stringify(result);
+                  //$('#rolenametext').val(RoleName);
+                UpdateSubTableNew(result);
+
+            },
+            error: function (response) {
+               // debugger;
+                alert('eror');
+            }
+        });
+        }
+
+    //function UpdateMenuTableNew(result) {
+    //    debugger;
+
+    //}
+
+    function viewSubMainmenu(menuid, RoleId) {
+       // alert(menuid + " " + RoleId);
+
+        // $('#rolenametext').val(RoleName);
+        //$("#rolenametext").html(RoleName);
+       // debugger;
+
+        debugger;
+        var $row = $(this).closest("tr");
+        var id = $row.find("input:eq(0)").attr('id');
+
+        var elementById = "#" + id;
+
+        $('#txtroleid').val(RoleId);
+
+        var chk = $("#chk_" + menuid);
+        var chkmenu = false;
+        if ($(chk).is(":checked")) {
+            chkmenu = true;
+            //alert('true');
+        }
+        else if ($(chk).is(":not(:checked)")) {
+            chkmenu = false;
+            //alert('false');
+        }
+
+        $.ajax({
+            type: "GET",
+             url: '@Url.Action("GetSubMenuData", "MaintenanceRoles")',
+            data: { RoleId: RoleId, menuid: menuid },
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var form = JSON.stringify(result);
+                  //$('#rolenametext').val(RoleName);
+                $('#MasterSubMainmenu-table').css('display', 'block');
+                UpdateSubTableNew(result, chkmenu);
+
+            },
+            error: function (response) {
+               // debugger;
+                alert('eror');
+            }
+        });
+        }
+
+        function SavesubMenu(menuid, submenuroleid, mainmenuid, idsubmenurole) {
+            debugger;
+
+            var chk = $("#chksub_" + menuid);
+            var chkmenu = false;
+            if ($(chk).is(":checked")) {
+                chkmenu = true;
+            }
+            else if ($(chk).is(":not(:checked)")) {
+                chkmenu = false;
+            }
+            //roleId = $("#roleidselect").val();
+            var roleidselect = $('#roleidselect').val();
+            //SavesubMenuByRoles
+           $.ajax({
+            type: "GET",
+             url: '@Url.Action("SavesubMenuByRoles", "MaintenanceRoles")',
+               data: {
+                   idrole: roleidselect, menuid: menuid, chkmenu: chkmenu, submenuroleid: submenuroleid,
+                   mainmenuid: mainmenuid, idsubmenurole: idsubmenurole
+               },
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var form = JSON.stringify(result);
+                  //$('#rolenametext').val(RoleName);
+                //UpdateSubTableNew(result);
+
+                //alert('Update Menu By Role Success');
+                swal('Update Menu By Role Success');
+                debugger;
+                viewSubMainmenu(menuid, roleidselect);
+            },
+            error: function (response) {
+
+                swal("", "Error Update!", "error");
+            }
+        });
+
+        var $row = $(this).closest("tr");
+        var id = $row.find("input:eq(0)").attr('id');
+
+        var elementById = "#" + id;
+
+        $.ajax({
+            type: "GET",
+             url: '@Url.Action("GetSubMenuData", "MaintenanceRoles")',
+            data: { RoleId: RoleId, menuid: menuid },
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var form = JSON.stringify(result);
+                  //$('#rolenametext').val(RoleName);
+                UpdateSubTableNew(result);
+
+            },
+            error: function (response) {
+               // debugger;
+                alert('eror');
+            }
+        });
+        }
+        //}
+
+        function UpdateSubTableNew(res, chkmenu) {
+            //alert('bbb');
+        debugger;
+            //alert(chkmenu);
+       // alert('UpdateSubTableNew');
+        $('#MasterSubMainmenu-table').html(res.View);
+        $('#SubMenuTable').DataTable({
+            "lengthChange": false,
+            "paging": false,
+            "columnDefs": [
+                {
+                    "targets": 0,
+                    "visible": chkmenu == true
+                }
+            ]
+        });
+        $('.form-group').css('display', 'block');
+        //$('.form-inline').css('width', '-webkit-fill-available');
+        //$('.form-control').css('width', '-webkit-fill-available');
+        }
+
+        $(document).ready(function () {
+            materials = [];
+            actionClick = 0;
+
+            $('#MainMenuTable').DataTable({
+                'order': [[1, 'asc']],
+                'bFilter': false,
+
+                'columnDefs': [{
+                    'targets': [0], 'orderable': false,
+
+                }, {
+                    'targets': 2, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }, {
+                    //'targets': [8],
+                    //'visible':false
+                }]
+            });
+
+            $('#MainMenuTable tbody').on('click', 'tr', function () {
+                debugger;
+                var $row = $(this).closest("tr");
+                var id = $row.find("input:eq(0)").attr('id');
+
+                var elementById = "#" + id;
+
+                if (id != "") {
+                    if (actionClick != 1) {
+                        if ($row.find("input:eq(0)").is(':checked')) {
+                            //uncheck
+                            var defaultSelected = materials.filter(p => p == id);
+                            if (defaultSelected.length > 0) {
+                                materials = materials.filter(p => { return p != id });
+                            }
+
+                            $(elementById).prop('checked', false);
+                            return false;
+                        }
+                        else //check
+                        {
+                            materials.push(id);
+                            $(elementById).prop('checked', true);
+                            return false;
+                        }
+                    }
+                }
+            });
+        });
+
+        function SaveMenuByRole() {
+            debugger;
+            let printMaterials = [];
+
+            $.each(materials, function (key, Object) {
+                printMaterials.push(Object.split("-")[0]);
+            });
+
+             if (printMaterials.length > 0) {
+                var jsonObject = {
+                    "orderitem": [],
+                    "materialno": printMaterials,
+                    "SizeOfPage": 0
+                };
+
+                @*$.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SetMasterCardMO", "Report")',
+                    data: JSON.stringify(jsonObject),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            window.open('@Url.Action("MasterCardMO", "Report")', '_blank');
+                        }
+                        else if (!res.IsSuccess)
+                        {
+                            swal(res.ErrorMessage, "", "warning");
+                        }
+                    },
+                    error: function () { }
+                });*@
+            }
+            else
+            {
+                swal("Please Select Item!", "", "warning");
+            }
+
+        }
+    </script>
+
+}

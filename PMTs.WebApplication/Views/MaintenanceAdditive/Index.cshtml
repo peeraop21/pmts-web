@@ -1,0 +1,301 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceAdditive.MaintenanceAdditiveViewModel
+
+@{
+    ViewData["Title"] = "Additive";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row box">
+            <div class="col-md-6">
+                <h3 class="text-themecolor"><i class="mdi mdi-clipboard-outline"></i> @Localizer["Additive Process"] </h3>
+            </div>
+            <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                <div>
+                    <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnOpenCreateAdditiveModal">
+                        <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Create"]
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+
+            <div class="box" id="allowance-hard-table">
+                <partial name="_AdditiveTable" model="Model" />
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modalAdditive">
+        <div class="modal-dialog modal-lg" style="width: 90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalAllowanceHardLabel">@Localizer["Manage Additive"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <input type="number" class="form-control" id="Id" hidden />
+                <div class="modal-body" id="idCardAdditive">
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Type"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="Type" />
+                        </div>
+
+                        <div class="form-group col-md-2" style="padding:0">
+                            <label class="control-label">@Localizer["Code"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="Code" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Description"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="Description" />
+                        </div>
+
+                        <div class="form-group col-md-2" style="padding:0">
+                            <label class="control-label">@Localizer["ConsumptionRate"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="ConsumptionRate" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2" style="padding-right:0">
+                            <label class="control-label">@Localizer["GlueSolidContent"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" id="GlueSolidContent" />
+                        </div>
+
+                        <div class="form-group col-md-2" style="padding:0">
+                            <label class="control-label">@Localizer["Remark"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="Remark" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Status"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            @*<input type="text" class="form-control" id="Status" />*@
+                            <div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                                <input type="checkbox" class="form-check-input" id="Status">
+                                <label class="form-check-label" for="Status">@Localizer["Active"]</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnSubmitAdditive" class="btn btn-primary">@Localizer["Save"]</button>
+                    <button type="button" id="btnUpdateAdditive" class="btn btn-primary">@Localizer["Update"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelAdditive" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+            $('#Allowance-data-table').DataTable();
+        });
+
+        function viewShow(Id, Type, Code, Description, ConsumptionRate, GlueSolidContent, Remark, Status, flag) {
+            $('#Id').val(Id);
+            $('#Type').val(Type);
+            $('#Code').val(Code);
+            $('#Description').val(Description);
+            $('#ConsumptionRate').val(ConsumptionRate);
+            $('#GlueSolidContent').val(GlueSolidContent);
+            $('#Remark').val(Remark);
+            //$('#Status').val(Status);
+            if (Status === "True") {
+                $('#Status').prop('checked', true);
+            } else {
+                $('#Status').prop('checked', false);
+            }
+
+            $('#modalAdditive').modal('show');
+            if (flag === "0") {
+               //click view
+                $('#btnSubmitAdditive').css('display', 'none');
+                $('#btnUpdateAdditive').css('display', 'none');
+                $('#btnCancelAdditive').css('display', 'block');
+                setReadOnlyView("1");
+            } else
+            {
+                //click edit
+                $('#btnSubmitAdditive').css('display', 'none');
+                $('#btnUpdateAdditive').css('display', 'block');
+                $('#btnCancelAdditive').css('display', 'block');
+                setReadOnlyView("0");
+            }
+        }
+
+        function ClearData()
+        {
+            $('#Id').val(0);
+            $('#Type').val("");
+            $('#Code').val("");
+            $('#Description').val("");
+            $('#ConsumptionRate').val("");
+            $('#GlueSolidContent').val("");
+            $('#Remark').val("");
+            $('#Status').val("");
+        }
+
+        function getData() {
+            let req = {
+                "Id": $("#Id").val(),
+                "Type": $("#Type").val(),
+                "Code": $("#Code").val(),
+                "Description": $("#Description").val(),
+                "ConsumptionRate": $("#ConsumptionRate").val(),
+                "GlueSolidContent": $("#GlueSolidContent").val(),
+                "Remark": $("#Remark").val(),
+                "Status": $("#Status").val(),
+            };
+            return req;
+        }
+
+        function setReadOnlyView(param) {
+            if (param === "1") {
+                $("#idCardAdditive :input").attr("disabled", true);
+            } else {
+                $("#idCardAdditive :input").attr("disabled", false);
+            }
+        }
+
+        $('#btnSubmitAdditive').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#Type').val() === "" || $('#Code').val() === "" || $('#Description').val() === "" || $('#ConsumptionRate').val() === "" || $('#GlueSolidContent').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                $('#Id').val(0);
+                var tmp = getData();
+                if ($('#Status').prop('checked')) {
+                    Object.assign(tmp, { Status: 1 });
+                } else {
+                    Object.assign(tmp, { Status: 0 });
+                }
+                var form = JSON.stringify(tmp);
+                $.ajax({
+                    url: '@Url.Action("ManageData", "MaintenanceAdditive")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString(),
+                        flag: "Add"
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAdditiveTableNew(data);
+                        swal("Save Success!", { icon: "success", });
+                        $('#modalAdditive').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        $('#btnUpdateAdditive').click(function () {
+            DisabledSubmitButton(this);
+            if ($('#Type').val() === "" || $('#Code').val() === "" || $('#Description').val() === "" || $('#ConsumptionRate').val() === "" || $('#GlueSolidContent').val() === "") {
+                swal("Please input data!", { icon: "warning", });
+            }
+            else {
+                var tmp = getData();
+                if ($('#Status').prop('checked')) {
+                    Object.assign(tmp, { Status: 1 });
+                } else {
+                    Object.assign(tmp, { Status: 0 });
+                }
+                var form = JSON.stringify(tmp);
+                $.ajax({
+                    url: '@Url.Action("ManageData", "MaintenanceAdditive")',
+                    type: "POST",
+                    async: false,
+                    data:
+                    {
+                        req: form.toString(),
+                        flag: "Update"
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        UpdateAdditiveTableNew(data);
+                        swal("Update Success!", { icon: "success", });
+                        $('#modalAdditive').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+                    }
+                });
+            }
+        });
+
+        $('#btnCancelAdditive').click(function () {
+            ClearData();
+            $('#modalAdditive').modal('hide');
+        });
+
+        function UpdateAdditiveTableNew(res) {
+            $('#allowance-hard-table').html(res.View);
+            $('#Allowance-data-table').DataTable();
+            //$('.form-group').css('display', 'block');
+            //$('.form-inline').css('width', '-webkit-fill-available');
+            //$('.form-control').css('width', '-webkit-fill-available');
+        }
+
+        $('#btnOpenCreateAdditiveModal').click(function () {
+            ClearData();
+            setReadOnlyView("0");
+            $('#btnSubmitAdditive').css('display', 'block');
+            $('#btnUpdateAdditive').css('display', 'none');
+            $('#btnCancelAdditive').css('display', 'block');
+            $('#modalAdditive').modal('show');
+        });
+
+        function DisabledSubmitButton(item)
+        {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

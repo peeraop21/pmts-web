@@ -1,0 +1,280 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+
+@{
+    ViewData["Title"] = "MainTain BoardCombind";
+}
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal_ViewMainTain">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Maintain Board"]</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-4" style="padding:0">
+                        <div class="card" id="idcardboardcombind">
+                            <div class="card-header">
+                                <h3 class="">
+                                    @Localizer["Board Combine"]
+                                </h3>
+                                <hr>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="form-group col-md-5" style="padding-right:0">
+                                        <label class="control-label" for="Code">@Localizer["Board Code"]<i style="color:red"> *</i></label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="text" id="idboardcode" title="ใช้ในกรณีที่ต้องการสร้าง Board Dummy โดยระบบจะสร้างรหัส Board 4 หลักให้อัติโนมัติ" class="form-control" maxlength="4" />
+                                        <span id="idboardcode-error" class="text-danger" style="display: none;">@Localizer["The Board Code field is required."]</span>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        @* <label class="control-label" for="Code"><i style="color:dimgray"> * สำหรับ Generate board dummy</i></label>*@
+                                        <div class="form-group col-md-12">
+                                            @*<div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                                                    <input type="checkbox" class="form-check-input" id="idgeneratecode">
+                                                    <label class="form-check-label" for="idgeneratecode">Generate Boardcode</label>
+                                                </div>*@
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group col-md-9">
+                                            <button type="button" id="idgeneratecode" style="float:right" class="btn btn-success">Generate Boardcode</button>
+                                        </div>*@
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-12" id="idgeneratecodediv">
+                                        <div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                                            <input type="checkbox" class="form-check-input" id="idgeneratecode">
+                                            <label class="form-check-label" for="idgeneratecode">@Localizer["Generate Boardcode"]</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <div class="form-check" style="padding-left: 0;margin-bottom: 11px;padding-top: 20px;">
+                                            <input type="checkbox" class="form-check-input" id="idstdboard">
+                                            <label class="form-check-label" for="idstdboard" title="ใช้สำหรับ Board พิเศษ เช่น HoneyComb, Corner Guard โดยระบบจะยอมให้เพิ่มเกรดกระดาษเองได้">@Localizer["Special Board"]</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label class="control-label" for="Code">@Localizer["Board"]<i style="color:dimgray">* @Localizer["Ex : A/KT175/CSF110/KT175"]  </i></label>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <input type="text" id="idboard" class="form-control" maxlength="100" />
+                                        <span id="idboard-error" class="text-danger" style="display: none;">@Localizer["The Board field is required."]</span>
+                                    </div>
+
+                                    <div class="form-group col-md-12">
+                                        @*<label class="control-label" for="Code">Board<i style="color:dimgray"> * Ex : A/KT175/CSF110/KT175</i></label>*@
+                                        <i class="fa fa-question-circle" style="color:blue;font-size:large" rel="tooltip" title="ถ้ามี Grade ใหม่ กรุณาเพิ่มใน Paper Grade ด้วย"></i>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    @*style="margin-top:30px"*@
+                                    <div class="form-group col-md-3">
+                                        <label class="control-label" for="Code">@Localizer["Kiwi"]</label>
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                        <button type="button" id="idgeneratekiwi" style="float:right" class="btn btn-success">@Localizer["Generate Kiwi"]</button>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <input type="text" id="idkiwi" class="form-control" maxlength="50" />
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                        <div class="form-group col-md-12">
+                                            <label class="control-label" for="Code">Board Combine</label>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <input type="text" id="idboardcombind" class="form-control" />
+                                        </div>
+                                    </div>*@
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label" for="Code">
+                                            @Localizer["Thickness"]
+                                            <span>
+                                                <i class="fa fa-question-circle" style="color:blue;" rel="tooltip" title="สำหรับงาน Corner Guard จะบังคับใส่ในส่วนนี้ สำหรับ Board ทั่วไป สามารถใส่ค่านี้ได้เเต่ระบบไม่ได้เอาไปใช้ต่อ"></i>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idthinkness" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label" for="Code">@Localizer["StandardCost"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idstdcost" class="form-control" />
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                        <div class="form-group col-md-5">
+                                            <label class="control-label" for="Code">Kiwi</label>
+                                        </div>
+                                        <div class="form-group col-md-7">
+                                            <input type="text" id="idkiwi" class="form-control" maxlength="50" />
+                                        </div>
+                                    </div>*@
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label" for="Code">@Localizer["CorrControl"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="text" id="idcorctrl" class="form-control" maxlength="50" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label" for="Code">@Localizer["Strength"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idstength" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label" for="Code">@Localizer["ECTStrength"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idect" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label" for="Code">@Localizer["FCTStrength"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idfct" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-5">
+                                        <label class="control-label" for="Code">@Localizer["Burst"]</label>
+                                    </div>
+                                    <div class="form-group col-md-7">
+                                        <input type="number" id="idburst" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <div class="form-check" style="padding-left: 0;padding-top: 20px;">
+                                            <input type="checkbox" class="form-check-input" id="idstatus" checked>
+                                            <label class="form-check-label" for="idstatus">@Localizer["Active"]</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-8" style="padding:0">
+                        <div class="card" id="idcardboardspect">
+                            <div class="card-header">
+                                <h3 class="">
+                                    @Localizer["Board Spec"]
+                                </h3>
+                                <hr>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="control-label" for="Code">@Localizer["Flute"]</label>
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <select class="form-control" id="idflute" asp-items="@(new SelectList(Model.Option, "value", "text", ""))">
+                                            <option value=""></option>
+                                        </select>
+                                        <span id="idflute-error" class="text-danger" style="display: none;">@Localizer["The flute field is required."]</span>
+                                    </div>
+                                </div>
+
+                                <div id="detailBoard" style="margin-top:30px">
+                                    <partial name="_haveFlute" model="Model" />
+                                </div>
+
+                                <div class="row" style="margin-top:40px" id="idweigthshow">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label" style="float:right" for="Code">@Localizer["Weight"]</label>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <input type="text" id="idweigth" class="form-control" readonly />
+                                        <input type="text" style="margin-top:10px" id="idweigthmanual" class="form-control" />
+                                        @*<span>  <button type="button" id="idcal" class="btn btn-primary">Cal</button></span>*@
+                                    </div>
+                                    <div class="form-group col-md-2" style="padding:0px">
+                                        <button type="button" id="idcal" class="btn btn-primary">@Localizer["Cal"]</button>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-top:20px">
+                                    <div class="form-group col-md-6">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <button type="button" id="idpreview" style="float:right" class="btn btn-success">@Localizer["Preview"]</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" style="padding:0">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="">
+                                    @Localizer["Preview"]
+                                </h3>
+                                <hr>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row" id="idpreviewrender" style="padding-left:50px;padding-right:50px">
+
+                                    <partial name="_preView" model="Model" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="idaddmodal" class="btn btn-info">@Localizer["Save"]</button>
+                    <button type="button" id="idupdatemodal" class="btn btn-info">@Localizer["Update"]</button>
+                    <button type="button" id="btnGenerateBoardCombination" style="float:right; margin-right:5px; display:none;" class="btn btn-info">@Localizer["Generate"]</button>
+                    <button type="button" id="idcancelmodal" class="btn btn-danger">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

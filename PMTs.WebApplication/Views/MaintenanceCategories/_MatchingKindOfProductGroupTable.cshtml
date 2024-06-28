@@ -1,0 +1,397 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceProductType.MaintenanceKindOfProductGroupCreateModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<br />
+
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+            <div class="card-body">
+                @*Title*@
+                <div class="row justify-content-between">
+
+                                <div class="col-xs-6 col-md-6">
+                                    <h3 class="text-themecolor"><i class="fa fa-cog"></i> @Localizer["Maintenance Category"] </h3>
+                                </div>
+                            </div>
+
+                <button type="button" class="btn btn-info" onclick="CreateTitle('KindOfProductGroup')">@Localizer["Kind Of Product Group"]</button>
+                <button type="button" class="btn btn-info" onclick="CreateTitle('KindOfProduct')">@Localizer["Kind Of Product"]</button>
+                <button type="button" class="btn btn-info" onclick="CreateTitle('ProcessCost')">@Localizer["Process Cost"]</button>
+                <button type="button" class="btn btn-info" onclick="CreateTitle('ProductType')">@Localizer["Product Type"]</button>
+
+                <div class="box" style="padding-top:30px">
+                    <div class="box-header">
+                        <div class="form-group">
+                            <div class="row text-center" style="padding-bottom:10px;">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-2 control-label form-inline">
+                                    <label>@Localizer["Kind Of Product Group"]</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" id="Model_KindOfProductGroupID" asp-for="@Model.KindOfProductGroupID" style="width: 100%" asp-items="@(new SelectList(Model.KindOfProductGroups,"Id","Name"))">
+                                        <option value="">--- Please Select Item ---</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row text-center" style="padding-bottom:10px;">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-2 control-label form-inline">
+                                    <label>@Localizer["Kind Of Product"]</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" id="Model_KindOfProductID" asp-for="@Model.KindOfProductID" style="width: 100%" asp-items="@(new SelectList(Model.KindOfProducts,"Id","Name"))">
+                                        <option value="">--- Please Select Item ---</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row text-center" style="padding-bottom:10px;">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-2 control-label form-inline">
+                                    <label>@Localizer["Process Cost"]</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" id="Model_ProcessCostID" asp-for="@Model.ProcessCostID" style="width: 100%" asp-items="@(new SelectList(Model.ProcessCosts,"Id","Name"))">
+                                        <option value="">--- Please Select Item ---</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                        </div>
+                        <hr />
+                        <br />
+                        <h3 class="box-title text-center">@Localizer["Product Type"]</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <table id="ProductTypeSelectedTable" class="table table-striped table-hover dt-responsive display nowrap" cellspacing="0" style="border:solid" cellpadding="20">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="text-center">@Localizer["Product Type Selected"]</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ProductTypeSelected"></tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-1" style="align-self:center;margin-left:5px;margin-right:5px;max-width:50px"><i class='fas fa-angle-double-left' style='font-size:32px;color:lightsteelblue'></i></div>
+                            <div class="col-md-6">
+                                <table id="productType-table" class="table table-borderless table-hover dt-responsive display nowrap" style="border:solid" cellspacing="10" cellpadding="20">
+                                    <thead class="thead-light" style="background-color:transparent">
+                                        <tr>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.ProductTypes.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @if (Model.ProductTypes[i].SelectStatus)
+                                                    {
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="SelectStatusCheck filled-in" id="@Model.ProductTypes[i].Id.ToString()" name="SelectStatus" checked />
+                                                            <label class="form-check-label" for="@Model.ProductTypes[i].Id.ToString()">@Model.ProductTypes[i].Name</label>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="SelectStatusCheck filled-in" id="@Model.ProductTypes[i].Id.ToString()" name="SelectStatus" />
+                                                            <label class="form-check-label" for="@Model.ProductTypes[i].Id.ToString()">@Model.ProductTypes[i].Name</label>
+                                                        </div>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                    <br />
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <button type="button" class="btn btn-block btn-success col-md-2" id="btnSubmit"><i class="fa fa-check"></i> @Localizer["SaveData"]</button>
+                        <div class="col-md-5"></div>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery3.3.1.js"></script>
+<script type="text/javascript">
+
+    var ProductTypeArr = [];
+    var SelectedDefualtArr = [];
+    var productTypeName = "";
+    var IsChangeDefault = false;
+    const nameOfProcessCostElementId = "#Model_ProcessCostID";
+    const nameOfKindOfProductElementId = "#Model_KindOfProductID";
+    const nameOfKindOfProductGroupElementId = "#Model_KindOfProductGroupID";
+    const productTypeList = @Html.Raw(Json.Serialize(Model.ProductTypes));
+    const hierarchyLv2Matrices = @Html.Raw(Json.Serialize(Model.HierarchyLv2Matrices));
+    const productTypes = @Html.Raw(Json.Serialize(Model.ProductTypes));
+    var productTypeListArr = [];
+
+    function processCost() {
+        return $(nameOfProcessCostElementId).val();
+    }
+
+    function kindOfProduct() {
+        return $(nameOfKindOfProductElementId).val();
+    }
+
+    function kindOfProductGroup() {
+        return $(nameOfKindOfProductGroupElementId).val();
+    }
+
+    $(document).ready(function () {
+        var ProductTypeNo = @Model.ProductTypes.Count();
+
+        $.each(productTypes, function (pdArrKey, pdArrObj) {
+            productTypeListArr.push({ "Id": pdArrObj.Id, "Name": pdArrObj.Name});
+        });
+
+        UpdateSelectStatus();
+
+        $('#productType-table').DataTable();
+        $('#ProductTypeSelectedTable').DataTable();
+
+        $('#productType-table tbody').on('click', 'tr', function () {
+            var $row = $(this).closest("tr");
+            var id = $row.find("input:eq(0)").attr('id');
+            var elementById = "#" + id;
+            if (id != "") {
+                if ($row.find("input:eq(0)").is(':checked'))
+                {
+                    //uncheck
+                    var defaultSelected = SelectedDefualtArr.filter(s => s.Id == id);
+                    if (defaultSelected.length > 0) {
+                        ProductTypeArr = ProductTypeArr.filter(p => { return p.Id != id });
+                        ProductTypeArr.push({ "Id": defaultSelected[0].Id, "Name": defaultSelected[0].Name, "Status": false });
+                        //reset table product type selected
+
+                    } else {
+                        ProductTypeArr = ProductTypeArr.filter(p => { return p.Id != id });
+                    }
+
+                    SetProductTypeSelectedList(ProductTypeArr,"");
+                    $(elementById).prop('checked', false);
+                    return false;
+                }
+                else //check
+                {
+                    var defaultSelected = SelectedDefualtArr.filter(s => s.Id == id);
+                    if (defaultSelected.length > 0)
+                    {
+                        ProductTypeArr = ProductTypeArr.filter(p => { return p.Id != id });
+                        ProductTypeArr.push({ "Id": defaultSelected[0].Id, "Name": defaultSelected[0].Name, "Status": true });
+                    } else
+                    {
+                        var selectProductType = productTypeListArr.filter(p => p.Id == id);
+                        ProductTypeArr.push({ "Id": selectProductType[0].Id, "Name": selectProductType[0].Name, "Status": true });
+                    }
+
+                    //reset table product type selected
+                    SetProductTypeSelectedList(ProductTypeArr,"");
+
+                    $(elementById).prop('checked', true);
+                    return false;
+                }
+            }
+        });
+    });
+
+    $('#btnSubmit').click(function () {
+        if (ProductTypeArr.length > 0 && processCost() != "" && kindOfProduct() != "" && kindOfProductGroup() != "")
+        {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CreateHierarchyLv2Matrix", "MaintenanceCategories")',
+                data: { KindOfProductID: kindOfProduct(), ProcessCostID: processCost(), KindOfProductGroupID: kindOfProductGroup(), ProductTypeArr: JSON.stringify(ProductTypeArr) },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Save!", res.ExeptionMessage, { icon: "success" })
+                            .then(() => {
+                                window.location.reload(true);
+                            });
+                    } else
+                    {
+                        swal("Failed to saved!", res.ExeptionMessage, { icon: "warning" })
+                            .then(() => {
+                            });
+                    }
+                },
+                error: function () {
+                }
+            });
+        }
+        else
+        {
+            //create alert message
+            if (processCost() == "" && kindOfProduct() == "" && kindOfProductGroup() == "")
+            {
+                swal("Must choose Kind Of Product Group before select Product Type", "", "warning");
+                $("#Model_KindOfProductGroupID").focus();
+            }
+            else if (kindOfProduct() == "" && processCost() == "")
+            {
+                swal("Must choose Kind Of Product before select Product Type", "", "warning");
+                $("#Model_KindOfProductID").focus();
+            }
+            else if (processCost() == "")
+            {
+                swal("Must choose Process Cost before select Product Type", "", "warning");
+                $("#Model_ProcessCostID").focus();
+            }
+            else if (ProductTypeArr.length <= 0)
+            {
+                swal("Please select product type you want to match with Kind Of Product Group, Kind Of Product and Process Cost", "", "warning");
+                $("#ProductTypeSelectedTable").focus();
+            }
+        }
+    });
+
+    $(nameOfKindOfProductGroupElementId).change(function () {
+        UpdateSelectStatus();
+    });
+
+    $(nameOfKindOfProductElementId).change(function () {
+        UpdateSelectStatus();
+    });
+
+    $(nameOfProcessCostElementId).change(function () {
+        UpdateSelectStatus();
+    });
+
+    function UpdateSelectStatus() {
+        if (processCost() != "" && kindOfProduct() != "" && kindOfProductGroup() != "") {
+            //alert("processCost() : " + processCost() + "\n kindOfProduct() : " + kindOfProduct() + "\n kindOfProductGroup() : " + kindOfProductGroup() );
+            SelectedDefualtArr = [];
+            ProductTypeArr = [];
+
+            //clear checkbox
+            $('.SelectStatusCheck').prop('checked', false);
+
+            $.each(hierarchyLv2Matrices, function (hmKey, hmObject) {
+                if (hmObject.IdKindOfProductGroup == kindOfProductGroup() && hmObject.IdKindOfProduct == kindOfProduct() && hmObject.IdProcessCost == processCost()) {
+                    GetProductTypeNameById(hmObject.IdProductType);
+                    SelectedDefualtArr.push({ "Id": hmObject.IdProductType, "Name": productTypeName , "Status": true });
+                    ProductTypeArr.push({ "Id": hmObject.IdProductType, "Name": productTypeName , "Status": true });
+                }
+            });
+
+            //alert("SelectedDefualtArr.length : " + SelectedDefualtArr.length);
+            var tableProductType = $("#productType-table").DataTable();
+
+            if (SelectedDefualtArr.length > 0) {
+                //Check product type box in exists case.
+                tableProductType.clear().draw();
+
+                var IsDuplicate = true;
+                $.each(productTypes, function (ptKey, ptObject) {
+                    IsDuplicate = true;
+                    $.each(SelectedDefualtArr, function (ptArrKey, ptArrObject) {
+                        if (ptArrObject.Id == ptObject.Id) {
+                            IsDuplicate = false;
+                            tableProductType.row.add(["<td><div class=\"form-check\"><input type=\"checkbox\" class=\"filled-in\" id=\"" + ptObject.Id + "\" name=\"SelectStatus\" checked /><label class=\"form-check-label\" for=\"" + ptObject.Id + "\">" + ptObject.Name + "</label></div></td>"]).draw();
+                        }
+                    });
+                    if (IsDuplicate) {
+                        tableProductType.row.add(["<td><div class=\"form-check\"><input type=\"checkbox\" class=\"filled-in\" id=\"" + ptObject.Id + "\" name=\"SelectStatus\" /><label class=\"form-check-label\" for=\"" + ptObject.Id + "\">" + ptObject.Name + "</label></div></td>"]).draw();
+                    }
+                });
+
+                //set ot table product type selected
+                SetProductTypeSelectedList(SelectedDefualtArr, "Original");
+            }
+            else
+            {
+                tableProductType.clear().draw();
+                //Clear check box when exist product type not match
+                $.each(productTypes, function (ptKey, ptObject) {
+                    tableProductType.row.add(["<td><div class=\"form-check\"><input type=\"checkbox\" class=\"filled-in\" id=\"" + ptObject.Id + "\" name=\"SelectStatus\" /><label class=\"form-check-label\" for=\"" + ptObject.Id + "\">" + ptObject.Name + "</label></div></td>"]).draw();
+                });
+
+                //Clear table product type selected
+                var tableProductTypeSelected = $('#ProductTypeSelectedTable').DataTable();
+                tableProductTypeSelected.clear().draw();
+            }
+        }
+    }
+
+    function SetProductTypeSelectedList(modelArr, action) {
+        var tableProductTypeSelected = $('#ProductTypeSelectedTable').DataTable();
+        tableProductTypeSelected.clear().draw();
+
+        $.each(modelArr, function (modelKey, modelObject) {
+            if (modelObject.Status)
+            {
+                if (action == "Original") {
+                    tableProductTypeSelected.row.add(["<td style=\"height:5px; padding-left:100px;font-size:14px;color:gray;font-family:serif;\"><font>" + modelObject.Name + "</font></td>"]).draw();
+                }
+                else
+                {
+                    let isDefualtArr = SelectedDefualtArr.filter(p => { return p.Id == modelObject.Id });
+
+                    if (isDefualtArr.length > 0) {
+                        tableProductTypeSelected.row.add(["<td style=\"height:5px; padding-left:100px;font-size:14px;color:gray;font-family:serif;\"><font>" + modelObject.Name + "</font></td>"]).draw();
+
+                    }
+                    else
+                    {
+                        tableProductTypeSelected.row.add(["<td style=\"height:5px; padding-left:100px;font-size:14px;color:gray;font-family:serif;\"><font style=\"color:limegreen;font-weight:400;\">" + modelObject.Name + "</font></td>"]).draw();
+
+                    }
+                }
+            }
+        });
+    }
+
+    function GetProductTypeNameById(id) {
+        $.each(productTypes, function (ptKey, ptObject) {
+            if (ptObject.Id == id) {
+                productTypeName = ptObject.Name;
+            }
+        });
+    }
+
+    function CreateTitle(titleName)
+    {
+        if (titleName == "KindOfProductGroup") {
+            window.location.href = "@Url.Action("MaintenanceKindOfProductGroup", "MaintenanceCategories")";
+        } else if (titleName == "KindOfProduct") {
+            window.location.href = "@Url.Action("MaintenanceKindOfProduct", "MaintenanceCategories")";
+        } else if (titleName == "ProcessCost") {
+            window.location.href = "@Url.Action("MaintenanceProcessCost", "MaintenanceCategories")";
+        } else if (titleName == "ProductType") {
+            window.location.href = "@Url.Action("MaintenanceProductType", "MaintenanceCategories")";
+        }
+    }
+
+    function DisabledSubmitButton(item) {
+        item.disabled = true;
+
+        setTimeout(function () {
+            item.disabled = false;
+        }, 2000);
+    }
+</script>

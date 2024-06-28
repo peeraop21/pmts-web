@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<saleUnit>
+  <sale unit = "1">
+    <name display="PC"  value="PC"></name>
+  </sale>
+  <sale unit = "2">
+    <name display="KG."  value="KG"></name>
+  </sale>
+  <sale unit = "3">
+    <name display="Ton"  value="TON"></name>
+  </sale>
+</saleUnit>

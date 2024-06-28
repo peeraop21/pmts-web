@@ -1,0 +1,158 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.Report.SaleOrderModel
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Sale Order";
+}
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <div class="row box">
+                    <div class="col-md-12">
+                        <h3 class="text-themecolor"><i class="mdi mdi-pencil"></i> @Localizer["Edit M/O Data"] </h3>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    @*<div class="col-md-12">
+                <h3 class="text-themecolor"><i class="mdi mdi-view-list"></i> @Localizer["Edit M/O"] </h3>
+            </div>*@
+                    <div class="col-md-12">
+                        <form>
+                            <div class="row line-space">
+                                <div class="form-group col-md-3" style="padding: 0px;text-align: right;">
+                                    <label class="custom-control"><b><font size="3">@Localizer["S/O Number"]</font></b> </label>
+                                </div>
+                                <div class="form-group col-md-3">
+
+                                    <input id="saleOrder" type="text" class="form-control" placeholder="Ex. 2344770500" required="" aria-invalid="false" name="startSO" value="@ViewData["StartSO"]">
+                                </div>
+                                <div class="form-group col-md-2" style="padding: 0px;">
+
+                                    <button id="btnSearchMoSpec" type="button" class="btn btn-info"> <i class="fas fa-search"></i> @Localizer["Search"]</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="patialMospec">
+                    <partial name="_PartialSaleOrderMoSpec" model="Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="card">
+    <div class="card-header">
+        <div class="card-title"></div>
+    </div>
+    <div class="card-body table-responsive m-t-10">
+        <div class="d-flex align-items-center" style="position: absolute;right: 30px;">
+        </div>
+        <div class="box" id="SaleOrderMain">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Sale Order</label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" id="saleOrder" class="form-control" />
+                        </div>
+                        <div class="form-group col-md-5">
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnSearchMoSpec">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span>@Localizer["Search"]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="patialMospec" style="margin-top:50px">
+                    <partial name="_PartialSaleOrderMoSpec" model="Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+           // saleOrders = [];
+            $('#SalOrderMOSpecTbl').DataTable({
+                'bFilter': false,
+                "paging": false,
+                "info": false,
+                "scrollX": true,
+                'columnDefs': [{
+                    'targets': [-1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }],
+                "order": [[1, "desc"]]
+            });
+        });
+
+        $('#btnSearchMoSpec').click(function () {
+            if ($('#saleOrder').val().length < 10)
+            {
+                swal("Please Check Sale Order 10 Char!", "", "warning");
+            }
+            else
+            {
+               $.ajax({
+                        url: '@Url.Action("SearchMoSpect", "Report")',
+                        type: "POST",
+                        async: false,
+                        data:
+                        {
+                            OrderItem: $('#saleOrder').val(),
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            $('#patialMospec').html(data.View);
+                            let tableMo = $('#SalOrderMOSpecTbl').DataTable({
+                                'bFilter': false,
+                                "paging": false,
+                                "info": false,
+                                "scrollX": true,
+                                "columnDefs": [{
+                                    "targets": 'nosort',
+                                    "orderable": false
+                                }, {
+                                    'targets': 7, "render": function (data, type, row) {
+                                        if (data)
+                                            var data = data.split(',').join('<br>');
+                                        return data;
+                                    }
+                                }]
+                            });
+                        }
+                });
+            }
+        });
+
+        function CallMoRouting(data)
+        {
+            window.location.href = '@Url.Action("SaleOrderRouting", "Report", new { saleOrder = "idSaleOrder" })'.replace("idSaleOrder", data);
+        }
+    </script>
+
+}

@@ -1,0 +1,283 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenanceBuildRemark.MaintenanceBuildRemarkViewModel
+
+@{
+    ViewData["Title"] = "BuildRemark";
+}
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-comment-text-outline"></i> @Localizer["Build Remark"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btn-create-build-remark-modal">
+                            <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span>@Localizer["Create"]</button>
+                            <partial name="_CreateModal" model="Model" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+
+                        <div class="box" id="BuildRemark-table">
+                            <partial name="_BuildRemarkTable" model="Model" />
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(function () {
+            $('.form-group').css('display', 'block');
+            $('.form-inline').css('width', '100%');
+            $('.form-control').css('width', '100%');
+            $('input[type=search]').css('width', 'auto');
+
+            $('#BuildRemark-data-table').DataTable();
+        });
+
+        $('#btnShowCreateModal').click(function () {
+            $(".field-validation-error span").hide();
+        });
+
+        $('#btnSubmit').click(function () {
+            DisabledSubmitButton(this);
+            $('.add-row').remove();
+        });
+
+        function BindDatatoView(item) {
+            $("#machine-view").val($(item).attr("data-machine"));
+            $("#list-view").val($(item).attr("data-list"));
+            $('#modal-build-remark-view').modal('show');
+        }
+
+        function BindDatatoEdit(item) {
+            $("#machine-edit").val($(item).attr("data-machine"));
+            $("#list-edit").val($(item).attr("data-list"));
+            $("#created-by-edit").val($(item).attr("data-createdBy"));
+            $("#created-date-edit").val($(item).attr("data-createdDate"));
+            $("#id-edit").val($(item).attr("data-id"));
+            $('#modal-build-remark-edit').modal('show');
+        }
+
+        function CreateBuildRemark()
+        {
+            let form = $('#create-BuildRemark-form')[0];
+            let data = new FormData(form);
+
+            $.ajax({
+	            type: 'POST',
+	            enctype: 'multipart/form-data',
+	            url: '@Url.Action("SaveBuildRemark", "MaintenanceBuildRemark")',
+	            data: data,
+	            async: false,
+	            processData: false,
+	            contentType: false,
+	            cache: false,
+	            success: function (res) {
+                    if (res.IsSuccess) {
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+
+                        swal("Save Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                        UpdateBuildRemarkTable();
+                    }
+                    else {
+                        swal("Save Failed", "", "warning");//modalDialog(error, SaveFailed);
+                    }
+	            },
+	            error: function () {
+		            // return false;
+	            }
+            });
+        }
+
+        function ChangeDateTimeFormat(oDatetime) {
+            let datetimeStr = "";
+
+            if (oDatetime != null && oDatetime != "") {
+                let datetimeArr = oDatetime.split(' ');
+                let dateArr = datetimeArr[0].split('/');
+                let timeArr = datetimeArr[1].split(':');
+                let year = dateArr[2];
+                let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+                let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+                let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+                let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+                let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+                datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+            }
+
+            return datetimeStr;
+        }
+
+        $('#edit-build-remark-btn').click(function () {
+            DisabledSubmitButton(this);
+            let formData = {
+                "Id": $("#id-edit").val(),
+                "List": $("#list-edit").val(),
+                "Machine": $("#machine-edit").val(),
+                "CreatedDate": ChangeDateTimeFormat($("#created-date-edit").val()),
+                "CreatedBy": $("#created-by-edit").val(),
+            };
+
+            var form = JSON.stringify(formData);
+
+            $.ajax({
+                url: '@Url.Action("UpdateBuildRemark", "MaintenanceBuildRemark")',
+                type: "POST",
+                async: false,
+                data:
+                {
+                    req: form.toString()
+                },
+                dataType: "json",
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+
+                        swal("Update Successfully", "", "success");//modalDialog(success, SaveSuccess);
+
+                        UpdateBuildRemarkTable();
+                    }
+                    else {
+                        swal("Uppdate Failed", "", "warning");//modalDialog(error, SaveFailed);
+                    }
+                },
+                error: function () {
+                    // return false;
+                }
+            });
+        });
+
+        function UpdateBuildRemarkTable() {
+            $.ajax({
+                url: '@Url.Action("UpdateBuildRemarkTable", "MaintenanceBuildRemark")',
+                success: function (res) {
+                    $('#BuildRemark-table').html(res);
+                    $('#BuildRemark-data-table').DataTable();
+                    $('.form-group').css('display', 'block');
+                    $('.form-inline').css('width', '-webkit-fill-available');
+                    $('.form-control').css('width', '-webkit-fill-available');
+                },
+                error: function () {  }
+            });
+        }
+
+        function ConfirmDelete(Id) {
+            swal({
+                title: "Are you sure?",
+                text: "This data will not be visible if you press OK.",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                            $.ajax({
+                                type: 'PUT',
+                                url: '@Url.Action("DeleteBuildRemark", "MaintenanceBuildRemark")',
+                                data: { Id: Id },
+                                success: function (res) {
+                                    if (res.IsSuccess) {
+                                        $('.modal').modal('hide');
+                                        $('.modal-backdrop').hide();
+                                        $("body").removeClass("modal-open");
+
+                                        swal("Deleted!", {
+                                            icon: "success",
+                                        });
+                                        UpdateBuildRemarkTable();
+                                        window.location.reload(true);
+                                    }
+                                }
+                            });
+                    }
+                    else
+                    {
+
+                    }
+                });
+        }
+
+        //var onSaveSuccess = function (res) {
+        //    if (res.IsSuccess) {
+        //        $('.modal').modal('hide');
+        //        modalDialog(success, SaveSuccess);
+
+        //        UpdateBuildRemarkTable();
+        //    }
+        //    else {
+        //        modalDialog(error, SaveFailed);
+        //    }
+        //};
+
+        //var onUpdateSuccess = function (res) {
+        //    if (res.IsSuccess) {
+        //        $('.modal').modal('hide');
+        //        modalDialog(success, UpdateSuccess);
+
+        //        UpdateBuildRemarkTable();
+        //    }
+        //    else {
+        //        modalDialog(error, UpdateFailed);
+        //    }
+        //};
+
+        var onUpdateStatusSuccess = function(res) {
+            if (res.IsSuccess) {
+                $('.modal').modal('hide');
+                $('.modal-backdrop').hide();
+                $("body").removeClass("modal-open");
+
+                swal("Save Failed", "", "success");//modalDialog(success, UpdateSuccess);
+
+                UpdateBuildRemarkTable();
+            }
+            else {
+                swal("Update Failed", "", "warning");//modalDialog(error, UpdateFailed);
+            }
+        };
+
+        $('#btn-create-build-remark-modal').click(function () {
+            //  $(".field-validation-error span").hide();
+            $('#modal-create-build-remark').modal('show');
+        });
+
+        function DisabledSubmitButton(item) {
+            item.disabled = true;
+
+            setTimeout(function () {
+                item.disabled = false;
+            }, 2000);
+        }
+    </script>
+
+}

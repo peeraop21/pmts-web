@@ -1,0 +1,37 @@
+﻿@model PMTs.DataAccess.ModelView.BOMViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body table-responsive">
+    <table id="BomdatatableParent" class="table table-bordered color-table dataTable no-footer" cellspacing="0">
+        <thead>
+            <tr style="white-space:nowrap;background:darkgray;color:black;">
+                <th class="text-center">@Localizer["Select"]</th>
+                <th>@Localizer["Material No"]</th>
+                <th>@Localizer["PC"]</th>
+                <th>@Localizer["Customer Name"]</th>
+                <th>@Localizer["Description"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lstMasterData)
+            {
+            <tr>
+                <td class="text-center"><a data-target="@item.MaterialNo" tooltip="Select" onclick="SearchBomChildByMat(this.getAttribute('data-target'));"><i style="font-size:22px" class="fa fa-plus-circle text-success"></i></a></td>
+                <td>@item.MaterialNo</td>
+                <td>@item.Pc</td>
+                <td>@item.CustName</td>
+                <td>@item.Description</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#BomdatatableParent').DataTable();
+        });
+    </script>
+ }

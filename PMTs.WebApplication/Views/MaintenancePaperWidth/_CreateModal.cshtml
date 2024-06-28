@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.MaintenancePaperWidth.MaintenancePaperWidthViewModel
+
+<div class="modal fade" id="modal-create">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        @*<div class="modal fade bs-example-modal-lg" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-xl">*@
+        <div class="modal-content">
+            <form id="create-PaperWidth-form">
+                @*asp-controller="MaintenancePaperWidth" asp-action="SavePaperWidth" data-ajax="true" data-ajax-success="onSaveSuccess" data-ajax-method="POST">*@
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">@Localizer["Create PaperWidth"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Group1"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="PaperWidthViewModel.Group1" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Group2"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="PaperWidthViewModel.Group2" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Group3"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="PaperWidthViewModel.Group3" />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Group4"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="PaperWidthViewModel.Group4" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["Width"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="number" class="form-control" asp-for="PaperWidthViewModel.Width" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnSubmitPaperWidth" class="btn btn-info">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

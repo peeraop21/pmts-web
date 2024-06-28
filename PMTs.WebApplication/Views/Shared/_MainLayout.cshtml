@@ -1,0 +1,777 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>PMTs Application</title>
+
+    <environment include="Development">
+        <link rel="icon" href="~/lib/material-pro/assets/images/LogoPmts.png">
+
+        <!----------------------------------- Include CSS File  ---------------------------------------------->
+        <!-- Bootstrap Core CSS -->
+        <link href="~/lib/material-pro/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/prism/prism.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/dropify/dist/css/dropify.min.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet" />
+
+        <!-- JQuery -->
+        <link href="~/js/jquery-ui.css" rel="stylesheet" />
+
+        <!-- Material Pro -->
+        <link href="~/lib/material-pro/main/css/style.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <link href="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/multiselect/css/multi-select.css" rel="stylesheet" type="text/css" />
+
+        <!-- Theme Color -->
+        <link href="~/lib/material-pro/main/css/colors/blue.css" id="theme" rel="stylesheet">
+
+        <!-- Toast -->
+        <link href="~/lib/material-pro/assets/plugins/toast-master/css/jquery.toast.css" rel="stylesheet">
+
+        <!-- Sweet-Alert  -->
+        <link href="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+        <!-- Step Wizard -->
+        <link href="~/lib/StepWizard/StepWizard.css" rel="stylesheet" />
+
+        <!-- Custom -->
+        <link href="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" />
+
+        <!-- Toast -->
+        <link href="~/lib/material-pro/assets/plugins/toast-master/css/jquery.toast.css" rel="stylesheet">
+
+        <!-- Sweet-Alert  -->
+        <link href="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+        <!-- Edit Table -->
+        <link type="text/css" rel="stylesheet" href="~/lib/material-pro/assets/plugins/jsgrid/jsgrid.min.css" />
+        <link type="text/css" rel="stylesheet" href="~/lib/material-pro/assets/plugins/jsgrid/jsgrid-theme.min.css" />
+
+        <!-- DataTable -->
+        <script src="~/lib/DataTables//jquery.dataTables.min.js"></script>
+        <script src="~/lib/DataTables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- DataTable -->
+        <script src="~/lib/bootsbox/bootbox.js"></script>
+    </environment>
+    <environment exclude="Development">
+        @*<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+        asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+        asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />*@
+        <link rel="icon" href="~/lib/material-pro/assets/images/LogoPmts.png">
+
+        <!----------------------------------- Include CSS File  ---------------------------------------------->
+        <!-- Bootstrap Core CSS -->
+        <link href="~/lib/material-pro/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/prism/prism.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/dropify/dist/css/dropify.min.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/datatables/media/css/dataTables.bootstrap4.css" rel="stylesheet" />
+
+        <!-- JQuery -->
+        <link href="~/js/jquery-ui.css" rel="stylesheet" />
+
+        <!-- Material Pro -->
+        <link href="~/lib/material-pro/main/css/style.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <link href="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" />
+        <link href="~/lib/material-pro/assets/plugins/multiselect/css/multi-select.css" rel="stylesheet" type="text/css" />
+
+        <!-- Theme Color -->
+        <link href="~/lib/material-pro/main/css/colors/blue.css" id="theme" rel="stylesheet">
+
+        <!-- Toast -->
+        <link href="~/lib/material-pro/assets/plugins/toast-master/css/jquery.toast.css" rel="stylesheet">
+
+        <!-- Sweet-Alert  -->
+        <link href="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+        <!-- Step Wizard -->
+        <link href="~/lib/StepWizard/StepWizard.css" rel="stylesheet" />
+
+        <!-- Custom -->
+        <link href="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" />
+
+        <!-- Toast -->
+        <link href="~/lib/material-pro/assets/plugins/toast-master/css/jquery.toast.css" rel="stylesheet">
+
+        <!-- Sweet-Alert  -->
+        <link href="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+        <!-- Edit Table -->
+        <link type="text/css" rel="stylesheet" href="~/lib/material-pro/assets/plugins/jsgrid/jsgrid.min.css" />
+        <link type="text/css" rel="stylesheet" href="~/lib/material-pro/assets/plugins/jsgrid/jsgrid-theme.min.css" />
+        <!-- DataTable -->
+        <script src="~/lib/DataTables//jquery.dataTables.min.js"></script>
+        <script src="~/lib/DataTables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- DataTable -->
+        <script src="~/lib/bootsbox/bootbox.js"></script>
+    </environment>
+</head>
+
+<body class="fix-header fix-sidebar card-no-border">
+    <div class="preloader" style="opacity: 0.5;">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <div id="main-wrapper">
+
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <!-- ============================================================== -->
+                <!-- Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+                        <!-- Logo icon -->
+                        <b>
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <img src="~/lib/material-pro/assets/images/LogoPmts.png" alt="homepage" class="dark-logo" />
+                            <!-- Light Logo icon -->
+                            <img src="~/lib/material-pro/assets/images/LogoPmts-small.png" alt="homepage" class="light-logo" />
+                        </b>
+                        <!--End Logo icon -->
+                        <!-- Logo text -->
+                        <span>
+                            <!-- dark Logo text -->
+                            @*<img src="~/lib/material-pro/assets/images/LogoPmts.png" alt="homepage" class="dark-logo" />*@
+                            <!-- Light Logo text -->
+                            @*<img src="~/lib/material-pro/assets/images/LogoPmts.png" class="light-logo" alt="homepage" />*@
+                        </span>
+                    </a>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+
+                <div class="navbar-collapse">
+
+                    <!-- ============================================================== -->
+                    <!-- toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav mr-auto mt-md-0">
+                        <!-- This is  -->
+                        <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="mdi mdi-menu"></i></a> </li>
+                        <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                        <!-- ============================================================== -->
+                        <!-- Search -->
+                        <!-- ============================================================== -->
+                        @{
+                            var userSessionModel = PMTs.WebApplication.Extentions.SessionExtentions.GetSession<PMTs.DataAccess.ModelView.Login.UserSessionModel>(Context.Session, "UserSessionModel");
+
+                        }
+                        @if (userSessionModel.DefaultRoleId == 1 || userSessionModel.DefaultRoleId == 2)
+                        {
+                            <li class="nav-item hidden-sm-down search-box">
+                                <a class="nav-link hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
+
+                                <form class="app-search">
+                                    <input type="hidden" name="ddlSearch" value="Material_No" />
+                                    <input type="text" class="form-control" placeholder="Search Material & enter" id="Txtsearch" name="TxtSearch"> <a class="srh-btn"><i class="ti-close"></i></a>
+                                    <button asp-action="ViewListProduct" asp-controller="MaintenanceProductInfo" style="display: none;"><i class="fa fa-search"></i></button>
+                                </form>
+                            </li>
+
+                        }
+
+                        <!-- ============================================================== -->
+                        <!-- End Messages -->
+                        <!-- ============================================================== -->
+                    </ul>
+                    <!-- ============================================================== -->
+                    <!-- User profile and search -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav my-lg-0">
+
+                        <!-- Profile -->
+                        <!-- ============================================================== -->
+                        @* Tassanai Update 26/11/2562 *@
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (userSessionModel.PictureUser != null)
+                                {
+                                    <img src="@userSessionModel.PictureUser" alt="user" class="profile-pic">
+
+                                }
+                                else
+                                {
+                                    <img src="~/lib/material-pro/assets/images/users/default_avatar.png" alt="user" class="profile-pic" />
+
+                                }
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right scale-up">
+                                <ul class="dropdown-user">
+
+                                    <li>
+
+                                        <div class="dw-user-box">
+                                            <div class="u-img">
+                                                @if (userSessionModel.PictureUser != null)
+                                                {
+                                                    <img src="@userSessionModel.PictureUser" alt="user">
+
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/lib/material-pro/assets/images/users/default_avatar.png" alt="user">
+
+                                                }
+                                            </div>
+                                            <div class="u-text">
+                                                <h4>@userSessionModel.UserName</h4>
+                                                <p class="text-muted">@userSessionModel.Email</p>
+                                                <a href="#" class="btn btn-rounded btn-danger btn-sm">
+                                                    View Profile
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#"><i class="fa fa-industry"></i> Sale Org: @userSessionModel.SaleOrg</a> </li>
+                                    <li><a href="#"><i class="ti-home"></i> Factory : @userSessionModel.FactoryCode </a></li>
+                                    <li><a href="#"><i class="fa fa-address-card"></i> @userSessionModel.FirstNameEn @userSessionModel.LastNameEn</a> </li>
+
+                                    <li role="separator" class="divider"></li>
+                                    <li><a asp-action="Logout" asp-controller="Login"><i class="fa fa-power-off"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- Language -->
+                        <!-- ============================================================== -->
+                        @{
+                            var httpContext = ViewContext.HttpContext;
+                            var currentCulture = this.Context.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.IetfLanguageTag;
+                            //var currentCulture = httpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture;
+                            //var currentUrl = UriHelper.BuildRelative(httpContext.Request.PathBase, httpContext.Request.Path, httpContext.Request.QueryString);
+                        }
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (currentCulture == "en")
+                                {
+                                    <i class="flag-icon flag-icon-us"></i>
+                                }
+                                else if (currentCulture == "th")
+                                {
+                                    <i class="flag-icon flag-icon-th"></i>
+                                }
+                                else
+                                {
+                                    <i class="flag-icon flag-icon-us"></i>
+                                }
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right scale-up">
+                                <a class="dropdown-item" asp-controller="Language" asp-action="SetLanguage" asp-route-culture="en" asp-route-returnUrl="@Context.Request.Path"><i class="flag-icon flag-icon-us"></i>English</a>
+                                @*<a class="dropdown-item" asp-controller="Language" asp-action="SetLanguage" asp-route-culture="vi" asp-route-returnUrl="@Context.Request.Path"><i class="flag-icon flag-icon-vi"></i>Vietnam</a>*@
+                                <a class="dropdown-item" asp-controller="Language" asp-action="SetLanguage" asp-route-culture="th" asp-route-returnUrl="@Context.Request.Path"><i class="flag-icon flag-icon-th"></i>Thai</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- ============================================================== -->
+        <!-- End Topbar header -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                @*<!-- User profile -->
+                <div class="user-profile" style="background: url(/lib/material-pro/assets/images/background/user-info.jpg) no-repeat;">
+                <!-- User profile image -->
+                <div class="profile-img"> <img src="/lib/material-pro/assets/images/users/profile.png" alt="user" /> </div>
+                <!-- User profile text-->
+                <div class="profile-text">
+                <a href="#" class="dropdown-toggle u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">User Name</a>
+                <div class="dropdown-menu animated flipInY">
+                <a href="#" class="dropdown-item"><i class="ti-user"></i> My Profile</a> <a href="#" class="dropdown-item"><i class="ti-wallet"></i> My Balance</a> <a href="#" class="dropdown-item"><i class="ti-email"></i> Inbox</a>
+                <div class="dropdown-divider"></div> <a href="#" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
+                <div class="dropdown-divider"></div> <a href="login.html" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
+                </div>
+                </div>
+                </div>*@
+                <!-- End User profile text-->
+                <!-- Sidebar navigation-->
+
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        @if (Context.Session.GetString("menuList") != null)
+                        {
+                            //   List<PMTs.DataAccess.ModelView.Login.MenuViewModel> menuList = PMTs.Class.SessionExtentions.GetSession<List<PMTs.DataAccess.ModelView.Login.MenuViewModel>>(Context.Session, "menuList");
+                            List<PMTs.DataAccess.ModelView.Login.MenuViewModel> menuList = PMTs.WebApplication.Extentions.SessionExtentions.GetSession<List<PMTs.DataAccess.ModelView.Login.MenuViewModel>>(Context.Session, "menuList");
+
+                            var controller = ViewContext.RouteData.Values["Controller"].ToString();
+                            var action = ViewContext.RouteData.Values["Action"];
+                            @*@foreach (var person in ViewBag.Menu)*@
+
+                            int i = 0;
+
+                            @foreach (var Menu in menuList)
+                            {
+                                <li>
+                                    @if (Menu.SubMenuList.Count > 0)
+                                    {
+                                        <a class="has-arrow menu-list-item" aria-expanded="false">
+                                            <i class="@Menu.IconName"></i>
+                                            <span class="hide-menu">@Menu.MenuNameEn</span>
+                                        </a>
+
+                                        <ul aria-expanded="false" class="collapse">
+                                            @foreach (var SubMenu in menuList[i].SubMenuList.OrderBy(c => c.SeqNo))
+                                            {
+                                                <li><a asp-controller="@SubMenu.Controller" asp-action="@SubMenu.Action">@SubMenu.SubMenuName</a></li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <a class="menu-list-item" aria-expanded="false" asp-controller="@Menu.Controller" asp-action="@Menu.Action">
+                                            <i class="@Menu.IconName"></i>
+                                            <span class="hide-menu">@Menu.MenuNameEn</span>
+                                        </a>
+                                    }
+                                </li>
+                                i++;
+                            }
+
+                        }
+                    </ul>
+                </nav><!-- End Sidebar navigation -->
+            </div><!-- End Sidebar scroll--><!-- Bottom points--><div class="sidebar-footer">
+                @*<!-- item--><a href="" class="link" data-toggle="tooltip" title="Settings"><i class="ti-settings"></i></a>*@
+                @*<!-- item--><a href="" class="link" data-toggle="tooltip" title="Email"><i class="mdi mdi-gmail"></i></a>*@
+
+                <span data-toggle="modal" data-target="#myModal" asp-action="Logout" asp-controller="Login">
+                    <a data-toggle="tooltip" data-placement="top" title="Logout"><i class="mdi mdi-power"></i></a>
+                </span>
+
+                <!-- item-->@*<a asp-action="Logout" asp-controller="MaintenanceSystemAdmin" id="logout" class="link" data-target="#myModal" data-toggle="modal" title="Logout"><i class="mdi mdi-power"></i></a>*@
+                @*<button data-target="#myModal" data-toggle="modal">Logout</button>*@
+            </div>
+
+            <!-- End Bottom points-->
+        </aside>
+        <!-- ============================================================== -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        <div class="page-wrapper">
+            <!-- ============================================================== -->
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                @*<div class="row page-titles">
+                <div class="col-md-5 col-8 align-self-center">
+                <h3 class="text-themecolor m-b-0 m-t-0">Invoice</h3>
+                <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item active">Invoice</li>
+                </ol>
+                </div>
+                <div class="col-md-7 col-4 align-self-center">
+                <div class="d-flex m-t-10 justify-content-end">
+                <div class="d-flex m-r-20 m-l-10 hidden-md-down">
+                <div class="chart-text m-r-10">
+                <h6 class="m-b-0"><small>THIS MONTH</small></h6>
+                <h4 class="m-t-0 text-info">$58,356</h4>
+                </div>
+                <div class="spark-chart">
+                <div id="monthchart"></div>
+                </div>
+                </div>
+                <div class="d-flex m-r-20 m-l-10 hidden-md-down">
+                <div class="chart-text m-r-10">
+                <h6 class="m-b-0"><small>LAST MONTH</small></h6>
+                <h4 class="m-t-0 text-primary">$48,356</h4>
+                </div>
+                <div class="spark-chart">
+                <div id="lastmonthchart"></div>
+                </div>
+                </div>
+                <div class="">
+                <button class="right-side-toggle waves-effect waves-light btn-success btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                </div>
+                </div>
+                </div>
+                </div>*@
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- ============================================================== -->
+
+                <script src="~/lib/material-pro/assets/plugins/datatables/datatables.min.js"></script>
+
+                @RenderBody()
+
+                <!--Custom JavaScript -->
+                <!-- ============================================================== -->
+                <!-- End PAge Content -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Right sidebar -->
+                <!-- ============================================================== -->
+                <!-- .right-sidebar -->
+                <div class="right-sidebar">
+                    <div class="slimscrollright">
+                        <div class="rpanel-title"> Service Panel <span><i class="ti-close right-side-toggle"></i></span> </div>
+                        <div class="r-panel-body">
+                            <ul id="themecolors" class="m-t-20">
+                                <li><b>With Light sidebar</b></li>
+                                <li><a href="javascript:void(0)" data-theme="default" class="default-theme">1</a></li>
+                                <li><a href="javascript:void(0)" data-theme="green" class="green-theme">2</a></li>
+                                <li><a href="javascript:void(0)" data-theme="red" class="red-theme">3</a></li>
+                                <li><a href="javascript:void(0)" data-theme="blue" class="blue-theme working">4</a></li>
+                                <li><a href="javascript:void(0)" data-theme="purple" class="purple-theme">5</a></li>
+                                <li><a href="javascript:void(0)" data-theme="megna" class="megna-theme">6</a></li>
+                                <li class="d-block m-t-30"><b>With Dark sidebar</b></li>
+                                <li><a href="javascript:void(0)" data-theme="default-dark" class="default-dark-theme">7</a></li>
+                                <li><a href="javascript:void(0)" data-theme="green-dark" class="green-dark-theme">8</a></li>
+                                <li><a href="javascript:void(0)" data-theme="red-dark" class="red-dark-theme">9</a></li>
+                                <li><a href="javascript:void(0)" data-theme="blue-dark" class="blue-dark-theme">10</a></li>
+                                <li><a href="javascript:void(0)" data-theme="purple-dark" class="purple-dark-theme">11</a></li>
+                                <li><a href="javascript:void(0)" data-theme="megna-dark" class="megna-dark-theme ">12</a></li>
+                            </ul>
+                            <ul class="m-t-20 chatonline">
+                                <li><b>Chat option</b></li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/1.jpg" alt="user-img" class="img-circle"> <span>Varun Dhavan <small class="text-success">online</small></span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/2.jpg" alt="user-img" class="img-circle"> <span>Genelia Deshmukh <small class="text-warning">Away</small></span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/3.jpg" alt="user-img" class="img-circle"> <span>Ritesh Deshmukh <small class="text-danger">Busy</small></span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/4.jpg" alt="user-img" class="img-circle"> <span>Arijit Sinh <small class="text-muted">Offline</small></span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/5.jpg" alt="user-img" class="img-circle"> <span>Govinda Star <small class="text-success">online</small></span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/6.jpg" alt="user-img" class="img-circle"> <span>John Abraham<small class="text-success">online</small></span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/7.jpg" alt="user-img" class="img-circle"> <span>Hritik Roshan<small class="text-success">online</small></span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)"><img src="~/lib/material-pro/assets/images/users/8.jpg" alt="user-img" class="img-circle"> <span>Pwandeep rajan <small class="text-success">online</small></span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Right sidebar -->
+                <!-- ============================================================== -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <footer class="footer">
+        © 2019 PMTs Application by CIP <h6 id="progress" style="font-family:sans-serif">Loading, please wait...</h6>
+    </footer>
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header card-danger">
+                    <h4 class="modal-title" id="myModalLabel">Confirmation?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <h4>Are you sure to want to log out?</h4>
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger waves-effect" id="logoutConfirm" data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">No</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal-dialogTimeout -->
+
+    <div id="idle-timeout-dialog" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Your session is expiring soon</h4>
+                    @*<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>*@
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <i class="fa fa-warning font-red"></i> You session will be locked in
+                        <span id="idle-timeout-counter"></span> seconds.
+                    </p>
+                    <p> Do you want to continue your session? </p>
+                </div>
+                <div class="modal-footer text-center">
+                    <button id="idle-timeout-dialog-keepalive" type="button" class="btn btn-success" data-dismiss="modal">Yes, Keep Working</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!----------------------------------- Include Java Script File  ---------------------------------------------->
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/material-pro/assets/plugins/bootstrap/js/bootstrap.js"></script>
+
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/lib/Microsoft.jQuery.Unobtrusive.Ajax/jquery.unobtrusive-ajax.js"></script>
+
+        @*<script src="~/lib/jquery/dist/jquery3.3.1.js"></script>*@
+    </environment>
+
+    @*https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js*@
+    <environment exclude="Development">
+        @*<script src="~/lib/jquery/dist/jquery3.3.1.js"
+        asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+        asp-fallback-test="window.jQuery"
+        crossorigin="anonymous"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+        </script>*@
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/material-pro/assets/plugins/bootstrap/js/bootstrap.js"></script>
+        @*//=====Tassanai update*@
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/lib/Microsoft.jQuery.Unobtrusive.Ajax/jquery.unobtrusive-ajax.js"></script>
+        @*//=====Tassanai update*@
+        @*<script src="~/lib/jquery/dist/jquery3.3.1.js"></script>*@
+
+        @*<script src="~/lib/material-pro/assets/plugins/bootstrap/js/bootstrap.min.js"></script>*@
+    </environment>
+
+    <!-- Sweet-Alert  -->
+    <script src="~/lib/material-pro/assets/plugins/sweetalert/jquery.sweet-alert.custom.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.min.js"></script>
+
+    <!-- JQuery -->
+    <script src="~/js/jquery-1.12.4.js"></script>
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/js/jquery.ui.autocomplete.scroll.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="~/lib/material-pro/assets/plugins/popper/popper.min.js"></script>
+
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="js/jquery.slimscroll.js"></script>
+    <script src="~/lib/material-pro/main/js/jquery.slimscroll.js"></script>
+    <!--Wave Effects -->
+    <script src="~/lib/material-pro/main/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="~/lib/material-pro/main/js/sidebarmenu.js"></script>
+    <!--stickey kit -->
+    <script src="~/lib/material-pro/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!--Custom JavaScript -->
+    <script src="~/lib/material-pro/main/js/custom.min.js"></script>
+    <!-- jQuery peity -->
+    <script src="~/lib/material-pro/assets/plugins/peity/jquery.peity.min.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/peity/jquery.peity.init.js"></script>
+    <!-- ============================================================== -->
+    <!-- Style switcher -->
+    <!-- ============================================================== -->
+    <script src="~/lib/material-pro/assets/plugins/styleswitcher/jQuery.style.switcher.js"></script>
+
+    <!-- This is data table -->
+    <script src="~/lib/material-pro/assets/plugins/datatables/datatables.min.js"></script>
+    <!-- Modal Dialog -->
+    <script src="~/modal-dialog/modal-dialog.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/toast-master/js/jquery.toast.js"></script>
+    <script src="~/lib/material-pro/main/js/toastr.js"></script>
+    <!-- Sweet-Alert  -->
+    <script src="~/lib/material-pro/assets/plugins/sweetalert/jquery.sweet-alert.custom.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Session-timeout-idle -->
+    <script src="~/lib/material-pro/assets/plugins/session-timeout/idle/jquery.idletimeout.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/session-timeout/idle/jquery.idletimer.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/session-timeout/idle/session-timeout-idle-init.js"></script>
+
+    <script src="~/lib/material-pro/assets/plugins/dropify/dist/js/dropify.min.js"></script>
+    <!-- Editable -->
+    <script type="text/javascript" src="~/lib/material-pro/assets/plugins/jsgrid/jsgrid.min.js"></script>
+
+    <script>
+
+        const SaveSuccess = '@Localizer["Save Success"]';
+        const SaveFailed = '@Localizer["Save Failed"]';
+        const UpdateSuccess = '@Localizer["Update Success"]';
+        const UpdateFailed = '@Localizer["Update Failed"]';
+        const Default = '@Localizer["Titel Message Default"]';
+        const success = '@Localizer["Titel Message Success"]';
+        const error = '@Localizer["Titel Message Error"]';
+        const Warning = '@Localizer["Titel Message Warning"]';
+        function SetLoading(input) {
+            if (input == true) $('.preloader')[0].style.display = "block"
+            else $('.preloader')[0].style.display = "none"
+
+        }
+        $(document).ready(function () {
+
+            $("#print").click(function () {
+                var mode = 'iframe'; //popup
+                var close = mode == "popup";
+                var options = {
+                    mode: mode,
+                    popClose: close
+                };
+                $("div.printableArea").printArea(options);
+            });
+            $("#logoutConfirm").click(function () {
+
+                window.location.href = '@Url.Action("logout", "Login")';
+
+            });
+
+        @*$("#TxtSearch").on("keypress", function (e) {
+                if (e.keyCode == 13) {
+                alert("Enter pressed");
+                let materialNo = $("#TxtSearch").val();
+                let ddlSearch = "Material_No";
+                window.location.href = "@Url.Action("SearchProduct", "MaintenanceProductInfo")" + "?ddlSearch="+ddlSearch+ "&MaterialNo=" + materialNo;*@
+
+                //   alert(materialNo);
+        @*$.ajax({
+                url: '@Url.Action("SearchProduct", "MaintenanceProductInfo",new { materialNo= "materialNo", ddlSearch = "ddlSearch" })',
+                type: "GET",
+                dataType: "json",
+                data: {  materialNo, ddlSearch},
+                success: function (res) {
+                if (res) {
+                //   window.location.reload(true);
+                //  window.location = "MaintenanceProductInfo/ViewListProduct";
+                alert('11');
+                return true;
+                }
+                },
+                error: function () { }
+                })*@
+                                                            //        //return false; // prevent the button click from happening
+                                                            //    }
+                                                            //});
+
+                                                        });
+        //JUST AN EXAMPLE, PLEASE USE YOUR OWN PICTURE!
+        //const imageAddr = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Bloemen_van_adderwortel_%28Persicaria_bistorta%2C_synoniem%2C_Polygonum_bistorta%29_06-06-2021._%28d.j.b%29.jpg";
+        //const imageAddr = "/pmtsapp/lib/material-pro/assets/images/testSpeedImage.jpg"; //Test
+        const imageAddr = "/pmtsappproduction/lib/material-pro/assets/images/testSpeedImage.jpg"; //Production
+        const downloadSize = 7300000; //bytes
+        const timeInterval = 5000; //ms
+
+        function ShowProgressMessage(msg) {
+            if (console) {
+                if (typeof msg == "string") {
+                    console.log(msg);
+                } else {
+                    for (var i = 0; i < msg.length; i++) {
+                        console.log(msg[i]);
+                    }
+                }
+            }
+
+            var oProgress = document.getElementById("progress");
+            if (oProgress) {
+                var actualHTML = (typeof msg == "string") ? msg : msg.join("<br />");
+                oProgress.innerHTML = actualHTML;
+            }
+        }
+
+        function InitiateSpeedDetection() {
+            //ShowProgressMessage("Loading the image, please wait...");
+            window.setTimeout(MeasureConnectionSpeed, 1);
+        };
+
+        if (window.addEventListener) {
+            window.addEventListener('load', InitiateSpeedDetection, false);
+        } else if (window.attachEvent) {
+            window.attachEvent('onload', InitiateSpeedDetection);
+        }
+        //var intervalId = window.setInterval(function () {
+        //    InitiateSpeedDetection();
+        //}, 10000);
+        function MeasureConnectionSpeed() {
+            var startTime, endTime;
+            var download = new Image();
+            download.onload = function () {
+                endTime = (new Date()).getTime();
+                showResults();
+            }
+
+            download.onerror = function (err, msg) {
+                ShowProgressMessage("Invalid image, or error downloading");
+            }
+
+            startTime = (new Date()).getTime();
+            //var cacheBuster = "?nnn=" + startTime;
+            //download.src = imageAddr + cacheBuster;
+            download.src = imageAddr;
+
+            function showResults() {
+                var duration = (endTime - startTime) / 1000;
+                var bitsLoaded = downloadSize * 8;
+                var speedBps = (bitsLoaded / duration).toFixed(2);
+                var speedKbps = (speedBps / 1024).toFixed(2);
+                var speedMbps = (speedKbps / 1024).toFixed(2);
+                ShowProgressMessage([
+                    speedMbps + " Mbps"
+                ]);
+            }
+        }
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

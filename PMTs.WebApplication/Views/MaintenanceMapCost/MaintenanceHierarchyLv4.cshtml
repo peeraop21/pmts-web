@@ -1,0 +1,148 @@
+﻿@model PMTs.DataAccess.ModelView.MaintenanceMapCost.MaintenanceMapCostViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "HierarchyLv4";
+    ViewData["CreateAction"] = "CreateHierarchyLv4";
+    ViewData["EditAction"] = "EditHierarchyLv4";
+    var createModel = new PMTs.DataAccess.ModelView.MaintenanceMapCost.HierarchyCreateModel();
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+
+            <div class="card-body">
+
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="fa fa-cog"></i>&nbsp;@Localizer["Maintenance HierarchyLv4"]</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right">
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btn-create-hierarchyLv4-modal"><span class="btn-label"><i class="fa fa-plus-square text-left"></i></span>@Localizer["Create"]</button>
+                        </div>
+                    </div>
+                </div>
+
+                <partial name="_CreateModal" model="createModel" view-data="@ViewData" />
+
+                <div class="box">
+                    <div class="box-body">
+                        <div id="divHierarchyLv4Table">
+                            <partial name="_HierarchyLv4Table" model="Model" />
+                        </div>
+                        <br />
+                        <div class="text-right">
+                            <a class="btn btn-outline-secondary waves-effect text-center col-md-1" id="backToMaintenanceMapCost" asp-action="Index" asp-controller="MaintenanceMapCost">
+                                <i class="fas fa-arrow-alt-circle-left"></i>@Localizer["Back"]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_EditModal" model="@createModel" view-data="@ViewData" />
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var hierarchyLv4Table = $('#hierarchyLv4Table').DataTable();
+        });
+
+        $('#btn-create-hierarchyLv4-modal').click(function () {
+            $('#modal-create-hierarchy').modal('show');
+        });
+
+        function BindHierarchyLv4View(item)
+        {
+            $("#Id-view").val($(item).attr("data-Id"));
+            $("#Hierarchy-view").val($(item).attr("data-Hierarchy4"));
+            $("#Description-view").val($(item).attr("data-Description"));
+
+            $("#modal-view-hierarchy").modal("show");
+        }
+
+        function BindHierarchyLv4Edit(item)
+        {
+            $("#Id-edit").val($(item).attr("data-Id"));
+            $("#Hierarchy-edit").val($(item).attr("data-Hierarchy4"));
+            $("#Description-edit").val($(item).attr("data-Description"));
+            $("#CreatedDate-edit").val($(item).attr("data-CreatedDate"));
+            $("#CreatedBy-edit").val($(item).attr("data-CreatedBy"));
+
+            $("#modal-edit-hierarchy").modal("show");
+        }
+
+        function CreateAndUpdateHierarchy(tableName, action)
+        {
+            let form = $('#from-' + tableName + "-" + action)[0];
+            let data = new FormData(form);
+            let urlAction = "";
+            let divTableName = 'divHierarchyLv4Table';
+            let partialTableName = 'hierarchyLv4Table';
+
+            if(tableName == "HierarchyLv4")
+            {
+                if(action == "create")
+                {
+                    urlAction = '@Url.Action("SaveHierarchyLv4", "MaintenanceMapCost")'
+                }else
+                {
+                    urlAction = '@Url.Action("UpdateHierarchyLv4", "MaintenanceMapCost")'
+                }
+            }
+
+            $.ajax({
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                type: "POST",
+                url: urlAction,
+                data: data,
+	            success: function (res) {
+                    if (res.IsSuccess) {
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+
+                        $('#' + divTableName).html(res.View);
+                        $('.modal-backdrop').css('display', 'none');
+                        $('#' + partialTableName).DataTable();
+
+                        if (action == 'create') {
+                            swal("Save Successfully", "", "success");//modalDialog(success, SaveSuccess);
+                        }
+                        else {
+                            swal("Update Successfully", "", "success");//modalDialog(success, SaveSuccess);
+                        }
+
+                    }
+                    else {
+
+                        if (action == 'create') {
+                            swal("Save Failed", "", "warning");//modalDialog(error, SaveFailed);
+                        }
+                        else {
+                            swal("Update Failed", "", "warning");//modalDialog(error, SaveFailed);
+                        }
+                    }
+	            },
+	            error: function () {
+		            // return false;
+	            }
+            });
+        }
+    </script>
+}

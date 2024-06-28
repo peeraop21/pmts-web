@@ -1,0 +1,113 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.MaintenanceRoles.MaintenanceRolesViewModel
+@{ int No = 1; }
+
+@foreach (var item in Model.MasterRoleViewModelList)
+{
+    <tr>
+        <th scope="row">@No</th>
+        <td>@item.RoleId</td>
+        <td>@item.RoleName</td>
+        <td>@item.RoleDesc</td>
+
+        <td>
+            <button type="button" class="btn btn-default" data-id="@item.Id" data-RoleId="@item.RoleId" data-RoleName="@item.RoleName" data-RoleDesc="@item.RoleDesc"
+                    onclick="viewEdit(this.getAttribute('data-id'),this.getAttribute('data-RoleId'),this.getAttribute('data-RoleName'),this.getAttribute('data-RoleDesc'))">
+                <span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td>
+
+            <button type="button" class="btn btn-default" data-id="@item.Id" data-RoleId="@item.Id" data-RoleName="@item.RoleName"
+                    onclick="viewMainmenu(this.getAttribute('data-RoleId'),this.getAttribute('data-RoleName'))">
+                <span class="ti-settings" aria-hidden="true"></span>
+            </button>
+        </td>
+        @*<td>
+                <a onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-trash text-danger"></i></a>
+            </td>*@
+    </tr>
+
+    No++;
+}
+
+<!-- Start Edit Modal -->
+<div class="modal fade" id="modal-edit">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <form id="edit-maintain-Role">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Localizer["Edit Role"]</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="EId" />
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="control-label">@Localizer["RoleId"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="ERoleId" name="RoleId" maxlength="20" readonly />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="Shade">@Localizer["RoleName"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" id="ERoleName" name="RoleName" />
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-md-2">
+                            <label class="control-label" for="MainDensity">@Localizer["RoleDesc"]<i style="color:red"> *</i></label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="hidden" class="form-control" id="ERoleDesc" name="RoleDesc" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnsubmitmaintainrolechange" class="btn btn-info btnupdatemaintaincolor">@Localizer["Save"]</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </form>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- Start Config Menu Modal -->
+
+<div class="modal fade" id="modalsetting">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalSetting">@Localizer["Setting"]</h4>
+                <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+            </div>
+            <input type="number" class="form-control" id="Id" hidden />
+            <div class="modal-body" id="idCardSetting">
+                @*<select class="selectDemo" id="selectDemo" multiple>
+                    @{
+                        int i = 0;
+                        foreach (var item in Model.columnNamesInModal)
+                        {
+                            i++;
+                            <option value="@i">@item</option>
+                        }
+                    }
+                </select>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnConfig" onclick="callConfig()" class="btn btn-primary">@Localizer["Config"]</button>
+                <button type="button" class="btn btn-danger waves-effect text-left" id="btnCancelSetting" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,238 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<div>
+
+    <div class="row">
+        <div class="col-xs-12">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+                @*<div class="box-header">
+                    <h3 class="box-title">@Localizer["H_Material No"] @Model.MaterialNo</h3>
+                </div>*@
+                @{ int No = 1; }
+                <div>
+                    <table class="table table-bordered color-table  info-table">
+                        <thead>
+                            <tr class="color-table">
+                                <th>@Localizer["Tb_Material_No"]</th>
+                                <th>@Localizer["Tb_SaleOrg"]</th>
+                                <th>@Localizer["Tb_Channel"]</th>
+                                <th>@Localizer["Tb_CustCode"]</th>
+                                <th>@Localizer["Tb_DevPlant"]</th>
+                                <th>@Localizer["Tb_MinQty"]</th>
+                                <th>@Localizer["Tb_OrderType"]</th>
+                                <th> </th>
+                            </tr>
+
+                            @foreach (var item in Model.modelProductERPSale.ModelListSale)
+                            {
+                                <tr>
+                                    <td>@item.MaterialNo</td>
+                                    <td>@item.SaleOrg</td>
+                                    <td>@item.Channel</td>
+                                    <td>@item.CustCode</td>
+                                    <td>@item.DevPlant</td>
+                                    <td>@item.MinQty</td>
+                                    <td>@item.OrderType</td>
+                                    <td>
+                                        @*<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalsale-edit-@No"> <i class="fas fa-pencil-alt text-warning "></i></button>*@
+
+                                        <div class="modal fade" id="modalsale-edit-@No">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form asp-controller="NewProduct" asp-action="UpdateSaleViewERP" data-ajax="true" data-ajax-success="onUpdateSaleSuccess" data-ajax-update="#SaleList-data-table" data-ajax-method="POST">
+
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">@Localizer["Lb_Edit Saleview"]</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <div class="form-group row">
+                                                                <label for="PrdType:" class="col-sm-4 control-label">@Localizer["Lb_PrdType"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <select class="form-control" asp-for="modelProductERPSale.OrderType">
+                                                                        @if (ViewBag.cboPrdType == "ZMTO")
+                                                                        {
+                                                                            <option selected>ZMTO</option>
+                                                                            <option>BANC</option>
+                                                                            <option>NORM</option>
+                                                                        }
+                                                                        else if (ViewBag.cboPrdType == "BANC")
+                                                                        {
+                                                                            <option>ZMTO</option>
+                                                                            <option selected>BANC</option>
+                                                                            <option>NORM</option>
+                                                                        }
+                                                                        else if (ViewBag.cboPrdType == "NORM")
+                                                                        {
+                                                                            <option>ZMTO</option>
+                                                                            <option>BANC</option>
+                                                                            <option selected>NORM</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label for="Channel" class="col-sm-4 control-label">@Localizer["Lb_Channel"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" asp-for="modelProductERPSale.Channel" class="form-control" value="@item.Channel" readonly />
+                                                                    @*<select class="form-control" asp-for="modelProductERPSale.Channel">
+                                                                            <option>10</option>
+                                                                            <option>30</option>
+                                                                            <option>60</option>
+                                                                        </select>*@
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <label for="inputPlant" class="col-sm-4 control-label">@Localizer["Lb_Sale Org"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" asp-for="modelProductERPSale.SaleOrg" class="form-control" value="@item.SaleOrg" readonly />
+                                                                    @*@Html.DropDownListFor(m => m.modelProductERP.Plant, Model.modelProductERP.PlantList, new { @class = "form-control" })*@
+                                                                    @*<select asp-for="modelProductERPSale.SaleOrg" class="form-control" asp-items="@(new SelectList(Model.modelProductERPSale.SaleOrgList, "Value", "Text", item.SaleOrg)) "></select>*@
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <label for="inputPlant" class="col-sm-4 control-label">@Localizer["Lb_Min Order"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" class="form-control" asp-for="modelProductERPSale.MinQty" value="@item.MinQty" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-primary" value="UpdatePlant" onclick="return closeEditModalSale()">@Localizer["Bt_Update changes"]</button>
+                                                            <button type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">@Localizer["Bt_Close"]</button>
+
+                                                            @*name="btnUpdateERP"*@
+                                                        </div>
+                                                    </form>
+                                                </div>
+
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+
+                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalsale-del-@No"><i class="fas fa-trash text-danger" data-toggle="tooltip" data-original-title="Delete"></i></button>
+                                        <div class="modal fade" id="modalsale-del-@No">
+                                            <div class="modal-dialog" style="width: 50%">
+                                                <form asp-controller="NewProduct" asp-action="DeleteSaleViewERP" data-ajax="true" data-ajax-success="onUpdateSaleSuccess" data-ajax-update="#SaleList-data-table" data-ajax-method="POST">
+
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">@Localizer["Lb_Confirmation"]</h4>
+
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <div class="form-group row">
+                                                                <label for="PrdType:" class="col-sm-4 control-label">@Localizer["Lb_PrdType"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" asp-for="modelProductERPSale.OrderType" class="form-control" value="@item.OrderType" readonly />
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row">
+                                                                <label for="Channel" class="col-sm-4 control-label">@Localizer["Lb_Channel"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" asp-for="modelProductERPSale.Channel" class="form-control" value="@item.Channel" readonly />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <label for="inputPlant" class="col-sm-4 control-label">@Localizer["Lb_Sale Org"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" asp-for="modelProductERPSale.SaleOrg" class="form-control" value="@item.SaleOrg" readonly />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <label for="inputPlant" class="col-sm-4 control-label">@Localizer["Lb_Min Order"] : </label>
+                                                                <div class="col-sm-8">
+                                                                    <input type="text" class="form-control" asp-for="modelProductERPSale.MinQty" value="@item.MinQty" readonly />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+
+                                                            <button type="submit" class="btn btn-danger" value="UpdatePlant" onclick="return closeEditModalSale()">@Localizer["Bt_Yes"]</button>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">@Localizer["Bt_No"]</button>
+
+                                                            @*name="btnUpdateERP"*@
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                No++;
+                            }
+                    </table>
+                </div>
+
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function closeEditModalSale() {
+        $('.close').click();
+        return true;
+    }
+
+    var onUpdateSaleSuccess = function (res) {
+        debugger;
+        // $.ajax({
+
+        // success: function (res) {
+        $('#SaleList-data-table').html(res);
+        $('.modal-backdrop').remove();
+        //$('.form-group').css('display', 'block');
+        //$('.form-inline').css('width', '100%');
+        //$('.form-control').css('width', '100%');
+        //$('.modal-backdrop').css('display', 'none');
+        //  },
+        //   error: function () {  }
+        //   });
+
+    };
+
+    var OnSaveSuccessSale = function (res) {
+       // debugger;
+        // $.ajax({
+        swal('Save Success');
+
+       // $('#SaleView-Collapse').hide();
+        // success: function (res) {
+        $('#SaleList-data-table').html(res);
+        $('.modal-backdrop').remove();
+
+        $('#modelProductERPSale_Channel').prop('selectedIndex',0);
+        $('#selectSale').prop('selectedIndex', 0);
+        $('#MinQty').val('0');
+
+        //$('.form-group').css('display', 'block');
+        //$('.form-inline').css('width', '100%');
+        //$('.form-control').css('width', '100%');
+        //$('.modal-backdrop').css('display', 'none');
+        //  },
+        //   error: function () {  }
+        //   });
+
+    };
+</script>

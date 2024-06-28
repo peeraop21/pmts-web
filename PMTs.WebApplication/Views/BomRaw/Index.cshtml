@@ -1,0 +1,994 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.BomRawMaterial.BomRawMaterialViewModel
+@{
+    ViewData["Title"] = "Bom Raw Material";
+}
+
+<style>
+    .jsgrid-grid-header,
+    .jsgrid-grid-body {
+        overflow: auto;
+    }
+</style>
+
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-xs-6 col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-hexagon-multiple"></i>@Localizer["BOM Raw Material"]</h3>
+                    </div>
+                </div>
+
+                <partial name="CreateBomRawMaterial" />
+                <div id="DivSearchFgModal">
+                    <partial name="_SearchFgModal" model="Model" />
+                </div>
+                <div id="DivSearchRawMaterial">
+                    <partial name="_SearchRawMaterial" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var rawMaterialList = [];
+        var unitMaterial = [];
+        var bomMatArr = [];
+        var currentPage = 0;
+
+        $(function () {
+            bomMatArr = [];
+
+            ClearInput()
+            genTable();
+            if ('@Model.MaterialNoSearch' != null && '@Model.MaterialNoSearch' != "" ) {
+                $("#FGMaterial").val('@Model.MaterialNoSearch');
+                ClickSearchFg();
+            }
+        });
+
+        $('#MaterialDescSearch').on('keypress', function (e) {
+            if (e.which === 13) {
+                ClickSearchRawMaterial();
+            }
+        });
+
+        $('#RawMaterialSearch').on('keypress', function (e) {
+            if (e.which === 13) {
+                ClickSearchRawMaterial();
+            }
+        });
+
+        function genTable() {
+            GetUnitOfMeasureCode();
+            $("#basicgrid").jsGrid({
+                data: rawMaterialList,
+                height: "auto",
+                width: "100%",
+                filtering: false,
+                editing: true,
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 15,
+                pageButtonCount: 5,
+                confirmDeleting: false,
+
+                onItemUpdating: function (args) {
+                    previousItem = args.previousItem;
+                },
+                controller: {
+                    data: rawMaterialList,
+                    loadData: function (filter) {
+                        return $.grep(rawMaterialList, function(client){
+                            return rawMaterialList
+                                && (!filter.MaterialType || client.MaterialType.indexOf(filter.MaterialType) > -1)
+                                && (!filter.MaterialNumber || client.MaterialNumber.indexOf(filter.MaterialNumber) > -1)
+                                && (!filter.MaterialDescription || client.MaterialDescription.indexOf(filter.MaterialDescription) > -1)
+                                && (!filter.Lay || client.Lay === filter.Lay)
+                                && (!filter.Width || client.Width === filter.Width)
+                                && (!filter.Length || client.Length === filter.Length)
+                                && (!filter.SizeUom || client.SizeUom.indexOf(filter.SizeUom) > -1)
+                                && (!filter.CutSize || client.CutSize === filter.CutSize)
+                                && (!filter.BomAmount || client.BomAmount === filter.BomAmount)
+                                && (!filter.Uom || client.Uom.indexOf(filter.Uom) > -1)
+                                && (!filter.MaterialGroup || client.MaterialGroup.indexOf(filter.MaterialGroup) > -1)
+                                && (!filter.NetWeight || client.NetWeight === filter.NetWeight);
+
+                        });
+                    },
+                    deleteItem:function(item){
+                        DeleteRawMaterial(item,"delete");
+                    },
+                    updateItem: function (item) {
+                        var existRawMat = rawMaterialList.filter(r => { return r.MaterialNumber == item.MaterialNumber });
+                        var objIndex = rawMaterialList.findIndex((obj => obj.MaterialNumber == item.MaterialNumber));
+                        if (existRawMat.length > 0) {
+                            rawMaterialList[objIndex].Uom = item.Uom;
+                            rawMaterialList[objIndex].Width = item.Width;
+                            rawMaterialList[objIndex].Length = item.Length;
+                            rawMaterialList[objIndex].Lay = item.Lay;
+                            rawMaterialList[objIndex].CutSize = item.CutSize;
+                            rawMaterialList[objIndex].BomAmount = item.BomAmount;
+                            rawMaterialList[objIndex].SizeUom = item.SizeUom;
+                        }
+                        genTable();
+                        $("#basicgrid").jsGrid("loadData");
+                    },
+                },
+                fields: [
+                    {
+                        type: "control",
+                        width: 70,
+                    },{
+                        name: "MaterialType", //ชื่อ key data source
+                        title: "Type", // ชื่อ column
+                        type: "text",
+                        editing: false,
+                        width: 80
+                    }, {
+                        name: "MaterialNumber",
+                        title: "No.",
+                        type: "text",
+                        editing: false,
+                        width: 150
+                    }, {
+                        name: "MaterialDescription",
+                        title: "Description",
+                        type: "text",
+                        editing: false,
+                        width: 200
+                    }, {
+                        name: "Lay",
+                        title: "จำนวนตัวลง",
+                        type: "text",
+                        //validate:"required",
+                        validate: [
+                            "required",
+                            { validator: function(value, item){
+                                //console.log("Item",item);
+                                return /^\d*$/.test(value);
+                            },
+                            message:"Lay : Please enter a valid value"}
+                        ],
+                        width: 90,
+                        itemTemplate: function (value, item) {
+                            return value == "" && isNaN(parseInt(value)) ? 0 : parseInt(value);
+                        },
+                        editTemplate: function (value, item) {
+                            var grid = this._grid;
+                            var $textBox = $("<input  class='form-control input-sm'>").val(value);
+                            $textBox.on("keyup", function (e) {
+                                const rowIndex = parseInt($(this).closest('tr').index());
+                                const description = grid.fields[3]._grid.data[rowIndex].MaterialDescription;
+                                const lay = parseInt(grid.fields[4].editControl[0].value);
+                                const cutsize = parseInt(grid.fields[8].editControl[0].value);
+                                const measureUnit = grid.fields[10]._grid.data[rowIndex].Uom;
+                                const width = parseFloat(grid.fields[5].editControl[0].value);
+                                const height = parseFloat(grid.fields[6].editControl[0].value);
+                                const amount = parseFloat(grid.fields[9].editControl[0].value);
+                                if (isNaN(amount)) {
+                                    grid.option("fields")[9].editControl.val(0);
+                                }
+
+                                const isStickerDesc = description.includes("สติ๊กเกอร์") || description.toLowerCase().includes("sticker");
+                                if ((isStickerDesc && (measureUnit == "SH" || measureUnit == "SQM" || measureUnit == "KG")) && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && lay != 0)) {
+                                    const newamount = parseFloat((height * width / lay) / 1000);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                } else if (measureUnit == "SH" && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && !isNaN(cutsize) && cutsize != 0 && lay != 0)) {
+                                    const newamount = parseFloat(1/cutsize/ lay);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                }
+
+                                if (isNaN(width)) {
+                                    grid.option("fields")[5].editControl.val(0);
+                                }
+
+                                if (isNaN(height)) {
+                                    grid.option("fields")[6].editControl.val(0);
+                                }
+
+                                if (isNaN(cutsize)) {
+                                    grid.option("fields")[8].editControl.val(0);
+                                }
+                                if (e.keyCode == 13) {
+                                    grid.updateItem();
+                                    e.preventDefault();
+                                }
+                            });
+                            var $result = this.editControl = $textBox;
+                            $result.val(value);
+                            return $result;
+                        }
+                    },  {
+                        name: "Width",
+                        title: "ขนาดผลิต(กว้าง)",
+                        type: "text",
+                        //validate: "required",
+                        validate: [
+                            "required",
+                            { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"Width : Please enter a valid value"}
+                        ],
+                        width: 120,
+                        itemTemplate: function (value, item) {
+                            return value == "" && isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+                        },
+                        editTemplate: function (value) {
+                            var grid = this._grid;
+                            var $textBox = $("<input  class='form-control input-sm'>").val(value);
+                            $textBox.on("keyup", function (e) {
+                                const rowIndex = parseInt($(this).closest('tr').index());
+                                const description = grid.fields[3]._grid.data[rowIndex].MaterialDescription;
+                                const lay = parseInt(grid.fields[4].editControl[0].value);
+                                const cutsize = parseInt(grid.fields[8].editControl[0].value);
+                                const measureUnit = grid.fields[10]._grid.data[rowIndex].Uom;
+                                const width = parseFloat(grid.fields[5].editControl[0].value);
+                                const height = parseFloat(grid.fields[6].editControl[0].value);
+                                const amount = parseFloat(grid.fields[9].editControl[0].value);
+                                if (isNaN(amount)) {
+                                    grid.option("fields")[9].editControl.val(0);
+                                }
+
+                                const isStickerDesc = description.includes("สติ๊กเกอร์") || description.toLowerCase().includes("sticker");
+                                if ((isStickerDesc && (measureUnit == "SH" || measureUnit == "SQM" || measureUnit == "KG")) && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && lay != 0)) {
+                                    const newamount = parseFloat((height * width / lay) / 1000);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                } else if (measureUnit == "SH" && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && !isNaN(cutsize) && cutsize != 0 && lay != 0)) {
+                                    const newamount = parseFloat(1/cutsize/ lay);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                }
+
+                                if (isNaN(lay)) {
+                                    grid.option("fields")[4].editControl.val(0);
+                                }
+
+                                if (isNaN(height)) {
+                                    grid.option("fields")[6].editControl.val(0);
+                                }
+
+                                if (isNaN(cutsize)) {
+                                    grid.option("fields")[8].editControl.val(0);
+                                }
+                                if (e.keyCode == 13) {
+                                    grid.updateItem();
+                                    e.preventDefault();
+                                }
+                            });
+                            var $result = this.editControl = $textBox;
+                            $result.val(value);
+                            return $result;
+                        },
+                    }, {
+                        name: "Length",
+                        title: "ขนาดผลิต(สูง)",
+                        type: "text",
+                        //validate: "required",
+                        validate: [
+                            "required",
+                            { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"Length : Please enter a valid value"}
+                        ],
+                        width: 110,
+                        itemTemplate: function (value, item) {
+                            return value == "" && isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+                        },
+                        editTemplate: function (value) {
+                            var grid = this._grid;
+                            var $textBox = $("<input  class='form-control input-sm'>").val(value);
+                            $textBox.on("keyup", function (e) {
+                                const rowIndex = parseInt($(this).closest('tr').index());
+                                const description = grid.fields[3]._grid.data[rowIndex].MaterialDescription;
+                                const lay = parseInt(grid.fields[4].editControl[0].value);
+                                const cutsize = parseInt(grid.fields[8].editControl[0].value);
+                                const measureUnit = grid.fields[10]._grid.data[rowIndex].Uom;
+                                const width = parseFloat(grid.fields[5].editControl[0].value);
+                                const height = parseFloat(grid.fields[6].editControl[0].value);
+                                const amount = parseFloat(grid.fields[9].editControl[0].value);
+                                if (isNaN(amount)) {
+                                    grid.option("fields")[9].editControl.val(0);
+                                }
+
+                                const isStickerDesc = description.includes("สติ๊กเกอร์") || description.toLowerCase().includes("sticker");
+                                if ((isStickerDesc && (measureUnit == "SH" || measureUnit == "SQM" || measureUnit == "KG")) && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && lay != 0)) {
+                                    const newamount = parseFloat((height * width / lay) / 1000);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                } else if (measureUnit == "SH" && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && !isNaN(cutsize) && cutsize != 0 && lay != 0)) {
+                                    const newamount = parseFloat(1/cutsize/ lay);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                }
+
+                                if (isNaN(lay)) {
+                                    grid.option("fields")[4].editControl.val(0);
+                                }
+
+                                if (isNaN(width)) {
+                                    grid.option("fields")[5].editControl.val(0);
+                                }
+
+                                if (isNaN(cutsize)) {
+                                    grid.option("fields")[8].editControl.val(0);
+                                }
+                                if (e.keyCode == 13) {
+                                    grid.updateItem();
+                                    e.preventDefault();
+                                }
+                            });
+                            var $result = this.editControl = $textBox;
+                            $result.val(value);
+                            return $result;
+                        },
+                    }, {
+                        name: "SizeUom",
+                        title: "Size UOM",
+                        type: "select",
+                        items: unitMaterial,
+                        valueField: "Text",
+                        textField: "Text",
+                        width: 90
+                    }, {
+                        name: "CutSize",
+                        title: "ไซส์ตัด",
+                        type: "text",
+                        //validate: "required",
+                        validate: [
+                            "required",
+                            { validator: function(value, item){
+                                return /^\d*$/.test(value);
+                            },
+                            message:"CutSize : Please enter a valid value"}
+                        ],
+                        width: 70,
+                        itemTemplate: function (value, item) {
+                            return value == "" && isNaN(parseInt(value)) ? 0 : parseInt(value);
+                        },
+                        editTemplate: function (value) {
+                            var grid = this._grid;
+                            var $textBox = $("<input  class='form-control input-sm'>").val(value);
+                            $textBox.on("keyup", function (e) {
+                                const rowIndex = parseInt($(this).closest('tr').index());
+                                const description = grid.fields[3]._grid.data[rowIndex].MaterialDescription;
+                                const lay = parseInt(grid.fields[4].editControl[0].value);
+                                const cutsize = parseInt(grid.fields[8].editControl[0].value);
+                                const measureUnit = grid.fields[10]._grid.data[rowIndex].Uom;
+                                const width = parseFloat(grid.fields[5].editControl[0].value);
+                                const height = parseFloat(grid.fields[6].editControl[0].value);
+                                const amount = parseFloat(grid.fields[9].editControl[0].value);
+                                if (isNaN(amount)) {
+                                    grid.option("fields")[9].editControl.val(0);
+                                }
+
+                                const isStickerDesc = description.includes("สติ๊กเกอร์") || description.toLowerCase().includes("sticker");
+                                if ((isStickerDesc && (measureUnit == "SH" || measureUnit == "SQM" || measureUnit == "KG")) && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && lay != 0)) {
+                                    const newamount = parseFloat((height * width / lay) / 1000);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                } else if (measureUnit == "SH" && (!isNaN(lay) && !isNaN(width) && !isNaN(height) && !isNaN(cutsize) && cutsize != 0 && lay != 0)) {
+                                    const newamount = parseFloat(1/cutsize/ lay);
+                                    if (isNaN(newamount)) {
+                                        grid.option("fields")[9].editControl.val(0);
+                                    }
+                                    grid.option("fields")[9].editControl.val(RoundNum(newamount,5));
+                                }
+
+                                if (isNaN(lay)) {
+                                    grid.option("fields")[4].editControl.val(0);
+                                }
+
+                                if (isNaN(width)) {
+                                    grid.option("fields")[5].editControl.val(0);
+                                }
+
+                                if (isNaN(height)) {
+                                    grid.option("fields")[6].editControl.val(0);
+                                }
+                                if (e.keyCode == 13) {
+                                    grid.updateItem();
+                                    e.preventDefault();
+                                }
+                            });
+                            var $result = this.editControl = $textBox;
+                            $result.val(value);
+                            return $result;
+                        },
+                    }, {
+                        name: "BomAmount",
+                        title: "จำนวนต่อหน่วย(สำคัญ)",
+                        type: "text",
+                        validate: [
+                            "required",
+                            { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"BomAmount : Please enter a valid value"}
+                        ],
+                        width: 160,
+                        itemTemplate: function (value, item) {
+                            return value == "" && isNaN(parseFloat(value)) ? 0 : parseFloat(value);
+                        },
+                        editTemplate: function (value) {
+                            var grid = this._grid;
+                            var $textBox = $("<input  class='form-control input-sm'>").val(value);
+                            $textBox.on("keyup", function (e) {
+                                const lay = parseInt(grid.fields[4].editControl[0].value);
+                                const width = parseFloat(grid.fields[5].editControl[0].value);
+                                const height = parseFloat(grid.fields[6].editControl[0].value);
+                                const cutsize = parseInt(grid.fields[8].editControl[0].value);
+
+                                if (isNaN(lay)) {
+                                    grid.option("fields")[4].editControl.val(0);
+                                }
+
+                                if (isNaN(width)) {
+                                    grid.option("fields")[5].editControl.val(0);
+                                }
+
+                                if (isNaN(height)) {
+                                    grid.option("fields")[6].editControl.val(0);
+                                }
+
+                                if (isNaN(cutsize)) {
+                                    grid.option("fields")[8].editControl.val(0);
+                                }
+                                if (e.keyCode == 13) {
+                                    grid.updateItem();
+                                    e.preventDefault();
+                                }
+                            });
+                            var $result = this.editControl = $textBox;
+                            $result.val(value);
+                            return $result;
+                        },
+                    }, {
+                        name: "Uom",
+                        title: "Measure Unit of Code",
+                        items:"",
+                        type: "text",
+                        editing: false,
+                        width: 160
+                    },{
+                        name: "MaterialGroup",
+                        title: "Category Item",
+                        type: "text",
+                        editing: false,
+                        width: 120
+                    },{
+                        name: "NetWeight",
+                        title: "Weight per Psc.",
+                        type: "text",
+                        editing: false,
+                        width: 120
+                    },{
+                        name: "Id", //ชื่อ key data source
+                        title: "Id", // ชื่อ column
+                        type: "number",
+                        editing: false,
+                        visible: false,
+                    },{
+                        name: "OldMaterialNumber",
+                        title: "Old Material Number",
+                        type: "text",
+                        editing: false,
+                        width: 150,
+                        visible: false
+                    }, {
+                        name: "Plant",
+                        title: "Plant",
+                        type: "text",
+                        editing: false,
+                        width: 50,
+                        visible: false
+                    }],
+                    onItemEditing: function (args) {
+                        //console.log("args", args)]
+                        if(args.item.Uom =="SH" || args.item.Uom =="Inch" || args.item.Uom =="mm" || args.item.Uom =="ROL")
+                        {
+                            args.grid.fields[4].validate = [
+                                "required",
+                                { validator: function(value, item){
+                                //console.log("Item",item);
+                                return /^\d*$/.test(value);
+                            },
+                            message:"Lay : Please enter a valid value"}
+                            ]
+
+                            args.grid.fields[5].validate = [
+                                "required",
+                            { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"Width : Please enter a valid value"}
+                            ]
+
+                            args.grid.fields[6].validate = [
+                                "required",
+                            { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"Length : Please enter a valid value"}
+                            ]
+
+                            args.grid.fields[8].validate = [
+                                "required",
+                            { validator: function(value, item){
+                                return /^\d*$/.test(value);
+                            },
+                            message:"CutSize : Please enter a valid value"}
+                            ]
+
+                            args.grid.fields[9].validate = [
+                                "required",
+                            { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"BomAmount : Please enter a valid value"}
+                            ]
+
+                        }
+                        else
+                        {
+                            args.grid.fields[4].validate = [
+                                { validator: function(value, item){
+                                //console.log("Item",item);
+                                return /^\d*$/.test(value);
+                            },
+                            message:"Lay : Please enter a valid value"}
+                            ];
+                            args.grid.fields[5].validate = [
+                                { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"Width : Please enter a valid value"}
+                            ];
+                            args.grid.fields[6].validate = [
+                                { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"Length : Please enter a valid value"}
+                            ];
+
+                            args.grid.fields[8].validate = [
+                                { validator: function(value, item){
+                                return /^\d*$/.test(value);
+                            },
+                            message:"CutSize : Please enter a valid value"}
+                            ]
+
+                            args.grid.fields[9].validate = [
+                                { validator: function(value, item){
+                                return /^(\+|-)?(\d*\.?\d*)$/.test(value);
+                            },
+                            message:"BomAmount : Please enter a valid value"}
+                            ]
+                        }
+                    }
+                })
+        }
+
+        function GetUnitOfMeasureCode() {
+
+             $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetUnitOfMeasureCode", "BomRaw")',
+                success: function (res) {
+                    if (res !== false) {
+                        unitMaterial = res;
+                        //$("#basicgrid").jsGrid("loadData");
+                        //console.log("unit",unitMaterial)
+                    }
+                    else {
+                        swal("Can not find Data", "", "warning");
+                    }
+                },
+                error: function () { }
+            });
+        }
+
+        function AddDataByFg(material) {
+
+            this.CheckStatus();
+            $("#FGMaterial").val($("#" + material + " td")[1].innerHTML);
+            $("#Description").val($("#" + material + " td")[3].innerHTML);
+            $("#CreationDate").val($("#" + material + " td")[7].innerHTML);
+            $("#CreationBy").val($("#" + material + " td")[8].innerHTML);
+            $("#LastDateModified").val($("#" + material + " td")[9].innerHTML);
+            $("#LastUserModified").val($("#" + material + " td")[10].innerHTML);
+            $("#UnitOfMeasureCode").val($("#" + material + " td")[11].innerHTML);
+
+            GetRawMaterialData()
+
+            $('#btnAddMat').prop('disabled', false);
+            $('#SearchFgModal').modal('toggle');
+            this.ClearDataSearchFgModal();
+         }
+
+        function AddDataByEditProduct(item) {
+            this.CheckStatus();
+            $("#FGMaterial").val(item.MaterialNo);
+            $("#Description").val(item.Description);
+            $("#CreationDate").val(item.CreateDate);
+            $("#CreationBy").val(item.CreatedBy);
+            $("#LastDateModified").val(item.LastUpdate);
+            $("#LastUserModified").val(item.UpdatedBy);
+            $("#UnitOfMeasureCode").val(item.BomUom);
+
+            //gen exist bom to table
+
+            GetRawMaterialData()
+            $('#btnAddMat').prop('disabled', false);
+
+        }
+
+        function ClickSearchFg() {
+            bomMatArr = [];
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("SearchFgMaterial", "BomRaw")',
+                data: { materialNo: $("#FGMaterial").val() },
+                success: function (res) {
+                    if (res.IsSuccess == true && res.RowCount > 0) {
+                        const masterData = JSON.parse(res.MasterData);
+                        if (masterData != "") {
+                            AddDataByEditProduct(masterData);
+                        } else {
+                            $("#DivSearchFgModal").html(res.View);
+                            $('#SearchFgModal').modal('show');
+                            $('#SearchFgTable').DataTable();
+
+                        }
+
+                    }
+                    else {
+                        swal("Material not found", "", "warning");
+                        rawMaterialList = [];
+                        genTable();
+                        ClearInput();
+                    }
+                },
+                error: function () { }
+            });
+        }
+
+        function CheckStatus() {
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("CheckMaterialNo", "BomRaw")',
+                data: { materialNo: $("#FGMaterial").val() },
+                success: function (res) {
+                    let booleanValue = res.toLowerCase() == 'true' ? true : false;
+                    if (booleanValue) {
+                        $("#Status").val("Repeat")
+                    }
+                    else {
+                        $("#Status").val("New")
+                    }
+                },
+                error: function () { }
+            });
+        }
+
+        function SetBackgroundColorInRawMat() {
+            const rawmatTable = $('#SearchRawMaterialTable').DataTable({
+                "scrollX": true,
+                "bDestroy": true,
+                "displayStart": currentPage * 10,
+            });
+
+            if (typeof rawMaterialList !== 'undefined' && rawMaterialList.length > 0) {
+                $.each(rawMaterialList, function (key, value) {
+                    if (typeof value !== 'undefined') {
+                        rawmatTable.$("#rawmat-" + value.MaterialNumber+".rawmat-row" ).css('background-color', '#fcc9d4');
+                    }
+                });
+            }
+        }
+
+        function RoundNum(num, length) {
+            var number = Math.round(num * Math.pow(10, length)) / Math.pow(10, length);
+            return number;
+        }
+
+        function AddDataRawMat(Id) {
+            const rawmatTable1 = $('#SearchRawMaterialTable').DataTable();
+
+            var info = rawmatTable1.page.info();
+            currentPage = parseInt(info.page);
+
+            GetUnitOfMeasureCode();
+            const materialType = $("#" + Id + " td")[2].innerHTML;// material type
+            const materialNumber = $("#" + Id + " td")[3].innerHTML;// material number
+            const materialDescription = $("#" + Id + " td")[5].innerHTML;// material description
+            const netWeight = $("#" + Id + " td")[6].innerHTML;// net weight
+            const materialGroup = $("#" + Id + " td")[7].innerHTML;// material group
+            const uom = $("#" + Id + " td")[8].innerHTML;// uom
+            const oldMaterialNumber = $("#" + Id + " td")[11].innerHTML;// oldMaterialNumber
+            const plant = $("#" + Id + " td")[4].innerHTML;// plant
+
+            $("#basicgrid").jsGrid("search", { MaterialNumber: materialNumber }).done(function (res) {
+                if (typeof res[0] !== 'undefined'){
+                    swal("This raw material already exist.", "", "warning");
+                }else{
+                    var tempData = {
+                        MaterialType: materialType,
+                        MaterialNumber: materialNumber,
+                        MaterialDescription: materialDescription,
+                        NetWeight: netWeight,
+                        SizeUom: "Inch",
+                        MaterialGroup: materialGroup,
+                        Uom: uom,
+                        Width: "",
+                        Length: "",
+                        Lay: "",
+                        CutSize: "",
+                        BomAmount: "",
+                        Id:0,
+                        OldMaterialNumber:oldMaterialNumber,
+                        Plant: plant
+                    }
+                    console.log(tempData);
+                    rawMaterialList.push(tempData);
+                }
+
+                genTable();
+
+                $("#basicgrid").jsGrid("loadData");
+                SetBackgroundColorInRawMat();
+                $('#btnSaveMat').prop('disabled', false);
+
+            });
+        }
+
+        function ClickSearchRawMaterial() {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("SearchRawMaterial", "BomRaw")',
+                data: { materialNo: $("#RawMaterialSearch").val(),materialDesc: $("#MaterialDescSearch").val()},
+                success: function (res) {
+                    if (res !== false) {
+                        //console.log("res",res);
+                        $("#DivRawMaterialTable").html(res.View);
+                        $('#SearchRawMaterialTable').DataTable({
+                            "scrollX": true,
+                            "bDestroy": true
+                        });
+
+                        SetBackgroundColorInRawMat();
+                    }
+                    else {
+                        swal("Can not find Data", "", "warning");
+                    }
+                },
+                error: function () { }
+            });
+        }
+
+        $("#btnAddMat").click(function () {
+            $('#SearchRawMaterial').modal('show')
+            $('#SearchRawMaterialTable').DataTable({
+                "scrollX": true,
+                "bDestroy": true
+            });
+        });
+
+        $("#btnSaveMat").click(function () {
+            var ValidateResult = true;
+
+            rawMaterialList.forEach(data => {
+                if (data.Uom == 'SHEET' || data.Uom == 'Inch' || data.Uom == 'mm' || data.Uom == 'ROL') {
+                    var Lay = data.Lay || "";
+                    var Length = data.Length || "";
+                    var Width = data.Width || "";
+                    var CutSize = data.Length || "";
+                    var BomAmount = data.BomAmount || "";
+
+                    if (Lay == "") {
+                        Lay = 0;
+                        data.Lay = 0;
+                    }
+                    if (Lay == "") {
+                        Lay = 0;
+                        data.Lay = 0;
+                    }
+                    if (Length == "") {
+                        Length = 0;
+                        data.Length = 0;
+                    }
+                    if (Width == "") {
+                        Width = 0;
+                        data.Width = 0;
+                    }
+                    if (CutSize == "") {
+                        CutSize = 0;
+                        data.CutSize = 0;
+                    }
+                    if (BomAmount == "") {
+                        BomAmount = 0;
+                        data.BomAmount = 0;
+                    }
+
+                    ValidateResult = (isNaN(parseInt(Lay)) || isNaN(parseFloat(Length)) || isNaN(parseFloat(Width)) || isNaN(parseInt(CutSize)) || isNaN(parseFloat(BomAmount))) ? false : ValidateResult;
+                }
+            });
+
+            if(ValidateResult){
+                var tempData = {
+                    FgMaterial:$("#FGMaterial").val(),
+                    BomRawData: rawMaterialList
+                }
+
+                var dataJson = JSON.stringify(tempData);
+                $.ajax({
+                    type: 'post',
+                    cache: false,
+                    url: '@Url.Action("InsertOrUpdateRawMat", "BomRaw")',
+                    dataType: 'json',
+                    data: dataJson, // dataJson
+                    contentType: "application/json; charset=utf-8",
+                    success: function (res) {
+                        if (res !== false) {
+                            swal("Save Success", "", "success");
+                            GetRawMaterialData()
+                            $("#DivRawMaterialTable").html(res.View);
+                            $('#SearchRawMaterialTable').DataTable({
+                                "scrollX": true,
+                                "bDestroy": true
+                            });
+
+                        }
+                        else {
+                            swal("Can not find Data", "", "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+            else{
+                swal("Please fill in all the required fields.", "", "warning");
+            }
+        });
+
+        function ClearDataSearchFgModal()
+        {
+            $("#SearchFgTable tr").remove();
+        }
+
+        function DeleteRawMaterial(item,word){
+            swal({
+                title: 'Are you sure?',
+                text: "You would like to " + word+ " data",
+                icon: "warning",
+                buttons:true,
+                dangerMode: true,
+                }).then((confirmed) => {
+                    if (confirmed) {
+                        $("#basicgrid").jsGrid("deleteItem", item);
+                        var clientIndex = $.inArray(item, rawMaterialList);
+                        rawMaterialList.splice(clientIndex, 1);
+
+                        const rawmatTable = $('#SearchRawMaterialTable').DataTable({
+                            "scrollX": true,
+                            "bDestroy": true
+                        });
+
+                        rawmatTable.$(".rawmat-row").css('background-color', 'white');
+
+                        SetBackgroundColorInRawMat();
+                        var ID = item.Id;
+                        $.ajax({
+                            type: 'PUT',
+                            cache: false,
+                            url: '@Url.Action("DeleteRawMaterial", "BomRaw")',
+                            data: {Id: ID },
+                            success: function (res) {
+                                if (res !== false) {
+
+                                    swal("Delete Success", "", "success");
+                                    if(rawMaterialList.length == 0){
+                                        $('#btnSaveMat').prop('disabled', true);
+                                    }
+                                    //console.log("res",res);
+                                    $("#DivRawMaterialTable").html(res.View);
+                                    $('#SearchRawMaterialTable').DataTable({
+                                        "scrollX": true,
+                                        "bDestroy": true
+                                    });
+                                }
+                                else {
+                                    swal("Can not delete Data", "", "warning");
+                                }
+                            },
+                            error: function () { }
+                        });
+
+                        $("#basicgrid").jsGrid("loadData");
+                    }else{
+                        //console.log("refresh",item)
+                        $("#basicgrid").jsGrid("loadData");
+                    }
+
+                });
+        }
+
+        $( "#FGMaterial" ).keypress(function(ev) {
+            //console.log("Enter",ev.keyCode)
+            if(ev.keyCode =='13'){
+                $("#btnSearchFg").click();
+            }
+        });
+
+        $( "#RawMaterialSearch" ).keypress(function(ev) {
+            //console.log("Enter",ev.keyCode)
+            if(ev.keyCode =='13'){
+                $("#btnSearchRawMat").click();
+            }
+        });
+
+        function GetRawMaterialData(){
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetRawMaterialProductionBomByFGMaterial", "BomRaw")',
+                data: { fgMaterial: $("#FGMaterial").val() },
+                success: function (res) {
+                    if (res.IsSuccess == true && res.Data.length > 0) {
+                        //console.log(res.Data);
+                        rawMaterialList = res.Data;
+                        genTable();
+                        $('#btnSaveMat').prop('disabled', false);
+                    }
+                    else {
+                        rawMaterialList = [];
+                        genTable();
+                        //swal("Can not find Data", "", "warning");
+                    }
+                },
+                error: function () { }
+            });
+        }
+        function ClearInput(){
+            $("#FGMaterial").val('');
+                $("#Description").val('');
+                $("#CreationDate").val('');
+                $("#CreationBy").val('');
+                $("#LastDateModified").val('');
+                $("#LastUserModified").val('');
+                $("#UnitOfMeasureCode").val('');
+                $("#Status").val('')
+
+                $('#btnAddMat').prop('disabled', true);
+                $('#btnSaveMat').prop('disabled', true);
+        }
+    </script>
+
+}

@@ -1,0 +1,322 @@
+﻿@model PMTs.DataAccess.ModelView.PresaleChangeViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Compare Product";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<style>
+    .headerLabel {
+        font-size: 24px;
+    }
+
+    .hrDot {
+        border-style: dotted
+    }
+
+    .li {
+        text-align: left;
+    }
+
+    .card {
+        margin-bottom: 15px;
+        padding-left: 5px;
+        border-color: dimgray;
+    }
+
+    dd {
+        border-bottom: double;
+        border-color: lightgrey;
+        color: black;
+        height: 60px;
+        font-size: 18px;
+        margin-left: 1px;
+        margin-right: 1px;
+        word-wrap: break-word;
+        padding-left: 5px
+    }
+
+    .originalProductHeader {
+        background-color: lightgray;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0;
+        height: 30px;
+    }
+
+    .changeProductHeader {
+        background-color: aquamarine;
+        font-weight: bold;
+        font-size: 20px;
+        margin: 0;
+        height: 30px;
+    }
+
+    .cardOriginalProduct {
+        background-color: lightgray;
+    }
+
+    .cardChangeProduct {
+        background-color: aquamarine;
+    }
+
+    .originalProductColor {
+        background-color: whitesmoke;
+    }
+
+    .changeProductColor {
+        background-color: azure;
+    }
+
+    .product-detail {
+        font-size: 16px;
+        word-wrap: break-word;
+    }
+
+    .table td, .table th {
+        padding: 0px
+    }
+
+    .routing-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .routing-paragraph {
+        padding-bottom: 3px;
+        font-size: 18px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <div class="card-body">
+            <div class="row justify-content-between">
+                <div class="col-xs-12 col-md-12">
+                    <h3 class="text-themecolor"><i class="mdi mdi-content-duplicate"></i>@Localizer["Compare Product"]</h3>
+                    <hr />
+                </div>
+                <br />
+                <div class="col-xs-12 col-md-12">
+                    <h3 class="text-center">@Localizer["Compare Product Material No"] <b>@Model.MaterialNo</b></h3>
+                    <table class="table table-bordered" style="border-color:black">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <h4 class="text-center originalProductHeader" style="background-color:white">@Localizer["Product Data"]</h4>
+                                </th>
+                                <th style="border: 1px solid black;">
+                                    <h4 class="text-center originalProductHeader">@Localizer["Original Data"]</h4>
+                                </th>
+                                <th>
+                                    <h4 class="text-center changeProductHeader">@Localizer["New Data"]</h4>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center" style="border-bottom:none;border-color:black">
+                                    <h3 class="text-center"><b>&nbsp;</b></h3>
+                                    <dl>
+                                        <dt class="data"></dt>
+                                        <dd>@Localizer["FactoryCode"]</dd>
+                                        <dd>@Localizer["PsmId"] </dd>
+                                        <dd>@Localizer["MaterialNo"]</dd>
+                                        <dd>@Localizer["Description"]</dd>
+                                        <dd>@Localizer["SaleText1"]</dd>
+                                        <dd>@Localizer["SaleText2"]</dd>
+                                        <dd>@Localizer["SaleText3"]</dd>
+                                        <dd>@Localizer["SaleText4"]</dd>
+                                        <dd>@Localizer["PieceSet"]</dd>
+                                        <dd>@Localizer["PrintMethod"]</dd>
+                                        <dd>@Localizer["HighGroup"]</dd>
+                                        <dd>@Localizer["HighValue"]</dd>
+                                        <dd>@Localizer["Bun"]</dd>
+                                        <dd>@Localizer["BunLayer"]</dd>
+                                        <dd>@Localizer["LayerPalet"]</dd>
+                                    </dl>
+                                </td>
+                                <td class="originalProductColor" style="border-bottom:none;border-color:black">
+                                    <h3>&nbsp;</h3>
+                                    <dl>
+                                        <dt class="original" style="list-style-type:none"></dt>
+                                        <dd>@Model.MasterDataCompare.FactoryCode</dd>
+                                        <dd>@Model.MasterDataCompare.PsmId</dd>
+                                        <dd>@Model.MasterDataCompare.MaterialNo</dd>
+                                        <dd>@Model.MasterDataCompare.Description</dd>
+                                        <dd>@Model.MasterDataCompare.SaleText1</dd>
+                                        <dd>@Model.MasterDataCompare.SaleText2</dd>
+                                        <dd>@Model.MasterDataCompare.SaleText3</dd>
+                                        <dd>@Model.MasterDataCompare.SaleText4</dd>
+                                        <dd>@Model.MasterDataCompare.PieceSet</dd>
+                                        <dd>@Model.MasterDataCompare.PrintMethod</dd>
+                                        <dd>@Model.MasterDataCompare.HighGroup</dd>
+                                        <dd>@Model.MasterDataCompare.HighValue</dd>
+                                        <dd>@Model.MasterDataCompare.Bun</dd>
+                                        <dd>@Model.MasterDataCompare.BunLayer</dd>
+                                        <dd>@Model.MasterDataCompare.LayerPalet</dd>
+                                    </dl>
+                                </td>
+                                <td class="changeProductColor" style="border-bottom:none;border-color:black">
+                                    <h3>&nbsp;</h3>
+                                    <dl>
+                                        <dt class="newChange" style="list-style-type:none"></dt>
+                                        <dd>@Model.PresaleChangeProduct.FactoryCode</dd>
+                                        <dd>@Model.PresaleChangeProduct.PsmId</dd>
+                                        <dd>@Model.PresaleChangeProduct.MaterialNo</dd>
+                                        <dd>@Model.PresaleChangeProduct.Description</dd>
+                                        <dd>@Model.PresaleChangeProduct.SaleText1</dd>
+                                        <dd>@Model.PresaleChangeProduct.SaleText2</dd>
+                                        <dd>@Model.PresaleChangeProduct.SaleText3</dd>
+                                        <dd>@Model.PresaleChangeProduct.SaleText4</dd>
+                                        <dd>@Model.PresaleChangeProduct.PieceSet</dd>
+                                        <dd>@Model.PresaleChangeProduct.PrintMethod</dd>
+                                        <dd>@Model.PresaleChangeProduct.HighGroup</dd>
+                                        <dd>@Model.PresaleChangeProduct.HighValue</dd>
+                                        <dd>@Model.PresaleChangeProduct.Bun</dd>
+                                        <dd>@Model.PresaleChangeProduct.BunLayer</dd>
+                                        <dd>@Model.PresaleChangeProduct.LayerPalet</dd>
+                                    </dl>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-top:none;border-color:black"><h3 class="text-center"><b>@Localizer["Routing Data"]</b></h3></td>
+                                <td class="originalProductColor" style="border-top:none;border-color:black">
+                                    <h3>&nbsp;</h3>
+                                    @{
+                                        var i = 0;
+                                        @foreach (var routingOriginal in Model.RoutingsCompare.OrderBy(r => r.SeqNo))
+                                        {
+                                            i++;
+                                <div class="card cardOriginalProduct">
+                                    <h3><b>@Localizer["Item"] @i</b></h3>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["FactoryCode"] : </span>@routingOriginal.FactoryCode</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["PsmId"] : </span>@routingOriginal.PsmId</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["MaterialNo"] : </span>@routingOriginal.MaterialNo</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Machine"] :</span> @routingOriginal.Machine</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Plan Code"] :</span> @routingOriginal.PlanCode</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Mat Code"] :</span> @routingOriginal.MatCode</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color1"] : </span>@routingOriginal.Color1</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade1"] : </span>@routingOriginal.Shade1</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color2"] : </span>@routingOriginal.Color2</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade2"] : </span>@routingOriginal.Shade2</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color3"] : </span>@routingOriginal.Color3</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade3"] : </span>@routingOriginal.Shade3</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color4"] : </span>@routingOriginal.Color4</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade4"] : </span>@routingOriginal.Shade4</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color5"] : </span>@routingOriginal.Color5</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade5"] : </span>@routingOriginal.Shade5</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color6"] : </span>@routingOriginal.Color6</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade6"] : </span>@routingOriginal.Shade6</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color7"] : </span>@routingOriginal.Color7</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade7"] : </span>@routingOriginal.Shade7</div>
+                                    <br />
+                                </div>
+                                        }
+                                    }
+                                </td>
+                                <td class="changeProductColor" style="border-top:none;border-color:black">
+                                    <h3>&nbsp;</h3>
+                                    @{
+                                        var j = 0;
+                                        @foreach (var routingChange in Model.PresaleChangeRoutings.OrderBy(r => r.SeqNo))
+                                        {
+                                            j++;
+                                <div class="card cardChangeProduct">
+                                    <h3><b>@Localizer["Item"] @j</b></h3>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["FactoryCode"] : </span>@routingChange.FactoryCode</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["PsmId"] : </span>@routingChange.PsmId</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["MaterialNo"] : </span>@routingChange.MaterialNo</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Machine"] :</span> @routingChange.Machine</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Plan Code"] :</span> @routingChange.PlanCode</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Mat Code"] :</span> @routingChange.MatCode</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color1"] : </span>@routingChange.Color1</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade1"] : </span>@routingChange.Shade1</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color2"] : </span>@routingChange.Color2</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade2"] : </span>@routingChange.Shade2</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color3"] : </span>@routingChange.Color3</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade3"] : </span>@routingChange.Shade3</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color4"] : </span>@routingChange.Color4</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade4"] : </span>@routingChange.Shade4</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color5"] : </span>@routingChange.Color5</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade5"] : </span>@routingChange.Shade5</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color6"] : </span>@routingChange.Color6</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade6"] : </span>@routingChange.Shade6</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Color7"] : </span>@routingChange.Color7</div>
+                                    <div class="routing-paragraph"><span class="routing-title">@Localizer["Shade7"] : </span>@routingChange.Shade7</div>
+                                    <br />
+                                </div>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-12 form-group" style="padding-top:7px">
+                        <a asp-controller="Presale" asp-action="ChangeProduct" class="btn btn-info float-right mx-md-1">@Localizer["Back"]</a>
+                        <input type="button" class="btn btn-primary float-right" id="buttonSubmit" onclick="ApproveChangePresale('@Model.MaterialNo','@Model.PresaleChangeProduct.PsmId')" value="Approve" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+
+        });
+
+        function ApproveChangePresale(materialNo, psmId) {
+            swal({
+                title: "Are you sure want to change product?",
+                text: "Material No. " + materialNo + " cannot be restored to original.",
+                icon: "info",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willAccept) => {
+                    if (willAccept) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("ConfirmChangeProduct", "Presale") ',
+                            datatype: "json",
+                            data: { materialNo: materialNo, psmId: psmId},
+                            success: function (res)
+                            {
+                                if (res.IsSuccess) {
+                                    swal({
+                                        title: "Update Successfully",
+                                        icon: "success",
+                                    })
+                                        .then((willAccept) => {
+                                            if (willAccept) {
+                                                window.location = '@Url.Action("ChangeProduct", "Presale")';
+                                            }
+                                        });
+                                }
+                                else {
+                                    swal("Updated Fail", res.ExceptionMessage, "warning");
+                                }
+                            },
+                            error: function (res)
+                            {
+                                swal("Updated Fail", res.ExceptionMessage, "warning");
+                            }
+                        });
+                    }
+                });
+        }
+    </script>
+
+}

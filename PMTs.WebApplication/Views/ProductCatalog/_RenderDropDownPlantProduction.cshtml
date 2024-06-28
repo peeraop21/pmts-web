@@ -1,0 +1,20 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.ProductCatalog.ProductCatalogModel
+@using System.Linq
+
+<multi-input id="idmultioptionProd">
+    <input list="languages2">
+    <datalist id="languages2">
+        @{
+            foreach (var item in Model.Plant)
+            {
+                <option value="@item.Desc"></option>
+            }
+        }
+    </datalist>
+</multi-input>

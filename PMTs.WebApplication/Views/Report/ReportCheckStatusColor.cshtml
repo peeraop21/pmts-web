@@ -1,0 +1,345 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.Report.CheckStatusColorViewModel
+@using System.Linq
+@{
+    ViewData["Title"] = "Check Status Color";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+
+    .ui-autocomplete {
+        max-height: 300px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+    }
+
+    * html .ui-autocomplete {
+        height: 300px;
+    }
+</style>
+<div id="preLoadingScreen" class="LockScreen"></div>
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card" style="padding-top:0px;margin-top:0px">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-checkbox-multiple-marked-circle-outline"></i> @Localizer["Report Status Color"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div style="margin-right:5px">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-body">
+                        <div style="background-color:white;padding:20px 0px;" class="text-center">@Localizer["Find out which colors are used in different material no."] </div>
+                        <div style="background-color:white;" class="text-center">
+                            <div class="form-group row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control no-border" id="colorSelected" style="width: 30%;float: right;height: 35px;" />
+
+                                   @*  <select class="form-control" id="colorSelected" style="width: 100%;max-width: 240px;margin-top: 1px;float: right;min-height: 34px;text-align-last:center" asp-items="@(new SelectList(Model.Colors,"Ink","Shade"))">
+                                        <option value="">------ Select Color ------</option>
+                                    </select> *@
+                                </div>
+                                <div class="mr-2"></div>
+                                <div class="col-md-2" style="padding:0;max-width:130px">
+                                    <a class="btn btn-info" onclick="SearchStatusColor()" style="min-height:35px;min-width:130px;float:left;color: white;">@Localizer["Search"]</a>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-body">
+                        <div id="divReportCheckStatusColorTable" class="card-body col-md-12" style="padding:2px 2px 10px 2px;">
+                            <partial name="_ReportCheckStatusColorTable" model="Model.CheckStatusColors" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/DataTable/css/buttons.dataTables.min.css" />
+    <script type="text/javascript" src="~/DataTable/js/datatables.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/buttons.colVis.min.js"></script>
+    <script src="~/lib/DataTables/pdfmake.min.js"></script>
+    <script src="~/lib/DataTables/vfs_fonts.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/jszip.min.js"></script>
+
+    <script>
+
+        const colors = @Html.Raw(Json.Serialize(@Model.Colors));
+        const colorAutoCompleteData = $.map(colors, function (item) {
+            return {
+                label: item.Ink + " " + item.Shade,
+                value: item.Shade
+            }
+        });
+
+        window.pdfMake.fonts = {
+            THSarabunNew: {
+                normal: 'THSarabunNew.ttf',
+                bold: 'THSarabunNew.ttf',
+                italics: 'THSarabunNew.ttf"',
+                bolditalics: 'THSarabunNew.ttf',
+            }
+        };
+
+        $(document).ready(function () {
+            $("#preLoadingScreen").hide();
+        });
+
+        $("#colorSelected").autocomplete({
+            minLength: 1,
+            source: colorAutoCompleteData,
+            select: function (event, ui) {
+                event.preventDefault();
+                $("#colorSelected").val(ui.item.label);
+                for (var i = 0; i < colors.length; i++) {
+                    if (colors[i].Shade == ui.item.value) {
+                        $('#colorSelected').val(colors[i].Ink + " " + colors[i].Shade);
+                    }
+                }
+            },
+            open: function () {
+                $("ul.ui-menu").width($(this).innerWidth());
+            }
+        });
+
+        $('#ReportCheckStatusColorTable').DataTable({
+            "scrollX": true,
+            "order": [[0, "asc"]],
+            "dom": 'Bfrt<"float-left"i>p',
+            "paging": true,
+            "lengthChange": false,
+            "autoWidth": true,
+            "buttons": [
+                {
+                    extend: 'pdf',
+                    text: 'พิมพ์รายงาน',
+                    orientation: 'landscape',
+                    pageSize: 'A4',
+                    filename: 'ReportCheckStatusColor_' + new Date().toJSON().slice(0, 10).toString().replace('-', '_'),
+                    exportOptions: {
+                        columns: ':visible',
+                        search: 'applied',
+                        order: 'applied'
+                    },
+                    customize: function (doc) {
+                        doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                        doc.defaultStyle = {
+                            font: 'THSarabunNew'
+                        }
+
+                        doc.content[0].text = "รายงาน Status Color";
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'ดาวน์โหลด Excel', "createEmptyCells": true,
+                    messageTop: "รายงาน Status Color",
+                },
+            ],
+            "oLanguage": {
+                "sSearch": "ค้นหา:"
+            }
+        });
+
+        function SearchStatusColor() {
+            var colorSelected = $("#colorSelected").val();
+            const colorId = colors.filter(c => { return c.Ink + " " +  c.Shade == $('#colorSelected').val() });
+
+            if (colorId == "") {
+                swal("Search Failed!", "Please select color.", "warning");
+            }
+            else {
+                //preLoadingScreen
+                $("#preLoadingScreen").show();
+
+                //Search
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("SearchReportCheckStatusColor", "Report")',
+                    data: {
+                        colorId: colorId[0].Id,
+                    },
+                    success: function (res) {
+                        if (res.IsSuccess) {
+
+                            setTimeout(function () {
+                                //hide loading
+                                $("#preLoadingScreen").hide();
+                            }, 1000);
+
+                            $('#divReportCheckStatusColorTable').html(res.View);
+                            $('.modal-backdrop').css('display', 'none');
+                            $('#ReportCheckStatusColorTable').DataTable({
+                                "scrollX": true,
+                                "order": [[0, "asc"]],
+                                "dom": 'Bfrt<"float-left"i>p',
+                                "paging": true,
+                                "autoWidth": true,
+                                "buttons": [
+                                    {
+                                        extend: 'pdf',
+                                        text: 'พิมพ์รายงาน',
+                                        orientation: 'landscape',
+                                        pageSize: 'A4',
+                                        filename: 'ReportCheckStatusColor_' + new Date().toJSON().slice(0, 10).toString().replace('-', '_'),
+                                        exportOptions: {
+                                            columns: ':visible',
+                                            search: 'applied',
+                                            order: 'applied'
+                                        },
+                                        customize: function (doc) {
+                                            doc.content[0].text = "รายงาน Status Color";
+                                            doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+
+                                            doc.styles.title = {
+                                                color: 'black',
+                                                fontSize: '18',
+                                                bold: true,
+                                                alignment: 'center'
+                                            }
+
+                                            doc.styles.tableHeader = {
+                                                alignment: "center",
+                                                bold: true,
+                                                color: "white",
+                                                fillColor: "#2d4154",
+                                                fontSize: '12',
+                                            }
+
+                                            doc.defaultStyle = {
+                                                font: 'THSarabunNew'
+                                            };
+                                            var rowCount = doc.content[1].table.body.length;
+                                            debugger;
+                                            doc.content[1].table.widths = [
+                                                "7%",
+                                                "7%",
+                                                "7%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                                "5%",
+                                            ];
+
+                                            for (i = 1; i < rowCount; i++) {
+                                                doc.content[1].table.body[i][0].alignment = 'center';
+                                                doc.content[1].table.body[i][1].alignment = 'center';
+                                                doc.content[1].table.body[i][2].alignment = 'center';
+                                                doc.content[1].table.body[i][3].alignment = 'left';
+                                                doc.content[1].table.body[i][4].alignment = 'center';
+                                                doc.content[1].table.body[i][5].alignment = 'center';
+                                                doc.content[1].table.body[i][6].alignment = 'center';
+                                                doc.content[1].table.body[i][7].alignment = 'center';
+                                                doc.content[1].table.body[i][8].alignment = 'center';
+                                                doc.content[1].table.body[i][9].alignment = 'center';
+                                                doc.content[1].table.body[i][9].alignment = 'center';
+                                            }
+
+                                        }
+                                    },
+                                    {
+                                        extend: 'excelHtml5',
+                                        messageTop: "รายงาน Status Color",
+                                        text: 'ดาวน์โหลด Excel',
+                                        filename: 'ReportCheckStatusColor_' + new Date().toJSON().slice(0, 10).toString().replace('-', '_'),
+                                        createEmptyCells: true,
+                                        exportOptions: {
+                                            title: null,
+                                            orthogonal: 'export'
+                                        },
+                                        customize: function (xlsx) {
+                                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                            // Loop over the cells
+                                            $('row c', sheet).each(function () {
+                                                //select the index of the row
+                                                var numero = $(this).parent().index();
+                                                var residuo = numero % 2;
+                                                if (numero == 1) {
+                                                    $(this).attr('s', '51');
+                                                } else if (numero == 2) {
+                                                    $(this).attr('s', '47');
+                                                } else if (numero > 1) {
+                                                    if (residuo == 0) {//'is t',
+                                                        $(this).attr('s', '25');
+                                                    } else {
+                                                        $(this).attr('s', '30');
+                                                    }
+                                                }
+                                            });
+                                        },
+                                    }
+                                ],
+                                "oLanguage": {
+                                    "sSearch": "ค้นหา:"
+                                }
+                            });
+                        }
+                        else {
+                            $("#preLoadingScreen").hide();
+                            swal("Search Failed!", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () {
+
+                        $("#preLoadingScreen").hide();
+                    }
+                });
+            }
+        }
+    </script>
+}

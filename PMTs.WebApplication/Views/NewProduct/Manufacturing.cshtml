@@ -1,0 +1,199 @@
+﻿@model IList<PMTs.DataAccess.ComplexModel.MasterDataRoutingModel>
+@{
+    ViewData["Title"] = "Manufacturing";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<br />
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-xs-6 col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-view-list"></i> @Localizer["Title"]</h3>
+                    </div>
+                    <div class="col-md-6 text-right">
+
+                        @ViewBag.ErrorMessage
+                        <form>
+                            <div class="controls">
+                                <div class="input-group form-inline">
+                                    <label class="form-control custom-control col-md-4 text-sm-left"> @Localizer["Material No."]</label>
+                                    <input id="keySearch" type="text" class="form-control" placeholder="Search" required="" aria-invalid="false" name="keySearch">
+                                    <span class="input-group-btn" style="width:0px;"></span>
+                                    <div class="input-group-append">
+                                        <button asp-action="Manufacturing" asp-controller="NewProduct" class="btn btn-info"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                                <div class="help-block"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive m-t-10">
+                    <table id="myTable" class="table table-bordered color-table">
+                        <thead>
+                            <tr class="color-table text-center">
+                                @*<th width="5%"><input name="select_all" value="1" id="DataTableMat-select-all" type="checkbox" /></th>*@
+                                <th class="text-center">SaleOrg.</th>
+                                <th class="text-center">Material No</th>
+                                <th class="text-center">PC</th>
+                                <th class="text-center">Customer Name</th>
+                                <th class="text-center">Description</th>
+                                <th class="text-center">Board</th>
+                                <th class="text-center">BoxType</th>
+                                <th class="text-center">Machine</th>
+                                <th class="text-center" width="10%"></th>
+                                @*<th class="text-center" width="5%"></th>*@
+                                @*<th class="text-center" width="5%"></th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @{ int i = 0; }
+
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                @*<td class="text-center">
+            <input type="checkbox" class="filled-in select-item-check" id="material-item-@i" value="@item.MaterialNo" />
+            <label for="material-item-@i"></label>
+        </td>*@
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.SaleOrg)</td>
+                                <td>@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PC)</td>
+                                <td>@Html.DisplayFor(modelItem => item.CustName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Board)</td>
+                                <td>@Html.DisplayFor(modelItem => item.BoxType)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Machine)</td>
+                                <td class="text-center">
+                                    <a id="DetailMaterial" onclick="ViewMaterial('@item.MaterialNo')">  <i style="cursor:pointer" data-toggle="tooltip" title="Detail" class="fas fa-file-alt text-info btn"></i></a>
+                                    &nbsp; &nbsp;
+                                    <a id="EditMaterial" onclick="EditMaterial('@item.MaterialNo')">  <i style="cursor:pointer" data-toggle="tooltip" title="Edit" class="fas fa-pencil-alt text-warning "></i></a>
+                                    &nbsp; &nbsp;
+                                    <a id="DeleteMaterial" onclick="ConfirmDelete('@item.MaterialNo')">  <i style="cursor:pointer" data-toggle="tooltip" title="Delete" class="fas fa-trash text-danger"></i></a>
+                                </td>
+                            </tr>
+
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-transparent" style="padding-right:35px">
+                <div class="row justify-content-end" style="background-color:transparent">
+
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-info btn-fixsize"  onclick="CopyOSAction()"> @Localizer["Next"] <i class="fa fa-arrow-circle-right"></i></button>
+                        <span class="small text-danger "><i class="fa fa-"></i>@ViewBag.SaveCat</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            'bFilter': false,
+            'columnDefs': [{
+            'targets': [-3, -2, -1, 0], 'orderable': false,
+
+            }, {
+                'targets': 7, "render": function (data, type, row) {
+
+                    if (data)
+                        var data = data.split(',').join('<br>');
+                    return data;
+                }
+            }],
+            "order": [[1, "desc"]]
+        });
+    });
+
+        function CopyAction() {
+            var count = 0;
+            var materialNo;
+
+            $('.select-item-check').each(function () {
+                if ($(this).is(':checked')) {
+                    materialNo = $(this).val();
+                    count++;
+                }
+            });
+
+            if (count === 1) {
+                window.location.href = "@Url.Action("Categories", "NewProduct")" + "?ActionTran=CopyOs&MaterialNo=" + materialNo;
+            }
+            else {
+                modalDialog(Warning, PleaseSelectOne);
+            }
+        }
+
+        var materialList = [];
+        function PrintMastercard() {
+            $('.select-item-check').each(function () {
+
+                if ($(this).is(':checked')) {
+
+                    materialList.push($(this).val());
+                }
+            });
+
+            if (materialList.length > 0) {
+                var jsonObject = {
+                    "OrderItem": [],
+                    "MaterialNo": materialList
+                };
+                $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SetMasterCardMO", "Report")',
+                data: JSON.stringify(jsonObject),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    window.open('@Url.Action("MasterCardMO", "Report")','_blank');
+                }
+                ,
+                error: function () { }
+            });
+            } else {
+                modalDialog(Warning, PleaseSelectItem);
+
+            }
+        }
+
+        function CopyOSAction()
+        {
+            var count = 0;
+            var materialNo;
+
+            $('.select-item-check').each(function () {
+                if ($(this).is(':checked')) {
+                    materialNo = $(this).val();
+                    count++;
+                }
+            });
+
+            if (count === 1) {
+                 window.location.href = "@Url.Action("Categories", "NewProduct")" + "?ActionTran=CopyOs&MaterialNo=" + materialNo;
+            }
+            else {
+                modalDialog(Warning, PleaseSelectOne);
+            }
+        }
+    </script>
+
+}

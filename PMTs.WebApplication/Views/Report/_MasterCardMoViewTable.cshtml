@@ -1,0 +1,118 @@
+﻿@model IEnumerable<PMTs.DataAccess.ComplexModel.MasterDataRoutingModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@using PMTs.DataAccess.ComplexModel
+
+@inject IViewLocalizer Localizer
+
+@{
+    Layout = null;
+}
+
+<table id="mastercardMOTable" class="table table-bordered color-table">
+    <thead>
+        <tr class="color-table text-center">
+            <th class="nosort" width="50px">
+                <input name="select_all" value="1" class="filled-in select-item-check nosort" id="mastercardMOTable-select-all" type="checkbox" onclick="SelectAll(this)" />
+                <label for="mastercardMOTable-select-all" style="vertical-align: bottom;height:15px"></label>
+            </th>
+            <th class="text-center" width="120px">@Localizer["MasterData Status"]</th>
+            <th class="text-center" width="30px" scope="col">@Localizer["Bundle Label"]</th>
+            <th class="text-center" width="30px" scope="col">@Localizer["Pallet Label"]</th>
+            <th class="text-center" width="30px">@Localizer["Status"]</th>
+            <th class="text-center" width="100px">@Localizer["Sale Order"]</th>
+            <th class="text-center" width="100px">@Localizer["Material No"]</th>
+            <th class="text-center" width="100px">@Localizer["PC"]</th>
+            <th class="text-center" width="100px">@Localizer["Order Quant"]</th>
+            <th class="text-center" width="100px">@Localizer["DueDate"]</th>
+            <th class="text-center" width="100px">@Localizer["Batch"]</th>
+            <th class="text-center" width="60px">@Localizer["Printed"]</th>
+            <th class="text-center" width="200px">@Localizer["Customer Name"]</th>
+            <th class="text-center" width="100px">@Localizer["Description"]</th>
+            <th class="text-center" width="100px">@Localizer["Board"]</th>
+            <th class="text-center" width="100px">@Localizer["BoxType"]</th>
+            <th class="text-center" width="100px">@Localizer["Machine"]</th>
+            @*<th class="text-center" width="5%"></th>*@
+            @*<th class="text-center" width="5%"></th>*@
+        </tr>
+    </thead>
+    <tbody>
+
+        @{ int i = 0; }
+
+        @foreach (var item in Model)
+        {
+        <tr onclick="GetSaleOrder(this)">
+            <td class="text-center">
+                <input type="checkbox" class="filled-in select-item-check" id="@item.SaleOrder" value="@item.SaleOrder" />
+                <label for="@item.SaleOrder"></label>
+            </td>
+            <td class="text-center">
+                @if ((MasterDataStatus)item.MasterDataStatus == MasterDataStatus.Available)
+                {
+                    <a class="light-logo skin-red-light" style="color: limegreen;font-weight: 400;">@Localizer["Available"]</a>
+                }
+                else if ((MasterDataStatus)item.MasterDataStatus == MasterDataStatus.AvailableSB)
+                {
+                    <a class="light-logo skin-red-light" style="color: limegreen;font-weight: 400;">@Localizer["Available(SB)"]</a>
+                }
+                else
+                {
+                    <a class="light-logo skin-red-light" style="color: orangered;font-weight: 400;">@Localizer["Not available"]</a>
+                }
+            </td>
+
+            <td>
+                @if (item.TagBunbleStatus.ToString() == "True")
+                {
+
+                    <input type="checkbox" class="material-inputs" id="chk-Bundle" checked>
+                    <label for="chk-Bundle"></label>
+                }
+                @* else
+        {
+
+        <input type="checkbox" class="material-inputs" id="chk-Bundle">
+        <label for="chk-Bundle"></label>
+
+        }*@
+            </td>
+            <td>
+
+                @if (item.TagPalletStatus.ToString() == "True")
+                {
+
+                    <input type="checkbox" class="material-inputs" id="chk-Pallet" checked>
+                    <label for="chk-Pallet"></label>
+                }
+                @*else
+        {
+        <input type="checkbox" class="material-inputs" id="chk-Pallet">
+
+        }*@
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.MoStatus)</td>
+            <td>@Html.DisplayFor(modelItem => item.SaleOrder)</td>
+            <td>@Html.DisplayFor(modelItem => item.MaterialNo)</td>
+            <td>@Html.DisplayFor(modelItem => item.PC)</td>
+            <td>@Html.DisplayFor(modelItem => item.OrderQuant)</td>
+            <td>@Html.DisplayFor(modelItem => item.DueDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.Batch)</td>
+            <td>@Html.DisplayFor(modelItem => item.Printed)</td>
+            <td>@Html.DisplayFor(modelItem => item.CustName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            <td>@Html.DisplayFor(modelItem => item.Board)</td>
+            <td>@Html.DisplayFor(modelItem => item.BoxType)</td>
+            <td>@Html.DisplayFor(modelItem => item.Machine)</td>
+        </tr>
+
+                        i++;
+                    }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="9">
+                <div id="tableMOInfo"></div>
+            </td>
+        </tr>
+    </tfoot>
+</table>

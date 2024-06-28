@@ -1,0 +1,439 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.AutoPackingSpec.AutoPackingSpecMainModel
+@using System.Linq
+
+@{
+    ViewData["Title"] = "AutoPackingSpec";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+
+    .option-btn {
+        max-width: 30px;
+        max-height: 40px;
+    }
+
+    .tab-criteria {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: auto;
+        display: inline-block;
+        display: block;
+        text-align: center;
+        color: black;
+        padding: 2em;
+        border: none;
+        border-radius: 4px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        /*box-shadow: 0px 0px 1px rgba(0,0,0,0.4);*/
+        text-decoration: none !important;
+        font-size: 1em;
+        background-color: white;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-top-bar">
+            <div class="card-header">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-home-variant"></i> @Localizer["Auto Packing Spec"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div style="margin-right:5px">
+                            <input type="file" name="importFile" id="importFile" style="display:none;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onchange="javascript:ImportList()">
+                            <a href="#0" class="btn btn-primary" style="min-height:35px;min-width:100px;float:left" onclick="ImportAutoPackingSpec();"><i class="fa fa-paperclip"></i> เลือกไฟล์ Excel</a>
+                            <label for="importFile"></label>
+                        </div>
+                        <div style="margin-right:5px">
+                            <a href="#0" class="btn btn-outline-success" style="min-height:35px;min-width:100px;float:left" onclick="ExportAutoPackingSpecTemplate();"><i class="fa fa-download mr-1"></i>@Localizer["Load Template"]</a>
+                        </div>
+                        <div style="background-color:white;padding-right: 10px;">@Localizer["expains"]</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body tab-criteria">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row line-space" style=" margin-bottom:15px">
+
+                            <div class="form-group col-md-2"></div>
+                            <div class="form-group col-md-3" style="padding: 0px;text-align: right;">
+                                <label class=" vertical-sub-text  ml-5 mt-1">@Localizer["Material No"] : </label>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <input class="form-control text-left" id="inputMaterialNo" style="font-weight:bolder;" type="text" />  @*onchange="CheckMaterialNO(this)"*@
+                            </div>
+
+                            <div class="form-group col-md-2" style="padding: 0px;">
+                                <button type="button" class="btn btn-info" style="max-height:30px;min-width:100px;float: left;" onclick="SearchMasterData('')">@Localizer["Search"]</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divAutoPackingSpec" class="card-body col-md-12" style="padding:2px 2px 10px 2px;">
+                        <partial name="_AutoPackingSpecTable" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        var formDataObj = new FormData();
+        var configList = @Html.Raw(Json.Serialize(Model.AutoPackingConfigs));
+
+        $(document).ready(function () {
+            $('#auto-packing-spec-table').DataTable({
+                "paging": true,
+                "scrollX": true,
+                "dom": 'Bfrt<"float-left"i>p',
+            });
+
+            ClearAutoPackingSpec();
+        });
+
+        $('#inputMaterialNo').on('keypress', function (e) {
+            if (e.which === 13) {
+                //$("#btn-search-mo").click();
+                SearchMasterData("");
+            }
+        });
+
+        function SearchMasterData(materialNoParam)
+        {
+            let materialNO = $("#inputMaterialNo").val();
+            if (materialNoParam != "" && materialNoParam != null)
+            {
+                materialNO = materialNoParam;
+            }
+
+            if (materialNO != "" && materialNO != null) {
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("SearchAutoPackingSpec", "AutoPackingSpec")',
+                    data: { materialNO: materialNO},
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            $('#divAutoPackingSpec').html(res.View);
+                            $('#auto-packing-spec-table').DataTable({
+                                "paging": true,
+                                "scrollX": true,
+                                "dom": 'Bfrt<"float-left"i>p',
+                                "order": [[1, "desc"]]
+                            });
+                            $(".modal-backdrop").attr("hidden", true);
+                            if (materialNoParam != "" && materialNoParam != null) {
+                                $("#inputMaterialNo").val(materialNoParam);
+                            }
+                        }
+                        else {
+                            swal("Search Failed!", res.ExceptionMessage, "warning");
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+            else {
+                $("#inputMaterialNo").focus();
+            }
+
+        }
+
+        function SaveAutoPackingSpec() {
+            $("#APS_SaveBtn").attr("disabled", true);
+            var form = $('#edit-autopackingspec')[0];
+            var data = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("SaveAndEditAutoPackingSpec", "AutoPackingSpec")',
+                data: data,
+                async: false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        swal("Updated successfully", "", "success")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    let matParam = "";
+                                    if ($("#APS_MaterialNo").val() != "" && $("#APS_MaterialNo").val() != null)
+                                    {
+                                        matParam = $("#APS_MaterialNo").val();
+                                    }
+                                    $(".modal-backdrop").attr("hidden", true);
+                                    SearchMasterData(matParam);
+                                }
+                            });
+                    }
+                    else
+                    {
+                        swal("Updated Fail", res.ExceptionMessage, "warning")
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                    ClearAutoPackingSpec();
+                                }
+                            });
+                    }
+                }
+            });
+        }
+
+        function CloseAutoPackingSpec() {
+            $("#modal-aps-create-edit").modal('hide');
+            $(".modal-backdrop").attr("hidden", true);
+        }
+
+        function ClearAutoPackingSpec() {
+            $("#APC_CusID").val("");
+            $("#APC_CusID").val("");
+            $("#APC_CornerGuard").val("");
+            $("#APC_NBottomBoardType").val("");
+            $("#APC_NStrapCompression").val("");
+            $("#APC_NTopBoardType").val("");
+            $("#APC_CPalletArrange").val("");
+            $("#APC_CPalletStackPos").val("");
+            $("#APC_CStrapperBottomProtection").val("");
+            $("#APC_CStrapperTopProtection").val("");
+            $("#APC_CStrapType").val("");
+            $("#APC_NWrapType").val("");
+            $("#APC_NPalletType").val("");
+
+            $("#APC_CornerGuard").attr("readonly", true);
+            $("#APC_CPalletArrange").attr("readonly", true);
+            $("#APC_CPalletStackPos").attr("readonly", true);
+            $("#APC_CStrapperBottomProtection").attr("readonly", true);
+            $("#APC_CStrapperTopProtection").attr("readonly", true);
+            $("#APC_CStrapType").attr("readonly", true);
+            $("#APC_NBottomBoardType").attr("readonly", true);
+            $("#APC_NPalletType").attr("readonly", true);
+            $("#APC_NStrapCompression").attr("readonly", true);
+            $("#APC_NTopBoardType").attr("readonly", true);
+            $("#APC_NWrapType").attr("readonly", true);
+
+            $("#APS_SaveBtn").attr("disabled", true);
+        }
+
+        function ImportAutoPackingSpec() {
+            $("#importFile").click();
+        }
+
+        $('#importFile').click(function () {
+            document.getElementById("importFile").value = null;
+        });
+
+        ImportList = function () {
+            var input = document.getElementById('importFile');
+            var filesName = "";
+            var tempFile = $('#importFile')[0].files[0];
+            for (var i = 0; i < input.files.length; ++i) {
+                tempFile = $('#importFile')[0].files[i];
+                filesName = filesName +input.files[i].name +" \n";
+            }
+
+            swal({
+                title: "Do you want to create new auto packing spec from file " + filesName + "?",
+                text: "",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+                }).then((willDelete) => {
+                    if (willDelete)
+                    {
+                        formDataObj = new FormData();
+                        formDataObj.append("file", tempFile);
+                        $.ajax({
+                            type: 'POST',
+                            enctype: 'multipart/form-data',
+                            url: '@Url.Action("ImportAutoPackingSpecFile", "AutoPackingSpec")',
+                            data: formDataObj,
+                            async: false,
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success: function (res) {
+                                if (res.IsSuccess) {
+
+                                    $('#divAutoPackingSpec').html(res.View);
+                                    $('#auto-packing-spec-table').DataTable({
+                                        "paging": true,
+                                        "scrollX": true,
+                                        "dom": 'Bfrt<"float-left"i>p',
+                                    });
+                                    document.getElementById("importFile").value = null;
+                                    if (res.ExceptionMessage != "" && res.ExceptionMessage != null) {
+                                        swal({
+                                            title: "Auto Packing Spec Message!",
+                                            text: res.ExceptionMessage,
+                                            icon: "warning"
+                                        });
+                                    }
+                                }
+                                else
+                                {
+                                    $('#divAutoPackingSpec').html(res.View);
+                                    $('#auto-packing-spec-table').DataTable({
+                                        "paging": true,
+                                        "scrollX": true,
+                                        "dom": 'Bfrt<"float-left"i>p',
+                                    });
+                                    document.getElementById("importFile").value = null;
+
+                                    if (res.ExceptionMessage != "" && res.ExceptionMessage != null) {
+                                        swal({
+                                            title: "Auto Packing Spec Message!",
+                                            text: res.ExceptionMessage,
+                                            icon: "warning"
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+        }
+
+        function ExportAutoPackingSpecTemplate() {
+            swal({
+                title: "Are you sure?",
+                text: "Export template with PMTs_AutoPackingSpecTemplate.xlsx",
+                icon: "warning",
+                buttons: {
+                    confirm: "Ok",
+                    cancel: true,
+                },
+                dangerMode: false,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        document.location.href = '@Url.Action("ExportAutoPackingSpecTemplate", "AutoPackingSpec")';
+
+                    }
+                });
+        };
+
+        function BindAutoPackingSpecsView(item)
+        {
+            SetDefaultSelection(item);
+
+            $("#APS_CornerGuard").attr("readonly", true);
+            $("#APS_CPalletArrange").attr("readonly", true);
+            $("#APS_CPalletStackPos").attr("readonly", true);
+            $("#APS_CStrapperBottomProtection").attr("readonly", true);
+            $("#APS_CStrapperTopProtection").attr("readonly", true);
+            $("#APS_CStrapType").attr("readonly", true);
+            $("#APS_NBottomBoardType").attr("readonly", true);
+            $("#APS_NPalletType").attr("readonly", true);
+            $("#APS_NStrapCompression").attr("readonly", true);
+            $("#APS_NTopBoardType").attr("readonly", true);
+            $("#APS_NWrapType").attr("readonly", true);
+
+            document.getElementById('modelHeader').innerHTML = 'View Auto Packing Spec';
+            $("#APS_SaveBtn").attr("hidden", true);
+
+            $("#modal-aps-create-edit").modal('show');
+        }
+
+        function BindAutoPackingSpecsEdit(item) {
+            SetDefaultSelection(item);
+            $("#APS_Id").val($(item).attr("data-Id"));
+            $("#APS_FactoryCode").val($(item).attr("data-FactoryCode"));
+
+            $("#APS_CornerGuard").attr("readonly", false);
+            $("#APS_CPalletArrange").attr("readonly", false);
+            $("#APS_CPalletStackPos").attr("readonly", false);
+            $("#APS_CStrapperBottomProtection").attr("readonly", false);
+            $("#APS_CStrapperTopProtection").attr("readonly", false);
+            $("#APS_CStrapType").attr("readonly", false);
+            $("#APS_NBottomBoardType").attr("readonly", false);
+            $("#APS_NPalletType").attr("readonly", false);
+            $("#APS_NStrapCompression").attr("readonly", false);
+            $("#APS_NTopBoardType").attr("readonly", false);
+            $("#APS_NWrapType").attr("readonly", false);
+
+            $("#APS_CreatedDate").val($(item).attr("data-CreatedDate"));
+            $("#APS_CreatedBy").val($(item).attr("data-CreatedBy"));
+            $("#APS_Id").val($(item).attr("data-Id"));
+            $("#APS_FactoryCode").val($(item).attr("data-FactoryCode"));
+
+            $("#APS_SaveBtn").attr("hidden", false);
+            $("#APS_SaveBtn").attr("disabled", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Edit Auto Packing Spec';
+            $("#modal-aps-create-edit").modal('show');
+        }
+
+        function CreateNewAutoPackingSpec(item) {
+            $("#APS_Id").val(0);
+            $("#APS_MaterialNo").val($(item).attr("data-MaterialNo"));
+
+            $("#APS_CornerGuard").attr("readonly", false);
+            $("#APS_CPalletArrange").attr("readonly", false);
+            $("#APS_CPalletStackPos").attr("readonly", false);
+            $("#APS_CStrapperBottomProtection").attr("readonly", false);
+            $("#APS_CStrapperTopProtection").attr("readonly", false);
+            $("#APS_CStrapType").attr("readonly", false);
+            $("#APS_NBottomBoardType").attr("readonly", false);
+            $("#APS_NPalletType").attr("readonly", false);
+            $("#APS_NStrapCompression").attr("readonly", false);
+            $("#APS_NTopBoardType").attr("readonly", false);
+            $("#APS_NWrapType").attr("readonly", false);
+
+            document.getElementById('modelHeader').innerHTML = 'Create Auto Packing Spec';
+
+            $("#APS_SaveBtn").attr("disabled", false);
+            $("#modal-aps-create-edit").modal('show');
+        }
+
+        function SetDefaultSelection(item) {
+            $("#APS_MaterialNo").val($(item).attr("data-MaterialNo"));
+            $("#APS_CornerGuard").val($(item).attr("data-CornerGuard"));
+            $("#APS_NBottomBoardType").val($(item).attr("data-NBottomBoardType"));
+            $("#APS_NStrapCompression").val($(item).attr("data-NStrapCompression"));
+            $("#APS_NTopBoardType").val($(item).attr("data-NTopBoardType"));
+
+            let cPalletArrange = configList.filter(c => { return c.Code == $(item).attr("data-CPalletArrange") && c.Subject == "cPalletArrange" });
+            let cPalletStackPos = configList.filter(c => { return c.Code == $(item).attr("data-CPalletStackPos") && c.Subject == "cPalletStackPos" });
+            let cStrapperBottomProtection = configList.filter(c => { return c.Code == $(item).attr("data-CStrapperBottomProtection") && c.Subject == "cStrapperBottomProtection" });
+            let cStrapperTopProtection = configList.filter(c => { return c.Code == $(item).attr("data-CStrapperTopProtection") && c.Subject == "cStrapperTopProtection" });
+            let cStrapType = configList.filter(c => { return c.Code == $(item).attr("data-CStrapType") && c.Subject == "cStrapType" });
+            let nWrapType = configList.filter(c => { return c.Code == $(item).attr("data-NWrapType") && c.Subject == "nWrapType" });
+            let nPalletType = configList.filter(c => { return c.Code == $(item).attr("data-NPalletType") && c.Subject == "nPalletType" });
+
+            let cPalletArrangeValue = cPalletArrange == null || cPalletArrange == "" ? "" : cPalletArrange[0].Code;
+            let cPalletStackPosValue = cPalletStackPos == null || cPalletStackPos == "" ? "" : cPalletStackPos[0].Code;
+            let cStrapperBottomProtectionValue = cStrapperBottomProtection == null || cStrapperBottomProtection == "" ? "" : cStrapperBottomProtection[0].Code;
+            let cStrapperTopProtectionValue = cStrapperTopProtection == null || cStrapperTopProtection == "" ? "" : cStrapperTopProtection[0].Code;
+            let cStrapTypeValue = cStrapType == null || cStrapType == "" ? "" : cStrapType[0].Code;
+            let nWrapTypeValue = nWrapType == null || nWrapType == "" ? "" : nWrapType[0].Code;
+            let nPalletTypeValue = nPalletType == null || nPalletType == "" ? "" : nPalletType[0].Code;
+
+            $("#APS_CPalletArrange").val(cPalletArrangeValue);
+            $("#APS_CPalletStackPos").val(cPalletStackPosValue);
+            $("#APS_CStrapperBottomProtection").val(cStrapperBottomProtectionValue);
+            $("#APS_CStrapperTopProtection").val(cStrapperTopProtectionValue);
+            $("#APS_CStrapType").val(cStrapTypeValue);
+            $("#APS_NWrapType").val(nWrapTypeValue);
+            $("#APS_NPalletType").val(nPalletTypeValue);
+        }
+    </script>
+}

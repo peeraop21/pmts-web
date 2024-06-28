@@ -1,0 +1,201 @@
+﻿@model PMTs.DataAccess.ModelView.PresaleViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    int No = 1;
+    string[] imgExt = { "jpg", "bmp", "gif", "png" };
+    string pdfExt = "pdf";
+}
+
+<table class="table table-bordered color-table dataTable no-footer" cellspacing="0" id="myTable">
+    <thead>
+        <tr class="color-table text-center">
+            <th width="160px">@Localizer["Optional"]</th>
+            <th width="150px">@Localizer["File"]</th>
+            <th width="150px">@Localizer["FileAll"]</th>
+            <th width="150px">@Localizer["ID"]</th>
+            <th width="50px">@Localizer["Flag"]</th>
+            <th width="50px">@Localizer["Status"]</th>
+            <th width="120px">@Localizer["MaterialNo"]</th>
+            <th width="120px">@Localizer["PC"]</th>
+            <th width="150px">@Localizer["CustomerName"]</th>
+            <th width="150px">@Localizer["Description"]</th>
+            <th width="100px">@Localizer["User"]</th>
+            <th width="80px">@Localizer["CreateDate"]</th>
+            <th width="80px">@Localizer["LastUpdate"]</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PresaleList)
+        {
+            <tr>
+                <td scope="row">
+                    <center>
+                        @*<input type="button" class="btn btn-outline-primary btn-sm" onclick="ImportPresale('@item.PSM_ID','@item.Board', '@item.flute','@item.FlagChange')" value="@Localizer["Import"]" />*@
+                        <a id="Import" onclick="ImportPresale('@item.PSM_ID','@item.Board', '@item.flute','@item.FlagChange')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["Import"]" class="fas fa-sign-in-alt text-info btn"></i></a>
+                        @*<input type="button" class="btn btn-outline-danger btn-sm" onclick="RejectPresale('@item.PSM_ID')" value="@Localizer["Reject"]" />*@
+                        <a id="Reject" onclick="RejectPresale('@item.PSM_ID')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["Reject"]" class="fas fa-ban text-danger btn"></i></a>
+                        <a id="Delete" onclick="DeletePresale('@item.PSM_ID')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["Delete"]" class="fas fa-trash text-danger btn"></i></a>
+                    </center>
+                </td>
+                <td class="text-center">
+                    @if (!string.IsNullOrEmpty(item.PsAwfile))
+                    {
+                        if (item.PsAwfile.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="AW_file" onclick="OpenFileByUrl('@item.PsAwfile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["AW_File"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if(imgExt.Any(x => item.PsAwfile.ToLower().EndsWith(x)))
+                        {
+                            <a id="AW_file" onclick="OpenFileByUrl('@item.PsAwfile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["AW_File"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="AW_file" onclick="OpenFileByUrl('@item.PsAwfile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["AW_File"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+
+                    }
+                    @if (!string.IsNullOrEmpty(item.PsDwFile))
+                    {
+                        if (item.PsDwFile.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="DW_file" onclick="OpenFileByUrl('@item.PsDwFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["DW_File"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if (imgExt.Any(x => item.PsDwFile.ToLower().EndsWith(x)))
+                        {
+                            <a id="DW_file" onclick="OpenFileByUrl('@item.PsDwFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["DW_File"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="DW_file" onclick="OpenFileByUrl('@item.PsDwFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["DW_File"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+
+                    }
+                    @if (!string.IsNullOrEmpty(item.PsLpFile))
+                    {
+                        if (item.PsLpFile.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="LP_file" onclick="OpenFileByUrl('@item.PsLpFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["LP_File"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if (imgExt.Any(x => item.PsLpFile.ToLower().EndsWith(x)))
+                        {
+                            <a id="LP_file" onclick="OpenFileByUrl('@item.PsLpFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["LP_File"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="LP_file" onclick="OpenFileByUrl('@item.PsLpFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["LP_File"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+
+                    }
+                    @if (!string.IsNullOrEmpty(item.PsPoFile))
+                    {
+                        if (item.PsPoFile.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="PO_file" onclick="OpenFileByUrl('@item.PsPoFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["PO_File"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if (imgExt.Any(x => item.PsPoFile.ToLower().EndsWith(x)))
+                        {
+                            <a id="PO_file" onclick="OpenFileByUrl('@item.PsPoFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["PO_File"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="PO_file" onclick="OpenFileByUrl('@item.PsPoFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["PO_File"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+                    }
+                    @if (!string.IsNullOrEmpty(item.PsQtFile))
+                    {
+                        if (item.PsQtFile.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="QT_file" onclick="OpenFileByUrl('@item.PsQtFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["QT_File"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if (imgExt.Any(x => item.PsQtFile.ToLower().EndsWith(x)))
+                        {
+                            <a id="QT_file" onclick="OpenFileByUrl('@item.PsQtFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["QT_File"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="QT_file" onclick="OpenFileByUrl('@item.PsQtFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["QT_File"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+                    }
+                    @if (item.PsOtherFile?.files != null)
+                    {
+                        if (item.PsOtherFile.files.Count > 0)
+                        {
+                            var count = 1;
+
+                            foreach (var file in item.PsOtherFile.files)
+                            {
+                                if (!string.IsNullOrEmpty(file.file_url))
+                                {
+                                    if (!string.IsNullOrEmpty(file.file_type))
+                                    {
+                                        if (file.file_type.ToLower() == pdfExt)
+                                        {
+                                            <a onclick="OpenFileByUrl('@file.file_url')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["Other_File"]@count" class="fas fa-file-pdf text-info btn"></i></a>
+                                        }
+                                        else if (imgExt.Contains(file.file_type.ToLower()))
+                                        {
+                                            <a onclick="OpenFileByUrl('@file.file_url')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["Other_File"]@count" class="fas fa-file-image text-info btn"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a onclick="OpenFileByUrl('@file.file_url')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["Other_File"]@count" class="fas fa-file-alt text-info btn"></i></a>
+                                        }
+                                    }else
+                                    {
+                                        <a onclick="OpenFileByUrl('@file.file_url')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["Other_File"]@count" class="fas fa-file-alt text-info btn"></i></a>
+                                    }
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                    @if (!string.IsNullOrEmpty(item.PsPvFile))
+                    {
+                        if (item.PsPvFile.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="PV_file" onclick="OpenFileByUrl('@item.PsPvFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["PV_File"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if (imgExt.Any(x => item.PsPvFile.ToLower().EndsWith(x)))
+                        {
+                            <a id="PV_file" onclick="OpenFileByUrl('@item.PsPvFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["PV_File"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="PV_file" onclick="OpenFileByUrl('@item.PsPvFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["PV_File"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+                    }
+                </td>
+                <td class="text-center">
+                    @if (!string.IsNullOrEmpty(item.PsAllFile))
+                    {
+                        if (item.PsAllFile.ToLower().EndsWith(pdfExt))
+                        {
+                            <a id="All_file" onclick="OpenFileByUrl('@item.PsAllFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["ALL_File"]" class="fas fa-file-pdf text-info btn"></i></a>
+                        }
+                        else if (imgExt.Any(x => item.PsAllFile.ToLower().EndsWith(x)))
+                        {
+                            <a id="All_file" onclick="OpenFileByUrl('@item.PsAllFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["ALL_File"]" class="fas fa-file-image text-info btn"></i></a>
+                        }
+                        else
+                        {
+                            <a id="All_file" onclick="OpenFileByUrl('@item.PsAllFile')">  <i style="cursor:pointer" data-toggle="tooltip" title="@Localizer["ALL_File"]" class="fas fa-file-alt text-info btn"></i></a>
+                        }
+                    }
+                </td>
+                <td>@item.PSM_ID</td>
+                <td>N</td>
+                <td>@item.PSM_Status</td>
+                <td>@item.Material_No</td>
+                <td>@item.PC</td>
+                <td>@item.Cust_Name</td>
+                <td>@item.Description</td>
+                <td>@item.User</td>
+                <td>@item.CreateDate</td>
+                <td>@item.LastUpdate</td>
+            </tr>
+            No++;
+        }
+    </tbody>
+</table>

@@ -1,0 +1,296 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<!DOCTYPE html>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<html style="background-color: #eef5f9;">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <title>PMTs Application</title>
+    <link rel="icon" href="~/lib/material-pro/assets/images/LogoPmts.png">
+
+    <!----------------------------------- Include CSS File  ---------------------------------------------->
+    <!-- Bootstrap Core CSS -->
+    <link href="~/lib/material-pro/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/material-pro/assets/plugins/prism/prism.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/material-pro/assets/plugins/dropify/dist/css/dropify.min.css">
+
+    <!-- JQuery -->
+    <link href="~/js/jquery-ui.css" rel="stylesheet" />
+
+    <!-- Theme Color -->
+    <link href="~/lib/material-pro/main/css/colors/blue.css" id="theme" rel="stylesheet">
+
+    <!-- Toast -->
+    <link href="~/lib/material-pro/assets/plugins/toast-master/css/jquery.toast.css" rel="stylesheet">
+
+    <!-- Material Pro -->
+    <link href="~/lib/material-pro/main/css/style.css" rel="stylesheet" />
+    <link href="~/lib/material-pro/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/lib/material-pro/assets/plugins/multiselect/css/multi-select.css" rel="stylesheet" type="text/css" />
+
+    <!-- Sweet-Alert  -->
+    <link href="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+    <!-- Step Wizard -->
+    <link href="~/lib/StepWizard/StepWizard.css" rel="stylesheet" />
+</head>
+<body class="fix-header fix-sidebar card-no-border">
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <div class="container-fluid" style="background-color: #eef5f9;">
+        <div class="row">
+            @*<div class="col-md-2">
+            <div class="card" style="margin-top: 20px;">
+
+            <a class="btn btn-block btn-lg btn-primary" asp-action="ViewListProduct" asp-controller="MaintenanceProductInfo">
+            <i class="fa fa-home"></i><br /> Home
+            </a>
+            </div>
+            </div>*@
+            <div class="col-md-12">
+                <div class="card" style="margin-top: 10px;">
+
+                    <partial name="~/Views/NewProduct/_TransactionProgress.cshtml" model="Model" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            @if ((Model.EventFlag == null || Model.EventFlag == "Create" || Model.EventFlag == "CreateOs" || Model.EventFlag == "Copy" || Model.EventFlag == "CopyX" || Model.EventFlag == "CopyAndDelete" || Model.EventFlag == "CopyOs" || Model.EventFlag == "Presale") && (Model.CurrentTransaction == "Categories" || Model.CurrentTransaction == "Customer"))
+            {
+                <div class="col-sm-12">
+
+                    @RenderBody()
+                    <h6 id="progress1" style="font-family:sans-serif">Loading, please wait...</h6>
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-9" style="padding-right:0">
+
+                    @RenderBody()
+                    <h6 id="progress1" style="font-family:sans-serif">Loading, please wait...</h6>
+                </div>
+
+                <div class="col-sm-3" style="padding-left:0">
+
+                    @if (((Model.EventFlag == null || Model.EventFlag == "Create" || Model.EventFlag == "CreateOs" || Model.EventFlag == "Copy" || Model.EventFlag == "CopyX" || Model.EventFlag == "CopyAndDelete" || Model.EventFlag == "CopyOs" || Model.EventFlag == "Presale") && Model.CurrentTransaction != "Categories" && Model.CurrentTransaction != "Customer") || (Model.EventFlag == "Edit" || @Model.EventFlag == "Copy"))
+                    {
+                        <partial name="~/Views/NewProduct/_Detail.cshtml" model="Model" />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    @*<footer class="footer">
+        <h6 id="progress1" style="font-family:sans-serif">Loading, please wait...</h6>
+    </footer>*@
+
+    <div id="idle-timeout-dialog" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Your session is expiring soon</h4>
+                    @*<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>*@
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <i class="fa fa-warning font-red"></i> You session will be locked in
+                        <span id="idle-timeout-counter"></span> seconds.
+                    </p>
+                    <p> Do you want to continue your session? </p>
+                </div>
+                <div class="modal-footer text-center">
+                    <button id="idle-timeout-dialog-keepalive" type="button" class="btn btn-success" data-dismiss="modal">Yes, Keep Working</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--    --------------------------------- Include Java Script File---------------------------------------------->
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/material-pro/assets/plugins/bootstrap/js/bootstrap.js"></script>
+
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+        @*<script src="~/lib/Microsoft.jQuery.Unobtrusive.Ajax/jquery.unobtrusive-ajax.js"></script>*@
+    </environment>
+    @*<environment exclude="Development">
+    <script src="~/lib/jquery/dist/jquery3.3.1.js"
+    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+    asp-fallback-test="window.jQuery"
+    crossorigin="anonymous"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+    </script>
+    </environment>*@
+    <script src="~/lib/jquery/dist/jquery3.3.1.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- JQuery -->
+    <script src="~/js/jquery-1.12.4.js"></script>
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/js/jquery.ui.autocomplete.scroll.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="~/lib/material-pro/assets/plugins/popper/popper.min.js"></script>
+
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="~/lib/material-pro/main/js/jquery.slimscroll.js"></script>
+
+    <!--Wave Effects -->
+    <script src="~/lib/material-pro/main/js/waves.js"></script>
+
+    <!--Menu sidebar -->
+    <script src="~/lib/material-pro/main/js/sidebarmenu.js"></script>
+
+    <!--stickey kit -->
+    <script src="~/lib/material-pro/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/sparkline/jquery.sparkline.min.js"></script>
+
+    <!--Custom JavaScript -->
+    <script src="~/lib/material-pro/main/js/custom.min.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/toast-master/js/jquery.toast.js"></script>
+    <script src="~/lib/material-pro/main/js/toastr.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/datatables/datatables.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/select2/dist/js/select2.full.min.js" type="text/javascript"></script>
+    <script src="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+
+    <!-- jQuery file upload -->
+    <script src="~/lib/material-pro/assets/plugins/dropify/dist/js/dropify.min.js"></script>
+
+    <!-- Modal Dialog -->
+    <script src="~/modal-dialog/modal-dialog.js"></script>
+
+    <!-- Sweet-Alert  -->
+    <script src="~/lib/material-pro/assets/plugins/sweetalert/jquery.sweet-alert.custom.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Microsoft jQuery Unobtrusive Ajax -->
+    <script src="~/lib/Microsoft.jQuery.Unobtrusive.Ajax/jquery.unobtrusive-ajax.js"></script>
+
+    <!-- html2canvas -->
+    <script src="~/lib/html2canvas/html2canvas.min.js"></script>
+
+    @*<script src="~/lib/html2canvas/html2canvas.js"></script>*@
+
+    <!-- Session-timeout-idle -->
+    <script src="~/lib/material-pro/assets/plugins/session-timeout/idle/jquery.idletimeout.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/session-timeout/idle/jquery.idletimer.js"></script>
+    <script src="~/lib/material-pro/assets/plugins/session-timeout/idle/session-timeout-idle-init.js"></script>
+
+    <!-- Alert Massege -->
+    <script>
+
+        const DupdescriptionAlert = '@Localizer["Duplicated description"]';
+        const DupPCAlert = '@Localizer["Duplicated product code"]';
+        const AmountOfSlotAlert = '@Localizer["Amount Of Slot Alert"]';
+        const FGAreaAlert = '@Localizer["FGArea"]';
+        const PriorityAlert = '@Localizer["Priority"]';
+        const DupPriority = '@Localizer["Duplicated-Priority or Board"]';
+        const DupBoardAlt = '@Localizer["Duplicated Board Alternative"]';
+        const OKButton = '@Localizer["OKButton"]';
+        const NoSlotAlert = '@Localizer["No Slot"]';
+        const PressOKbuttonAlert = '@Localizer["Press OK button Alert"]';
+        const CostPerTonAlert = '@Localizer["Cost per Ton Alert"]';
+        const SaveError = '@Localizer["Save Error"]';
+        const WHRoutingAlert = '@Localizer["WHRoutingAlert"]';
+        const SearchfailAlert = '@Localizer["Search fail"]';
+
+        const SaveSuccess = '@Localizer["Save Success"]';
+        const SaveFailed = '@Localizer["Save Failed"]';
+        const UpdateSuccess = '@Localizer["Update Success"]';
+        const UpdateFailed = '@Localizer["Update Failed"]';
+
+        const PleaseSelectOne = '@Localizer["Please Select One Only"]';
+        const PleaseSelectItem = '@Localizer["Please Select Item"]';
+
+        const Default = '@Localizer["Titel Message Default"]';
+        const success = '@Localizer["Titel Message Success"]';
+        const error = '@Localizer["Titel Message Error"]';
+        const Warning = '@Localizer["Titel Message Warning"]';
+
+        $(document).ready(function () {
+            //JUST AN EXAMPLE, PLEASE USE YOUR OWN PICTURE!
+            //const imageAddr = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Bloemen_van_adderwortel_%28Persicaria_bistorta%2C_synoniem%2C_Polygonum_bistorta%29_06-06-2021._%28d.j.b%29.jpg";
+            //const imageAddr = "/pmtsapp/lib/material-pro/assets/images/testSpeedImage.jpg"; //Test
+            const imageAddr = "/pmtsappproduction/lib/material-pro/assets/images/testSpeedImage.jpg"; //Production
+            const downloadSize = 7300000; //bytes
+            const timeInterval = 5000; //ms
+
+            function ShowProgressMessage(msg) {
+                if (console) {
+                    if (typeof msg == "string") {
+                        console.log(msg);
+                    } else {
+                        for (var i = 0; i < msg.length; i++) {
+                            console.log(msg[i]);
+                        }
+                    }
+                }
+
+                var oProgress = document.getElementById("progress1");
+                if (oProgress) {
+                    var actualHTML = (typeof msg == "string") ? msg : msg.join("<br />");
+                    oProgress.innerHTML = actualHTML;
+                }
+            }
+
+            function InitiateSpeedDetection() {
+                //ShowProgressMessage("Loading the image, please wait...");
+                window.setTimeout(MeasureConnectionSpeed, 1);
+            };
+
+            if (window.addEventListener) {
+                window.addEventListener('load', InitiateSpeedDetection, false);
+            } else if (window.attachEvent) {
+                window.attachEvent('onload', InitiateSpeedDetection);
+            }
+            //var intervalId = window.setInterval(function () {
+            //    InitiateSpeedDetection();
+            //}, 10000);
+            function MeasureConnectionSpeed() {
+                var startTime, endTime;
+                var download = new Image();
+                download.onload = function () {
+                    endTime = (new Date()).getTime();
+                    showResults();
+                }
+
+                download.onerror = function (err, msg) {
+                    ShowProgressMessage("Invalid image, or error downloading");
+                }
+
+                startTime = (new Date()).getTime();
+                //var cacheBuster = "?nnn=" + startTime;
+                //download.src = imageAddr + cacheBuster;
+                download.src = imageAddr;
+
+                function showResults() {
+                    var duration = (endTime - startTime) / 1000;
+                    var bitsLoaded = downloadSize * 8;
+                    var speedBps = (bitsLoaded / duration).toFixed(2);
+                    var speedKbps = (speedBps / 1024).toFixed(2);
+                    var speedMbps = (speedKbps / 1024).toFixed(2);
+                    ShowProgressMessage([
+                        speedMbps + " Mbps"
+                    ]);
+                }
+            }
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,658 @@
+﻿@model IList<PMTs.DataAccess.ComplexModel.MasterDataRoutingModel>
+
+@using PMTs.DataAccess.ModelView
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Http;
+@using PMTs.WebApplication.Extentions;
+@using PMTs.DataAccess.ModelView.Login;
+
+@inject IViewLocalizer Localizer
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    ViewData["Title"] = "Index";
+    var masterdataList = new List<MasterCardMO>();
+    var userSession = SessionExtentions.GetSession<UserSessionModel>(httpContextAccessor.HttpContext.Session, "UserSessionModel");
+}
+
+<style>
+    .custom-file-upload {
+        border: 1px solid #ccc;
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 2px;
+    }
+
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<br />
+<div class="modal bs-example-modal-md" id="modalSO" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left" id="myLargeModalLabel">@Localizer["ListSONoAttachFile"]</h4>
+                <button onclick="ClearModal()" type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="col-12 form-group row">
+                    <div class="col-md-12 label-field">
+                        <div class="card-body tab-criteria">
+                            <div class="row line-space" style=" margin-bottom:15px">
+                                <div class="box-body table-responsive">
+                                    <div id="soGrid"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" onclick="SaveTextFile()" class="btn btn-success">@Localizer["Save File"]</button>
+                <button type="button" id="btnPreView" onclick="PrintMastercardMO(true,false)" class="btn btn-info waves-effect text-left">@Localizer["Print M/O"]</button>
+                <button type="button" id="btnPrint" onclick="PrintMastercardMO(false,false)" class="btn btn-info waves-effect text-left">@Localizer["Print M/O"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-md-12">
+                        <h3 class="text-themecolor"><i class="mdi mdi-view-list"></i> @Localizer["Print Master Card MO"] </h3>
+                    </div>
+
+                    <div class="col-md-12 text-center" style="margin-bottom:15px">
+                        <form>
+                            <div class="controls">
+                                <div class="input-group form-inline">
+                                    <div class="col-md-2 col-form-label-sm">@Localizer["S/O Number"]</div>
+                                    <div class="col-md-1 col-form-label-sm">@Localizer["From"]</div>
+                                    <input id="startSO" type="text" class="form-control col-md-3" placeholder="Ex. 2344770500" required="" aria-invalid="false" name="startSO" value="@ViewData["StartSO"]">
+                                    <span class="input-group-btn" style="width:0px;"></span>
+                                    <div class="col-md-1 col-form-label-sm">@Localizer["To"]</div>
+                                    <input id="endSO" type="text" class="form-control col-md-3" placeholder="Ex. 2344770800" aria-invalid="false" name="endSO" value="@ViewData["EndSO"]">
+                                    <span class="input-group-btn" style="width:0px;"></span>
+                                    <div class="col-md-2">
+                                        &nbsp;<button id="btn-search-mo" type="button" class="btn btn-info" onclick="SearchMasterCardMOList(this)"> <i class="fas fa-search"></i> @Localizer["Search"]</button>
+                                    </div>
+                                </div>
+
+                                <div class="help-block"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-12 text-left">
+                        <label class="custom-control"><b><font size="3">@Localizer["Print Master Card MO From File"]</font></b> </label>
+                    </div>
+                    <div class="col-md-12 text-center" style="margin-bottom:15px">
+                        <form id="fromBoardCombineAcc">
+                            <div class="controls">
+                                <div class="input-group form-inline" style="padding-left:25px">
+
+                                    <label for="file-upload" class="custom-file-upload btn-outline-info">
+                                        <i class="fa fa-cloud-upload"></i> @Localizer["Choose Master Card MO File"]
+                                    </label>
+                                    <input id="file-upload" name='fileUpload' type="file" accept=".txt" style="display:none;">
+                                    <label id="file-name" style="margin:10px;color:Highlight"></label>
+                                </div>
+
+                                <div class="help-block"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="divMasterCardMoTable" class="table-responsive m-t-10">
+                    <partial name="_MasterCardMoViewTable" model="Model" />
+                </div>
+            </div>
+
+            <div class="card-footer bg-transparent" style="padding-right:35px">
+                <div class="row justify-content" style="background-color: transparent; margin-right: -60px;">
+                    <div class="col-md-4 row " style="padding: 0px;max-height: 55px;min-width: 200px; margin-right: 1px;">
+                        <label class="custom-control col-3"><b><font size="2" style="float:right;margin-top:4px;">@Localizer["Page QTY"]</font></b> </label>
+                        <div class="col-md-8" style="padding:0px">
+                            <input class="form-check-input" type="radio" name="sizeOfPage" id="onePage" value="1" checked onclick="ChoosePrintMOPage(this)">
+                            <label class="form-check-label" for="onePage" style="float:left;font-size:13px">@Localizer["1 Page"]</label>
+                        </div>
+                        <label class="custom-control col-3"><b><font size="1"></font></b> </label>
+                        <div class="col-md-8" style="padding:0px">
+                            <input class="form-check-input" type="radio" name="sizeOfPage" id="twoPage" value="2" onclick="ChoosePrintMOPage(this)">
+                            <label class="form-check-label" for="twoPage" style="float:left;font-size:13px">@Localizer["2 Page"]</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 row justify-content-end" style="background-color:transparent">
+                        <div class="col-md-2 row p-0">
+                            <button type="button" class="btn btn-primary btn-fixsize" style="max-height: 30px;max-width: 100px;float: right;" onclick="VerifyPrintMastercardMO(true)"><i class="fa fa-eye"></i> @Localizer["Preview"] </button>
+                        </div>
+                        <div class="col-md-2 row" style="padding: 0px;max-height: 55px;min-width: 100px; margin-right: 1px;">
+                            <div class="col-md-12" style="padding:0px">
+                                <input class="form-check-input" type="radio" name="productType" id="soall" value="soall" checked onclick="ChooseProductType(this)">
+                                <label class="form-check-label" for="soall" style="float:left;font-size:13px">@Localizer["SO All"]</label>
+                            </div>
+                            <div class="col-md-12" style="padding:0px">
+                                <input class="form-check-input" type="radio" name="productType" id="carton" value="carton" onclick="ChooseProductType(this)">
+                                <label class="form-check-label" for="carton" style="float:left;font-size:13px">@Localizer["Carton"]</label>
+                            </div>
+                            <div class="col-md-12" style="padding:0px">
+                                <input class="form-check-input" type="radio" name="productType" id="sheetboard" value="sheetboard" onclick="ChooseProductType(this)">
+                                <label class="form-check-label" for="sheetboard" style="float:left;font-size:13px">@Localizer["Sheetboard"]</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2 pr-0" style="max-width:160px">
+                            <button type="button" class="btn btn-info btn-fixsize float-right" onclick="VerifyPrintMastercardMO(false , false)"> @Localizer["Print"] <i class="fa fa-arrow-circle-right"></i></button>
+                            <span class="small text-danger "><i class="fa fa-"></i>@ViewBag.SaveCat</span>
+                        </div>
+
+                        @if (userSession.PlanningProgram == "TIPs")
+                        {
+                            <div class="col-md-3 pr-0" style="max-width:160px">
+                                <button type="button" class="btn btn-info btn-fixsize float-right" onclick="VerifyPrintMastercardMO(false , true)"> @Localizer["Print From Tip"] <i class="fa fa-arrow-circle-right"></i></button>
+                                <span class="small text-danger "><i class="fa fa-"></i>@ViewBag.SaveCat</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var soDataListShow = [];
+        var saleOrders = [];
+        var saleOrdersFromJson = [];
+        var modelList = @Html.Raw(Json.Serialize(Model));
+        var sizeOfPage = 1;
+        var productType = "";
+        var saleOrdersStatus = [];
+
+        $(document).ready(function () {
+            saleOrders = [];
+            $('#mastercardMOTable').DataTable({
+                'bFilter': false,
+                "paging": false,
+                "info": false,
+                "scrollX": true,
+                'columnDefs': [{
+                    'targets': [-1, 0], 'orderable': false,
+
+                }, {
+                    'targets': 7, "render": function (data, type, row) {
+
+                        if (data)
+                            var data = data.split(',').join('<br>');
+                        return data;
+                    }
+                }],
+                "order": [[1, "desc"]]
+            });
+
+            //$('#mastercardMOTable tbody').on('click', 'tr', function () {
+            //    var $row = $(this).closest("tr");
+            //    var id = $row.find("input:eq(0)").attr('id');
+            //    var elementById = "#" + id;
+            //    if (id != "") {
+            //        if ($row.find("input:eq(0)").is(':checked')) {
+            //            //uncheck
+            //            var defaultSelected = saleOrders.filter(p=> p == id);
+            //            if (defaultSelected.length > 0) {
+            //                saleOrders = saleOrders.filter(p => { return p != id });
+            //            }
+            //            $(elementById).prop('checked', false);
+            //            return false;
+            //        }
+            //        else //check
+            //        {
+            //            saleOrders.push(id);
+            //            $(elementById).prop('checked', true);
+            //            return false;
+            //        }
+            //    }
+            //});
+        });
+
+        function GetSaleOrder(item) {
+            let $row = $(item).closest("tr");
+            let id = $row.find("input:eq(0)").attr('id');
+            var elementById = "#" + id;
+            if (id != "") {
+                if ($row.find("input:eq(0)").is(':checked')) {
+                    //uncheck
+                    var defaultSelected = saleOrders.filter(p => p == id);
+                    if (defaultSelected.length > 0) {
+                        saleOrders = saleOrders.filter(p => { return p != id });
+                    }
+                    $(elementById).prop('checked', false);
+                    return false;
+                }
+                else //check
+                {
+                    var defaultSelected = saleOrders.filter(p => p == id);
+                    if (defaultSelected.length == 0) {
+                        saleOrders.push(id);
+                    }
+
+                    $(elementById).prop('checked', true);
+                    return false;
+                }
+            }
+        }
+
+        $('#startSO').on('keypress', function (e) {
+            if (e.which === 13) {
+                //$("#btn-search-mo").click();
+                SearchMasterCardMOList();
+            }
+        });
+
+        $('#endSO').on('keypress', function (e) {
+            if (e.which === 13) {
+                //$("#btn-search-mo").click();
+                SearchMasterCardMOList();
+            }
+        });
+
+        function HasHoldSaleOrders() {
+            var countOfStatusHold = saleOrdersStatus.filter(w => saleOrders.find(m => m == w.SaleOrder) && w.MoStatus == 'H').length
+            return countOfStatusHold > 0 ? true : false
+        }
+
+        function GetCodeAndBoardList() {
+
+            var data = saleOrdersStatus.filter(w => saleOrders.find(m => m == w.SaleOrder) && w.MoStatus == 'H').map((item) => {
+                const { Code, Board } = item;
+                return { Code, Board };
+            });
+            const uniqueArray = [...new Set(data.map(JSON.stringify))].map(JSON.parse)
+            return uniqueArray
+        }
+
+        function VerifyPrintMastercardMO(isPreview, PrintFromTip) {
+
+            ClearModal();
+            let fileUploadName = $("#file-name").text();
+            if (fileUploadName != "") {
+                fileUploadName = fileUploadName.split('.')[0];
+            }
+            if (HasHoldSaleOrders() == true) {
+                const data = GetCodeAndBoardList()
+                const codeHasValue = data.filter(w => w.Code)
+                const codeNotHasValue = data.filter(w => !w.Code)
+                let text = ""
+                if (codeHasValue.length > 0) {
+                    text += "กรุณาไปใส่ต้นทุน SB ที่ \n"
+                    for (let i = 0; i < codeHasValue.length; i++) text += "- Board " + codeHasValue[i].Board + " (" + codeHasValue[i].Code + ")" + "\n"
+                }
+                if (codeNotHasValue.length > 0) {
+                    text += (codeHasValue.length > 0) ? "และ Board " : "และ Board "
+                    for (let i = 0; i < codeNotHasValue.length; i++) {
+                        const no = i + 1
+                        text += codeNotHasValue[i].Board + (no != codeNotHasValue.length ? ", " : "")
+                    }
+                    text += " ไม่มีในระบบกรุณาไปเพิ่มบอร์ดในระบบ พร้อมทั้งใส่ต้นทุน SB ของบอร์ดนี้ด้วย"
+
+                }
+                swal("ไม่สามารถพิมพ์รายการที่ Status เป็น H (Hold)", text, "warning");
+
+            } else {
+                if (saleOrders.length > 0) {
+                    var jsonObject = {
+                        "OrderItem": saleOrders,
+                        "MaterialNo": [],
+                        "SizeOfPage": sizeOfPage,
+                        "ProductType": productType,
+                        "FileName": fileUploadName,
+                        "IsPreview": isPreview,
+                        //"IsBundle":true,
+
+                        //"IsPallet": true,
+                        "IsBundle": $("#chk-Bundle").is(":checked") ? "true" : "false",
+
+                        "IsPallet": $("#chk-Pallet").is(":checked") ? "true" : "false",
+                    };
+
+                    $.ajax({
+                        url: '@Url.Action("CheckAttachFile", "Report")',
+                        type: "POST",
+                        dataType: "json",
+                        data: JSON.stringify(jsonObject),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                if (isPreview == true) {
+                                    $('#btnPreView').show();
+                                    $('#btnPrint').hide();
+                                } else {
+                                    $('#btnPrint').show();
+                                    $('#btnPreView').hide();
+                                }
+                                soDataListShow = res.SONumberShow;
+                                genSoGrid();
+                                $("#modalSO").modal("show");
+                            } else {
+                                PrintMastercardMO(isPreview, PrintFromTip);
+                            }
+                        },
+                        error: function () {
+                            PrintMastercardMO(isPreview, PrintFromTip);
+                        }
+                    });
+                }
+                else {
+                    swal("กรุณาเลือก Master Card MO ที่ต้องการพิมพ์", "", "warning");
+                }
+            }
+
+
+        }
+
+        function PrintMastercardMO(isPreview, PrintFromTip) {
+            //loading screen
+            document.querySelectorAll(".preloader").forEach(a => a.style.display = "initial");
+
+            let fileUploadName = $("#file-name").text();
+            if (fileUploadName != "") {
+                fileUploadName = fileUploadName.split('.')[0];
+            }
+            if (HasHoldSaleOrders() == true) {
+                const data = GetCodeAndBoardList()
+                const codeHasValue = data.filter(w => w.Code)
+                const codeNotHasValue = data.filter(w => !w.Code)
+                let text = ""
+                if (codeHasValue.length > 0) {
+                    text += "กรุณาไปใส่ต้นทุน SB ที่ \n"
+                    for (let i = 0; i < codeHasValue.length; i++) text += "- Board " + codeHasValue[i].Board + " (" + codeHasValue[i].Code + ")" + "\n"
+                }
+                if (codeNotHasValue.length > 0) {
+                    text += (codeHasValue.length > 0) ? "และ Board " : "และ Board "
+                    for (let i = 0; i < codeNotHasValue.length; i++) {
+                        const no = i + 1
+                        text += codeNotHasValue[i].Board + (no != codeNotHasValue.length ? ", " : "")
+                    }
+                    text += " ไม่มีในระบบกรุณาไปเพิ่มบอร์ดในระบบ พร้อมทั้งใส่ต้นทุน SB ของบอร์ดนี้ด้วย"
+
+                }
+                document.querySelectorAll(".preloader").forEach(a => a.style.display = "none");
+                swal("ไม่สามารถพิมพ์รายการที่ Status เป็น H (Hold)", text, "warning");
+            } else {
+                if (saleOrders.length > 0) {
+                    var jsonObject = {
+                        "OrderItem": saleOrders,
+                        "MaterialNo": [],
+                        "SizeOfPage": sizeOfPage,
+                        "ProductType": productType,
+                        "FileName": fileUploadName,
+                        "IsPreview": isPreview,
+                        "IsTIP": PrintFromTip,
+                        //"IsBundle":true,
+
+                        //"IsPallet": true,
+                        "IsBundle": $("#chk-Bundle").is(":checked") ? "true" : "false",
+
+                        "IsPallet": $("#chk-Pallet").is(":checked") ? "true" : "false",
+                    };
+                    $.ajax({
+                        url: '@Url.Action("SetMasterCardMO", "Report")',
+                        type: "POST",
+                        dataType: "json",
+                        data: JSON.stringify(jsonObject),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (res) {
+                            if (res.IsSuccess) {
+                                $('#modalSO').modal('hide');
+                                if (res.ShowMsgError) {
+                                    swal(res.ErrorMessage, "", "warning");
+                                }
+
+                                masterdataList = res.MastercardMOs;
+
+                                //close loading screen
+                                document.querySelectorAll(".preloader").forEach(a => a.style.display = "none");
+                                window.open('@Url.Action("MasterCardMO", "Report")', '_blank');
+
+                                return false;
+                            } else {
+                                document.querySelectorAll(".preloader").forEach(a => a.style.display = "none");
+                                swal(res.ErrorMessage, "", "warning");
+                            }
+                        },
+                        error: function () {
+                            document.querySelectorAll(".preloader").forEach(a => a.style.display = "none");
+                        }
+                    });
+                }
+                else {
+                    //close loading screen
+                    document.querySelectorAll(".preloader").forEach(a => a.style.display = "none");
+                    swal("กรุณาเลือก Master Card MO ที่ต้องการพิมพ์", "", "warning");
+                }
+            }
+
+        }
+
+        $("#file-upload").change(function () {
+            $("#file-name").text(this.files[0].name);
+            let fileInput = $('#file-upload')[0];
+            let file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append("fileUpload", file);
+
+            $.ajax({
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                type: "POST",
+                url: '@Url.Action("SetMasterCardMOFromTextFile", "Report")',
+                data: formData,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('#divMasterCardMoTable').html(res.View);
+                        $('.modal-backdrop').css('display', 'none');
+                        let tableMo = $('#mastercardMOTable').DataTable({
+                            'dom': '<"top"i>rt<"clear">',
+                            'bFilter': false,
+                            "paging": false,
+                            "info": true,
+                            "scrollX": true,
+                            "columnDefs": [{
+                                "targets": 'nosort',
+                                "orderable": false
+                            }, {
+                                'targets': 7, "render": function (data, type, row) {
+                                    if (data)
+                                        var data = data.split(',').join('<br>');
+                                    return data;
+                                }
+                            }]
+                        });
+
+                        let info = tableMo.page.info();
+                        $('#tableMOInfo').html('Currently showing  ' + (info.recordsTotal) + ' rows.');
+
+                        saleOrders = [];
+                        saleOrdersFromJson = [];
+                        saleOrdersStatus = [];
+
+                        saleOrders = res.saleOrders;
+                        saleOrdersFromJson = res.saleOrders;
+                        saleOrdersStatus = res.saleOrdersStatus
+
+                        $("#mastercardMOTable-select-all").prop('checked', true);
+                        $.each(saleOrders, function (key, obj) {
+                            $("#" + obj).prop('checked', true);
+                        });
+
+                        if (res.ExceptionMessage != null && res.ExceptionMessage != "") {
+                            swal("Search Failed!", res.ExceptionMessage, { icon: "warning" });
+                        }
+                    }
+                    else {
+                        swal("Search Failed!", res.ExceptionMessage, { icon: "warning" })
+                            .then(() => {
+                                window.location.href = "@Url.Action("MasterCardMOViewList", "Report")";
+                            });
+                    }
+                },
+                error: function () { }
+            });
+        });
+
+        function fileUploadClick() {
+            $("#fileUpload").click();
+        };
+
+        function thisFileUpload() {
+            document.getElementById("fileUpload").click();
+        };
+
+        function SearchMasterCardMOList(e) {
+            let startSO = $('#startSO').val();
+            let endSO = $('#endSO').val();
+
+            if (startSO != "" || startSO != null) {
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    url: '@Url.Action("MasterCardMOViewListSearch", "Report")',
+                    data: { startSO: startSO, endSO: endSO },
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            $('#divMasterCardMoTable').html(res.View);
+                            $('.modal-backdrop').css('display', 'none');
+                            let tableMo = $('#mastercardMOTable').DataTable({
+                                'dom': '<"top"i>rt<"clear">',
+                                'bFilter': false,
+                                "paging": false,
+                                "info": true,
+                                "scrollX": true,
+                                'columnDefs': [{
+                                    'targets': [-1, 0], 'orderable': false,
+
+                                }, {
+                                    'targets': 7, "render": function (data, type, row) {
+
+                                        if (data)
+                                            var data = data.split(',').join('<br>');
+                                        return data;
+                                    }
+                                }],
+                                "order": [[1, "desc"]]
+                            });
+
+                            let info = tableMo.page.info();
+                            $('#tableMOInfo').html('Currently showing  ' + (info.recordsTotal) + ' rows.');
+
+                            saleOrders = [];
+                            saleOrdersFromJson = [];
+                            saleOrdersStatus = [];
+
+                            saleOrders = res.saleOrders;
+                            saleOrdersFromJson = res.saleOrders;
+                            saleOrdersStatus = res.saleOrdersStatus
+
+                            $("#mastercardMOTable-select-all").prop('checked', true);
+                            $.each(saleOrders, function (key, obj) {
+                                $("#" + obj).prop('checked', true);
+                            });
+
+                            $("#file-upload").val("");
+                            $("#file-name").text("");
+                        }
+                        else {
+                            swal("Search Failed!", res.ExceptionMessage, { icon: "warning" })
+                                .then(() => {
+                                    window.location.href = "@Url.Action("MasterCardMOViewList", "Report")";
+                                });
+                        }
+                    },
+                    error: function () { }
+                });
+            }
+
+        }
+
+        function ChoosePrintMOPage(e) {
+            $action = $(e).val();
+            if ($action == "1") {
+                sizeOfPage = 1;
+            } else if ($action == "2") {
+                sizeOfPage = 2;
+            }
+        }
+
+        function ChooseProductType(e) {
+            $value = $(e).val();
+
+            if ($value == "carton") {
+                productType = "Carton";
+            } else if ($value == "sheetboard") {
+                productType = "Sheet Board";
+            } else {
+                productType = "";
+            }
+
+        }
+
+        function SelectAll(e) {
+            if ($("#mastercardMOTable-select-all").is(':checked')) {
+                saleOrders = [];
+
+                $.each(saleOrdersFromJson, function (key, obj) {
+                    $("#" + obj).prop('checked', true);
+                });
+
+                saleOrders = saleOrdersFromJson;
+
+            }
+            else {
+                $.each(saleOrdersFromJson, function (key, obj) {
+                    $("#" + obj).prop('checked', false);
+                });
+
+                saleOrders = [];
+            }
+        }
+        function genSoGrid() {
+            $("#soGrid").jsGrid({
+                data: soDataListShow,
+                height: "auto",
+                width: "100%",
+                filtering: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                autoload: true,
+                pageSize: 15,
+                pageButtonCount: 5,
+                confirmDeleting: false,
+                heading: false,
+                fields: [
+                    {
+                        name: "OrderItem",
+                        type: "text",
+                        editing: false,
+                        width: 80
+                    }],
+            });
+        }
+        function ClearModal() {
+            soDataListShow = [];
+        }
+
+        function SaveTextFile() {
+            window.open('@Url.Action("MasterCardMOTextFile", "Report")', '_blank');
+        }
+    </script>
+}

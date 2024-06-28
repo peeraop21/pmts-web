@@ -1,0 +1,503 @@
+﻿@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    /* เส้นด้านข้างทั้งหมด */
+    .vl1 {
+        border-left: 2px solid gray;
+        height: 178px;
+        position: absolute;
+        left: 388px;
+        top: 84px;
+    }
+
+    .vl5 {
+        border-left: 2px solid gray;
+        height: 178px;
+        position: absolute;
+        left: 422px;
+        top: 84px;
+    }
+
+    .hl1 {
+        width: 52px; /*11%*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 380px; /*440px*/
+        top: 83px;
+    }
+
+    .hl2 {
+        width: 52px; /*11%*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 380px; /*440px*/
+        top: 262px;
+    }
+
+    /* เส้นด้านบนทั้งหมด */
+    .bigLeftV {
+        border-left: 2px solid gray;
+        height: 56px;
+        position: absolute;
+        left: 36px; /*4.2%*/
+        top: 22px;
+    }
+
+    .bigLeftH1 {
+        width: 332px; /*399px*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 37px; /*4.2%*/
+        top: 28px;
+    }
+
+    .LeftV {
+        border-left: 2px solid gray;
+        height: 35px;
+        position: absolute;
+        left: 52px; /*6.9%*/
+        top: 42px;
+    }
+
+    .LeftH1 {
+        width: 300px; /*66.4*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 53px; /*6.9%*/
+        top: 49px;
+    }
+
+    .lHl {
+        width: 300px; /*66.4*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 53px; /*6.9%*/
+        top: 70px;
+    }
+
+    .bigMidV {
+        border-left: 2px solid gray;
+        height: 56px;
+        position: absolute;
+        left: 202px; /*40.1%*/
+        top: 22px;
+    }
+
+    .RightV {
+        border-left: 2px solid gray;
+        height: 35px;
+        position: absolute;
+        left: 352px; /*73.3%*/
+        top: 42px;
+    }
+
+    .bigRightV {
+        border-left: 2px solid gray;
+        height: 56px;
+        position: absolute;
+        left: 367px; /*76%*/
+        top: 22px;
+    }
+
+    /* เส้นด้านล่าง */
+    .sheetLenL {
+        width: 331px; /*71.8*/
+        border-bottom: 2px solid gray;
+        position: absolute;
+        left: 37px; /*4.2%*/
+        top: 281px;
+    }
+
+    .shL1 {
+        border-left: 2px solid gray;
+        height: 16px;
+        position: absolute;
+        left: 36px; /*4.2%*/
+        top: 274px;
+    }
+
+    .shL2 {
+        border-left: 2px solid gray;
+        height: 16px;
+        position: absolute;
+        left: 367px; /*75.9*/
+        top: 274px;
+    }
+</style>
+
+<div class="row" style="width: 100%">
+    <div class="col-sm-6">
+        <div id="pic" style="height:auto;min-height:310px;width:460px;max-height:460px;">
+            <br />
+            <div id="MainPic" style="justify-content: center;align-items: center;">
+                <div class="vl1" id="vl1"></div>
+                <div class="vl5" id="vl5"></div>
+                <div class="hl1" id="hl1"></div>
+                <div class="hl2" id="hl2"></div>
+                <div class="bigLeftV"></div><div class="bigLeftH1" id="bigLeftH1"></div>
+                <div class="LeftV"></div><div class="LeftH1" id="LeftH1"></div>
+                <div class="lHl" id="lHl"></div>
+                <div class="bigMidV" id="bigMidV"></div>
+                <div class="RightV" id="RightV"></div>
+                <div class="bigRightV" id="bigRightV"></div>
+                <div class="sheetLenL" id="shLenL"></div>
+                <div class="shL1"></div>
+                <div class="shL2" id="shL2"></div>
+                <label id="h2" style="position: absolute; left: 380px; top: 108px;">____</label>
+                <label id="h3" style="position: absolute; left: 380px; top: 208px;">____</label>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input asp-for="modelProductSpec.ScoreL8" type="text" style="position: absolute; left: 100px; width: 40px; border:none; text-align:center; color:dimgray;" tabindex="-1" readonly />
+                    <input asp-for="modelProductSpec.ScoreL9" type="text" style="position: absolute; left: 268px; width: 40px; border:none; text-align:center; color:dimgray;" tabindex="-1" readonly />
+                </div>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input asp-for="modelProductSpec.ScoreL6" type="text" style="position: absolute; left: 110px; width: 40px; border:none; text-align:center; color:dimgray;" tabindex="-1" readonly />
+                    <input asp-for="modelProductSpec.ScoreL7" type="text" style="position: absolute; left: 263px; width: 40px; border:none; text-align:center; color:dimgray;" tabindex="-1" readonly />
+                </div>
+                <div class="row">
+                    <input asp-for="modelProductSpec.JointLap" type="text" style="position: absolute; left: 20px; width: 15px; border:none; text-align:center;" class="mytextboxNumber" />
+                    &nbsp;&nbsp;&nbsp;
+                    <label id="v1" style="position: absolute; left: 151px; top: 58px;">|</label>
+                    <label id="v2" style="position: absolute; left: 323px; top: 58px;">|</label>
+                    <input asp-for="modelProductSpec.ScoreL2" type="text" style="position: absolute; left: 70px; top: 60px; width: 40px; border:none; text-align:center; color:black;" class="mytextboxNumber" />
+                    <input asp-for="modelProductSpec.ScoreL3" type="text" style="position: absolute; left: 150px; top: 60px; width: 40px; border:none; text-align:center; color:black;" class="mytextboxNumber" />
+                    <input asp-for="modelProductSpec.ScoreL4" type="text" style="position: absolute; left: 220px; top: 60px; width: 40px; border:none; text-align:center; color:black;" class="mytextboxNumber" />
+                    <input asp-for="modelProductSpec.ScoreL5" type="text" style="position: absolute; left: 300px; top: 60px; width: 40px; border:none; text-align:center; color:black;" class="mytextboxNumber" />
+                    <input asp-for="modelProductSpec.Slit" type="text" style="position: absolute; left: 369px; top: 60px; width: 15px; border:none; text-align:center;" class="mytextboxNumber" />
+                    <input asp-for="modelProductSpec.ScoreW1" type="text" style="position: absolute; top: 95px; left: 371px; width: 35px; border:none; text-align:center;" class="mytextboxNumber" />
+                    <input asp-for="modelProductSpec.Scorew2" type="text" style="position: absolute; top: 165px; left: 370px; width: 38px; border:none; text-align:center;" class="mytextboxNumber" />
+                    <input asp-for="modelProductSpec.CutSheetWid" type="text" style="position: absolute; left: 403px; top: 165px; width: 40px; border:none; text-align:center; color:dimgray;" tabindex="-1" readonly />
+                    <input asp-for="modelProductSpec.Scorew3" type="text" style="position: absolute; top: 230px; left: 371px; width: 35px; border:none; text-align:center;" class="mytextboxNumber" />
+                </div>
+                <div id="xTop" class="row">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img id="jlapPic1" src="~/images/jLapz.jpg" /><img id="lLx1" src="~/images/lTopx.jpg" /><img id="wLx1" src="~/images/wTopx.jpg" /><img id="lRx1" src="~/images/lTopx.jpg" /><img id="wRx1" src="~/images/wTopx.jpg" /><img id="slitx1" src="~/images/Slitx.jpg" />
+                    &nbsp;&nbsp;
+                </div>
+                <div class="row">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img id="jLapMid" src="~/images/jLapMidz.jpg" /><img id="lLb" src="~/images/lBodyz.jpg" /><img id="wLb" src="~/images/wBodyz.jpg" /><img id="lRb" src="~/images/lBodyz.jpg" /><img id="wRb" src="~/images/wBodyz.jpg" /><img id="slitb" src="~/images/SlitMidz.jpg" />
+                    &nbsp;&nbsp;
+                </div>
+                <div id="xButton" class="row">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img id="jlapPic2" src="~/images/jLapz.jpg" /><img id="lLx2" src="~/images/lTopzz.jpg" /><img id="wLx2" src="~/images/wTopz.jpg" /><img id="lRx2" src="~/images/lTopz.jpg" /><img id="wRx2" src="~/images/wTopz.jpg" /><img id="slitx2" src="~/images/Slitz.jpg" />
+                    &nbsp;&nbsp;
+                </div>
+                <br />
+                <div class="row">
+                    <input asp-for="modelProductSpec.CutSheetLeng" type="text" style="position: absolute; left: 186px; top: 273px; width: 40px; border:none; text-align:center; color:dimgray;" tabindex="-1" readonly />
+                </div>
+            </div>
+            <div id="FilePic">
+                <center>
+                    @Html.TextBoxFor(m => m.modelProductSpec.PrintMasterPath, new { @id = "iDrawingPath", @style = "display:none;" })
+                    @if (Model.modelProductSpec.PrintMasterPath == null)
+                    {
+                        <img id="Pic_Drawing" style="width: auto; height: 263px;" />
+                    }
+                    else
+                    {
+                        <img id="Pic_Drawing" src="@Url.Content(@Model.modelProductSpec.PrintMasterPath)" style="width: auto; height: 263px;" />
+                    }
+                </center>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-10">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="PrintMaster" name="PrintMaster" type="file" title="search image" accept="image/*" onchange="show_Drawing(this)" />
+                </div>
+                <div class="col-sm-2">
+                    <i id="RM_Drawing" class="mdi mdi-close" style="color:red; display:none;" onclick="ClosePic()"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group row">
+            <div class="col-sm-5">
+                @Localizer["Inside Length"] :<i style="color:red">*</i>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" asp-for="modelProductSpec.Leg" maxlength="4" class="form-control mytextboxNumber" autocomplete="off" tabindex="3" />
+                <input type="text" asp-for="modelProductSpec.spcLen" class="form-control mytextboxNumber" hidden />
+            </div>
+            <div class="col-sm-4">
+                <button id="btProcess" class="btn btn-info waves-effect waves-light" type="button" tabindex="6" disabled>
+                    @Localizer["Calculate"]&nbsp;&nbsp;
+                    <span id="spin" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ></span>
+                </button>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-5">
+                @Localizer["Inside Width"] :<i style="color:red">*</i>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" asp-for="modelProductSpec.Wid" maxlength="4" class="form-control mytextboxNumber" autocomplete="off" tabindex="4" />
+            </div>
+            <div class="col-sm-4">
+                <button id="btDefault" class="btn btn-info waves-effect waves-light" type="button" disabled><span class="btn-label"><i class="mdi mdi-redo-variant"></i></span>@Localizer["Default"]</button>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-5">
+                @Localizer["Inside Height"] :<i style="color:red">*</i>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" asp-for="modelProductSpec.Hig" maxlength="4" class="form-control mytextboxNumber" autocomplete="off" tabindex="5" />
+            </div>
+            <div class="col-sm-4">
+                <span id="modelProductSpec_Leg-error" class="text-danger" style="display: none;">@Localizer["Length required"]</span>
+                <span id="modelProductSpec_Width-error" class="text-danger" style="display: none;">@Localizer["Width required"]</span>
+                <span id="modelProductSpec_Hig-error" class="text-danger" style="display: none;">@Localizer["Height required"]</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-12">
+                <div style="line-height: 40px;">
+                    @*<input type="text" id="l" hidden>
+        <input type="text" id="w" hidden>
+        <input type="text" id="h" hidden>*@
+                    <input type="hidden" id="l">
+                    <input type="hidden" id="w">
+                    <input type="hidden" id="h">
+                    <input type="hidden" id="x">
+                    <input type="hidden" id="c">
+                    <input type="hidden" id="cutW">
+                    <input type="hidden" id="cutL">
+                    &nbsp;&nbsp;&nbsp;
+                    <input class="filled-in" type="checkbox" value="" id="chkTwoP">
+                    <label class="form-check-label" id="lbTwoP" for="chkTwoP" style="font-size:14px; font-weight:300;">
+                        @Localizer["2Pieces"]
+                    </label>
+                    <input type="hidden" asp-for="modelProductSpec.TwoPiece" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input class="filled-in" type="checkbox" value="" id="chkGLwid">
+                    <label class="form-check-label" for="chkGLwid" style="font-size:14px; font-weight:300;">
+                        @Localizer["Glue Wid"]
+                    </label>
+                    <input type="hidden" asp-for="modelProductSpec.GLWid" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input class="filled-in" type="checkbox" value="" id="chkGLtail">
+                    <label class="form-check-label" for="chkGLtail" style="font-size:14px; font-weight:300;">
+                        @Localizer["Glue Tail"]
+                    </label>
+                    <input type="hidden" asp-for="modelProductSpec.GLTail" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-3" style="text-align:center;">
+                @Localizer["Sheet Board"]
+            </div>
+            <div class="col-sm-4" style="text-align:center;">
+                @Localizer["Finished goods"]
+            </div>
+            <div class="col-sm-1">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                @Localizer["Area"] :
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="modelProductSpec.SheetArea" type="text" class="form-control text-right" tabindex="-1" readonly />
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="modelProductSpec.BoxArea" type="text" class="form-control text-right" tabindex="-1" readonly />
+            </div>
+            <div class="col-sm-2">
+                <button id="btEdit" class="btn btn-info waves-effect waves-light" type="button" disabled>Edit</button>
+                <button id="btCancel" class="btn btn-info waves-effect waves-light" type="button">Cancel</button>
+                <input asp-for="modelProductSpec.Flag" type="text" hidden />
+                <input type="text" id="oldVal" hidden>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                @Localizer["Weight"] :
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="modelProductSpec.WeightSh" type="text" class="form-control text-right" tabindex="-1" readonly>
+            </div>
+            <div class="col-sm-3">
+                <input asp-for="modelProductSpec.WeightBox" type="text" class="form-control text-right" tabindex="-1" readonly>
+            </div>
+            <div class="col-sm-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <button id="btScoreW" type="button" class="btn btn-info" data-target="#modal-default" disabled>
+                    <span class="btn-label">
+                        <i class="mdi mdi-grease-pencil"></i>
+                    </span>@Localizer["Score Width"]
+                </button>
+            </div>
+            <div class="col-sm-8">
+                <div class="modal fade" id="modal-default">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title"><i class="mdi mdi-grease-pencil"></i>@Localizer["Score Line Width"]</h4>
+                                @*<button type="button" class="btn btn-danger" data-dismiss="modal">
+                                    <i class="mdi mdi-close"></i>
+                                </button>*@
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 1"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input id="Scorew1" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 9"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew9" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 2"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input id="Scorew2" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 10"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew10" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 3"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input id="Scorew3" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 11"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew11" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 4"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew4" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 12"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew12" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 5"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew5" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 13"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew13" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 6"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew6" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 14"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew14" type="text" class="form-control mytextboxNumber">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 7"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew7" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 15"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew15" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 8"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew8" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        @Localizer["Line 16"]
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input asp-for="modelProductSpec.Scorew16" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button id="save" class="btn btn-danger" type="button">@Localizer["Save"]</button>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <button id="close" class="btn btn-danger" type="button">@Localizer["Close"]</button>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input id="sum" type="text" class="form-control" style="text-align:center" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

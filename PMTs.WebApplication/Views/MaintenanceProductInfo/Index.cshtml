@@ -1,0 +1,248 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="col-md-12">
+    <!-- Box Comment -->
+    <div class="box box-widget">
+        <div class="box-header with-border">
+            <div class="user-block">
+                <h2><i class="fa fa-cube"></i>@Localizer["Production Information"]</h2>
+            </div>
+            <div class="col-md-6">
+                <div class="box-body">
+                    <!-- post text -->
+                    <div class="box box-primary">
+                        <h4> Common</h4>
+                        <hr />
+                        <div class="box-body">
+                            <i class="fa fa-play-circle"></i>
+                            <a asp-action="ViewListProduct" asp-controller="MaintenanceProductInfo">@Localizer["All Product"]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.box -->
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        var selected_tab = 0;
+        $(function () {
+            var tabs = $("#tabs").tabs({
+                select: function (e, i) {
+                    selected_tab = i.index;
+                }
+            });
+            selected_tab = $("#selectedTab").val() !== "" ? parseInt($("#selectedTab").val()) : 0;
+            tabs.tabs('select', selected_tab);
+            $("form").submit(function () {
+                $("#selectedTab").val(selected_tab);
+            });
+        });
+
+        $(function () {
+
+            //iCheck for checkbox and radio inputs
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            })
+            //Red color scheme for iCheck
+            $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+                checkboxClass: 'icheckbox_minimal-red',
+                radioClass: 'iradio_minimal-red'
+            })
+            //Flat red color scheme for iCheck
+            $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            })
+
+        })
+
+        $(document).ready(function () {
+
+            $('.mytextboxNumber').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|\./;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+            $('.mytextboxNumberNodecimal').keypress(function (evt) {
+                var theEvent = evt || window.event;
+
+                // Handle paste
+                if (theEvent.type === 'paste') {
+                    key = event.clipboardData.getData('text/plain');
+                } else {
+                    // Handle key press
+                    var key = theEvent.keyCode || theEvent.which;
+                    key = String.fromCharCode(key);
+                }
+                var regex = /[0-9]|/;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            });
+
+        });
+
+    function chkNum(ele) {
+        var num = parseFloat(ele.value);
+        ele.value = num.toFixed(2); required
+    }
+
+    function validateForm() {
+      //  var dataJoint = $("#JointList").val();
+      //  var PrintMethod = $("#modelProductProp_PrintMethod").val();
+      //  var PrintMethodList = $("#PrintMethodList").val();
+      //  var PalletSize = $("#modelProductProp_PalletSize").val();
+
+      //  alert(PrintMethodList);
+        //if (dataJoint == "") {
+        //    modalDialog("warning", "Please Select JointType");
+
+        //    return false;
+        //}
+
+        //if (PrintMethodList == "") {
+        //    modalDialog("warning", "Please Select PrintMethod");
+
+        //    return false;
+        //}
+        //if (PalletSize == "") {
+        //    modalDialog("warning", "Please Select PalletSize");
+
+        //    return false;
+        //}
+
+        SaveImg();
+        return true
+    }
+
+    function show_Pallet(input) {
+        if (input.files && input.files[0]) {
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+                $('#PicPallet').attr('src', e.target.result);
+                $('#PicPallet').show();
+                $('#RM_Pallet').show();
+                var temp = e.target.result;
+                $('#iPalletPath').val(temp);
+            };
+            filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+    function RMPallet() {
+        var y = $('#iPalletPath').val(null);
+        $('#PicPallet').hide();
+        $('#RM_Pallet').hide();
+        const file = document.getElementById('Pic_Pallet');
+        file.value = '';
+    }
+
+    function show_FG(input) {
+        if (input.files && input.files[0]) {
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+                $('#PicFG').attr('src', e.target.result);
+                $('#PicFG').show();
+                $('#RM_FG').show();
+                var temp = e.target.result;
+                $('#iFGPath').val(temp);
+            };
+            filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+    function RMFG() {
+        var y = $('#iFGPath').val(null);
+        $('#PicFG').hide();
+        $('#RM_FG').hide();
+        const file = document.getElementById('Pic_FG');
+        file.value = '';
+    }
+
+    function SaveImg() {
+
+            var form = $('#allData')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: '@Url.Action("ProdPicSaveImage", "NewProduct")',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                   $('#allData').submit();
+                },
+                error: function () { }
+            });
+    }
+
+        //$('input[name=Buntxt], input[name=BunLayertxt], input[name=LayerPallettxt]').keyup(function () {
+        $('#modelProductProp_Bun, #modelProductProp_BunLayer, #modelProductProp_LayerPallet').keyup(function () {
+
+            //var divParent = $(this).closest('div');
+            //var Buntxt = $('input[name=qty]', divParent).val();
+            //var BunLayertxt = $('input[name=price]', divParent).val();
+            //var LayerPallettxt = $('input[name=price]', divParent).val();
+            //if (Buntxt >= 0 && BunLayertxt >= 0 && LayerPallettxt >= 0)
+            //    $('BoxPalettxt', divParent).text(Buntxt * BunLayertxt);
+
+            var bun = $("#modelProductProp_Bun").val();
+
+            var bunlayer = $("#modelProductProp_BunLayer").val();
+            var layerpallet = $("#modelProductProp_LayerPallet").val();
+            var res = bun * bunlayer * layerpallet;
+            $("#modelProductProp_BoxPalet").val(res);
+
+        });
+
+        var dataJoint = $("#JointList").val();
+
+        if (dataJoint === "ตอก") {
+
+            var wiredata = $("#wiredata").val();
+            // $("#wire").prop('readOnly', true);
+            $("#wire").val(wiredata);
+        } else {
+            $("#wire").val(0);
+            //  $("#wire").prop('readOnly', false);
+        }
+        $("#JointList").change(function () {
+            var JointList = this.value;
+            if (JointList === "ตอก") {
+
+                var wiredata = $("#wiredata").val();
+                //     $("#wire").prop('readOnly', true);
+                $("#wire").val(wiredata);
+            } else {
+                $("#wire").val(0);
+                //     $("#wire").prop('readOnly', false);
+            }
+        });
+    </script>
+
+}

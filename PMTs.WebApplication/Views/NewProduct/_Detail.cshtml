@@ -1,0 +1,288 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+<div class="card card-outline-info">
+    <div class="card-header">
+        <div class="m-b-0 text-white">@Localizer["Details"]</div>
+    </div>
+    <div class="card-body">
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.ProductTypDetail))
+        {
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.ProductTypDetail  @Model.modelCategories.RSCStyle
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.HierarchyLV2Detail))
+        {
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.HierarchyLV2Detail
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.CustNameDetail))
+        {
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.CustNameDetail
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.PCDetail))
+        {
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.PCDetail
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.MaterialDescriptionDetail))
+        {
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.MaterialDescriptionDetail
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.BoardDetail))
+        {
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.BoardDetail
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.CostDetail))
+        {
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.CostDetail
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.TransactionDetail.HierarchyDetail))
+        {
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.TransactionDetail.HierarchyDetail
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (!String.IsNullOrEmpty(Model.modelProductInfo.HighValueDisplay))
+        {
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @Model.modelProductInfo.HighValueDisplay
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @*  @if (Model.TransactionDetail.RoutingDetail.Count > 0)
+        {
+
+            @foreach (var item in Model.TransactionDetail.RoutingDetail)
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                        @item.SeqNo | @item.Machine
+                    </div>
+                </div>
+
+            }
+
+        }
+
+        *@
+
+        @{
+            bool Isbundle = !string.IsNullOrEmpty(Model.modelProductCustomer.TagBundle) ? true : false;
+
+            bool IsPallet = !string.IsNullOrEmpty(Model.modelProductCustomer.TagPallet) ? true : false;
+
+        }
+        @if ((@Model.EventFlag == "Create" || @Model.EventFlag == "CreateOs" || @Model.EventFlag == "CreateTrading") && Model.TransactionStatus.Categories == "done" && Model.TransactionStatus.Customer == "done" && Model.TransactionStatus.ProductInformation == "done" && Model.TransactionStatus.ProductSpec == "done" && Model.TransactionStatus.ProductRouting == "done")
+        {
+            <div class="box-footer">
+                <div class="row text-center ">
+
+                    <button class="btn waves-effect waves-light btn-info btn-info" type="button" onclick="MasterCard()">
+                        <span class="btn-label"><i class="fa fa-print"></i></span>@Localizer["Print Master Card"]
+                    </button>
+
+                    @*<a class="btn btn-app " onclick="MasterCard()">
+                        <i class="fa fa-print "></i>  Print Master Card
+                    </a>*@
+                </div>
+            </div>
+            @if (Isbundle || IsPallet) {
+            <div class="box-footer">
+                <div class="row text-center ">
+
+                        <button class="bbtn waves-effect waves-light btn-outline-secondary" type="button" onclick="MasterCardTag()">
+                            <span class="btn-label"><i class="fa fa-tags"></i></span>@Localizer["Preview Tag"]
+                        </button>
+
+                    @*<a class="btn btn-app " onclick="MasterCard()">
+                        <i class="fa fa-print "></i>  Print Master Card
+                    </a>*@
+                </div>
+            </div>
+            }
+        }
+        else if (@Model.EventFlag == "Copy" && Model.TransactionStatus.Categories == "done" && Model.TransactionStatus.Customer == "done" && Model.TransactionStatus.ProductInformation == "done" && Model.TransactionStatus.ProductSpec == "done" && Model.TransactionStatus.ProductRouting == "done")
+        {
+            <div class="box-footer" style="margin-left:10px">
+                <div class="row text-center ">
+                    <button class="btn waves-effect waves-light btn-info btn-info" type="button" onclick="MasterCard()">
+                        <span class="btn-label"><i class="fa fa-print"></i></span>@Localizer["Print Master Card"]
+                    </button>
+
+                    @*<a class="btn btn-app " onclick="MasterCard()">
+                        <i class="fa fa-print "></i>  Print Master Card
+                    </a>*@
+                </div>
+            </div>
+            @if (Isbundle || IsPallet)
+            {
+                <div class="box-footer" style="margin-left:10px">
+                <div class="box-footer">
+                    <div class="row text-center ">
+                            <button class="bbtn waves-effect waves-light btn-outline-secondary" type="button" onclick="MasterCardTag()">
+                                <span class="btn-label"><i class="fa fa-tags"></i></span>@Localizer["Preview Tag"]
+                            </button>
+                        </div>
+
+                        @*<a class="btn btn-app " onclick="MasterCard()">
+                <i class="fa fa-print "></i>  Print Master Card
+                </a>*@
+                    </div>
+                </div>
+            }
+        }
+        else if (Model.EventFlag == "Edit")
+        {
+            <div class="box-footer" style="margin-left:10px">
+                <div class="row text-center ">
+                    <button class="btn waves-effect waves-light btn-info btn-info" type="button" onclick="MasterCard()">
+                        <span class="btn-label"><i class="fa fa-print"></i></span>@Localizer["Print Master Card"]
+                    </button>
+
+                    @*<a class="btn btn-app " onclick="MasterCard()">
+                        <i class="fa fa-print "></i>  Print Master Card
+                    </a>*@
+                </div>
+            </div>
+            @if (Isbundle || IsPallet)
+            {
+            <div class="box-footer" style="margin-left:10px;margin-top:10px;">
+
+                <div class="box-footer">
+                    <div class="row text-center ">
+
+                            <button class="btn waves-effect waves-light btn-secondary btn-secondary" type="button" onclick="MasterCardTag()">
+                                <span class="btn-label"><i class="fa fa-tags"></i></span>@Localizer["Preview Tag"]
+                            </button>
+                        </div>
+
+                        @*<a class="btn btn-app " onclick="MasterCard()">
+                <i class="fa fa-print "></i>  Print Master Card
+                </a>*@
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<script>
+
+    function MasterCard() {
+            var MaterialNo = '@Model.MaterialNo';
+
+            var jsonObject  = {
+                "OrderItem": [  ],
+                "MaterialNo": [MaterialNo]
+            };
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SetMasterCardMO", "Report")',
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (res) {
+                window.open('@Url.Action("MasterCardMO", "Report")','_blank');
+            }
+            ,
+            error: function () { }
+        });
+    }
+
+    function MasterCardTag(){
+        var MaterialNo = '@Model.MaterialNo';
+
+        var jsonObject = {
+            "OrderItem": [],
+            "MaterialNo": [MaterialNo]
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SetMasterCardTag", "Report")',
+            data: JSON.stringify(jsonObject),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (res) {
+                window.open('@Url.Action("MasterCardTag", "Report")', '_blank');
+            }
+            ,
+            error: function () { }
+        });
+    }
+</script>

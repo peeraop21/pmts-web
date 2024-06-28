@@ -1,0 +1,163 @@
+﻿@model PMTs.DataAccess.ModelView.BOMViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="box-body table-responsive">
+    <table id="Bomdatatable" class="table table-bordered color-table dataTable no-footer" cellspacing="0">
+        <thead>
+            <tr>
+
+                <th>@Localizer["Material No"]</th>
+                <th>@Localizer["Plant"]</th>
+                <th>@Localizer["BomUsage"]</th>
+                <th>@Localizer["WeighBom"]</th>
+                <th>@Localizer["Follower"]</th>
+                <th>@Localizer["Amount"]</th>
+                <th>@Localizer["Unit"]</th>
+                @*<th class="text-center">@Localizer["Edit"]</th>*@
+                <th class="text-center">@Localizer["Option"]</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.lstBomStructs)
+            {
+                <tr>
+                    <td>@item.MaterialNo</td>
+                    <td>@item.Plant</td>
+                    <td>@item.BomUsage</td>
+                    <td>@item.WeighBom</td>
+                    <td>@item.Follower</td>
+                    <td>@item.Amount</td>
+                    <td>@item.Unit</td>
+
+                    @*<td class="text-center">
+                            <a asp-controller="NewProduct" asp-action="Categories" asp-route-ActionTran="Edit" asp-route-MaterialNo="@item.MaterialNo" data-toggle="tooltip" data-original-title="Edit">
+                                <i class="fas fa-pencil-alt text-warning "></i>
+                            </a>
+                        </td>*@
+
+                    <td class="text-center">
+                        @*<a  onclick="ConfirmDelete(@item.Id)">  <i class="fas fa-pencil text-danger"></i></a>*@
+                        <a class="btn btn-default" title="Edit"
+                           data-Id="@item.Id"
+                           data-FactoryCode="@item.FactoryCode"
+                           data-MaterialNo="@item.MaterialNo"
+                           data-Plant="@item.Plant"
+                           data-BomUsage="@item.BomUsage"
+                           data-WeighBom="@item.WeighBom"
+                           data-PreviousBom="@item.PreviousBom"
+                           data-Follower="@item.Follower"
+                           data-Amount="@item.Amount"
+                           data-Unit="@item.Unit"
+                           data-PdisStatus="@item.PdisStatus"
+                           data-TranStatus="@item.TranStatus"
+                           data-SapStatus="@item.SapStatus"
+                           onclick="BindBOMStructToModal(this)">
+                            <i class="fas fa-pencil-alt text-warning" aria-hidden="true"></i>
+                        </a>
+
+                        @*Modal Edit BOM*@
+
+                        <div class="modal fade bs-example-modal-lg" id="modal-edit-bom">
+                            <div class="modal-dialog modal-xl" style="width:90%">
+                                <div class="modal-content">
+                                    <form>
+                                        <input type="hidden" id="EditBOM_Id" />
+                                        <input type="hidden" id="EditBOM_FactoryCode" />
+                                        <input type="hidden" id="EditBOM_Plant" />
+                                        <input type="hidden" id="EditBOM_PdisStatus" />
+                                        <input type="hidden" id="EditBOM_TranStatus" />
+                                        <input type="hidden" id="EditBOM_TranStatus" />
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myLargeModalLabel">@Localizer["Edit BOM Struct"]</h4>
+                                            <button type="button" class="close" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">@Localizer["MaterialNo"]</label>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <input class="form-control" id="EditBOM_MaterialNo" readonly />
+                                                </div>
+
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">@Localizer["BomUsage"]</label>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <input class="form-control" id="EditBOM_BomUsage" readonly />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">@Localizer["WeighBom"]</label>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <input class="form-control" id="EditBOM_WeighBom" readonly />
+                                                </div>
+
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">@Localizer["PreviousBom"]</label>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <input class="form-control" id="EditBOM_PreviousBom" readonly />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">@Localizer["Follower"]</label>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <input class="form-control" id="EditBOM_Follower" readonly />
+                                                </div>
+
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">@Localizer["Amount"]</label>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <input class="form-control" id="EditBOM_Amount" type="number" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-2">
+                                                    <label class="control-label">@Localizer["Unit"]</label>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <input class="form-control" id="EditBOM_Unit" readonly />
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" onclick="EditBOMStruct()">@Localizer["Update"]</button>
+                                            <button type="button" class="btn btn-danger waves-effect text-left" id="closeBOMBtn" data-dismiss="modal" data-backdrop="false">@Localizer["Close"]</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a class="btn btn-default" title="Delete"
+                           onclick="ConfirmDelete(@item.Id)">
+                            <i class="fas fa-trash text-danger"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#Bomdatatable').DataTable();
+    });
+</script>

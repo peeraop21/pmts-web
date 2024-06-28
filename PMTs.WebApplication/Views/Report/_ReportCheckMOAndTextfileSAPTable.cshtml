@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model PMTs.DataAccess.ModelView.Report.ReportCheckMOAndTextfileSAPViewModel
+@using System.Linq
+@{
+    Layout = null;
+}
+
+<table id="ReportCheckMOAndSAPTable" class="table table-bordered table-hover" width="100%">
+    <thead class="thead-light text-center">
+        <tr>
+            <th style="width:15%">@Localizer["OrderItem"]</th>
+            <th style="width:20%">@Localizer["Name"]</th>
+            <th style="width:12%">@Localizer["Order Quant"]</th>
+            <th style="width:15%">@Localizer["Due Date"]</th>
+            <th style="width:15%">@Localizer["Po No"]</th>
+            <th style="width:13%">@Localizer["Material No"]</th>
+            <th style="width:15%">@Localizer["Item Note"]</th>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.moDatas)
+        {
+            <tr>
+                <td class="text-center">@item.OrderItem</td>
+                <td class="text-left">@item.Name</td>
+                <td class="text-center">@item.OrderQuant</td>
+                <td class="text-center">@item.DueDate.ToShortDateString()</td>
+                <td class="text-center">@item.PoNo</td>
+                <td class="text-center">@item.MaterialNo</td>
+                <td class="text-center">@item.ItemNote</td>
+            </tr>
+        }
+    </tbody>
+</table>

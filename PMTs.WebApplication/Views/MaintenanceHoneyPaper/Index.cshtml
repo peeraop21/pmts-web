@@ -1,0 +1,553 @@
+﻿@model IEnumerable<PMTs.DataAccess.Models.HoneyPaper>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "HoneyPaper";
+}
+
+<style>
+    .swal-footer {
+        text-align: center;
+    }
+</style>
+
+<br />
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="fa fa-cog"></i>&nbsp;@Localizer["Maintenance HoneyPaper"] </h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="text-right">
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModal" data-toggle="modal"
+                                    data-target="#modal-create">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i> </span> @Localizer["Create"]
+                            </button>
+                            @*create*@
+                            <div class="modal fade bs-example-modal-lg" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <form>
+                                            <div class="modal-header">
+                                                <h4 class="modal-title pull-left" id="myLargeModalLabel">@Localizer["Create Honey Paper"]</h4>
+                                                <button type="button" class="close pull-right" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+
+                                                    <div class="form-group col-12 row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-2">
+                                                            <label class="control-label" style="line-height:31px">@Localizer["Grade"]<i style="color:red">*</i></label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input id="createGrade" class="form-control" required />
+                                                            <span class="float-left" id="ReqcreateGrade" style="color:red" hidden>@Localizer["The Grade field is requried."]</span>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+
+                                                    <div class="col-12 row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="form-group col-md-2">
+                                                            <label class="control-label" style="line-height:31px">@Localizer["Weight"]<i style="color:red">*</i></label>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <input id="createWeight" class="form-control" type="number" required />
+                                                            <span class="float-left" id="ReqcreateWeight" style="color:red" hidden>@Localizer["The Weight field is requried."]</span>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+
+                                                    <div class="col-12 row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="form-group col-md-2">
+                                                            <label class="control-label" style="line-height:31px">@Localizer["Paper Amount"]<i style="color:red">*</i></label>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <input id="createPaperAmt" class="form-control" type="number" required />
+                                                            <span class="float-left" id="ReqcreatePaperAmt" style="color:red" hidden>@Localizer["The field Paper Amount is requried."]</span>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+
+                                                    <div class="col-12 row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="form-group col-md-2">
+                                                            <label class="control-label" style="line-height:31px">@Localizer["Stretch"]<i style="color:red">*</i></label>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <input id="createStretch" class="form-control" type="number" required />
+                                                            <span class="float-left" id="ReqcreateStretch" style="color:red" hidden>@Localizer["The field Stretch is requried."]</span>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+
+                                                    <div class="col-12 row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="form-group col-md-2">
+                                                            <label class="control-label" style="line-height:31px">@Localizer["Shrink"]<i style="color:red">*</i></label>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <input id="createShrink" class="form-control" type="number" required />
+                                                            <span class="float-left" id="ReqcreateShrink" style="color:red" hidden>@Localizer["The field Shrink is requried."]</span>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+
+                                                    <div class="col-12 row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="form-group col-md-2">
+                                                            <label class="control-label" style="line-height:31px">@Localizer["SolidContent"]</label>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <input id="createSolidContent" class="form-control" type="number" />
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="btnCreate" class="btn btn-info text-center col-md-1" onclick="CreateHoneyPaper()">@Localizer["Save"]</button>
+                                                <button type="button" class="btn btn-danger waves-effect text-center col-md-1" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+
+                    <div class="box">
+                        <div class="box-body">
+                            <table id="tableData" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr class="text-center" style="background-color:#c4c3c3;color:black;">
+                                        <th width="10%" scope="col">@Localizer["Grade"]</th>
+                                        <th width="10%" scope="col">@Localizer["Weight"]</th>
+                                        <th width="10%" scope="col">@Localizer["PaperAmt"]</th>
+                                        <th width="10%" scope="col">@Localizer["Stretch"]</th>
+                                        <th width="10%" scope="col">@Localizer["Shrink"]</th>
+                                        <th class="text-center" width="5%" scope="col">@Localizer["Options"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var honeyPaper in Model)
+                                    {
+                                        <tr class="text-center">
+                                            <td>@honeyPaper.Grade</td>
+                                            <td>@honeyPaper.Weight</td>
+                                            <td>@honeyPaper.PaperAmt</td>
+                                            <td>@honeyPaper.Stretch</td>
+                                            <td>@honeyPaper.Shrink</td>
+                                            <td>
+                                                <button type="button" class="btn btn-default" title="Edit" data-toggle="modal" data-target="#modal-edit-@honeyPaper.Grade"><span class="fas fa-pencil-alt text-warning" aria-hidden="true"></span></button>
+
+                                                @*edit*@
+                                                <div class="modal fade bs-example-modal-lg" id="modal-edit-@honeyPaper.Grade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <form>
+                                                                <input type="hidden" id="ECreatedDate-@honeyPaper.Grade" value="@honeyPaper.CreatedDate" />
+                                                                <input type="hidden" id="ECreatedBy-@honeyPaper.Grade" value="@honeyPaper.CreatedBy" />
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title pull-left" id="myLargeModalLabel">@Localizer["Edit Honey Paper"]</h4>
+                                                                    <button type="button" class="close pull-right" data-dismiss="modal" data-backdrop="false" aria-hidden="true">×</button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="col-12 row">
+                                                                            <div class="col-md-2"></div>
+                                                                            <div class="form-group col-md-2">
+                                                                                <label class="control-label" style="line-height:31px">@Localizer["Grade"]<i style="color:red">*</i></label>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <input id="editGrade-@honeyPaper.Grade" class="form-control" value="@honeyPaper.Grade" required readonly />
+                                                                            </div>
+                                                                            <div class="col-md-2"></div>
+                                                                        </div>
+
+                                                                        <div class="col-12 row">
+                                                                            <div class="col-md-2"></div>
+                                                                            <div class="form-group col-md-2">
+                                                                                <label class="control-label" style="line-height:31px">@Localizer["Weight"]<i style="color:red">*</i></label>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <input id="editWeight-@honeyPaper.Grade" class="form-control" type="text" value="@honeyPaper.Weight" required />
+                                                                                <span class="float-left" id="ReqeditWeight-@honeyPaper.Grade" style="color:red" hidden>@Localizer["The field Weight is requried."]</span>
+                                                                            </div>
+                                                                            <div class="col-md-2"></div>
+                                                                        </div>
+
+                                                                        <div class="col-12 row">
+                                                                            <div class="col-md-2"></div>
+                                                                            <div class="form-group col-md-2">
+                                                                                <label class="control-label" style="line-height:31px">@Localizer["PaperAmt"]<i style="color:red">*</i></label>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <input id="editPaperAmt-@honeyPaper.Grade" class="form-control" type="number" value="@honeyPaper.PaperAmt" required />
+                                                                                <span class="float-left" id="ReqeditPaperAmt-@honeyPaper.Grade" style="color:red" hidden>@Localizer["The field PaperAmt is requried."]</span>
+                                                                            </div>
+                                                                            <div class="col-md-2"></div>
+                                                                        </div>
+
+                                                                        <div class="col-12 row">
+                                                                            <div class="col-md-2"></div>
+                                                                            <div class="form-group col-md-2">
+                                                                                <label class="control-label" style="line-height:31px">@Localizer["Stretch"]<i style="color:red">*</i></label>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <input id="editStretch-@honeyPaper.Grade" class="form-control" type="number" value="@honeyPaper.Stretch" required />
+                                                                                <span class="float-left" id="ReqeditStretch-@honeyPaper.Grade" style="color:red" hidden>@Localizer["The field Stretch is requried."]</span>
+                                                                            </div>
+                                                                            <div class="col-md-2"></div>
+                                                                        </div>
+
+                                                                        <div class="col-12 row">
+                                                                            <div class="col-md-2"></div>
+                                                                            <div class="form-group col-md-2">
+                                                                                <label class="control-label" style="line-height:31px">@Localizer["Shrink"]<i style="color:red">*</i></label>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <input id="editShrink-@honeyPaper.Grade" class="form-control" type="number" value="@honeyPaper.Shrink" required />
+                                                                                <span class="float-left" id="ReqeditShrink-@honeyPaper.Grade" style="color:red" hidden>@Localizer["The field Shrink is requried."]</span>
+                                                                            </div>
+                                                                            <div class="col-md-2"></div>
+                                                                        </div>
+
+                                                                        <div class="col-12 row">
+                                                                            <div class="col-md-2"></div>
+                                                                            <div class="form-group col-md-2">
+                                                                                <label class="control-label" style="line-height:31px">@Localizer["SolidContent"]</label>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <input id="editSolidContent-@honeyPaper.Grade" class="form-control" type="number" value="@honeyPaper.SolidContent" />
+                                                                            </div>
+                                                                            <div class="col-md-2"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" id="btnEdit" class="btn btn-info text-center col-md-2" onclick="UpdateHoneyPaper('@honeyPaper.Grade')">@Localizer["Save"]</button>
+                                                                    <button type="button" class="btn btn-danger waves-effect text-center col-md-1" data-dismiss="modal" data-backdrop="false">@Localizer["Cancel"]</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+
+        $('#tableData').DataTable();
+    });
+    function GetHoneyCore(flag, grade) {
+        let paperAmtReq = "";
+        let gradeReq = "";
+        let weightReq = "";
+        let shrinkReq = "";
+        let solidContentReq = "";
+        let stretchReq = "";
+        let createdBy = "";
+        let createdDate = "";
+        if (flag == "create") {
+            weightReq = "#createWeight";
+            gradeReq = "#createGrade";
+            paperAmtReq = "#createPaperAmt";
+            shrinkReq = "#createShrink";
+            solidContentReq = "#createSolidContent";
+            stretchReq = "#createStretch";
+
+            var honeyPaperObj =
+            {
+                "Grade": $(gradeReq).val(),
+                "Weight": $(weightReq).val(),
+                "PaperAmt": $(paperAmtReq).val(),
+                "Stretch": $(stretchReq).val(),
+                "Shrink": $(shrinkReq).val(),
+                "SolidContent": $(solidContentReq).val(),
+                "CreatedDate": null,
+                "CreatedBy": "",
+            }
+        }
+        else {
+            weightReq = "#editWeight" + grade;
+            gradeReq = "#editGrade" + grade;
+            paperAmtReq = "#editPaperAmt" + grade;
+            shrinkReq = "#editShrink" + grade;
+            stretchReq = "#editStretch" + grade;
+            createdBy = "#ECreatedBy" + grade;
+            createdDate = "#ECreatedDate" + grade;
+            solidContentReq = "#editSolidContent" + grade;
+
+            var honeyPaperObj =
+            {
+                "Grade": $(gradeReq).val(),
+                "Weight": $(weightReq).val(),
+                "PaperAmt": $(paperAmtReq).val(),
+                "Stretch": $(stretchReq).val(),
+                "Shrink": $(shrinkReq).val(),
+                "CreatedDate": ChangeDateTimeFormat($(createdDate).val()),
+                "CreatedBy": $(createdBy).val(),
+                "SolidContent": $(solidContentReq).val()
+            }
+        }
+
+        return honeyPaperObj;
+    }
+
+    function ChangeDateTimeFormat(oDatetime) {
+        let datetimeStr = "";
+
+        if (oDatetime != null && oDatetime != "") {
+            let datetimeArr = oDatetime.split(' ');
+            let dateArr = datetimeArr[0].split('/');
+            let timeArr = datetimeArr[1].split(':');
+            let year = dateArr[2];
+            let month = dateArr[1].length == 1 ? '0' + dateArr[1] : dateArr[1];
+            let day = dateArr[0].length == 1 ? '0' + dateArr[0] : dateArr[0];
+            let hour = timeArr[0].length == 1 ? '0' + timeArr[0] : timeArr[0];
+            let min = timeArr[1].length == 1 ? '0' + timeArr[1] : timeArr[1];
+            let sec = timeArr[2].length == 1 ? '0' + timeArr[2] : timeArr[2];
+            datetimeStr = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec;
+        }
+
+        return datetimeStr;
+    }
+
+    function CreateHoneyPaper() {
+        let honeyPaperObj = GetHoneyCore("create", "");
+        let isSubmit = false;
+        isSubmit = ValidateModal(honeyPaperObj, "create", "");
+        if (isSubmit) {
+            let honeyPaperJsonString = JSON.stringify(honeyPaperObj);
+
+            $.ajax({
+                url: '@Url.Action("CreateUpdateHoneyPaper", "MaintenanceHoneyPaper")',
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { honeyPaperObject: honeyPaperJsonString, flag: "Create" },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+
+                        swal("Create!", { icon: "success" })
+                            .then(() => {
+                                window.location.reload(true);
+                            });
+                    } else {
+                        swal("Save failed!", res.ExceptionMessage, { icon: "warning" })
+                            .then(() => {
+
+                            });
+                    }
+                }
+            });
+        }
+    }
+
+    function UpdateHoneyPaper(gradeId) {
+        let honeyPaperObj = GetHoneyCore("edit", "-" + gradeId);
+        let isSubmit = false;
+        isSubmit = ValidateModal(honeyPaperObj, "edit", "-" + gradeId);
+
+        if (isSubmit) {
+            let honeyPaperJsonString = JSON.stringify(honeyPaperObj);
+
+            $.ajax({
+                url: '@Url.Action("CreateUpdateHoneyPaper", "MaintenanceHoneyPaper")',
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { honeyPaperObject: honeyPaperJsonString, flag: "Edit" },
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        $('.modal').modal('hide');
+                        $('.modal-backdrop').hide();
+                        $("body").removeClass("modal-open");
+
+                        swal("Update!", { icon: "success" })
+                            .then(() => {
+                                window.location.reload(true);
+                            });
+                    } else {
+                        swal("Save failed!", res.ExceptionMessage, { icon: "warning" })
+                            .then(() => {
+
+                            });
+                    }
+                }
+            });
+        }
+    }
+
+    //isNaN(parseFloat(honeyPaperObj.Weight))
+    function ValidateModal(honeyPaperObj, flag, grade) {
+        let isSubmit = true;
+        let paperAmtReq = "";
+        let gradeReq = "";
+        let weightReq = "";
+        let shrinkReq = "";
+        let stretchReq = "";
+        if (flag == "create") {
+            weightReq = "createWeight";
+            gradeReq = "createGrade";
+            paperAmtReq = "createPaperAmt";
+            shrinkReq = "createShrink";
+            stretchReq = "createStretch";
+            stretchReq = "createStretch";
+        }
+        else {
+            weightReq = "editWeight" + grade;
+            gradeReq = "editGrade" + grade;
+            paperAmtReq = "editPaperAmt" + grade;
+            shrinkReq = "editShrink" + grade;
+            stretchReq = "editStretch" + grade;
+        }
+
+        if (honeyPaperObj.Shrink == "") {
+            $("#" + shrinkReq).focus();
+            $("#Req" + shrinkReq).html("This field Shrink is requried.");
+            $("#Req" + shrinkReq).prop('hidden', false);
+            isSubmit = false;
+        } else {
+            if (!isFloat(honeyPaperObj.Shrink)) {
+                isSubmit = false;
+                $("#" + shrinkReq).focus();
+                $("#" + shrinkReq).val("");
+                $("#Req" + shrinkReq).html("This field Shrink must be a number.");
+                $("#Req" + shrinkReq).prop('hidden', false);
+            } else {
+                $("#Req" + shrinkReq).prop('hidden', true);
+            }
+        }
+
+        if (honeyPaperObj.Stretch == "") {
+            $("#" + stretchReq).focus();
+            $("#Req" + stretchReq).html("This field Stretch is requried.");
+            $("#Req" + stretchReq).prop('hidden', false);
+            isSubmit = false;
+        } else {
+            if (!isNumber(honeyPaperObj.Stretch)) {
+                isSubmit = false;
+                $("#" + stretchReq).focus();
+                $("#" + stretchReq).val("");
+                $("#Req" + stretchReq).html("This field Stretch must be a number.");
+                $("#Req" + stretchReq).prop('hidden', false);
+            } else {
+                $("#Req" + stretchReq).prop('hidden', true);
+            }
+        }
+
+        if (honeyPaperObj.PaperAmt == "") {
+            $("#" + paperAmtReq).focus();
+            $("#Req" + paperAmtReq).html("This field PaperAmt is requried.");
+            $("#Req" + paperAmtReq).prop('hidden', false);
+            isSubmit = false;
+        } else {
+            if (!isNumber(honeyPaperObj.PaperAmt)) {
+                isSubmit = false;
+                $("#" + paperAmtReq).focus();
+                $("#" + paperAmtReq).val("");
+                $("#Req" + paperAmtReq).html("This field PaperAmt must be a number.");
+                $("#Req" + paperAmtReq).prop('hidden', false);
+            } else {
+                $("#Req" + paperAmtReq).prop('hidden', true);
+            }
+        }
+
+        if (honeyPaperObj.Weight == "") {
+            $("#" + weightReq).focus();
+            $("#Req" + weightReq).prop('hidden', false);
+            $("#Req" + weightReq).html("This field Weight is requried.");
+            isSubmit = false;
+        } else {
+            if (!isNumber(honeyPaperObj.Weight)) {
+                isSubmit = false;
+                $("#" + weightReq).focus();
+                $("#" + weightReq).val("");
+                $("#Req" + weightReq).prop('hidden', false);
+                $("#Req" + weightReq).html("This field Weight must be a number.");
+            } else {
+                $("#Req" + weightReq).prop('hidden', true);
+            }
+        }
+
+        if (honeyPaperObj.Grade == "") {
+            $("#" + gradeReq).focus();
+            $("#Req" + gradeReq).prop('hidden', false);
+            isSubmit = false;
+        } else {
+            $("#Req" + gradeReq).prop('hidden', true);
+        }
+
+        return isSubmit;
+    }
+
+    // var validation = {
+    //     isNotEmpty:function (str) {
+    //         let pattern =/\S+/;
+    //         return pattern.test(str);  // returns a boolean
+    //     },
+    //     isNumber:function(str) {
+    //         let pattern = /^\d+$/;
+    //         return pattern.test(str);  // returns a boolean
+    //     },
+    //     isFloat: function (str) {
+    //         let pattern = /^[+-]?\d+(\.\d+)?$/;
+    //         return pattern.test(str);
+    //     },
+    //     isSame: function (str1, str2) {
+    //         return str1 === str2;
+    //     }
+    // };
+
+    function isNotEmpty(str) {
+        let pattern = /\S+/;
+        return pattern.test(str);  // returns a boolean
+    }
+    function isNumber(str) {
+        let pattern = /^\d+$/;
+        return pattern.test(str);  // returns a boolean
+    }
+    function isFloat(str) {
+        let pattern = /^[+-]?\d+(\.\d+)?$/;
+        return pattern.test(str);
+    }
+    function isSame(str1, str2) {
+        return str1 === str2;
+    }
+
+    function DisabledSubmitButton(item) {
+        item.disabled = true;
+
+        setTimeout(function () {
+            item.disabled = false;
+        }, 2000);
+    }
+</script>

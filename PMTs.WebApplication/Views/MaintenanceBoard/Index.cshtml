@@ -1,0 +1,1389 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model PMTs.DataAccess.ComplexModel.BoardCombindMainTainModel
+
+@{
+    ViewData["Title"] = "MainTain BoardCombind";
+}
+
+@*<div style="margin: 10px; margin-top: 30px;">
+        <div class="d-flex align-items-center">
+            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModal" data-toggle="modal" data-target="#modal-create">@Localizer["Create"]</button>
+
+            @Html.Partial("_CreateModal", Model)
+        </div>
+
+        <div style="margin-top: 15px;">
+            <div class="box" id="board-table">
+                @Html.Partial("_BoardTable", Model)
+            </div>
+        </div>
+    </div>*@
+
+<style>
+    .form-control-sm {
+        min-height: 30px;
+    }
+    .widthcolumn {
+        width:150px;
+        /*display:none;*/
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row box">
+                    <div class="col-md-6">
+                        <h3 class="text-themecolor"><i class="mdi mdi-library-plus"></i> @Localizer["Maintenance Board"] </h3>
+                    </div>
+                    <div class="col-md-6 form-inline" style="flex-flow:row-reverse">
+                        <div>
+                            <button type="button" class="btn waves-effect waves-light btn-info btn-info" id="btnShowCreateModal" data-toggle="modal" data-target="#modal-create">
+                                <span class="btn-label"><i class="fa fa-plus-square text-left"></i></span> @Localizer["Create"]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+
+                    <div class="box" id="BuildRemark-table">
+                        @*<partial name="_BoardTable" model="Model" />*@
+
+                        <div class="box-body">
+                            <br />
+                            <div style="width:100%; margin:0 auto;">
+                                <table id="example" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:50px">@Localizer["Code"]</th>
+                                            <th style="width:50px">@Localizer["Flute"]</th>
+                                            <th style="width:200px">@Localizer["Board"]</th>
+                                            @*<th>Country</th>
+                            <th>City</th>
+                            <th>Phoneno</th>*@
+                                            <th style="text-align:center;width:50px">@Localizer["View"]</th>
+                                            <th style="text-align:center;width:50px">@Localizer["Edit"]</th>
+                                            <th style="text-align:center;width:50px">@Localizer["Cost"]</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal">
+    <partial name="_ViewModal" model="Model" />
+</div>
+
+<partial name="_ViewModalBoardCombination" model="Model" />
+
+<!-- Start Edit Modal -->
+<div class="modal" id="modal_ViewCost">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@Localizer["Manage Cost"]</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <h4 class="box-title" style="padding-left:3%"> @Localizer["Code"] : <label class="" id="lblCcode"></label></h4>
+                </div>
+                <div class="row">
+                    <h4 class="box-title" style="padding-left:3%"> @Localizer["Board"] : <label class="" id="lblCboard"></label></h4>
+                </div>
+
+                <div id="costpatial">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="idupdatecost" class="btn btn-info">@Localizer["Update"]</button>
+                    <button type="button" id="idcancelcost" class="btn btn-danger">@Localizer["Cancel"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    var modalAction
+    $("#idcancelcost").click(function () {
+        $('#modal_ViewCost').modal("hide");
+    });
+
+    $("#idupdatecost").click(function () {
+        var arrays = [];
+        $.each(DataColumn, function (index) {
+            debugger;
+            let id = "#C_" + DataColumn[index].CostField;
+            console.log(id)
+            console.log($(id).val())
+            var dataadd = {
+                Code: $('#lblCcode').text(),
+                ColumnName: DataColumn[index].CostField,
+                Value: $(id).val(),
+
+            };
+                arrays.push(dataadd);
+        });
+        console.log(arrays);
+        $.ajax({
+            url: '@Url.Action("UpdateCostBoardCombindAcc", "MaintenanceBoard")',
+            type: "POST",
+            dataType: "json",
+            async: false,
+            data: { req: JSON.stringify(arrays), },
+            success: function (data) {
+                $('#modal_ViewCost').modal("hide");
+                swal("Success!", "", "success");
+            }
+        });
+
+    });
+
+    var DataColumn;
+    function viewEditCost(code,board) {
+        $("#modal_ViewCost").modal({ backdrop: 'static', keyboard: false });
+        $('#modal_ViewCost').modal("show");
+        $.ajax({
+            url: '@Url.Action("GetCostBoardCombindAcc", "MaintenanceBoard")',
+            type: "POST",
+            dataType: "json",
+            async: false,
+            data: { Code: code, },
+            success: function (data) {
+                $('#costpatial').html(data.View);
+                BindCostBoardcombindAcc(data.Data.editCostFieldsModel.boardCombindAccPivots);
+                DataColumn = data.Data.editCostFieldsModel.plantCostFields;
+                $('#lblCcode').text(code)
+                $('#lblCboard').text(board)
+
+            }
+        });
+    }
+
+    function BindCostBoardcombindAcc(data)
+    {
+        $.each(data, function (index) {
+            let id = "#C_" + data[index].ColumnName;
+            $(id).val(data[index].Value)
+        });
+    }
+    let table = $("#example").DataTable({
+        "processing": true, // for show progress bar
+        "serverSide": true, // for process server side
+        "filter": true, // this is for disable filter (search box)
+        "orderMulti": false, // for disable multiple column at once
+        "destroy": true,
+        "ajax": {
+            "url": '@Url.Action("LoadData", "MaintenanceBoard")',
+            "type": "POST",
+            "datatype": "json"
+        },
+        "columnDefs":
+            [
+                {
+                    "targets": [0],
+                        "visible": true,
+                        "searchable": false,
+                },
+                {
+                    "render": function (data, type, full, meta) {
+                        return full.Flute +" " + data;
+                    },
+                    "targets": [2],
+                    "className": "text-left",
+                },
+                {
+                    "targets": [3],
+                    "className": "text-center",
+                },
+                {
+                    "targets": [4],
+                    "className": "text-center",
+                },
+                {
+                    "targets": [5],
+                    "className": "text-center",
+                }
+            ],
+        "columns": [
+            { "data": "Code", "name": "Code", "autoWidth": true  },
+            { "data": "Flute", "name": "Flute", "autoWidth": true },
+            { "data": "Board", "name": "Board", "autoWidth": true },
+            //{ "data": "Country", "name": "Country", "autoWidth": true },
+            //{ "data": "City", "name": "City", "autoWidth": true },
+            //{ "data": "Phoneno", "name": "Phoneno", "autoWidth": true },
+            {
+                "render": function (data, type, full, meta)
+                { return '<a <i class="fas fa-file-alt text-info btn" style="cursor:pointer;" onclick=viewEditDataView("' + full.Code + '");></i></a>'; }
+            },
+            {
+                data: null, render: function (data, type, row)
+                {
+                    return "<a<i class='fas fa-pencil-alt text-warning' class='btn btn-danger' style='cursor:pointer;' onclick=viewEditData('" + row.Code + "');></i></a>";
+                }
+            },
+            {
+                data: null, render: function (data, type, row) {
+                    return "<a<i class='fa fa-calculator text-success' class='btn btn-danger' style='cursor:pointer;' onclick=viewEditCost('" + row.Code + "','" + row.Board + "');></i></a>";
+                }
+            },
+        ]
+    });
+
+    setInterval( function () {
+        table.ajax.reload( null, false ); // user paging is not reset on reload
+    }, 30000 );
+
+    $(document).ready(function () {
+        $('.form-group').css('display', 'block');
+        $('.form-inline').css('width', '100%');
+        $('.form-control').css('width', '100%');
+        $('input[type=search]').css('width', 'auto');
+
+        // $('#board-data-table').DataTable();
+
+        $('#idgeneratecode').css('display', 'none');
+        $('#idupdatemodal').css('display', 'none');
+        $('#idcancelmodal').css('display', 'block');
+        $('#idaddmodal').css('display', 'block');
+
+        // DemoDatatable();
+        // Add new element
+        $(".addno").click(function () {
+            // Finding total number of elements added
+            var total_element = $(".elementno1").length;
+            // last <div> with element class id
+            var lastid = $(".elementno1:last").attr("id");
+            var split_id = lastid.split("_");
+            var nextindex = Number(split_id[1]) + 1;
+            var max = 20;
+            // Check total number elements
+            if (total_element < max) {
+                // Adding new div container after last occurance of element class
+                //  $(".element:last").after("<div class='element' id='div_" + nextindex + "'></div>");
+                $(".elementno1:last").after("<div class='elementno1' id='divno_" + nextindex + "'></div>");
+                // Adding element to <div>
+                $("#divno_" + nextindex).append("<button type='button' class='close removetagno' id='divno_" + nextindex + "' aria-label='Close'><span aria-hidden='true' style='float:right;padding-right:10px'>×</span ></button ><div><div class='row'><div class='form-group col-md-4'><input type='text' id='s_" + nextindex + "' class='form-control' autocomplete='off'  /></div><div class='form-group col-md-4'><input type='text' id='c_" + nextindex + "' class='form-control' autocomplete='off' /></div><div class='form-group col-md-4'><input type='number' id='i_" + nextindex + "' class='form-control'  autocomplete='off' /></div></div></div>");
+            }
+        });
+
+            // Remove element
+        $('.containerno').on('click', '.removetagno', function () {
+            var id = this.id;
+            var split_id = id.split("_");
+            var deleteindex = split_id[1];
+            swal({
+                title: "Are you sure ?",
+                text: "Do you want delete .",
+                icon: "warning",
+                buttons: {
+                    confirm: "Yes",
+                    cancel: "No",
+                },
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $("#divno_" + deleteindex).remove();
+                }
+            });
+        });
+    });
+
+    function DemoDatatable() {
+        $("#demodata").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "filter": true,
+            "orderMulti": false,
+            "destroy": true,
+            "ordering": true,
+            "ajax": {
+                "url": '/MaintenanceBoard/GetTableData',
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "Id", "name": "Id", "autoWidth": true }
+                , { "data": "Code", "Name": "Code", "autoWidth": true }
+                , { "data": "Flute", "name": "Flute", "autoWidth": true }
+                , { "data": "Board", "name": "Board", "autoWidth": true }
+                , { "data": "Status", "name": "Status", "autoWidth": true }
+            ]
+        });
+    }
+
+    oTable = $('#demodata').DataTable();
+    $('#btnSearch').click(function () {
+        oTable.columns(1).search($('#txtName').val().trim());
+        oTable.draw();
+    });
+
+    function viewEditDataView(code)
+    {
+        $("#modal_ViewMainTain").modal({ backdrop: 'static', keyboard: false });
+        $('#modal_ViewMainTain').modal("show");//.modal("hide");
+        $.ajax({
+            url: '@Url.Action("BindingResult", "MaintenanceBoard")',
+            type: "POST",
+            dataType: "json",
+            async: false,
+            data: { code: code, },
+                success: function (data) {
+
+                BindData(data)
+
+                $('#idgeneratecode').css('display', 'none');
+                $('#idupdatemodal').css('display', 'none');
+                $('#idcancelmodal').css('display', 'block');
+                $('#idaddmodal').css('display', 'none');
+            }
+        });
+        setReadOnlyView("1");
+    }
+
+    function viewEditData(code)
+    {
+        $('#btnGenerateBoardCombination').css('display', 'block')
+        $("#modal_ViewMainTain").modal({ backdrop: 'static', keyboard: false });
+        $('#modal_ViewMainTain').modal("show");//.modal("hide");
+        $.ajax({
+            url: '@Url.Action("BindingResult", "MaintenanceBoard")',
+            type: "POST",
+            dataType: "json",
+            async: false,
+            data: { code: code, },
+            success: function (data) {
+                BindData(data)
+
+                $('#idgeneratecode').css('display', 'none');
+                $('#idupdatemodal').css('display', 'block');
+                $('#idcancelmodal').css('display', 'block');
+                $('#idaddmodal').css('display', 'none');
+            }
+        });
+        setReadOnlyView("0");
+        setReadOnlyEdit("1");
+    }
+
+    function getData() {
+        let req = {
+            // "Id": $("#docNo").val(),
+            "Code": $("#idboardcode").val(),
+            "Flute": $("#idflute").val(),
+            "Board": $("#idboard").val(),
+            //"Board_Combine": $("#idboardcombind").val(),
+            //"Weight": $("#telNo").val(),
+            "Thickness": $("#idthinkness").val(),
+            "StandardCost": $("#idstdcost").val(),
+            "Kiwi": $("#idkiwi").val(),
+            "CorrControl": $("#idcorctrl").val(),
+            "Strength": $("#idstength").val(),
+            "ECTStrength": $("#idect").val(),
+            "FCTStrength": $("#idfct").val(),
+            "Burst": $("#idburst").val(),
+            "weight": $("#idweigthmanual").val(),
+
+            "StandardBoard": $("#idstdboard:checked").val(),
+            "Status": $("#idstatus:checked").val()
+        };
+        return req;
+    }
+
+    function clearData()
+    {
+        $('#idboardcode').val("");
+        $('#idboard').val("");
+        $("#idgeneratecode").prop('checked', false)
+        // $('#idboardcombind').val("");
+        $('#idthinkness').val("");
+        $('#idstdcost').val("");
+        $('#idcorctrl').val("");
+        $('#idstength').val("");
+        $('#idect').val("");
+        $("#idfct").val("");
+        $('#idburst').val("");
+        $('#idweigth').val("");
+        $('#idkiwi').val("");
+        $('#idflute').val("");
+        $('#idflute-error').hide()
+        $("#idweigthmanual").val('')
+
+        //  $('#idgeneratecode').prop('checked', false);
+        $('#idstdboard').prop('checked', false);
+        $('#idstatus').prop('checked', false);
+
+        $.ajax({
+            url: '@Url.Action("RenderHaveFluteClear", "MaintenanceBoard")',
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $('#detailBoard').html(data);
+            }
+        });
+    }
+
+    function setHideShowWeigth()
+    {
+        let groupc = '@Model.GroupCompany'
+        if (groupc === '4') {
+            $("#idweigthmanual").show()
+        } else {
+            $("#idweigthmanual").hide()
+        }
+    }
+
+    function setReadOnlyView(param)
+    {
+        $("#idgeneratecodediv").css({ display: "none" });
+        // $("#idgeneratecode").css({ display: "block" });
+        if (param === "1") {
+            $("#idcardboardcombind :input").attr("disabled", true);
+            $("#idcardboardspect :input").attr("disabled", true);
+
+        } else {
+            $("#idcardboardcombind :input").attr("disabled", false);
+            $("#idcardboardspect :input").attr("disabled", false);
+        }
+    }
+
+    function setReadOnlyEdit(param)
+    {
+        $("#idgeneratecodediv").css({ display: "none" });
+        //$("#idgeneratecode").css({ display: "block" });
+        // $('#idgeneratecode').hide();
+        if (param === "1") {
+            //  $("#idboard").attr("disabled", true);
+            $("#idstdboard").attr("disabled", true);
+            $("#idflute").attr("disabled", true);
+            $("#idboardcode").attr("disabled", true);
+
+        } else {
+            //  $("#idboard").attr("disabled", false);
+            //$("#idstdboard").attr("disabled", false);
+            $("#idstdboard").attr("disabled", true);
+            $("#idflute").attr("disabled", false);
+            $("#idboardcode").attr("disabled", false);
+        }
+    }
+
+    function BindData(data)
+    {
+        $('#idboardcode').val(data._BoardCombind.Code);
+        $('#idboard').val(data._BoardCombind.Board_Combine);
+        $('#idflute').val(data._BoardCombind.Flute.toUpperCase());
+        // $('#idboardcombind').val(data._BoardCombind.Board_Combine);
+        $('#idthinkness').val(data._BoardCombind.Thickness);
+        $('#idstdcost').val(data._BoardCombind.StandardCost);
+        $('#idcorctrl').val(data._BoardCombind.CorrControl);
+        $('#idstength').val(data._BoardCombind.Strength);
+        $('#idect').val(data._BoardCombind.ECTStrength);
+        $("#idfct").val(data._BoardCombind.FCTStrength);
+        $('#idburst').val(data._BoardCombind.Burst);
+        $('#idweigth').val(data._BoardCombind.Weight);
+        $('#idkiwi').val(data._BoardCombind.Kiwi);
+
+        $("#idweigthmanual").val(data._BoardCombind.Weight)
+
+        setHideShowWeigth()
+        //---checkbox
+
+        //$('#idboard').val();
+        // debugger;
+        if (!data._BoardCombind.StandardBoard) {
+            $('#idstdboard').prop('checked', true);
+        } else
+        {
+            $('#idstdboard').prop('checked', false);
+        }
+        if (data._BoardCombind.Status) {
+            $('#idstatus').prop('checked', true);
+        } else {
+            $('#idstatus').prop('checked', false);
+        }
+
+        if (!data._BoardCombind.StandardBoard) {
+            $.ajax({
+                url: '@Url.Action("BindRenderNotHaveFluteByFlute", "MaintenanceBoard")',
+                type: "POST",
+                async: false,
+                data: { code: $('#idboardcode').val() },
+                dataType: "json",
+                success: function (res) {
+                    $('#detailBoard').html(res);
+
+                }
+            });
+
+            //previewTbl();
+            $.ajax({
+                url: '@Url.Action("Preview", "MaintenanceBoard")',
+                type: "POST",
+                async: false,
+                data: { code: $('#idboardcode').val(), flute: data._BoardCombind.Flute },
+                dataType: "json",
+                success: function (data) {
+                    $('#idpreviewrender').html(data);
+                }
+            });
+            calculateWeigth();
+
+        }
+        else
+        {
+            $.ajax({
+                url: '@Url.Action("RenderHaveFlute", "MaintenanceBoard")',
+                    type: "POST",
+                    async: false,
+                dataType: "json",
+                data: { boardcombind: $('#idboard').val(), flute: data._BoardCombind.Flute },
+                success: function (data) {
+                    $('#detailBoard').html(data);
+                    calculateWeigth();
+                }
+            });
+        }
+    }
+
+    function handleSelectAllProductType(target){
+        $(target).each(function () {
+            $(this).click()
+        });
+    }
+    function handleClearAllProductType(target){
+        $(target + ':checked').each(function () {
+            $(this).click()
+        });
+    }
+    function handleProductTypeGroupPriorityHeadChecked(target, index){
+        if ($('#productTypeHeadGroupPriorityCheck_' + index).prop('checked') == true) {
+            $(".product-type-check-section-group-priority-" + index).each(function () {
+                $(this).prop('checked', true)
+            });
+            // $(target).collapse('show')
+        }else{
+            $(".product-type-check-section-group-priority-" + index).each(function () {
+                $(this).prop('checked', false)
+            });
+            // $(target).collapse('hide')
+        }
+    }
+    function handleCollapseProductTypeGroupPriorityHead(target, index) {
+        var isCollapsed = !$(target).hasClass('show');
+        if (isCollapsed) {
+            $("#btnCollapeProductTypeHeadGroupPriority_" + index).text("hide detail")
+        } else {
+            $("#btnCollapeProductTypeHeadGroupPriority_" + index).text("show detail")
+        }
+        $(target).collapse('toggle')
+    }
+    function handleProductTypeHeadChecked(target, index){
+        if ($('#productTypeHeadCheck_' + index).prop('checked') == true) {
+            $(".product-type-check-section-" + index).each(function () {
+                $(this).prop('checked', true)
+            });
+            // $(target).collapse('show')
+        }else{
+            $(".product-type-check-section-" + index).each(function () {
+                $(this).prop('checked', false)
+            });
+            // $(target).collapse('hide')
+        }
+    }
+    function handleCollapseProductTypeHead(target, index) {
+            var isCollapsed = !$(target).hasClass('show');
+        if (isCollapsed) {
+                $("#btnCollapeProductTypeHead_" + index).text("hide detail")
+        } else {
+                $("#btnCollapeProductTypeHead_" + index).text("show detail")
+        }
+        $(target).collapse('toggle')
+    }
+    function handleExport(){
+            var checkedProductTypeValues = [];
+            var checkboxes = document.querySelectorAll('.product-type-check');
+            $(".product-type-check:checked").each(function () {
+                checkedProductTypeValues.push($(this)[0].value)
+            });
+            const data = {
+                boardCode : $('#idboardcode').val(),
+                board : $('#idboard').val(),
+                hirerarchyLv2Codes: checkedProductTypeValues
+            }
+            if (checkedProductTypeValues.length > 0) {
+                if(modalAction == 'create') SetLoading(true)
+
+                $.ajax({
+                    url: '@Url.Action("Export", "MaintenanceBoard")',
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        var binaryData = atob(response);
+                        var arrayBuffer = new Uint8Array(binaryData.length);
+                        for (var i = 0; i < binaryData.length; i++) {
+                            arrayBuffer[i] = binaryData.charCodeAt(i);
+                        }
+
+                        var blob = new Blob([arrayBuffer], { type: "application/octet-stream" });
+
+                        var link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "HIE_" + data.board + "_Rev2.txt";
+                        link.click();
+                        if(modalAction == 'create'){
+                                setTimeout(() => {
+                                location.reload()
+                            },3000)
+                        }
+                        
+                    },
+                    error: function (error) {
+                        console.log("Error downloading file:", error);
+                    }
+                });
+            }else{
+                swal("Please select board combination.", "", "warning");
+            }
+
+    }
+
+    function backToCreateModal()
+    {
+        if (modalAction == 'create') {
+            location.reload()
+        } else {
+                $(".product-type-head-check:checked").each(function () {
+                    $(this).click()
+                });
+                $(".product-type-head-check-group-priority:checked").each(function () {
+                    $(this).click()
+                });
+                $('#modal_ViewBoardCombindMainTain').modal("hide");
+                setTimeout(() => {
+
+                    viewEditData($("#idboardcode").val())
+                    // $('#btnShowCreateModal').trigger('click');
+                }, 500)
+        }     
+    }
+
+    $('#btnGenerateBoardCombination').click(function () {
+        if ($("#idboard").val() !== "" && ($("#idgeneratecode").is(":checked") || $("#idboardcode").val())) {
+            $('#idboardcode-error').hide()
+            $('#idboard-error').hide()
+            $('#modal_ViewMainTain').modal("hide");
+            setTimeout(() => {
+                $('#modal_ViewBoardCombindMainTain').modal("show");
+            },500)
+        }else{
+            if(!$("#idgeneratecode").is(":checked")){
+                swal("Please input board code", "", "warning");
+                $('#idflute').val("")
+                $('#idboardcode-error').show()
+            }else if(!$("#idboard").val()){
+                swal("Please input board", "", "warning");
+                $('#idflute').val("")
+                $('#idboard-error').show()
+            }
+
+        }
+
+    });
+    $('#btnShowCreateModal').click(function () {
+        modalAction = 'create'
+        $('#idgeneratecode').css('display', 'block');
+        $('#idupdatemodal').css('display', 'none');
+        $('#idcancelmodal').css('display', 'block');
+        $('#idaddmodal').css('display', 'block');
+        // $("div#idweigthshow").show();
+        $("#modal_ViewMainTain").modal({ backdrop: 'static', keyboard: false });
+        $('#modal_ViewMainTain').modal("show");
+        setReadOnlyView("0");
+        setReadOnlyEdit("0");
+        //$("#idgeneratecode").css({ display: "none" });
+        $("#idgeneratecodediv").css({ display: "block" });
+        $("#idstatus").prop("checked", true);
+        previewTbl();
+    });
+
+    $('#idcancelmodal').click(function () {
+        modalAction = ''
+        $('#btnGenerateBoardCombination').css('display', 'none')
+        $('#modal_ViewMainTain').modal("hide");
+        clearData();
+    });
+
+    function GetDataFlute() {
+        var ArrayDiecut = [];
+        $('#containerflute input').each(function (key, value) {
+            ArrayDiecut.push(this.value);
+        });
+        return ArrayDiecut;
+    }
+
+    function GetDataNoFlute() {
+        var ArrayPrint = [];
+        $('#containerno input').each(function (key, value) {
+            ArrayPrint.push(this.value);
+
+        });
+        return ArrayPrint;
+    }
+  
+    var check;
+    $("#idgeneratecode").on("click", function () {
+        check = $("#idgeneratecode").is(":checked");
+        if (check) {
+                $('#idboardcode-error').hide()
+                //$.ajax({
+                //url: '@Url.Action("GetMaxcodeBoard", "MaintenanceBoard")',
+                //type: "POST",
+                //dataType: "json",
+                //    success: function (data) {
+                //        $("#idboardcode").val(data);
+                //}
+                //});
+
+                SetLoading(true)
+                $.ajax({
+                    url: '@Url.Action("GenerateCode", "MaintenanceBoard")',
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#idboardcode").val(data);
+                        SetLoading(false)
+
+                    }
+                });
+
+        } else {
+            $("#idboardcode").val("");
+        }
+    });
+
+    $('#idcal').click(function () {
+        calculateWeigth();
+        // bindKiwi();
+    });
+
+    $('#idgeneratekiwi').click(function () {
+        bindKiwi();
+    });
+
+    $("#idstdboard").on('change', function () {
+        if ($(this).prop('checked')) {
+            //  alert($(this).val())
+            $("#idflute").attr("disabled", false);
+            // $('#idboard').val("");
+            $('#idflute').val("");
+            $('#idboard-error').hide()
+            $('#idboardcode-error').hide()
+            $('#idflute-error').hide()
+            // $("div#idweigthshow").hide();
+             $.ajax({
+                url: '@Url.Action("RenderNotHaveFlute", "MaintenanceBoard")',
+                type: "POST",
+                dataType: "json",
+                // data: { keywordMachine: request.term, machineGroup: $('#modelRouting_MachineGroupSelect').val() },
+                success: function (data) {
+                    $('#detailBoard').html(data);
+                }
+            });
+        }
+        else {
+            $("#idflute").attr("disabled", false);
+            // $('#idboard').val("");
+            $('#idflute').val("");
+            $('#idboard-error').hide()
+            $('#idboardcode-error').hide()
+            $('#idflute-error').hide()
+            // $("div#idweigthshow").show();
+            $.ajax({
+                url: '@Url.Action("RenderHaveFluteClear", "MaintenanceBoard")',
+                type: "POST",
+                dataType: "json",
+                    //  data: { boardcombind: $('#idboard').val(), flute: $('#idflute').val() },
+                success: function (data) {
+                    $('#detailBoard').html(data);
+                }
+            });
+        }
+    });
+
+    $('#idflute').change(function () {
+        if ($('#idstdboard').prop('checked')) {
+            $.ajax({
+                url: '@Url.Action("RenderNotHaveFluteByFlute", "MaintenanceBoard")',
+                type: "POST",
+                    dataType: "json",
+                    async: false,
+                data: { flute: $('#idflute').val() },
+                success: function (data) {
+                    $('#detailBoard').html(data);
+                    calculateWeigth();
+                    //bindKiwi();
+                }
+            });
+        }else{
+            if ($("#idboard").val() !== "") {
+                $('#idboard-error').hide()
+                $.ajax({
+                    url: '@Url.Action("RenderHaveFlute", "MaintenanceBoard")',
+                    type: "POST",
+                        dataType: "json",
+                        async: false,
+                    data: { boardcombind: $('#idboard').val(), flute: $('#idflute').val() },
+                    success: function (data) {
+                        $('#detailBoard').html(data);
+                        calculateWeigth();
+                        // bindKiwi();
+                    }
+                });
+            } else
+            {
+                swal("Please input board", "", "warning");
+                $('#idflute').val("")
+                $('#idboard-error').show()
+            }
+        }
+    });
+
+    $('#idboard').change(function () {
+        if ($('#idstdboard').prop('checked')) {
+            //bindKiwi();
+        } else {
+            if ($("#idboard").val() !== "") {
+                var n = $("#idboard").val().includes('\\');
+                if (n) {
+                    // $('#idboard').val("")
+                    swal("Please check board", "", "warning");
+                    // $('#idboard-error').show()
+                    return
+                }
+
+                $('#idboard-error').hide()
+                $.ajax({
+                    url: '@Url.Action("RenderHaveFluteOnChange", "MaintenanceBoard")',
+                    type: "POST",
+                    dataType: "json",
+                    async: false,
+                    data: { boardcombind: $('#idboard').val()},
+                    success: function (data) {
+                        $('#detailBoard').html(data.model);
+                        $('#idflute-error').hide();
+                        $('#idflute').val(data.flute.toUpperCase());
+                        $("#idflute").attr("disabled", true);
+                        calculateWeigth();
+                        if(data.boardExist){
+                                swal("Board is existed!", {
+                                    icon: 'warning',
+                                    buttons: {
+                                        // cancel: "Close",
+                                        confirm: {
+                                            text: "Ok",
+                                            value: "confirm",
+                                        },
+                                    },
+                                }).then((value) => {
+                                    switch (value) {
+                                        case "confirm":
+                                            $("#idcancelmodal").click()
+                                            setTimeout(() => {
+                                                viewEditData(data.boardExist.Code)
+                                            }, 500)
+                                            break;
+                                        default:
+                                            // clearData();
+                                            // location.reload()
+                                    }
+                                })
+                            
+                        }
+                        //  bindKiwi();
+                    }
+                });
+            }else{
+                swal("Please input board", "", "warning");
+                $('#idflute').val("")
+                $('#idboard-error').show()
+            }
+
+        }
+    });
+
+    function bindKiwi()
+    {
+        $.ajax({
+            url: '@Url.Action("FindKiwi", "MaintenanceBoard")',
+            type: "POST",
+            async: false,
+            dataType: "json",
+            data: { board: $('#idflute').val() +"/"+  $('#idboard').val()  },
+            success: function (data) {
+                $('#idkiwi').val(data.Kiwi);
+            }
+        });
+    }
+
+    function calculateWeigth()
+    {
+        var arrf = GetArrayflut();
+        var arrx = GetArrayNoflut();
+        var yy = JSON.stringify(arrx);
+        var zz = JSON.stringify(arrf);
+        $.ajax({
+            url: '@Url.Action("CalculateWeigth", "MaintenanceBoard")',
+            type: "POST",
+            async: false,
+            data: { flut: $('#idflute').val(), arrflute: zz.toString(), arrnoflut: yy.toString() },
+            dataType: "json",
+            success: function (data) {
+                $('#idweigth').val(data.weigth);
+                previewClick();
+            }
+        });
+    }
+
+    function ValidateBeforeSave()
+    {
+        var checkmax = true;
+        $.ajax({
+            url: '@Url.Action("GetMaxcodeBoard", "MaintenanceBoard")',
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+            //  debugger;
+                if ($('#idboardcode').val() === data.toString()) {
+                    checkmax = false;
+                }
+            }
+        });
+        return checkmax;
+    }
+
+    function previewTbl() {
+        $.ajax({
+            url: '@Url.Action("Preview", "MaintenanceBoard")',
+            type: "POST",
+            async: false,
+            data: { code: $('#idboardcode').val(), flute: $('#idflute').val()},
+            dataType: "json",
+            success: function (data) {
+                $('#idpreviewrender').html(data);
+            }
+        });
+    }
+
+    function previewClick()
+    {
+        var arrx = GetArrayNoflut();
+        var arrf = GetArrayflut();
+        var tt = JSON.stringify(arrx);
+        var zz = JSON.stringify(arrf);
+            $.ajax({
+            url: '@Url.Action("PreviewNew", "MaintenanceBoard")',
+            type: "POST",
+            async: false,
+            data: { arrflute: zz.toString(), arrnoflut: tt.toString(), flute: $('#idflute').val()},
+            dataType: "json",
+            success: function (data) {
+                $('#idpreviewrender').html(data);
+            }
+        });
+    }
+
+    $('#idpreview').click(function () {
+        previewClick();
+    });
+
+    $('#idaddmodal').click(function () {
+        if($("#idboardcode").val() === "") {
+            swal("Please generate board code", "", "warning");
+            $('#idboardcode-error').show();
+        }else{
+            $.ajax({
+                url: '@Url.Action("CheckDuplicateBoardcode", "MaintenanceBoard")',
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { board: $('#idboardcode').val() },
+                success: function (data) {
+                    if (data.dup === "0") {
+                        $('#idboardcode-error').hide();
+                        if ($('#idstdboard').prop('checked')) {
+                            //add
+                            if (CheckDuplicate().length > 0) {
+                                swal("Item is Duplicate . Please Check Data.", "", "warning");
+                            }
+                            else {
+                                subAddData();
+                            }
+
+                        } else {
+                            if ($('#idboard').val() === "") {
+                                swal("Please input board", "", "warning");
+                                $('#idboard-error').show()
+                            } else {
+                                $('#idboard-error').hide()
+                                if ($('#idflute').val() === "" || $('#idflute').val() == null) {
+                                    swal("Please select flute or check board data", "", "warning");
+                                    $('#idflute-error').show()
+                                } else {
+                                    $('#idflute-error').hide()
+                                    //add
+                                    subAddData();
+                                }
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        swal("board code is duplicate", "", "warning");
+                        $('#idboardcode-error').show();
+                    }
+                }
+            });
+        }
+    });
+
+    $('#idupdatemodal').click(function () {
+        if ($("#idboardcode").val() === "") {
+            swal("Please generate board code", "", "warning");
+            $('#idboardcode-error').show();
+        } else {
+            $.ajax({
+                url: '@Url.Action("CheckDuplicateBoardcode", "MaintenanceBoard")',
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { board: $('#idboardcode').val() },
+                success: function (data) {
+                    if (data.dup === "1") {
+
+                        $('#idboardcode-error').hide();
+                        if ($('#idstdboard').prop('checked')) {
+                            //add
+                            if (CheckDuplicate().length > 0) {
+                                swal("Item is Duplicate . Please Check Data.", "", "warning");
+                            }
+                            else {
+                                subUpdateData();
+                            }
+
+                        } else {
+                            if ($('#idboard').val() === "") {
+                                swal("Please input board", "", "warning");
+                                $('#idboard-error').show()
+                            } else {
+                                $('#idboard-error').hide()
+                                if ($('#idflute').val() === "") {
+                                    swal("Please select flute", "", "warning");
+                                    $('#idflute-error').show()
+                                } else {
+                                    $('#idflute-error').hide()
+                                    //add
+                                    subUpdateData();
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        swal("board code is duplicate", "", "warning");
+                        $('#idboardcode-error').show();
+                    }
+
+                }
+            });
+        }
+    });
+
+    function subAddData()
+    {
+        var n = $("#idboard").val().includes('\\');
+        if (n) {
+            swal("Please check board", "", "warning");
+            return
+        }
+        var reqx = getData();
+        var arrx = GetArrayNoflut();
+        var arrf = GetArrayflut();
+
+        if ($('#idstdboard').prop('checked')) {
+            Object.assign(reqx, { StandardBoard: 0 });
+        } else {
+            Object.assign(reqx, { StandardBoard: 1 });
+        }
+
+        if ($('#idstatus').prop('checked')) {
+            Object.assign(reqx, { Status: 1 });
+        } else {
+            Object.assign(reqx, { Status: 0 });
+        }
+
+        var tt = JSON.stringify(arrx);
+        var yy = JSON.stringify(reqx);
+        var zz = JSON.stringify(arrf);
+
+        $.ajax({
+            url: '@Url.Action("AddData", "MaintenanceBoard")',
+            type: "POST",
+            async: false,
+            dataType: "json",
+            data: { req: yy, arrflute: zz.toString(), arrnoflut: tt.toString() },
+            success: function (data) {
+
+            }
+        });
+        $('#modal_ViewMainTain').modal("hide");
+            swal("Saved!", {
+                icon: 'success',
+                buttons: {
+                    cancel: "Close",
+                    confirm: {
+                        text: "Generate File",
+                        value: "confirm",
+                    },
+                },
+            }).then((value) => {
+                switch (value) {
+                    case "confirm":
+                        $('#btnGenerateBoardCombination').click()
+                        break;
+                    default:
+                        clearData();
+                        location.reload()
+                }
+            })
+            
+        //     swal("Saved!, Do you want to generate board combination",
+        //     {
+        //         icon: "success",
+        //     }
+        // ).then((willDelete) => {
+        //     if (willDelete) {
+        //         location.reload();
+        //     }
+        // });
+    }
+
+    function subUpdateData()
+    {
+        var n = $("#idboard").val().includes('\\');
+        if (n) {
+            // $('#idboard').val("")
+            swal("Please check board", "", "warning");
+            // $('#idboard-error').show()
+            return
+        }
+        var reqx = getData();
+        var arrx = GetArrayNoflut();
+        var arrf = GetArrayflut();
+
+        if ($('#idstdboard').prop('checked')) {
+            Object.assign(reqx, { StandardBoard: 0 });
+        } else {
+            Object.assign(reqx, { StandardBoard: 1 });
+        }
+
+        if ($('#idstatus').prop('checked')) {
+            Object.assign(reqx, { Status: 1 });
+        } else {
+            Object.assign(reqx, { Status: 0 });
+        }
+
+        var tt = JSON.stringify(arrx);
+        var yy = JSON.stringify(reqx);
+        var zz = JSON.stringify(arrf);
+
+            $.ajax({
+                url: '@Url.Action("UpdateData", "MaintenanceBoard")',
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { req: yy, arrflute: zz.toString(), arrnoflut: tt.toString() },
+                success: function (data) {
+
+                    //   $('#detailBoard').html(data);
+                }
+        });
+        $('#modal_ViewMainTain').modal("hide");
+        clearData();
+        swal("Update!",
+            {
+                icon: "success",
+            }
+        ).then((willDelete) => {
+            if (willDelete) {
+                location.reload();
+            }
+        });
+    }
+
+    function bindDataAfterSave()
+    {
+        $.ajax({
+            url: '@Url.Action("BindDataAferSave", "MaintenanceBoard")',
+            type: "POST",
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                $('#BuildRemark-table').html(data);
+            }
+        });
+    }
+
+    function GetArrayNoflut() {
+        var countdiv = $(".elementno1").length;
+        var i;
+        arrayid = [];
+        for (i = 0; i < countdiv; i++) {
+            var idelement = ""
+            idelement = document.getElementsByClassName('elementno1')[i].id;
+            arrayid.push(idelement);
+        }
+        // console.log(arrayid);
+        var j;
+        var idx = 0;
+        var array = [];
+        for (j = 0; j < arrayid.length; j++) {
+            idname = arrayid[j];
+            if (idname !== "divno_1") {
+                // $("#" + idname).remove();
+                let split_id = idname.split("_");
+                let nextindex = split_id[1];
+                let station_id = "#s_" + nextindex;
+                let code_id = "#c_" + nextindex;
+                let item_id = "#i_" + nextindex;
+
+                if ($(item_id).val() === "" && $(code_id).val() === "" && $(station_id).val() === "") {
+                } else
+                {
+                    array[idx] = {};
+                    array[idx].Id = 0;
+                    array[idx].Code = "";
+                    array[idx].Grade = $(code_id).val();
+                    array[idx].Station = $(station_id).val();
+                    var itm = 0;
+                    if ($(item_id).val() !== "") {
+                        itm = $(item_id).val();
+                    }
+                    array[idx].Item = itm;
+                    idx++;
+                }
+            }
+        }
+        return array;
+    }
+
+    function GetArrayflut() {
+        var countdiv = $(".elementflut1").length;
+        var i;
+        arrayid = [];
+        for (i = 0; i < countdiv; i++) {
+            var idelement = ""
+            idelement = document.getElementsByClassName('elementflut1')[i].id;
+            arrayid.push(idelement);
+        }
+
+        var j;
+        var idx = 0;
+        var array = [];
+        for (j = 0; j < arrayid.length; j++) {
+            idname = arrayid[j];
+            if (idname !== "divflut_1") {
+                // $("#" + idname).remove();
+                let split_id = idname.split("_");
+                let nextindex = split_id[1];
+                let station_id = "#fs_" + nextindex;
+                let code_id = "#fc_" + nextindex;
+                let item_id = "#fi_" + nextindex;
+
+                if ($(item_id).val() === "" && $(code_id).val() === "" && $(station_id).val() === "") {
+                } else {
+                    array[idx] = {};
+                    array[idx].Id = 0;
+                    array[idx].Code = "";
+                    array[idx].Grade = $(code_id).val();
+                    array[idx].Station = $(station_id).val();
+                    var itm = 0;
+                    if ($(item_id).val() !== "") {
+                        itm = $(item_id).val();
+                    }
+                    array[idx].Item = itm;
+                    idx++;
+                }
+            }
+        }
+        return array;
+    }
+
+    function CheckDuplicate() {
+        var countdiv = $(".elementno1").length;
+        var i;
+        arrayid = [];
+        for (i = 0; i < countdiv; i++) {
+            var idelement = ""
+            idelement = document.getElementsByClassName('elementno1')[i].id;
+            arrayid.push(idelement);
+        }
+
+        var j;
+        var idx = 0;
+        var array = [];
+        for (j = 0; j < arrayid.length; j++) {
+            idname = arrayid[j];
+            if (idname !== "divno_1") {
+                let split_id = idname.split("_");
+                let nextindex = split_id[1];
+                let station_id = "#s_" + nextindex;
+                let code_id = "#c_" + nextindex;
+                let item_id = "#i_" + nextindex;
+
+                if ($(item_id).val() === "" && $(code_id).val() === "" && $(station_id).val() === "") {
+                } else {
+
+                    var itm = 0;
+                    if ($(item_id).val() !== "") {
+                        itm = $(item_id).val();
+                    }
+                    array.push(itm);
+                }
+            }
+        }
+        var sorted_arr = array.sort(); // You can define the comparing function here.
+        // JS by default uses a crappy string compare.
+        var results = [];
+        for (var i = 0; i < array.length - 1; i++) {
+            if (sorted_arr[i + 1] == sorted_arr[i]) {
+                results.push(sorted_arr[i]);
+            }
+        }
+        return results;
+    }
+
+    function DisabledSubmitButton(item) {
+        item.disabled = true;
+
+        setTimeout(function () {
+            item.disabled = false;
+        }, 2000);
+    }
+</script>
+}

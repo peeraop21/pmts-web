@@ -1,0 +1,166 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PMTs.DataAccess.ModelView.NewProduct.TransactionDataModel
+
+@{
+    ViewBag.Title = "";
+}
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="row" style="width: 100%">
+    <div class="col-sm-5">
+        <div style="height:auto;width:auto">
+            <div id="MainPic">
+                <div class="row" id="pic">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img id="cgL" src="~/images/cgLShape.jpg" width="390" /><img id="cgU" src="~/images/cgUShape.jpg" style="display: none;" width="390" /><img id="cgB" src="~/images/cgBase.jpg" style="display: none;" width="390" /><img id="cgLx" src="~/images/cgLShapeBak.jpg" style="display: none;" width="390" /><img id="cgLa" src="~/images/cgLShapeA.jpg" style="display: none;" width="390" /><img id="cgUx" src="~/images/cgUShapeBak.jpg" style="display: none;" width="390" />
+                    <input id="ll" type="text" style="position: absolute; left: 152px; top: 52px; width: 60px; border:none; text-align:right; color:black;" tabindex="-1" readonly />
+                    <input id="aa" type="text" style="position: absolute; left: 11px; top: 137px; width: 50px; border:none; text-align:right; color:black;" tabindex="-1" readonly />
+                    <input id="bb" type="text" style="position: absolute; left: 40px; top: 182px; width: 50px; border:none; text-align:right; color:black;" tabindex="-1" readonly />
+                    <input id="cc" type="text" style="position: absolute; left: 111px; top: 151px; width: 40px; border:none; text-align:left; color:black;" tabindex="-1" readonly />
+                    <input id="dd" type="text" style="position: absolute; left: 134px; top: 177px; width: 90px; border:none; text-align:left; color:black;" tabindex="-1" readonly />
+                </div>
+            </div>
+            <div id="FilePic">
+                <center>
+                    <br />
+                    @Html.TextBoxFor(m => m.modelProductSpec.PrintMasterPath, new { @id = "iDrawingPath", @style = "display:none;" })
+                    @if (Model.modelProductSpec.PrintMasterPath == null)
+                    {
+                        <img id="Pic_Drawing" style="width: auto; height: 230px;" />
+                    }
+                    else
+                    {
+                        <img id="Pic_Drawing" src="@Url.Content(@Model.modelProductSpec.PrintMasterPath)" style="width: auto; height: 230px;" />
+                    }
+                </center>
+            </div>
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-sm-11">
+                    <input id="PrintMaster" name="PrintMaster" type="file" title="search image" accept="image/*" tabindex="-1" onchange="show_Drawing(this)" />
+                </div>
+                <div class="col-sm-1">
+                    <i id="RM_Drawing" class="mdi mdi-close" style="color:red; display:none;" onclick="ClosePic()"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-7">
+        <div class="form-group row">
+            <div class="col-sm-6">
+                @Localizer["Style"] :
+                <select class="form-control" asp-for="modelProductSpec.CGType" tabindex="3" style="width: 103px">
+                    <option value="L">L Shape</option>
+                    <option value="U">U Shape</option>
+                    <option value="B">Base</option>
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <input class="filled-in" type="checkbox" value="" tabindex="8" id="chkBak">
+                <label class="form-check-label" for="chkBak" style="font-size:14px; font-weight:300;">@Localizer["Notch"]</label>
+                <input type="hidden" asp-for="modelProductSpec.IsNotch" />
+            </div>
+            <div class="col-sm-4" id="NotchSide">
+                <input class="filled-in" type="radio" id="ASide" name="NotchSide" tabindex="-1" value="A">
+                <label class="control-label" for="ASide" style="font-size:14px; font-weight:300;">
+                    @Localizer["Side A"]
+                </label>
+                <input class="filled-in" type="radio" id="BSide" name="NotchSide" tabindex="-1" value="B">
+                <label class="control-label" for="BSide" style="font-size:14px; font-weight:300;">
+                    @Localizer["Side B"]
+                </label>
+                <input type="hidden" asp-for="modelProductSpec.NotchSide" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-6">
+                @Localizer["A"] :
+                <input type="text" asp-for="modelProductSpec.SideA" tabindex="4" maxlength="4" class="form-control mytextboxNumber" style="width: 55px;" placeholder="mm." autocomplete="off" />&nbsp;@Localizer["B"] :
+                <input type="text" asp-for="modelProductSpec.SideB" tabindex="5" maxlength="3" class="form-control mytextboxNumber" style="width: 55px;" placeholder="mm." autocomplete="off" />&nbsp;@Localizer["C"] :
+                <input type="text" asp-for="modelProductSpec.SideC" tabindex="6" maxlength="4" class="form-control mytextboxNumber" style="width: 55px;" placeholder="mm." autocomplete="off" readonly />
+            </div>
+            <div class="col-sm-6">
+                @Localizer["NotchAmt"] :
+                <input type="text" asp-for="modelProductSpec.No_Slot" tabindex="9" maxlength="2" class="form-control" style="width: 35px" disabled />&nbsp;&nbsp;<label id="doubleBak"></label>&nbsp;&nbsp;
+                <button id="btProcess" class="btn btn-info waves-effect waves-light" type="button" tabindex="-1" disabled>@Localizer["Calculate"]</button>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-6">
+                @Localizer["L"] :
+                <input type="text" asp-for="modelProductSpec.CutSheetLeng" tabindex="7" maxlength="4" class="form-control" style="width: 58px" placeholder="mm." autocomplete="off" required />
+            </div>
+            <div class="col-sm-6">
+                @Localizer["Angle"] :
+                <select class="form-control" asp-for="modelProductSpec.NotchDegree" tabindex="10" style="width: 74px" disabled>
+                    <option value="0">
+                        อื่นๆ </option>
+                        <option value="30">30 ํ
+                    </option>
+                    <option value="60"> 60 ํ</option>
+                    <option value="90"> 90 ํ</option>
+                </select>&nbsp;
+                <input type="text" class="form-control mytextboxNumber" asp-for="modelProductSpec.NotchDegreex" tabindex="11" maxlength="3" style="width: 45px" disabled />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-5">
+                <input class="filled-in" type="checkbox" value="" id="chkTwoP" tabindex="-1" style="display: none;">
+                <label class="form-check-label" id="lbTwoP" for="chkTwoP" style="font-size:14px; font-weight:300;">
+                    @Localizer["2Pieces"]
+                </label>
+                <input type="hidden" asp-for="modelProductSpec.TwoPiece" />
+            </div>
+            <div class="col-sm-6">
+                @Localizer["NotchArea"] :
+                <input type="text" asp-for="modelProductSpec.NotchArea" tabindex="12" class="form-control" style="width: 61px; padding: 6px 7px 2px 4px;" readonly />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4" style="text-align:center;">
+                @Localizer["Sheet Board"]
+            </div>
+            <div class="col-sm-4" style="text-align:center;">
+                @Localizer["Finished goods"]
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">
+                @Localizer["Area"] :
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.SheetArea" type="text" class="form-control text-right" tabindex="-1" readonly />
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.BoxArea" type="text" class="form-control text-right" tabindex="-1" readonly required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                @Localizer["Weight"] :
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.WeightSh" type="text" class="form-control text-right" tabindex="-1" readonly>
+            </div>
+            <div class="col-sm-4">
+                <input asp-for="modelProductSpec.WeightBox" type="text" class="form-control text-right" tabindex="-1" readonly>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-8">
+                @Localizer["RemarkDiffWeightFromGL"]
+            </div>
+        </div>
+    </div>
+</div>

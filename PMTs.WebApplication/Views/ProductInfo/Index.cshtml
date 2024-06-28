@@ -1,0 +1,181 @@
+﻿@*@model PMTs.DataAccess.ModelView.VMasterDataViewModel
+
+<link href="~/lib/material-pro/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" />
+
+<div class="row button-group">
+    <div class="col-lg-3 col-md-3">
+
+        <a class="btn waves-effect waves-light btn-block btn-info" asp-controller="NewProduct" asp-action="Categories" asp-route-ActionTran="Create"> Create Material
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3">
+        <button class="btn waves-effect waves-light btn-block btn-info" type="button" onclick="CopyAction()">Copy
+        </button>
+    </div>
+    <div class="col-lg-3 col-md-3">
+        <a class="btn waves-effect waves-light btn-block btn-info" asp-action="Index">Refresh
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-4">
+        <button class="btn waves-effect waves-light btn-block btn-info" type="button" onclick="window.open('#', '_blank', 'location=no,height=800,width=1200,scrollbars=yes,status=no');">Print Master Card
+        </button>
+    </div>
+    <div class="col-lg-3 col-md-4">
+        <button type="submit" class="btn waves-effect waves-light btn-block btn-info" asp-action="ExcelExport">Export Excel
+        </button>
+    </div>
+    <div class="col-lg-3 col-md-4">
+        <button type="submit" class="btn waves-effect waves-light btn-block btn-info" onclick="window.open('history.html', '_blank', 'location=no,height=800,width=1200,scrollbars=yes,status=no');">History
+        </button>
+    </div>
+    <div class="col-lg-3 col-md-4">
+        <a class="btn waves-effect waves-light btn-block btn-info" asp-action="Index" asp-controller="Presale">Product Presale
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-xs-6 col-md-6">
+                        <h3 class="text-themecolor"> Material Data </h3>
+                    </div>
+                    <div class="col-md-6 text-right">
+
+                        <form>
+                            <div class="controls">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search" required="" aria-invalid="false" name="Txtsearch">
+                                    <span class="input-group-btn" style="width:0px;"></span>
+
+                                    <select class="selectpicker" data-style="form-control btn-secondary" name="ddlSearch">
+                                        <option value="Material_No">Material_No</option>
+                                        <option value="Description">Description</option>
+                                        <option value="PC">PC</option>
+                                        <option value="Board">Board</option>
+                                        <option value="Box_Type">Box Type</option>
+                                        <option value="Cust_Name">Customer name</option>
+                                    </select>
+
+                                    <select class="form-control custom-select" name="ddlSearch" data-style="form-control btn-secondary">
+                                            <option value="Material_No">Material_No</option>
+                                            <option value="Description">Description</option>
+                                            <option value="PC">PC</option>
+                                            <option value="Board">Board</option>
+                                            <option value="Box_Type">Box Type</option>
+                                            <option value="Cust_Name">Customer name</option>
+                                        </select>
+
+                                    <div class="input-group-append">
+                                        <button asp-action="SeachProduct" class="btn btn-info"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                                <div class="help-block"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive m-t-10">
+                    <table id="myTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th width="5%"><input name="select_all" value="1" id="DataTableMat-select-all" type="checkbox" /></th>
+                                <th>Material_No</th>
+                                <th>PC</th>
+                                <th>Cust_Name</th>
+                                <th>Description</th>
+                                <th>Board</th>
+                                <th>Box_Type</th>
+                                <th>Machine</th>
+                                <th class="text-center" width="5%"></th>
+                                <th class="text-center" width="5%"></th>
+                                <th class="text-center" width="5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @{ int i = 0; }
+
+                            @foreach (var item in Model.ModelList)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="filled-in select-item-check" id="material-item-@i" value="@item.Material_No" />
+                                        <label for="material-item-@i"></label>
+                                    </td>
+                                    <td>@item.Material_No</td>
+                                    <td>@item.PC</td>
+                                    <td>@item.Cust_Name</td>
+                                    <td>@item.Description</td>
+                                    <td>@item.Board</td>
+                                    <td>@item.Box_Type</td>
+                                    <td>@item.Machine</td>
+
+                                    <td class="text-center"><a asp-controller="Detail" asp-action="DetailProduct" asp-route-MaterialNo="@item.Material_No" class="btn btn-secondary waves-effect waves-light"><i class="mdi mdi-note-text" title="Open Detail"></i></a></td>
+
+                                    <td class="text-center">
+                                        <a asp-controller="NewProduct" asp-action="Categories" asp-route-ActionTran="Edit" asp-route-MaterialNo="@item.Material_No" class="btn btn-warning waves-effect waves-light"><i class="mdi mdi-pencil" title="Edit"></i></a>
+                                    </td>
+
+                                    <td class="text-center"><a asp-action="DeleteProduct" asp-route-MaterialNo="@item.Material_No" class="btn btn-danger waves-effect waves-light"><i class="mdi mdi-delete" title="Delete"></i></a></td>
+                                </tr>
+
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            'bFilter': false,
+            'columnDefs': [{
+                'targets': [-3, -2, -1, 0], 'orderable': false,
+
+            }, {
+                'targets': 7, "render": function (data, type, row) {
+
+                    if (data)
+                        var data = data.split(',').join('<br>');
+                    return data;
+                }
+            }],
+            "order": [[1, "desc"]]
+        });
+    });
+</script>
+<script>
+
+    function CopyAction() {
+        var count = 0;
+        var materialNo;
+
+        $('.select-item-check').each(function () {
+            if ($(this).is(':checked')) {
+                materialNo = $(this).val();
+                count++;
+            }
+        });
+
+        if (count === 1) {
+            window.location.href = "/NewProduct/Categories?ActionTran=Copy&MaterialNo=" + materialNo + "";
+        }
+        else {
+            alert("Please Select One Only");
+        }
+    }
+</script>
+<!-- ============================================================== -->
+<!-- Style switcher -->
+<!-- ============================================================== -->
+<script src="~/lib/material-pro/assets/plugins/styleswitcher/jQuery.style.switcher.js"></script>*@
